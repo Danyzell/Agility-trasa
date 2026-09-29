@@ -1,0 +1,33 @@
+/* Service worker: start bez internetu, rychlé otevření z uložené verze při pomalém serveru, uložené písmo */
+module.exports = async function ({ browser, base }) {
+  /* bez přesměrování požadavků: service worker musí vidět skutečné požadavky */
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, ignoreHTTPSErrors: true });
+  const page = await ctx.newPage();
+  const errs = [], ok = (c, m) => { if (!c) errs.push(m); };
+  page.on('pageerror', e => errs.push('chyba stránky: ' + e.message));
+  await page.request.get(base + '/__slow?ms=0');
+  await page.goto(base + '/'); await page.waitForTimeout(300);
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.reload(); await page.waitForTimeout(1500);
+  ok(await page.evaluate(() => !!navigator.serviceWorker.controller), 'stránku neřídí service worker');
+  const c = await page.evaluate(async () => { const o = {}; for (const k of await caches.keys()) o[k] = (await (await caches.open(k)).keys()).length; return o; });
+  ok(Object.keys(c).some(k => /^agility-trasa-/.test(k) && c[k] >= 6), 'chybí uložená aplikace: ' + JSON.stringify(c));
+  /* písmo se uloží, jen když je Google Fonts dostupné */
+  if (await page.evaluate(() => document.fonts.check('16px Barlow'))) ok(c['agility-fonts'] > 0, 'písmo se neuložilo pro offline');
+
+  await ctx.setOffline(true);
+  await page.reload(); await page.waitForTimeout(600);
+  ok(await page.evaluate(() => typeof S === 'object' && document.querySelectorAll('#obs .ob').length > 0), 'aplikace se bez internetu neotevřela');
+  await ctx.setOffline(false);
+
+  await page.request.get(base + '/__slow?ms=9000');
+  const t0 = Date.now();
+  await page.reload({ waitUntil: 'domcontentloaded', timeout: 20000 });
+  const dt = Date.now() - t0;
+  ok(dt < 6000, 'při pomalém serveru se čekalo ' + dt + ' ms (má se otevřít uložená verze do ~3 s)');
+  ok(await page.evaluate(() => typeof S === 'object'), 'aplikace se po pomalém startu neotevřela');
+  await page.request.get(base + '/__slow?ms=0');
+
+  await ctx.close();
+  return errs;
+};
