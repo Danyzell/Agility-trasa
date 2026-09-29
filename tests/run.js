@@ -5,14 +5,15 @@ const path = require('path');
 const { chromium } = require('playwright');
 const start = require('./server');
 
-const SUITES = ['smoke', 'flows', 'undo', 'opravy', 'ctecka', 'sw', 'tyden'];
+const SUITES = ['smoke', 'flows', 'undo', 'opravy', 'ctecka', 'sw', 'tyden', 'v3d'];
 
 (async () => {
   const pick = process.argv.slice(2).filter(a => SUITES.includes(a));
   const root = path.resolve(__dirname, '..');
   const srv = await start(root);
   const base = 'http://127.0.0.1:' + srv.address().port;
-  const browser = await chromium.launch({ args: ['--ignore-certificate-errors'] });
+  /* WebGL přes softwarový SwiftShader: 3D animace ve Videích jdou otestovat i bez grafické karty */
+  const browser = await chromium.launch({ args: ['--ignore-certificate-errors', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
   let failed = 0;
   for (const name of pick.length ? pick : SUITES) {
     const t0 = Date.now();
