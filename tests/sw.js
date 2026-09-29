@@ -34,6 +34,13 @@ module.exports = async function ({ browser, base }) {
   ok(await page.evaluate(() => typeof S === 'object'), 'aplikace se po pomalém startu neotevřela');
   await page.request.get(base + '/__slow?ms=0');
 
+  /* nová verze: po kontrole aktualizace se ukáže lišta s Obnovit */
+  await page.request.get(base + '/__swv');
+  await page.evaluate(() => navigator.serviceWorker.getRegistration().then(r => r.update()));
+  await page.waitForSelector('#updBar', { timeout: 10000 }).catch(() => {});
+  ok(await page.isVisible('#updBar'), 'po vydání nové verze se neukázala lišta Obnovit');
+  if (await page.isVisible('#updBar')) { await Promise.all([page.waitForNavigation(), page.click('#updGo')]); ok(!(await page.isVisible('#updBar')), 'Obnovit nenačetlo stránku znovu'); }
+
   await ctx.close();
   return errs;
 };

@@ -1,4 +1,4 @@
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1f6b45"><meta name="mobile-web-app-capable" content="yes"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>window.AGILITY_PWA=1;</script></head><body>
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1f6b45"><meta name="mobile-web-app-capable" content="yes"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>window.AGILITY_PWA=1;</script></head><body>
 <title>Agility trasa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -364,6 +364,30 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 .fcilist .bad .i{color:var(--warn);}
 .fcilist .info .i{color:var(--muted);}
 .card .src{display:block; padding:0 9px 9px; font-size:12px; color:var(--accent);}
+
+/* telefon venku: větší plochy pro palec, nic mimo obrazovku, klávesnice nepřekrývá tlačítka */
+.spbtns{margin-top:18px;} /* STOP se nesmí dotýkat Mezičasů */
+.cards{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));} /* na 360 px dvě karty vedle sebe */
+.counters{grid-template-columns:repeat(2,minmax(0,1fr));}
+.counter{flex-wrap:wrap;}
+.counter .pm{flex:1 0 100%;}
+.counter .pm button{flex:1; height:48px;}
+.order{columns:auto 170px;} /* na úzkém telefonu jeden sloupec, otočky se nepřekrývají */
+.order:has(.empty){columns:1;}
+.order.sidemode{counter-reset:ord; padding-left:0;}
+.order.sidemode li{display:flex; align-items:center; gap:6px; padding:3px 0;}
+.order.sidemode li::before{counter-increment:ord; content:counter(ord) '.'; min-width:24px; text-align:right; font-variant-numeric:tabular-nums;}
+.order.sidemode li .sd{margin-left:auto;}
+.order li .sd button{min-width:44px; height:40px;}
+.order li .tu{min-height:36px;}
+.check{min-height:44px;}
+.check input{width:24px; height:24px;}
+.hist button,.card .st button,.speed button{min-width:44px; min-height:44px;}
+input[type=range]{height:36px;}
+.sheet{max-height:calc(100dvh - 32px);}
+body:has(input:not([type=checkbox]):not([type=range]):not([type=file]):focus,textarea:focus) .nav{display:none;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .grade, :root:not([data-theme="light"]) .hist .g, :root:not([data-theme="light"]) .fcibar .ic{color:#0b1a11;} }
+:root[data-theme="dark"] .grade, :root[data-theme="dark"] .hist .g, :root[data-theme="dark"] .fcibar .ic{color:#0b1a11;}
 
 @media (prefers-reduced-motion: reduce){ *{transition:none!important; animation:none!important;} }
 </style>
@@ -1016,7 +1040,7 @@ function flowStats(ob,rt,tu,g){
     if(ad>45){ var sg=dg>0?1:-1; if(lastS&&sg!==lastS) alt++; lastS=sg; }
   });
   var bent={}, wraps=0, backs=0;
-  rt.forEach(function(id,k){ var o=by[id], t=tu&&tu[k]; if(o&&o.type==='tunnel'&&o.bend) bent[id]=1; if(t&&t.charAt(0)==='w') wraps++; if(t&&t.charAt(0)==='b') backs++; });
+  rt.forEach(function(id,k){ var o=by[id], t=tu&&tu[k]; if(o&&o.type==='tunnel'&&o.bend) bent[id]=1; if(t&&t.charAt(0)==='w'&&k<rt.length-1) wraps++; if(t&&t.charAt(0)==='b'&&k>0) backs++; }); /* otočka po posledním skoku a zadní strana prvního se nekreslí ani neměří */
   var traps=0;
   for(i=0;i<g.P.length-1;i++){
     var Pa=g.P[i]; if(Pa.w||Math.abs(turns[i]||0)<40) continue;
@@ -1219,7 +1243,8 @@ function metrics(obs,route,cls,turns,geo){
   var zones=route.some(function(id){return by[id]&&ZN.indexOf(by[id].type)>=0;});
   var mcs=zones?2.5:3.0, spd=spdOf(cls);
   return {len:len,n:route.length,disc:zones?'Agility':'Jumping',mcs:mcs,spd:spd,cls:cls,
-    sct:len?Math.ceil(len/spd):0, mct:len?Math.ceil(len/mcs):0};
+    /* časy z délky zaokrouhlené na desetiny, jak ji aplikace ukazuje (130,0 m / 2,5 m/s = 52 s, ne 53 s) */
+    sct:len?Math.ceil(Math.round(len*10)/10/spd-1e-9):0, mct:len?Math.ceil(Math.round(len*10)/10/mcs-1e-9):0};
 }
 function curM(){return metrics(S.obs,S.route,S.meta.cls,S.turns);}
 function specsHTML(m){
@@ -1289,7 +1314,7 @@ function turnSheet(i){
   var why=sd?'Pes běží u psovoda '+(sd==='L'?'vlevo':'vpravo')+', takže otočka '+(sd==='L'?'doprava':'doleva')+' je vnitřkem (k psovodovi) a otočka '+(sd==='L'?'doleva':'doprava')+' venkem (od psovoda).'
     :'Doleva a doprava je z pohledu psa. Když v Dráze psovoda nastavíš, na které straně psovoda pes běží, aplikace ukáže, jestli je otočka vnitřkem (k psovodovi), nebo venkem (od psovoda).';
   openSheet('<h3>Skok č. '+(i+1)+': otočka</h3><p>'+why+'</p><div class="opts">'+opts.map(function(o){
-      return '<button class="opt'+(o[0]===t?' on':'')+'" data-tv="'+o[0]+'"'+(o[3]?' disabled':'')+'><b>'+o[1]+(sd&&o[0].charAt(0)==='w'?' · '+(tuInside(o[0],sd)?'vnitřkem':'venkem'):'')+'</b><span>'+o[2]+'</span></button>';
+      return '<button class="opt'+(o[0]===t?' on':'')+'" data-tv="'+o[0]+'"'+(o[3]?' disabled':'')+'><b>'+o[1]+(sd&&o[0].charAt(0)==='w'?' · '+(tuInside(o[0],sd)?'vnitřkem':'venkem'):'')+'</b><span>'+o[2]+(o[3]?' Nejde u '+(first?'prvního':'posledního')+' skoku.':'')+'</span></button>';
     }).join('')+'</div><div class="acts"><button class="btn" data-a="x">Zavřít</button></div>',
     function(e){
       var b=e.target.closest('[data-tv]');
@@ -1323,7 +1348,8 @@ function obEl(o){
     var dd='M'+pp.join('L');
     gr='<path d="'+dd+'" fill="none" stroke="currentColor" stroke-opacity=".28" stroke-width=".7" stroke-linecap="round" stroke-linejoin="round"/><path d="'+dd+'" fill="none" stroke="currentColor" stroke-width=".1"/>';
   }
-  g.innerHTML=gr+'<rect x="'+(-hw)+'" y="'+(-d.w)+'" width="'+(2*hw)+'" height="'+(2*d.w)+'" fill="#000" fill-opacity="0"/>'+
+  var hx=Math.max(hw,1), hy=Math.max(d.w,1); /* plocha pro prst aspoň 2 × 2 m */
+  g.innerHTML=gr+'<rect x="'+(-hx)+'" y="'+(-hy)+'" width="'+(2*hx)+'" height="'+(2*hy)+'" fill="#000" fill-opacity="0"/>'+
     ((o.id===sel&&mode==='build')?'<rect x="'+(-hw-e)+'" y="'+(-d.w-e)+'" width="'+(2*(hw+e))+'" height="'+(2*(d.w+e))+'" rx=".2" fill="none" stroke="var(--accent)" stroke-width=".1" stroke-dasharray=".35 .25"/>':'');
   return g;
 }
@@ -1507,7 +1533,8 @@ function fciCheck(obs,route,turns,sides,cls,geo){
   function add(ok,t){out.push({ok:ok,t:t});}
   var types=route.map(function(id){return by[id].type;}), cnt=function(t){return types.filter(function(x){return x===t;}).length;};
   add(n>=15&&n<=22,'Počet překážek '+n+' (FCI: 15–22)');
-  add(cnt('jump')>=7,'Skoků '+cnt('jump')+' (FCI: aspoň 7)');
+  /* skoky podle FCI: překážka, zeď, kruh i skok daleký */
+  var nJ=cnt('jump')+cnt('tire')+cnt('longjump'); add(nJ>=7,'Skoků '+nJ+' (FCI: aspoň 7, počítá se i kruh a skok daleký)');
   add(geo.total>=100&&geo.total<=220,'Délka trati '+fmt(geo.total)+' m (FCI: 100–220 m)');
   var gaps=[];
   geo.segs.forEach(function(s,i){
@@ -1519,6 +1546,7 @@ function fciCheck(obs,route,turns,sides,cls,geo){
   add(!gaps.length,'Rozestupy (FCI: po dráze 5–9 m, vzdušnou čarou nejvýš 7 m)'+(gaps.length?': '+gaps.join('; '):''));
   add(cnt('weave')===1,'Slalom '+(cnt('weave')?cnt('weave')+'×':'chybí')+' (FCI: v každém parkuru, jen jednou)');
   if(cnt('tire')) add(cnt('tire')===1,'Kruh '+cnt('tire')+'× (FCI: jen jednou)');
+  if(cnt('tunnel')) add(cnt('tunnel')<=5,'Tunel '+cnt('tunnel')+'× (FCI: nejvýš 5 průběhů)');
   var zt=types.filter(function(t){return ZN.indexOf(t)>=0;}), kinds={}; zt.forEach(function(t){kinds[t]=1;});
   if(zt.length){ var mx=cls==='A1'?3:4; add(Object.keys(kinds).length===3&&zt.length<=mx,'Zónové překážky '+zt.length+'×, druhů '+Object.keys(kinds).length+' (FCI: všechny 3 druhy, v '+cls+' nejvýš '+mx+')'); }
   var sd=(sides||[]).slice(0,n);
@@ -1536,7 +1564,8 @@ function fciCheck(obs,route,turns,sides,cls,geo){
 }
 function fciBar(geo){
   var el=$('fciBar'); if(!el) return;
-  if(S.route.length<2){el.hidden=true; return;}
+  if(S.route.length<2){ /* místo zůstane, jinak by plocha při klepání trasy poskočila */
+    el.hidden=false; el.className='fcibar'; el.innerHTML='<span class="ic">•</span><span class="grow">Pravidla FCI: vyznač trasu</span>'; return; }
   var bad=fciCheck(S.obs,S.route,S.turns,S.sides,S.meta.cls,geo).filter(function(x){return x.ok===false;}).length;
   el.hidden=false; el.className='fcibar '+(bad?'warn':'ok');
   el.innerHTML='<span class="ic">'+(bad?'!':'✓')+'</span><span class="grow">'+(bad?'Pravidla FCI: '+bad+' '+(bad===1?'problém':bad<5?'problémy':'problémů'):'Pravidla FCI v pořádku')+'</span><span class="more">Podrobnosti</span>';
@@ -1549,7 +1578,7 @@ function fciSheet(){
     '<div class="acts"><button class="btn primary" data-a="x">Zavřít</button></div>',
     function(e){if(e.target.closest('[data-a]')) closeSheet();});
 }
-$('fciBar').onclick=fciSheet;
+$('fciBar').onclick=function(){ if(S.route.length<2){ toast('Kontrola pravidel potřebuje trasu aspoň se 2 překážkami.'); return; } fciSheet(); };
 function setPanel(p){
   if(panel==='quiz'&&p!=='quiz') quizStop();
   panel=(panel===p)?null:p; sel=null;
@@ -1639,7 +1668,7 @@ function openSheet(html,onClick){
   sheetUrlsFree();
   var sh=$('sheet'); sh.innerHTML=html; sh.onclick=onClick; $('scrim').hidden=false;
   var h=sh.querySelector('h3'); if(h){ h.id='sheetT'; sh.setAttribute('aria-labelledby','sheetT'); } else sh.removeAttribute('aria-labelledby');
-  var f=sh.querySelector('input,select,.primary'); if(f) f.focus();
+  sh.tabIndex=-1; var f=sh.querySelector('input:not([type=hidden]),select,textarea'); try{ (f||sh).focus({preventScroll:true}); }catch(e){} sh.scrollTop=0;
 }
 function closeSheet(){$('scrim').hidden=true; $('sheet').innerHTML=''; $('sheet').onclick=null; sheetUrlsFree();}
 $('scrim').addEventListener('click',function(e){if(e.target===this) closeSheet();});
@@ -3173,7 +3202,8 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='backup'){ h=backupHTML(); }
   else if(moreTab==='start'){ h=startHTML(); }
   else {
-    h='<div id="pwaInst"></div><div class="panel" style="display:flex;flex-direction:column;gap:8px"><b>Agility trasa 1.10</b><p class="hint">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do oblouku), parkury trenérů, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, otočky kolem křídla a zadní strany skoků, 3D průlet, trénink paměti, videa s technikou, deník a statistiky.</p>'+
+    h='<div id="pwaInst"></div><div class="panel" style="display:flex;flex-direction:column;gap:8px"><b>Agility trasa 1.11</b><p class="hint">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do oblouku), parkury trenérů, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, otočky kolem křídla a zadní strany skoků, 3D průlet, trénink paměti, videa s technikou, deník a statistiky.</p>'+
+      '<p class="hint">Novinky v 1.11: aplikace se aktualizuje hned a nabídne Obnovit, když je připravená nová verze. STOP na stopkách je dál od Mezičasů, větší tlačítka pro palec (počítadla chyb, překážky na ploše, strana psa L/P), parkury po dvou vedle sebe i na malém telefonu, plocha při klepání trasy neposkakuje, klávesnice nepřekrývá tlačítka. Kontrola FCI počítá mezi skoky i kruh a skok daleký, hlídá nejvýš 5 průběhů tunelem a SČP i MČP vychází z ukázané délky trati.</p>'+
       '<p class="hint">Novinky v 1.10: tlačítko Zpět (↶ vedle Stavba / Trasa, na počítači Ctrl+Z) vrátí posunutí, otočení i smazání překážky a změny trasy. Když běží stopky, obrazovka nezhasne. Tažení překážky je plynulejší. Čas ručně jde zadat i jako 1:05,30. Plánek z obrázku při čtení nezamrzne telefon a kompas ve Stavbě v terénu funguje i na iPhonu. PDF se stavebním plánem se vejde i u čtvercové plochy. Parkur z kódu se před uložením zkontroluje, poškozená data už aplikaci neshodí. Obnova zálohy nahradí všechna data, a když se nepovede, nic se nezmění. Při plné paměti aplikace upozorní, že se změna neuložila. Při slabém signálu na cvičišti se aplikace otevře do 3 sekund z uložené verze a písmo funguje i offline.</p>'+
       '<p class="hint">Novinky v 1.9: aplikace k instalaci do telefonu (Chrome → Instalovat aplikaci). V ní funguje výběr fotky a videa, ukládání obrázku, PDF a zálohy, plánek jde poslat přes Sdílet z galerie rovnou do čtečky, katalog parkurů i záloha v cloudu. Aktualizuje se sama.</p>'+
       '<p class="hint">Novinky v 1.8: Plánek z obrázku přečte i trasu. Z čísel v kroužcích pozná pořadí, z nakreslené čáry směry skoků, vstupy do tunelů a zón, otočky kolem křídla a zadní strany. Chybějící kruh, skok daleký, dvojité břevno, zeď nebo kladinu dohledá u čísla. Nejistá místa označí otazníkem. V aplikaci pro Android jde plánek vložit i ze schránky.</p>'+
@@ -3441,6 +3471,7 @@ function startGen(k){
 var SPL=null;
 function splitOpen(kind){
   if(S.route.length<2){toast('Nejdřív načti nebo postav parkur s trasou.'); return;}
+  if(RUN.on){toast('Nejdřív zastav stopky.'); return;}
   if(kind==='video'&&APK_LITE){toast('Video z telefonu otevřeš ve webové verzi aplikace. V aplikaci pro Android použij mezičasy naživo.'); return;}
   var n=S.route.length, by={}; S.obs.forEach(function(o){by[o.id]=o;});
   SPL={kind:kind,marks:[],n:n,names:S.route.map(function(id,i){return (i+1)+'. '+DEF[by[id].type].l.toLowerCase();}),t0:0,url:null};
@@ -4623,7 +4654,22 @@ catSync();
 /* ---------- nainstalovaná aplikace (jen verze z GitHub Pages) ---------- */
 (function(){
   if(!IS_PWA) return;
-  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
+  /* aktualizace: po návratu do aplikace (nejvýš jednou za 10 min) se zkontroluje nová verze; když ji service worker
+     převezme, lišta nabídne obnovení (nic se neobnovuje samo, ať se nepřeruší třeba měření stopkami) */
+  if('serviceWorker' in navigator){
+    var had=!!navigator.serviceWorker.controller, reg=null, last=Date.now();
+    navigator.serviceWorker.register('sw.js').then(function(r){ reg=r; },function(){});
+    document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&reg&&Date.now()-last>6e5){ last=Date.now(); reg.update().catch(function(){}); } });
+    navigator.serviceWorker.addEventListener('controllerchange',function(){
+      if(!had){ had=true; return; } /* první instalace: stránka už je aktuální */
+      if($('updBar')) return;
+      var bar=document.createElement('div'); bar.className='saybar'; bar.id='updBar'; bar.setAttribute('role','status');
+      bar.innerHTML='<span>Je připravená nová verze aplikace.</span><button class="btn" id="updGo">Obnovit</button><button class="btn" id="updX" aria-label="Později">×</button>';
+      document.body.appendChild(bar);
+      $('updGo').onclick=function(){ location.reload(); };
+      $('updX').onclick=function(){ bar.parentNode.removeChild(bar); };
+    });
+  }
   /* tlačítko Instalovat v záložce Více → O aplikaci */
   var ev=null;
   window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); ev=e; pwaInstUI(); });
