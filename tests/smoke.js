@@ -40,7 +40,10 @@ module.exports = async function ({ browser, base }) {
     await step('více ' + m, async () => { await page.click('.nav [data-v="more"]'); await page.click(`#moreTabs [data-m="${m}"]`); });
   await step('video', async () => { await page.click('.nav [data-v="video"]'); await page.click('#vidList button >> nth=0'); await page.waitForTimeout(300); });
   await step('stopky', async () => {
-    await page.click('.nav [data-v="run"]'); await page.click('#startBtn'); await page.waitForTimeout(400);
+    await page.click('.nav [data-v="run"]');
+    T.ok(await T.ev(() => $('spLive').getBoundingClientRect().top - $('startBtn').getBoundingClientRect().bottom >= 12), 'STOP se dotýká tlačítka Mezičasy');
+    T.ok(await T.ev(() => [...document.querySelectorAll('.counter')].every(c => c.getBoundingClientRect().right <= document.documentElement.clientWidth - 8)), 'počítadla chyb přetékají z obrazovky');
+    await page.click('#startBtn'); await page.waitForTimeout(400);
     T.ok(await T.ev(() => __wl.length === 1 && !__wl[0].released), 'při běhu stopek může obrazovka zhasnout');
     await page.click('#startBtn');
     T.ok(await T.ev(() => parseFloat($('manT').value.replace(',', '.')) > 0.2), 'stopky neměří');
