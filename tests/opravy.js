@@ -133,6 +133,17 @@ module.exports = async function ({ browser, base }) {
     await ev(() => loadCourse(listFor('A1')[2], true)); if (await page.isVisible('#scrim')) await T.sheet('ok');
     ok(await ev(() => !BG && !localStorage.getItem('agility-bg-v1') && !$('bgimg').innerHTML), 'podklad z fotky zůstal pod jiným parkurem');
 
+    T.step('nic z nástrojů po načtení a Nový');
+    await clean();
+    await ev(() => { SET.psz = 'XS'; mode = 'route'; setPanel('side'); $('wrap').scrollLeft = 300; render(); ui(); });
+    await ev(() => loadCourse(listFor('A2')[3], true)); if (await page.isVisible('#scrim')) await T.sheet('ok');
+    ok(await ev(() => panel === null && mode === 'build' && !SET.psz && $('sideBar').hidden && !$('modeRow').hidden && !/Dráha psa/.test($('marks').innerHTML) && $('wrap').scrollLeft === 0),
+      'po načtení parkuru zůstal nástroj z předchozího: ' + await ev(() => JSON.stringify({ panel, mode, psz: SET.psz })));
+    await ev(() => { setPanel('quiz'); S.W = 40; S.H = 30; drawGrid(); });
+    await page.click('#newBtn'); if (await page.isVisible('#scrim')) await T.sheet('ok');
+    ok(await ev(() => panel === null && !QZ && S.W === 40 && S.H === 20 && !$('obs').innerHTML && !$('pth').innerHTML && !$('hp').innerHTML && !$('marks').innerHTML && !$('bgimg').innerHTML),
+      'po Nový není plocha čistá: ' + await ev(() => JSON.stringify({ panel, qz: !!QZ, W: S.W, H: S.H })));
+
     T.step('pravidla FCI a časy');
     const fc = await ev(() => {
       const c = JSON.parse(JSON.stringify(listFor('A1')[0])), by = {}; c.obs.forEach(o => by[o.id] = o);
