@@ -1,0 +1,4124 @@
+[
+ {
+  "t": "Psí škola ABS",
+  "file": "f_video.js",
+  "line": 3,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var YT=function(id){return 'https://www.youtube.com/watch?v='+id;}, ABS='Psí škola ABS';",
+  "n": 1
+ },
+ {
+  "t": "Překážky",
+  "file": "f_video.js",
+  "line": 5,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'jump',g:'Překážky',t:'Skok',s:'Náběh, odraz, doskok',D:5,",
+  "n": 8
+ },
+ {
+  "t": "Skok",
+  "file": "f_video.js",
+  "line": 5,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'jump',g:'Překážky',t:'Skok',s:'Náběh, odraz, doskok',D:5,",
+  "n": 1
+ },
+ {
+  "t": "Náběh, odraz, doskok",
+  "file": "f_video.js",
+  "line": 5,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'jump',g:'Překážky',t:'Skok',s:'Náběh, odraz, doskok',D:5,",
+  "n": 1
+ },
+ {
+  "t": "Rovný náběh na střed laťky",
+  "file": "f_video.js",
+  "line": 6,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Rovný náběh na střed laťky'],[.36,'Odraz: pes si sám změří vzdálenost'],[.5,'Nad laťkou už psovod ukazuje, kam se jde dál'],[.66,'Doskok a plynulý odběh']],",
+  "n": 1
+ },
+ {
+  "t": "Odraz: pes si sám změří vzdálenost",
+  "file": "f_video.js",
+  "line": 6,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Rovný náběh na střed laťky'],[.36,'Odraz: pes si sám změří vzdálenost'],[.5,'Nad laťkou už psovod ukazuje, kam se jde dál'],[.66,'Doskok a plynulý odběh']],",
+  "n": 1
+ },
+ {
+  "t": "Nad laťkou už psovod ukazuje, kam se jde dál",
+  "file": "f_video.js",
+  "line": 6,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Rovný náběh na střed laťky'],[.36,'Odraz: pes si sám změří vzdálenost'],[.5,'Nad laťkou už psovod ukazuje, kam se jde dál'],[.66,'Doskok a plynulý odběh']],",
+  "n": 1
+ },
+ {
+  "t": "Doskok a plynulý odběh",
+  "file": "f_video.js",
+  "line": 6,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Rovný náběh na střed laťky'],[.36,'Odraz: pes si sám změří vzdálenost'],[.5,'Nad laťkou už psovod ukazuje, kam se jde dál'],[.66,'Doskok a plynulý odběh']],",
+  "n": 1
+ },
+ {
+  "t": "Začni s laťkou na zemi nebo úplně nízko a odměňuj rovný přechod středem.",
+  "file": "f_video.js",
+  "line": 7,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s laťkou na zemi nebo úplně nízko a odměňuj rovný přechod středem.','Přidej křídla a trénuj obíhání křídla z obou stran (cviky na jednom skoku).','Výšku zvedej postupně až na výšku kategorie psa.','Na techniku skoku používej s",
+  "n": 1
+ },
+ {
+  "t": "Přidej křídla a trénuj obíhání křídla z obou stran (cviky na jednom skoku).",
+  "file": "f_video.js",
+  "line": 7,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s laťkou na zemi nebo úplně nízko a odměňuj rovný přechod středem.','Přidej křídla a trénuj obíhání křídla z obou stran (cviky na jednom skoku).','Výšku zvedej postupně až na výšku kategorie psa.','Na techniku skoku používej s",
+  "n": 1
+ },
+ {
+  "t": "Výšku zvedej postupně až na výšku kategorie psa.",
+  "file": "f_video.js",
+  "line": 7,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s laťkou na zemi nebo úplně nízko a odměňuj rovný přechod středem.','Přidej křídla a trénuj obíhání křídla z obou stran (cviky na jednom skoku).','Výšku zvedej postupně až na výšku kategorie psa.','Na techniku skoku používej s",
+  "n": 1
+ },
+ {
+  "t": "Na techniku skoku používej skokové řady, kde si pes sám hledá odraz.",
+  "file": "f_video.js",
+  "line": 7,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s laťkou na zemi nebo úplně nízko a odměňuj rovný přechod středem.','Přidej křídla a trénuj obíhání křídla z obou stran (cviky na jednom skoku).','Výšku zvedej postupně až na výšku kategorie psa.','Na techniku skoku používej s",
+  "n": 1
+ },
+ {
+  "t": "Plné výšky až u dospělého psa. Na závody smí pes od 18 měsíců.",
+  "file": "f_video.js",
+  "line": 7,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s laťkou na zemi nebo úplně nízko a odměňuj rovný přechod středem.','Přidej křídla a trénuj obíhání křídla z obou stran (cviky na jednom skoku).','Výšku zvedej postupně až na výšku kategorie psa.','Na techniku skoku používej s",
+  "n": 1
+ },
+ {
+  "t": "Laťka často padá, když psovod dá povel pozdě nebo psa „táhne“ tělem.",
+  "file": "f_video.js",
+  "line": 8,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Laťka často padá, když psovod dá povel pozdě nebo psa „táhne“ tělem.','Pes čte, kam míří tvoje ramena a kam se díváš.'],",
+  "n": 1
+ },
+ {
+  "t": "Pes čte, kam míří tvoje ramena a kam se díváš.",
+  "file": "f_video.js",
+  "line": 8,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Laťka často padá, když psovod dá povel pozdě nebo psa „táhne“ tělem.','Pes čte, kam míří tvoje ramena a kam se díváš.'],",
+  "n": 1
+ },
+ {
+  "t": "Jumping Basics 1 (cvik Susan Salo)",
+  "file": "f_video.js",
+  "line": 9,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Jumping Basics 1 (cvik Susan Salo)','YouTube',YT('WTJ853Ubh64')],['en','Cviky na jednom skoku (webinář)','YouTube',YT('UyW13HHfrN8')],['cz','Agility 6. díl: Učíme psa skákat','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/",
+  "n": 1
+ },
+ {
+  "t": "YouTube",
+  "file": "f_video.js",
+  "line": 9,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Jumping Basics 1 (cvik Susan Salo)','YouTube',YT('WTJ853Ubh64')],['en','Cviky na jednom skoku (webinář)','YouTube',YT('UyW13HHfrN8')],['cz','Agility 6. díl: Učíme psa skákat','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/",
+  "n": 22
+ },
+ {
+  "t": "WTJ853Ubh64",
+  "file": "f_video.js",
+  "line": 9,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Jumping Basics 1 (cvik Susan Salo)','YouTube',YT('WTJ853Ubh64')],['en','Cviky na jednom skoku (webinář)','YouTube',YT('UyW13HHfrN8')],['cz','Agility 6. díl: Učíme psa skákat','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/",
+  "n": 1
+ },
+ {
+  "t": "Cviky na jednom skoku (webinář)",
+  "file": "f_video.js",
+  "line": 9,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Jumping Basics 1 (cvik Susan Salo)','YouTube',YT('WTJ853Ubh64')],['en','Cviky na jednom skoku (webinář)','YouTube',YT('UyW13HHfrN8')],['cz','Agility 6. díl: Učíme psa skákat','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/",
+  "n": 1
+ },
+ {
+  "t": "UyW13HHfrN8",
+  "file": "f_video.js",
+  "line": 9,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Jumping Basics 1 (cvik Susan Salo)','YouTube',YT('WTJ853Ubh64')],['en','Cviky na jednom skoku (webinář)','YouTube',YT('UyW13HHfrN8')],['cz','Agility 6. díl: Učíme psa skákat','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/",
+  "n": 1
+ },
+ {
+  "t": "Agility 6. díl: Učíme psa skákat",
+  "file": "f_video.js",
+  "line": 9,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Jumping Basics 1 (cvik Susan Salo)','YouTube',YT('WTJ853Ubh64')],['en','Cviky na jednom skoku (webinář)','YouTube',YT('UyW13HHfrN8')],['cz','Agility 6. díl: Učíme psa skákat','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/",
+  "n": 1
+ },
+ {
+  "t": "SpokojenyPes.cz, článek",
+  "file": "f_video.js",
+  "line": 9,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Jumping Basics 1 (cvik Susan Salo)','YouTube',YT('WTJ853Ubh64')],['en','Cviky na jednom skoku (webinář)','YouTube',YT('UyW13HHfrN8')],['cz','Agility 6. díl: Učíme psa skákat','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/",
+  "n": 2
+ },
+ {
+  "t": "One Jump Drills",
+  "file": "f_video.js",
+  "line": 9,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Jumping Basics 1 (cvik Susan Salo)','YouTube',YT('WTJ853Ubh64')],['en','Cviky na jednom skoku (webinář)','YouTube',YT('UyW13HHfrN8')],['cz','Agility 6. díl: Učíme psa skákat','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/",
+  "n": 1
+ },
+ {
+  "t": "AgilityNerd, článek",
+  "file": "f_video.js",
+  "line": 9,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Jumping Basics 1 (cvik Susan Salo)','YouTube',YT('WTJ853Ubh64')],['en','Cviky na jednom skoku (webinář)','YouTube',YT('UyW13HHfrN8')],['cz','Agility 6. díl: Učíme psa skákat','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/",
+  "n": 1
+ },
+ {
+  "t": "Tunel",
+  "file": "f_video.js",
+  "line": 10,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'tunnel',g:'Překážky',t:'Tunel',s:'Vstup, oblouk, výběh',D:7,",
+  "n": 1
+ },
+ {
+  "t": "Vstup, oblouk, výběh",
+  "file": "f_video.js",
+  "line": 10,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'tunnel',g:'Překážky',t:'Tunel',s:'Vstup, oblouk, výběh',D:7,",
+  "n": 1
+ },
+ {
+  "t": "Pes vbíhá do tunelu rovně",
+  "file": "f_video.js",
+  "line": 11,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes vbíhá do tunelu rovně'],[.3,'Psovod mezitím přebíhá k výstupu'],[.7,'Po výběhu pes hned vidí psovoda'],[.86,'Pokračují společně dál']],",
+  "n": 1
+ },
+ {
+  "t": "Psovod mezitím přebíhá k výstupu",
+  "file": "f_video.js",
+  "line": 11,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes vbíhá do tunelu rovně'],[.3,'Psovod mezitím přebíhá k výstupu'],[.7,'Po výběhu pes hned vidí psovoda'],[.86,'Pokračují společně dál']],",
+  "n": 1
+ },
+ {
+  "t": "Po výběhu pes hned vidí psovoda",
+  "file": "f_video.js",
+  "line": 11,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes vbíhá do tunelu rovně'],[.3,'Psovod mezitím přebíhá k výstupu'],[.7,'Po výběhu pes hned vidí psovoda'],[.86,'Pokračují společně dál']],",
+  "n": 1
+ },
+ {
+  "t": "Pokračují společně dál",
+  "file": "f_video.js",
+  "line": 11,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes vbíhá do tunelu rovně'],[.3,'Psovod mezitím přebíhá k výstupu'],[.7,'Po výběhu pes hned vidí psovoda'],[.86,'Pokračují společně dál']],",
+  "n": 1
+ },
+ {
+  "t": "Začni s krátkým rovným tunelem: pomocník drží psa, ty voláš z druhé strany.",
+  "file": "f_video.js",
+  "line": 12,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s krátkým rovným tunelem: pomocník drží psa, ty voláš z druhé strany.','Tunel postupně prodlužuj a ohýbej do oblouku.','Posílej psa do tunelu z dálky a z různých úhlů.','Nacvič, aby pes po výběhu hned hledal psovoda.'],",
+  "n": 1
+ },
+ {
+  "t": "Tunel postupně prodlužuj a ohýbej do oblouku.",
+  "file": "f_video.js",
+  "line": 12,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s krátkým rovným tunelem: pomocník drží psa, ty voláš z druhé strany.','Tunel postupně prodlužuj a ohýbej do oblouku.','Posílej psa do tunelu z dálky a z různých úhlů.','Nacvič, aby pes po výběhu hned hledal psovoda.'],",
+  "n": 1
+ },
+ {
+  "t": "Posílej psa do tunelu z dálky a z různých úhlů.",
+  "file": "f_video.js",
+  "line": 12,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s krátkým rovným tunelem: pomocník drží psa, ty voláš z druhé strany.','Tunel postupně prodlužuj a ohýbej do oblouku.','Posílej psa do tunelu z dálky a z různých úhlů.','Nacvič, aby pes po výběhu hned hledal psovoda.'],",
+  "n": 1
+ },
+ {
+  "t": "Nacvič, aby pes po výběhu hned hledal psovoda.",
+  "file": "f_video.js",
+  "line": 12,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s krátkým rovným tunelem: pomocník drží psa, ty voláš z druhé strany.','Tunel postupně prodlužuj a ohýbej do oblouku.','Posílej psa do tunelu z dálky a z různých úhlů.','Nacvič, aby pes po výběhu hned hledal psovoda.'],",
+  "n": 1
+ },
+ {
+  "t": "Vběhnutí do špatného otvoru znamená diskvalifikaci.",
+  "file": "f_video.js",
+  "line": 13,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Vběhnutí do špatného otvoru znamená diskvalifikaci.','Tunel pod kladinou nebo áčkem je častá past, pes potřebuje jasný směr.'],",
+  "n": 1
+ },
+ {
+  "t": "Tunel pod kladinou nebo áčkem je častá past, pes potřebuje jasný směr.",
+  "file": "f_video.js",
+  "line": 13,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Vběhnutí do špatného otvoru znamená diskvalifikaci.','Tunel pod kladinou nebo áčkem je častá past, pes potřebuje jasný směr.'],",
+  "n": 1
+ },
+ {
+  "t": "Štěně a první tunely (TunelMaayniac)",
+  "file": "f_video.js",
+  "line": 14,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Štěně a první tunely (TunelMaayniac)',ABS,YT('M7clCIESiwM')],['en','Beginner Agility Training – The Tunnel','YouTube',YT('o53tQBq1_m0')],['en','Easily Teach Your Dog The Tunnel','YouTube',YT('PK1LlbNw0_A')]]},",
+  "n": 1
+ },
+ {
+  "t": "Beginner Agility Training – The Tunnel",
+  "file": "f_video.js",
+  "line": 14,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Štěně a první tunely (TunelMaayniac)',ABS,YT('M7clCIESiwM')],['en','Beginner Agility Training – The Tunnel','YouTube',YT('o53tQBq1_m0')],['en','Easily Teach Your Dog The Tunnel','YouTube',YT('PK1LlbNw0_A')]]},",
+  "n": 1
+ },
+ {
+  "t": "o53tQBq1_m0",
+  "file": "f_video.js",
+  "line": 14,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "v:[['cz','Štěně a první tunely (TunelMaayniac)',ABS,YT('M7clCIESiwM')],['en','Beginner Agility Training – The Tunnel','YouTube',YT('o53tQBq1_m0')],['en','Easily Teach Your Dog The Tunnel','YouTube',YT('PK1LlbNw0_A')]]},",
+  "n": 1
+ },
+ {
+  "t": "Easily Teach Your Dog The Tunnel",
+  "file": "f_video.js",
+  "line": 14,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Štěně a první tunely (TunelMaayniac)',ABS,YT('M7clCIESiwM')],['en','Beginner Agility Training – The Tunnel','YouTube',YT('o53tQBq1_m0')],['en','Easily Teach Your Dog The Tunnel','YouTube',YT('PK1LlbNw0_A')]]},",
+  "n": 1
+ },
+ {
+  "t": "PK1LlbNw0_A",
+  "file": "f_video.js",
+  "line": 14,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Štěně a první tunely (TunelMaayniac)',ABS,YT('M7clCIESiwM')],['en','Beginner Agility Training – The Tunnel','YouTube',YT('o53tQBq1_m0')],['en','Easily Teach Your Dog The Tunnel','YouTube',YT('PK1LlbNw0_A')]]},",
+  "n": 1
+ },
+ {
+  "t": "Slalom",
+  "file": "f_video.js",
+  "line": 15,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'weave',g:'Překážky',t:'Slalom',s:'Vstup a proplétání',D:7,",
+  "n": 1
+ },
+ {
+  "t": "Vstup a proplétání",
+  "file": "f_video.js",
+  "line": 15,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'weave',g:'Překážky',t:'Slalom',s:'Vstup a proplétání',D:7,",
+  "n": 1
+ },
+ {
+  "t": "Vstup: první tyčka je vždy po levé straně psa",
+  "file": "f_video.js",
+  "line": 16,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Vstup: první tyčka je vždy po levé straně psa'],[.3,'Pes proplétá tyčky v rytmu'],[.78,'Slalom musí být celý, teprve pak další překážka']],",
+  "n": 1
+ },
+ {
+  "t": "Pes proplétá tyčky v rytmu",
+  "file": "f_video.js",
+  "line": 16,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Vstup: první tyčka je vždy po levé straně psa'],[.3,'Pes proplétá tyčky v rytmu'],[.78,'Slalom musí být celý, teprve pak další překážka']],",
+  "n": 1
+ },
+ {
+  "t": "Slalom musí být celý, teprve pak další překážka",
+  "file": "f_video.js",
+  "line": 16,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Vstup: první tyčka je vždy po levé straně psa'],[.3,'Pes proplétá tyčky v rytmu'],[.78,'Slalom musí být celý, teprve pak další překážka']],",
+  "n": 1
+ },
+ {
+  "t": "Metoda 2×2: začni se dvěma páry tyček, pes jimi projde a dostane odměnu.",
+  "file": "f_video.js",
+  "line": 17,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Metoda 2×2: začni se dvěma páry tyček, pes jimi projde a dostane odměnu.','Přidávej další páry a postupně je natáčej do přímé řady.','Až pes zvládá 12 tyček, trénuj vstupy z různých úhlů a z obou stran.','Nakonec přidej rychlost a v",
+  "n": 1
+ },
+ {
+  "t": "Přidávej další páry a postupně je natáčej do přímé řady.",
+  "file": "f_video.js",
+  "line": 17,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Metoda 2×2: začni se dvěma páry tyček, pes jimi projde a dostane odměnu.','Přidávej další páry a postupně je natáčej do přímé řady.','Až pes zvládá 12 tyček, trénuj vstupy z různých úhlů a z obou stran.','Nakonec přidej rychlost a v",
+  "n": 1
+ },
+ {
+  "t": "Až pes zvládá 12 tyček, trénuj vstupy z různých úhlů a z obou stran.",
+  "file": "f_video.js",
+  "line": 17,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Metoda 2×2: začni se dvěma páry tyček, pes jimi projde a dostane odměnu.','Přidávej další páry a postupně je natáčej do přímé řady.','Až pes zvládá 12 tyček, trénuj vstupy z různých úhlů a z obou stran.','Nakonec přidej rychlost a v",
+  "n": 1
+ },
+ {
+  "t": "Nakonec přidej rychlost a vzdálenost psovoda.",
+  "file": "f_video.js",
+  "line": 17,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Metoda 2×2: začni se dvěma páry tyček, pes jimi projde a dostane odměnu.','Přidávej další páry a postupně je natáčej do přímé řady.','Až pes zvládá 12 tyček, trénuj vstupy z různých úhlů a z obou stran.','Nakonec přidej rychlost a v",
+  "n": 1
+ },
+ {
+  "t": "Jiná možnost je metoda ulička: tyčky rozevřené do dvou řad, které se postupně stahují.",
+  "file": "f_video.js",
+  "line": 17,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Metoda 2×2: začni se dvěma páry tyček, pes jimi projde a dostane odměnu.','Přidávej další páry a postupně je natáčej do přímé řady.','Až pes zvládá 12 tyček, trénuj vstupy z různých úhlů a z obou stran.','Nakonec přidej rychlost a v",
+  "n": 1
+ },
+ {
+  "t": "Chybný vstup se trestá jako odmítnutí.",
+  "file": "f_video.js",
+  "line": 18,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Chybný vstup se trestá jako odmítnutí.','Proběhnutí slalomu opačným směrem přes víc než dvě branky znamená diskvalifikaci.'],",
+  "n": 1
+ },
+ {
+  "t": "Proběhnutí slalomu opačným směrem přes víc než dvě branky znamená diskvalifikaci.",
+  "file": "f_video.js",
+  "line": 18,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Chybný vstup se trestá jako odmítnutí.','Proběhnutí slalomu opačným směrem přes víc než dvě branky znamená diskvalifikaci.'],",
+  "n": 1
+ },
+ {
+  "t": "Doma se psem: slalom 2×2",
+  "file": "f_video.js",
+  "line": 19,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: slalom 2×2',ABS,YT('zAt2NY-f9So')],['en','Weave Poles – metoda 2×2','YouTube',YT('7anJ3egQmyw')],['cz','Agility 5. díl: Metody učení slalomu','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/agility-5-dil-metod",
+  "n": 1
+ },
+ {
+  "t": "Weave Poles – metoda 2×2",
+  "file": "f_video.js",
+  "line": 19,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: slalom 2×2',ABS,YT('zAt2NY-f9So')],['en','Weave Poles – metoda 2×2','YouTube',YT('7anJ3egQmyw')],['cz','Agility 5. díl: Metody učení slalomu','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/agility-5-dil-metod",
+  "n": 1
+ },
+ {
+  "t": "7anJ3egQmyw",
+  "file": "f_video.js",
+  "line": 19,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "v:[['cz','Doma se psem: slalom 2×2',ABS,YT('zAt2NY-f9So')],['en','Weave Poles – metoda 2×2','YouTube',YT('7anJ3egQmyw')],['cz','Agility 5. díl: Metody učení slalomu','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/agility-5-dil-metod",
+  "n": 1
+ },
+ {
+  "t": "Agility 5. díl: Metody učení slalomu",
+  "file": "f_video.js",
+  "line": 19,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: slalom 2×2',ABS,YT('zAt2NY-f9So')],['en','Weave Poles – metoda 2×2','YouTube',YT('7anJ3egQmyw')],['cz','Agility 5. díl: Metody učení slalomu','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/agility-5-dil-metod",
+  "n": 1
+ },
+ {
+  "t": "5 kroků k samostatnému slalomu",
+  "file": "f_video.js",
+  "line": 19,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: slalom 2×2',ABS,YT('zAt2NY-f9So')],['en','Weave Poles – metoda 2×2','YouTube',YT('7anJ3egQmyw')],['cz','Agility 5. díl: Metody učení slalomu','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/agility-5-dil-metod",
+  "n": 1
+ },
+ {
+  "t": "OneMind Dogs, článek",
+  "file": "f_video.js",
+  "line": 19,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: slalom 2×2',ABS,YT('zAt2NY-f9So')],['en','Weave Poles – metoda 2×2','YouTube',YT('7anJ3egQmyw')],['cz','Agility 5. díl: Metody učení slalomu','SpokojenyPes.cz, článek','https://www.spokojenypes.cz/agility-5-dil-metod",
+  "n": 2
+ },
+ {
+  "t": "A-rampa (áčko)",
+  "file": "f_video.js",
+  "line": 20,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'aframe',g:'Překážky',t:'A-rampa (áčko)',s:'Nahoru, přes vrchol, zóna',D:7,",
+  "n": 1
+ },
+ {
+  "t": "Nahoru, přes vrchol, zóna",
+  "file": "f_video.js",
+  "line": 20,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'aframe',g:'Překážky',t:'A-rampa (áčko)',s:'Nahoru, přes vrchol, zóna',D:7,",
+  "n": 1
+ },
+ {
+  "t": "Pes vybíhá rovně nahoru",
+  "file": "f_video.js",
+  "line": 21,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes vybíhá rovně nahoru'],[.42,'Přes vrchol bez skoku'],[.62,'Sestupná zóna: aspoň jedna tlapka do žluté'],[.82,'Zastavená zóna (2on2off), nebo sbíhaná zóna']],",
+  "n": 1
+ },
+ {
+  "t": "Přes vrchol bez skoku",
+  "file": "f_video.js",
+  "line": 21,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes vybíhá rovně nahoru'],[.42,'Přes vrchol bez skoku'],[.62,'Sestupná zóna: aspoň jedna tlapka do žluté'],[.82,'Zastavená zóna (2on2off), nebo sbíhaná zóna']],",
+  "n": 1
+ },
+ {
+  "t": "Sestupná zóna: aspoň jedna tlapka do žluté",
+  "file": "f_video.js",
+  "line": 21,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes vybíhá rovně nahoru'],[.42,'Přes vrchol bez skoku'],[.62,'Sestupná zóna: aspoň jedna tlapka do žluté'],[.82,'Zastavená zóna (2on2off), nebo sbíhaná zóna']],",
+  "n": 1
+ },
+ {
+  "t": "Zastavená zóna (2on2off), nebo sbíhaná zóna",
+  "file": "f_video.js",
+  "line": 21,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes vybíhá rovně nahoru'],[.42,'Přes vrchol bez skoku'],[.62,'Sestupná zóna: aspoň jedna tlapka do žluté'],[.82,'Zastavená zóna (2on2off), nebo sbíhaná zóna']],",
+  "n": 1
+ },
+ {
+  "t": "Vyber metodu zón: zastavovanou (2on2off) nebo sbíhanou.",
+  "file": "f_video.js",
+  "line": 22,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Vyber metodu zón: zastavovanou (2on2off) nebo sbíhanou.','Pro 2on2off nejdřív nauč pozici na nízké desce: přední tlapky na zemi, zadní na desce.','Pozici přenes na sníženou A-rampu a výšku zvedej postupně.','Odměňuj v pozici, uvolňu",
+  "n": 1
+ },
+ {
+  "t": "Pro 2on2off nejdřív nauč pozici na nízké desce: přední tlapky na zemi, zadní na desce.",
+  "file": "f_video.js",
+  "line": 22,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Vyber metodu zón: zastavovanou (2on2off) nebo sbíhanou.','Pro 2on2off nejdřív nauč pozici na nízké desce: přední tlapky na zemi, zadní na desce.','Pozici přenes na sníženou A-rampu a výšku zvedej postupně.','Odměňuj v pozici, uvolňu",
+  "n": 1
+ },
+ {
+  "t": "Pozici přenes na sníženou A-rampu a výšku zvedej postupně.",
+  "file": "f_video.js",
+  "line": 22,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Vyber metodu zón: zastavovanou (2on2off) nebo sbíhanou.','Pro 2on2off nejdřív nauč pozici na nízké desce: přední tlapky na zemi, zadní na desce.','Pozici přenes na sníženou A-rampu a výšku zvedej postupně.','Odměňuj v pozici, uvolňu",
+  "n": 1
+ },
+ {
+  "t": "Odměňuj v pozici, uvolňuj až povelem.",
+  "file": "f_video.js",
+  "line": 22,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Vyber metodu zón: zastavovanou (2on2off) nebo sbíhanou.','Pro 2on2off nejdřív nauč pozici na nízké desce: přední tlapky na zemi, zadní na desce.','Pozici přenes na sníženou A-rampu a výšku zvedej postupně.','Odměňuj v pozici, uvolňu",
+  "n": 1
+ },
+ {
+  "t": "Na áčku se pes musí dotknout sestupné zóny aspoň jednou tlapkou.",
+  "file": "f_video.js",
+  "line": 23,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Na áčku se pes musí dotknout sestupné zóny aspoň jednou tlapkou.','Na nástupnou rampu musí pes vstoupit všemi čtyřmi, jinak diskvalifikace.','Vrchol je pro všechny kategorie ve výšce 170 cm.'],",
+  "n": 1
+ },
+ {
+  "t": "Na nástupnou rampu musí pes vstoupit všemi čtyřmi, jinak diskvalifikace.",
+  "file": "f_video.js",
+  "line": 23,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Na áčku se pes musí dotknout sestupné zóny aspoň jednou tlapkou.','Na nástupnou rampu musí pes vstoupit všemi čtyřmi, jinak diskvalifikace.','Vrchol je pro všechny kategorie ve výšce 170 cm.'],",
+  "n": 1
+ },
+ {
+  "t": "Vrchol je pro všechny kategorie ve výšce 170 cm.",
+  "file": "f_video.js",
+  "line": 23,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Na áčku se pes musí dotknout sestupné zóny aspoň jednou tlapkou.','Na nástupnou rampu musí pes vstoupit všemi čtyřmi, jinak diskvalifikace.','Vrchol je pro všechny kategorie ve výšce 170 cm.'],",
+  "n": 1
+ },
+ {
+  "t": "Agility bez parkuru II: zastavované zóny",
+  "file": "f_video.js",
+  "line": 24,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Agility bez parkuru II: zastavované zóny','Pes pro život cz',YT('batITbWhM3o')],['en','EASY A-Frame Agility Training','YouTube',YT('LtwLs7svRgg')],['en','3 kroky ke spolehlivým zónám','OneMind Dogs, článek','https://www.oneminddog",
+  "n": 1
+ },
+ {
+  "t": "Pes pro život cz",
+  "file": "f_video.js",
+  "line": 24,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Agility bez parkuru II: zastavované zóny','Pes pro život cz',YT('batITbWhM3o')],['en','EASY A-Frame Agility Training','YouTube',YT('LtwLs7svRgg')],['en','3 kroky ke spolehlivým zónám','OneMind Dogs, článek','https://www.oneminddog",
+  "n": 2
+ },
+ {
+  "t": "batITbWhM3o",
+  "file": "f_video.js",
+  "line": 24,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "v:[['cz','Agility bez parkuru II: zastavované zóny','Pes pro život cz',YT('batITbWhM3o')],['en','EASY A-Frame Agility Training','YouTube',YT('LtwLs7svRgg')],['en','3 kroky ke spolehlivým zónám','OneMind Dogs, článek','https://www.oneminddog",
+  "n": 2
+ },
+ {
+  "t": "EASY A-Frame Agility Training",
+  "file": "f_video.js",
+  "line": 24,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Agility bez parkuru II: zastavované zóny','Pes pro život cz',YT('batITbWhM3o')],['en','EASY A-Frame Agility Training','YouTube',YT('LtwLs7svRgg')],['en','3 kroky ke spolehlivým zónám','OneMind Dogs, článek','https://www.oneminddog",
+  "n": 1
+ },
+ {
+  "t": "LtwLs7svRgg",
+  "file": "f_video.js",
+  "line": 24,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Agility bez parkuru II: zastavované zóny','Pes pro život cz',YT('batITbWhM3o')],['en','EASY A-Frame Agility Training','YouTube',YT('LtwLs7svRgg')],['en','3 kroky ke spolehlivým zónám','OneMind Dogs, článek','https://www.oneminddog",
+  "n": 1
+ },
+ {
+  "t": "3 kroky ke spolehlivým zónám",
+  "file": "f_video.js",
+  "line": 24,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Agility bez parkuru II: zastavované zóny','Pes pro život cz',YT('batITbWhM3o')],['en','EASY A-Frame Agility Training','YouTube',YT('LtwLs7svRgg')],['en','3 kroky ke spolehlivým zónám','OneMind Dogs, článek','https://www.oneminddog",
+  "n": 1
+ },
+ {
+  "t": "Kladina",
+  "file": "f_video.js",
+  "line": 25,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'dogwalk',g:'Překážky',t:'Kladina',s:'Nástup, přechod, zastavení',D:8,",
+  "n": 1
+ },
+ {
+  "t": "Nástup, přechod, zastavení",
+  "file": "f_video.js",
+  "line": 25,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'dogwalk',g:'Překážky',t:'Kladina',s:'Nástup, přechod, zastavení',D:8,",
+  "n": 1
+ },
+ {
+  "t": "Nástup na rampu všemi čtyřmi",
+  "file": "f_video.js",
+  "line": 26,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Nástup na rampu všemi čtyřmi'],[.35,'Klidný přechod po horním dílu'],[.6,'Sestup do žluté zóny'],[.68,'Zastavení 2on2off: přední tlapky na zemi, zadní v zóně'],[.84,'Uvolnění povelem a pokračování']],",
+  "n": 1
+ },
+ {
+  "t": "Klidný přechod po horním dílu",
+  "file": "f_video.js",
+  "line": 26,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Nástup na rampu všemi čtyřmi'],[.35,'Klidný přechod po horním dílu'],[.6,'Sestup do žluté zóny'],[.68,'Zastavení 2on2off: přední tlapky na zemi, zadní v zóně'],[.84,'Uvolnění povelem a pokračování']],",
+  "n": 1
+ },
+ {
+  "t": "Sestup do žluté zóny",
+  "file": "f_video.js",
+  "line": 26,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Nástup na rampu všemi čtyřmi'],[.35,'Klidný přechod po horním dílu'],[.6,'Sestup do žluté zóny'],[.68,'Zastavení 2on2off: přední tlapky na zemi, zadní v zóně'],[.84,'Uvolnění povelem a pokračování']],",
+  "n": 1
+ },
+ {
+  "t": "Zastavení 2on2off: přední tlapky na zemi, zadní v zóně",
+  "file": "f_video.js",
+  "line": 26,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Nástup na rampu všemi čtyřmi'],[.35,'Klidný přechod po horním dílu'],[.6,'Sestup do žluté zóny'],[.68,'Zastavení 2on2off: přední tlapky na zemi, zadní v zóně'],[.84,'Uvolnění povelem a pokračování']],",
+  "n": 1
+ },
+ {
+  "t": "Uvolnění povelem a pokračování",
+  "file": "f_video.js",
+  "line": 26,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Nástup na rampu všemi čtyřmi'],[.35,'Klidný přechod po horním dílu'],[.6,'Sestup do žluté zóny'],[.68,'Zastavení 2on2off: přední tlapky na zemi, zadní v zóně'],[.84,'Uvolnění povelem a pokračování']],",
+  "n": 1
+ },
+ {
+  "t": "Začni s prknem na zemi: pes po něm chodí klidně a na konci zaujme pozici.",
+  "file": "f_video.js",
+  "line": 27,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s prknem na zemi: pes po něm chodí klidně a na konci zaujme pozici.','Nacvič zastavenou nebo sbíhanou zónu stejně jako u áčka.','Kladinu zvedej postupně, pomocník jistí psa z boku.','Trénuj náběhy z různých úhlů.'],",
+  "n": 1
+ },
+ {
+  "t": "Nacvič zastavenou nebo sbíhanou zónu stejně jako u áčka.",
+  "file": "f_video.js",
+  "line": 27,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s prknem na zemi: pes po něm chodí klidně a na konci zaujme pozici.','Nacvič zastavenou nebo sbíhanou zónu stejně jako u áčka.','Kladinu zvedej postupně, pomocník jistí psa z boku.','Trénuj náběhy z různých úhlů.'],",
+  "n": 1
+ },
+ {
+  "t": "Kladinu zvedej postupně, pomocník jistí psa z boku.",
+  "file": "f_video.js",
+  "line": 27,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s prknem na zemi: pes po něm chodí klidně a na konci zaujme pozici.','Nacvič zastavenou nebo sbíhanou zónu stejně jako u áčka.','Kladinu zvedej postupně, pomocník jistí psa z boku.','Trénuj náběhy z různých úhlů.'],",
+  "n": 1
+ },
+ {
+  "t": "Trénuj náběhy z různých úhlů.",
+  "file": "f_video.js",
+  "line": 27,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s prknem na zemi: pes po něm chodí klidně a na konci zaujme pozici.','Nacvič zastavenou nebo sbíhanou zónu stejně jako u áčka.','Kladinu zvedej postupně, pomocník jistí psa z boku.','Trénuj náběhy z různých úhlů.'],",
+  "n": 1
+ },
+ {
+  "t": "Sestupnou zónu musí pes trefit aspoň jednou tlapkou, jinak 5 trestných bodů.",
+  "file": "f_video.js",
+  "line": 28,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Sestupnou zónu musí pes trefit aspoň jednou tlapkou, jinak 5 trestných bodů.','Seskočení ze sestupného dílu dřív, než na něj pes stoupne všemi čtyřmi, je odmítnutí.','Kladina je vysoká 120–130 cm.'],",
+  "n": 1
+ },
+ {
+  "t": "Seskočení ze sestupného dílu dřív, než na něj pes stoupne všemi čtyřmi, je odmítnutí.",
+  "file": "f_video.js",
+  "line": 28,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Sestupnou zónu musí pes trefit aspoň jednou tlapkou, jinak 5 trestných bodů.','Seskočení ze sestupného dílu dřív, než na něj pes stoupne všemi čtyřmi, je odmítnutí.','Kladina je vysoká 120–130 cm.'],",
+  "n": 1
+ },
+ {
+  "t": "Kladina je vysoká 120–130 cm.",
+  "file": "f_video.js",
+  "line": 28,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Sestupnou zónu musí pes trefit aspoň jednou tlapkou, jinak 5 trestných bodů.','Seskočení ze sestupného dílu dřív, než na něj pes stoupne všemi čtyřmi, je odmítnutí.','Kladina je vysoká 120–130 cm.'],",
+  "n": 1
+ },
+ {
+  "t": "Doma se psem: sbíhané zóny II",
+  "file": "f_video.js",
+  "line": 29,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: sbíhané zóny II',ABS,YT('YQEuPUyrtGw')],['cz','Zastavované zóny: první nácvik','Pes pro život cz',YT('batITbWhM3o')],['en','Running contacts v 6 krocích (Shorts)','YouTube','https://www.youtube.com/shorts/nWrqCKyEavQ",
+  "n": 1
+ },
+ {
+  "t": "YQEuPUyrtGw",
+  "file": "f_video.js",
+  "line": 29,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: sbíhané zóny II',ABS,YT('YQEuPUyrtGw')],['cz','Zastavované zóny: první nácvik','Pes pro život cz',YT('batITbWhM3o')],['en','Running contacts v 6 krocích (Shorts)','YouTube','https://www.youtube.com/shorts/nWrqCKyEavQ",
+  "n": 1
+ },
+ {
+  "t": "Zastavované zóny: první nácvik",
+  "file": "f_video.js",
+  "line": 29,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: sbíhané zóny II',ABS,YT('YQEuPUyrtGw')],['cz','Zastavované zóny: první nácvik','Pes pro život cz',YT('batITbWhM3o')],['en','Running contacts v 6 krocích (Shorts)','YouTube','https://www.youtube.com/shorts/nWrqCKyEavQ",
+  "n": 1
+ },
+ {
+  "t": "Running contacts v 6 krocích (Shorts)",
+  "file": "f_video.js",
+  "line": 29,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: sbíhané zóny II',ABS,YT('YQEuPUyrtGw')],['cz','Zastavované zóny: první nácvik','Pes pro život cz',YT('batITbWhM3o')],['en','Running contacts v 6 krocích (Shorts)','YouTube','https://www.youtube.com/shorts/nWrqCKyEavQ",
+  "n": 1
+ },
+ {
+  "t": "Houpačka",
+  "file": "f_video.js",
+  "line": 30,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'seesaw',g:'Překážky',t:'Houpačka',s:'Překlopení a čekání',D:8,",
+  "n": 1
+ },
+ {
+  "t": "Překlopení a čekání",
+  "file": "f_video.js",
+  "line": 30,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'seesaw',g:'Překážky',t:'Houpačka',s:'Překlopení a čekání',D:8,",
+  "n": 1
+ },
+ {
+  "t": "Pes nastoupí na spodní konec",
+  "file": "f_video.js",
+  "line": 31,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes nastoupí na spodní konec'],[.35,'Za osou se houpačka překlopí'],[.62,'Čeká, až se konec dotkne země'],[.8,'Teprve pak seskočí, jinak 5 trestných bodů']],",
+  "n": 1
+ },
+ {
+  "t": "Za osou se houpačka překlopí",
+  "file": "f_video.js",
+  "line": 31,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes nastoupí na spodní konec'],[.35,'Za osou se houpačka překlopí'],[.62,'Čeká, až se konec dotkne země'],[.8,'Teprve pak seskočí, jinak 5 trestných bodů']],",
+  "n": 1
+ },
+ {
+  "t": "Čeká, až se konec dotkne země",
+  "file": "f_video.js",
+  "line": 31,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes nastoupí na spodní konec'],[.35,'Za osou se houpačka překlopí'],[.62,'Čeká, až se konec dotkne země'],[.8,'Teprve pak seskočí, jinak 5 trestných bodů']],",
+  "n": 1
+ },
+ {
+  "t": "Teprve pak seskočí, jinak 5 trestných bodů",
+  "file": "f_video.js",
+  "line": 31,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes nastoupí na spodní konec'],[.35,'Za osou se houpačka překlopí'],[.62,'Čeká, až se konec dotkne země'],[.8,'Teprve pak seskočí, jinak 5 trestných bodů']],",
+  "n": 1
+ },
+ {
+  "t": "Začni hrou s pohybem desky (bang game): pes sám sklápí nízko položený konec.",
+  "file": "f_video.js",
+  "line": 32,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni hrou s pohybem desky (bang game): pes sám sklápí nízko položený konec.','Postupně zvětšuj výšku, ze které se deska sklápí.','Nauč cílovou pozici na konci desky (2on2off nebo všechny 4 tlapky na desce).','Celou houpačku zkoušej",
+  "n": 1
+ },
+ {
+  "t": "Postupně zvětšuj výšku, ze které se deska sklápí.",
+  "file": "f_video.js",
+  "line": 32,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni hrou s pohybem desky (bang game): pes sám sklápí nízko položený konec.','Postupně zvětšuj výšku, ze které se deska sklápí.','Nauč cílovou pozici na konci desky (2on2off nebo všechny 4 tlapky na desce).','Celou houpačku zkoušej",
+  "n": 1
+ },
+ {
+  "t": "Nauč cílovou pozici na konci desky (2on2off nebo všechny 4 tlapky na desce).",
+  "file": "f_video.js",
+  "line": 32,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni hrou s pohybem desky (bang game): pes sám sklápí nízko položený konec.','Postupně zvětšuj výšku, ze které se deska sklápí.','Nauč cílovou pozici na konci desky (2on2off nebo všechny 4 tlapky na desce).','Celou houpačku zkoušej",
+  "n": 1
+ },
+ {
+  "t": "Celou houpačku zkoušej, až pes bere pohyb i zvuk s klidem.",
+  "file": "f_video.js",
+  "line": 32,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni hrou s pohybem desky (bang game): pes sám sklápí nízko položený konec.','Postupně zvětšuj výšku, ze které se deska sklápí.','Nauč cílovou pozici na konci desky (2on2off nebo všechny 4 tlapky na desce).','Celou houpačku zkoušej",
+  "n": 1
+ },
+ {
+  "t": "Houpačka se musí dotknout země dřív, než z ní pes seskočí.",
+  "file": "f_video.js",
+  "line": 33,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Houpačka se musí dotknout země dřív, než z ní pes seskočí.','Pes musí trefit nástupní i sestupnou zónu.','Seskok dřív, než pes přejde osu, je odmítnutí.'],",
+  "n": 1
+ },
+ {
+  "t": "Pes musí trefit nástupní i sestupnou zónu.",
+  "file": "f_video.js",
+  "line": 33,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Houpačka se musí dotknout země dřív, než z ní pes seskočí.','Pes musí trefit nástupní i sestupnou zónu.','Seskok dřív, než pes přejde osu, je odmítnutí.'],",
+  "n": 1
+ },
+ {
+  "t": "Seskok dřív, než pes přejde osu, je odmítnutí.",
+  "file": "f_video.js",
+  "line": 33,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Houpačka se musí dotknout země dřív, než z ní pes seskočí.','Pes musí trefit nástupní i sestupnou zónu.','Seskok dřív, než pes přejde osu, je odmítnutí.'],",
+  "n": 1
+ },
+ {
+  "t": "Doma se psem: houpačka, jak začít",
+  "file": "f_video.js",
+  "line": 34,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: houpačka, jak začít',ABS,YT('fAdnN5h2XmU')],['en','Learning the Teeter – Seesaw','YouTube',YT('CHxJ7U4bnjY')],['en','Teach your dog the See-Saw',\"Zac & Lucy's agility\",YT('M_I9lqFktsw')]]},",
+  "n": 1
+ },
+ {
+  "t": "fAdnN5h2XmU",
+  "file": "f_video.js",
+  "line": 34,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "v:[['cz','Doma se psem: houpačka, jak začít',ABS,YT('fAdnN5h2XmU')],['en','Learning the Teeter – Seesaw','YouTube',YT('CHxJ7U4bnjY')],['en','Teach your dog the See-Saw',\"Zac & Lucy's agility\",YT('M_I9lqFktsw')]]},",
+  "n": 1
+ },
+ {
+  "t": "Learning the Teeter – Seesaw",
+  "file": "f_video.js",
+  "line": 34,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: houpačka, jak začít',ABS,YT('fAdnN5h2XmU')],['en','Learning the Teeter – Seesaw','YouTube',YT('CHxJ7U4bnjY')],['en','Teach your dog the See-Saw',\"Zac & Lucy's agility\",YT('M_I9lqFktsw')]]},",
+  "n": 1
+ },
+ {
+  "t": "CHxJ7U4bnjY",
+  "file": "f_video.js",
+  "line": 34,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: houpačka, jak začít',ABS,YT('fAdnN5h2XmU')],['en','Learning the Teeter – Seesaw','YouTube',YT('CHxJ7U4bnjY')],['en','Teach your dog the See-Saw',\"Zac & Lucy's agility\",YT('M_I9lqFktsw')]]},",
+  "n": 1
+ },
+ {
+  "t": "Teach your dog the See-Saw",
+  "file": "f_video.js",
+  "line": 34,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: houpačka, jak začít',ABS,YT('fAdnN5h2XmU')],['en','Learning the Teeter – Seesaw','YouTube',YT('CHxJ7U4bnjY')],['en','Teach your dog the See-Saw',\"Zac & Lucy's agility\",YT('M_I9lqFktsw')]]},",
+  "n": 1
+ },
+ {
+  "t": "Zac & Lucy's agility",
+  "file": "f_video.js",
+  "line": 34,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: houpačka, jak začít',ABS,YT('fAdnN5h2XmU')],['en','Learning the Teeter – Seesaw','YouTube',YT('CHxJ7U4bnjY')],['en','Teach your dog the See-Saw',\"Zac & Lucy's agility\",YT('M_I9lqFktsw')]]},",
+  "n": 1
+ },
+ {
+  "t": "M_I9lqFktsw",
+  "file": "f_video.js",
+  "line": 34,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: houpačka, jak začít',ABS,YT('fAdnN5h2XmU')],['en','Learning the Teeter – Seesaw','YouTube',YT('CHxJ7U4bnjY')],['en','Teach your dog the See-Saw',\"Zac & Lucy's agility\",YT('M_I9lqFktsw')]]},",
+  "n": 1
+ },
+ {
+  "t": "Kruh",
+  "file": "f_video.js",
+  "line": 35,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'tire',g:'Překážky',t:'Kruh',s:'Proskok středem',D:5,",
+  "n": 1
+ },
+ {
+  "t": "Proskok středem",
+  "file": "f_video.js",
+  "line": 35,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'tire',g:'Překážky',t:'Kruh',s:'Proskok středem',D:5,",
+  "n": 1
+ },
+ {
+  "t": "Rovný náběh na kruh",
+  "file": "f_video.js",
+  "line": 36,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Rovný náběh na kruh'],[.45,'Pes proskočí středem otvoru'],[.7,'Rozpadne-li se kruh při skoku, je to 5 trestných bodů']],",
+  "n": 1
+ },
+ {
+  "t": "Pes proskočí středem otvoru",
+  "file": "f_video.js",
+  "line": 36,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Rovný náběh na kruh'],[.45,'Pes proskočí středem otvoru'],[.7,'Rozpadne-li se kruh při skoku, je to 5 trestných bodů']],",
+  "n": 1
+ },
+ {
+  "t": "Rozpadne-li se kruh při skoku, je to 5 trestných bodů",
+  "file": "f_video.js",
+  "line": 36,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Rovný náběh na kruh'],[.45,'Pes proskočí středem otvoru'],[.7,'Rozpadne-li se kruh při skoku, je to 5 trestných bodů']],",
+  "n": 1
+ },
+ {
+  "t": "Začni s kruhem nízko, pes jím prochází za odměnou.",
+  "file": "f_video.js",
+  "line": 37,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s kruhem nízko, pes jím prochází za odměnou.','Postupně zvedej do výšky kategorie (střed kruhu u L je 80 cm).','Trénuj rovný náběh i náběh pod úhlem.','V parkuru smí být kruh jen jednou.'],",
+  "n": 1
+ },
+ {
+  "t": "Postupně zvedej do výšky kategorie (střed kruhu u L je 80 cm).",
+  "file": "f_video.js",
+  "line": 37,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s kruhem nízko, pes jím prochází za odměnou.','Postupně zvedej do výšky kategorie (střed kruhu u L je 80 cm).','Trénuj rovný náběh i náběh pod úhlem.','V parkuru smí být kruh jen jednou.'],",
+  "n": 1
+ },
+ {
+  "t": "Trénuj rovný náběh i náběh pod úhlem.",
+  "file": "f_video.js",
+  "line": 37,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s kruhem nízko, pes jím prochází za odměnou.','Postupně zvedej do výšky kategorie (střed kruhu u L je 80 cm).','Trénuj rovný náběh i náběh pod úhlem.','V parkuru smí být kruh jen jednou.'],",
+  "n": 1
+ },
+ {
+  "t": "V parkuru smí být kruh jen jednou.",
+  "file": "f_video.js",
+  "line": 37,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni s kruhem nízko, pes jím prochází za odměnou.','Postupně zvedej do výšky kategorie (střed kruhu u L je 80 cm).','Trénuj rovný náběh i náběh pod úhlem.','V parkuru smí být kruh jen jednou.'],",
+  "n": 1
+ },
+ {
+  "t": "Rozpadne-li se kruh při odmítnutí, je to diskvalifikace.",
+  "file": "f_video.js",
+  "line": 38,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Rozpadne-li se kruh při odmítnutí, je to diskvalifikace.'],",
+  "n": 1
+ },
+ {
+  "t": "Tire Jump Training",
+  "file": "f_video.js",
+  "line": 39,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Tire Jump Training','YouTube',YT('WiZvIwRHN2M')],['en','Tire Jump Agility Training','YouTube',YT('cmRnfQjMcE4')]]},",
+  "n": 1
+ },
+ {
+  "t": "WiZvIwRHN2M",
+  "file": "f_video.js",
+  "line": 39,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Tire Jump Training','YouTube',YT('WiZvIwRHN2M')],['en','Tire Jump Agility Training','YouTube',YT('cmRnfQjMcE4')]]},",
+  "n": 1
+ },
+ {
+  "t": "Tire Jump Agility Training",
+  "file": "f_video.js",
+  "line": 39,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Tire Jump Training','YouTube',YT('WiZvIwRHN2M')],['en','Tire Jump Agility Training','YouTube',YT('cmRnfQjMcE4')]]},",
+  "n": 1
+ },
+ {
+  "t": "cmRnfQjMcE4",
+  "file": "f_video.js",
+  "line": 39,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "v:[['en','Tire Jump Training','YouTube',YT('WiZvIwRHN2M')],['en','Tire Jump Agility Training','YouTube',YT('cmRnfQjMcE4')]]},",
+  "n": 1
+ },
+ {
+  "t": "Skok daleký",
+  "file": "f_video.js",
+  "line": 40,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'longjump',g:'Překážky',t:'Skok daleký',s:'Dlouhý plochý skok',D:5,",
+  "n": 1
+ },
+ {
+  "t": "Dlouhý plochý skok",
+  "file": "f_video.js",
+  "line": 40,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'longjump',g:'Překážky',t:'Skok daleký',s:'Dlouhý plochý skok',D:5,",
+  "n": 1
+ },
+ {
+  "t": "Náběh rovně na začátek",
+  "file": "f_video.js",
+  "line": 41,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Náběh rovně na začátek'],[.42,'Dlouhý plochý skok přes všechny díly'],[.72,'Proběhnutí nebo vyskočení do strany je odmítnutí']],",
+  "n": 1
+ },
+ {
+  "t": "Dlouhý plochý skok přes všechny díly",
+  "file": "f_video.js",
+  "line": 41,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Náběh rovně na začátek'],[.42,'Dlouhý plochý skok přes všechny díly'],[.72,'Proběhnutí nebo vyskočení do strany je odmítnutí']],",
+  "n": 1
+ },
+ {
+  "t": "Proběhnutí nebo vyskočení do strany je odmítnutí",
+  "file": "f_video.js",
+  "line": 41,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Náběh rovně na začátek'],[.42,'Dlouhý plochý skok přes všechny díly'],[.72,'Proběhnutí nebo vyskočení do strany je odmítnutí']],",
+  "n": 1
+ },
+ {
+  "t": "Začni se dvěma díly blízko sebe.",
+  "file": "f_video.js",
+  "line": 42,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni se dvěma díly blízko sebe.','Někteří trenéři zpočátku dávají nad díly laťku, aby pes skákal obloukem.','Postupně přidávej díly a délku podle kategorie (L 120–150 cm).','Trénuj hlavně rovný náběh.'],",
+  "n": 1
+ },
+ {
+  "t": "Někteří trenéři zpočátku dávají nad díly laťku, aby pes skákal obloukem.",
+  "file": "f_video.js",
+  "line": 42,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni se dvěma díly blízko sebe.','Někteří trenéři zpočátku dávají nad díly laťku, aby pes skákal obloukem.','Postupně přidávej díly a délku podle kategorie (L 120–150 cm).','Trénuj hlavně rovný náběh.'],",
+  "n": 1
+ },
+ {
+  "t": "Postupně přidávej díly a délku podle kategorie (L 120–150 cm).",
+  "file": "f_video.js",
+  "line": 42,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni se dvěma díly blízko sebe.','Někteří trenéři zpočátku dávají nad díly laťku, aby pes skákal obloukem.','Postupně přidávej díly a délku podle kategorie (L 120–150 cm).','Trénuj hlavně rovný náběh.'],",
+  "n": 1
+ },
+ {
+  "t": "Trénuj hlavně rovný náběh.",
+  "file": "f_video.js",
+  "line": 42,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni se dvěma díly blízko sebe.','Někteří trenéři zpočátku dávají nad díly laťku, aby pes skákal obloukem.','Postupně přidávej díly a délku podle kategorie (L 120–150 cm).','Trénuj hlavně rovný náběh.'],",
+  "n": 1
+ },
+ {
+  "t": "Převrácení dílu je 5 trestných bodů.",
+  "file": "f_video.js",
+  "line": 43,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Převrácení dílu je 5 trestných bodů.','Rohové tyče nejsou součást překážky, jejich shození se netrestá.'],",
+  "n": 1
+ },
+ {
+  "t": "Rohové tyče nejsou součást překážky, jejich shození se netrestá.",
+  "file": "f_video.js",
+  "line": 43,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Převrácení dílu je 5 trestných bodů.','Rohové tyče nejsou součást překážky, jejich shození se netrestá.'],",
+  "n": 1
+ },
+ {
+  "t": "The Broad Jump",
+  "file": "f_video.js",
+  "line": 44,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','The Broad Jump','YouTube',YT('gbTSmI122T4')]]},",
+  "n": 1
+ },
+ {
+  "t": "gbTSmI122T4",
+  "file": "f_video.js",
+  "line": 44,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "v:[['en','The Broad Jump','YouTube',YT('gbTSmI122T4')]]},",
+  "n": 1
+ },
+ {
+  "t": "Vedení psa",
+  "file": "f_video.js",
+  "line": 45,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'front',g:'Vedení psa',t:'Čelo (front cross)',s:'Změna strany čelem k psovi',D:8,",
+  "n": 7
+ },
+ {
+  "t": "Čelo (front cross)",
+  "file": "f_video.js",
+  "line": 45,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'front',g:'Vedení psa',t:'Čelo (front cross)',s:'Změna strany čelem k psovi',D:8,",
+  "n": 1
+ },
+ {
+  "t": "Změna strany čelem k psovi",
+  "file": "f_video.js",
+  "line": 45,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'front',g:'Vedení psa',t:'Čelo (front cross)',s:'Změna strany čelem k psovi',D:8,",
+  "n": 1
+ },
+ {
+  "t": "Pes běží po levé straně psovoda",
+  "file": "f_video.js",
+  "line": 46,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží po levé straně psovoda'],[.25,'Psovod předběhne psa a dostane se před jeho dráhu'],[.38,'Otočí se čelem k psovi a přejde na druhou stranu'],[.58,'Pes je teď vpravo a točí se k překážce 3'],[.8,'Pokračují společně k další p",
+  "n": 2
+ },
+ {
+  "t": "Psovod předběhne psa a dostane se před jeho dráhu",
+  "file": "f_video.js",
+  "line": 46,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží po levé straně psovoda'],[.25,'Psovod předběhne psa a dostane se před jeho dráhu'],[.38,'Otočí se čelem k psovi a přejde na druhou stranu'],[.58,'Pes je teď vpravo a točí se k překážce 3'],[.8,'Pokračují společně k další p",
+  "n": 1
+ },
+ {
+  "t": "Otočí se čelem k psovi a přejde na druhou stranu",
+  "file": "f_video.js",
+  "line": 46,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží po levé straně psovoda'],[.25,'Psovod předběhne psa a dostane se před jeho dráhu'],[.38,'Otočí se čelem k psovi a přejde na druhou stranu'],[.58,'Pes je teď vpravo a točí se k překážce 3'],[.8,'Pokračují společně k další p",
+  "n": 1
+ },
+ {
+  "t": "Pes je teď vpravo a točí se k překážce 3",
+  "file": "f_video.js",
+  "line": 46,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží po levé straně psovoda'],[.25,'Psovod předběhne psa a dostane se před jeho dráhu'],[.38,'Otočí se čelem k psovi a přejde na druhou stranu'],[.58,'Pes je teď vpravo a točí se k překážce 3'],[.8,'Pokračují společně k další p",
+  "n": 1
+ },
+ {
+  "t": "Pokračují společně k další překážce",
+  "file": "f_video.js",
+  "line": 46,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží po levé straně psovoda'],[.25,'Psovod předběhne psa a dostane se před jeho dráhu'],[.38,'Otočí se čelem k psovi a přejde na druhou stranu'],[.58,'Pes je teď vpravo a točí se k překážce 3'],[.8,'Pokračují společně k další p",
+  "n": 1
+ },
+ {
+  "t": "Nejdřív si dráhu projdi bez psa: kudy půjdeš a kde se otočíš.",
+  "file": "f_video.js",
+  "line": 47,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Nejdřív si dráhu projdi bez psa: kudy půjdeš a kde se otočíš.','Otoč se čelem k psovi v místě, kde má pes změnit stranu.','Po otočce psa hned veď k další překážce.','Začni pomalu na dvou skocích a postupně zrychluj.'],",
+  "n": 1
+ },
+ {
+  "t": "Otoč se čelem k psovi v místě, kde má pes změnit stranu.",
+  "file": "f_video.js",
+  "line": 47,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Nejdřív si dráhu projdi bez psa: kudy půjdeš a kde se otočíš.','Otoč se čelem k psovi v místě, kde má pes změnit stranu.','Po otočce psa hned veď k další překážce.','Začni pomalu na dvou skocích a postupně zrychluj.'],",
+  "n": 1
+ },
+ {
+  "t": "Po otočce psa hned veď k další překážce.",
+  "file": "f_video.js",
+  "line": 47,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Nejdřív si dráhu projdi bez psa: kudy půjdeš a kde se otočíš.','Otoč se čelem k psovi v místě, kde má pes změnit stranu.','Po otočce psa hned veď k další překážce.','Začni pomalu na dvou skocích a postupně zrychluj.'],",
+  "n": 1
+ },
+ {
+  "t": "Začni pomalu na dvou skocích a postupně zrychluj.",
+  "file": "f_video.js",
+  "line": 47,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Nejdřív si dráhu projdi bez psa: kudy půjdeš a kde se otočíš.','Otoč se čelem k psovi v místě, kde má pes změnit stranu.','Po otočce psa hned veď k další překážce.','Začni pomalu na dvou skocích a postupně zrychluj.'],",
+  "n": 1
+ },
+ {
+  "t": "Na čelo musíš psa předběhnout, jinak otočku nestihneš.",
+  "file": "f_video.js",
+  "line": 48,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Na čelo musíš psa předběhnout, jinak otočku nestihneš.','Pes musí vidět tvůj obličej a ramena.'],",
+  "n": 1
+ },
+ {
+  "t": "Pes musí vidět tvůj obličej a ramena.",
+  "file": "f_video.js",
+  "line": 48,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Na čelo musíš psa předběhnout, jinak otočku nestihneš.','Pes musí vidět tvůj obličej a ramena.'],",
+  "n": 1
+ },
+ {
+  "t": "Doma se psem: handling, čelo",
+  "file": "f_video.js",
+  "line": 49,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: handling, čelo',ABS,YT('-yduvVb5-50')],['en','Front and Rear Cross – základy','YouTube',YT('k-ANyPtCc4c')],['en','Front, blind a rear cross: jaký je rozdíl?','YouTube',YT('XOumJYkARv8')]]},",
+  "n": 1
+ },
+ {
+  "t": "-yduvVb5-50",
+  "file": "f_video.js",
+  "line": 49,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "v:[['cz','Doma se psem: handling, čelo',ABS,YT('-yduvVb5-50')],['en','Front and Rear Cross – základy','YouTube',YT('k-ANyPtCc4c')],['en','Front, blind a rear cross: jaký je rozdíl?','YouTube',YT('XOumJYkARv8')]]},",
+  "n": 1
+ },
+ {
+  "t": "Front and Rear Cross – základy",
+  "file": "f_video.js",
+  "line": 49,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: handling, čelo',ABS,YT('-yduvVb5-50')],['en','Front and Rear Cross – základy','YouTube',YT('k-ANyPtCc4c')],['en','Front, blind a rear cross: jaký je rozdíl?','YouTube',YT('XOumJYkARv8')]]},",
+  "n": 2
+ },
+ {
+  "t": "Front, blind a rear cross: jaký je rozdíl?",
+  "file": "f_video.js",
+  "line": 49,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: handling, čelo',ABS,YT('-yduvVb5-50')],['en','Front and Rear Cross – základy','YouTube',YT('k-ANyPtCc4c')],['en','Front, blind a rear cross: jaký je rozdíl?','YouTube',YT('XOumJYkARv8')]]},",
+  "n": 3
+ },
+ {
+  "t": "XOumJYkARv8",
+  "file": "f_video.js",
+  "line": 49,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: handling, čelo',ABS,YT('-yduvVb5-50')],['en','Front and Rear Cross – základy','YouTube',YT('k-ANyPtCc4c')],['en','Front, blind a rear cross: jaký je rozdíl?','YouTube',YT('XOumJYkARv8')]]},",
+  "n": 3
+ },
+ {
+  "t": "Záda (rear cross)",
+  "file": "f_video.js",
+  "line": 50,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'rear',g:'Vedení psa',t:'Záda (rear cross)',s:'Přeběhnutí za psem',D:8,",
+  "n": 1
+ },
+ {
+  "t": "Přeběhnutí za psem",
+  "file": "f_video.js",
+  "line": 50,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'rear',g:'Vedení psa',t:'Záda (rear cross)',s:'Přeběhnutí za psem',D:8,",
+  "n": 1
+ },
+ {
+  "t": "Pes běží před psovodem po jeho levé straně",
+  "file": "f_video.js",
+  "line": 51,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží před psovodem po jeho levé straně'],[.3,'Psovod pošle psa dopředu na překážku 2'],[.48,'Přeběhne za psem na druhou stranu'],[.62,'Pes se po skoku stočí na novou stranu psovoda'],[.82,'Pokračují k překážce 3']],",
+  "n": 1
+ },
+ {
+  "t": "Psovod pošle psa dopředu na překážku 2",
+  "file": "f_video.js",
+  "line": 51,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží před psovodem po jeho levé straně'],[.3,'Psovod pošle psa dopředu na překážku 2'],[.48,'Přeběhne za psem na druhou stranu'],[.62,'Pes se po skoku stočí na novou stranu psovoda'],[.82,'Pokračují k překážce 3']],",
+  "n": 1
+ },
+ {
+  "t": "Přeběhne za psem na druhou stranu",
+  "file": "f_video.js",
+  "line": 51,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží před psovodem po jeho levé straně'],[.3,'Psovod pošle psa dopředu na překážku 2'],[.48,'Přeběhne za psem na druhou stranu'],[.62,'Pes se po skoku stočí na novou stranu psovoda'],[.82,'Pokračují k překážce 3']],",
+  "n": 1
+ },
+ {
+  "t": "Pes se po skoku stočí na novou stranu psovoda",
+  "file": "f_video.js",
+  "line": 51,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží před psovodem po jeho levé straně'],[.3,'Psovod pošle psa dopředu na překážku 2'],[.48,'Přeběhne za psem na druhou stranu'],[.62,'Pes se po skoku stočí na novou stranu psovoda'],[.82,'Pokračují k překážce 3']],",
+  "n": 1
+ },
+ {
+  "t": "Pokračují k překážce 3",
+  "file": "f_video.js",
+  "line": 51,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží před psovodem po jeho levé straně'],[.3,'Psovod pošle psa dopředu na překážku 2'],[.48,'Přeběhne za psem na druhou stranu'],[.62,'Pes se po skoku stočí na novou stranu psovoda'],[.82,'Pokračují k překážce 3']],",
+  "n": 1
+ },
+ {
+  "t": "Pes musí umět jít na překážku sám dopředu.",
+  "file": "f_video.js",
+  "line": 52,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Pes musí umět jít na překážku sám dopředu.','Zůstaň za psem a přejdi za ním na druhou stranu, když už míří na překážku.','Pes se po překážce otočí na tvou novou stranu.','Nacvič na jednom skoku s odměnou za správné otočení.'],",
+  "n": 1
+ },
+ {
+  "t": "Zůstaň za psem a přejdi za ním na druhou stranu, když už míří na překážku.",
+  "file": "f_video.js",
+  "line": 52,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Pes musí umět jít na překážku sám dopředu.','Zůstaň za psem a přejdi za ním na druhou stranu, když už míří na překážku.','Pes se po překážce otočí na tvou novou stranu.','Nacvič na jednom skoku s odměnou za správné otočení.'],",
+  "n": 1
+ },
+ {
+  "t": "Pes se po překážce otočí na tvou novou stranu.",
+  "file": "f_video.js",
+  "line": 52,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Pes musí umět jít na překážku sám dopředu.','Zůstaň za psem a přejdi za ním na druhou stranu, když už míří na překážku.','Pes se po překážce otočí na tvou novou stranu.','Nacvič na jednom skoku s odměnou za správné otočení.'],",
+  "n": 1
+ },
+ {
+  "t": "Nacvič na jednom skoku s odměnou za správné otočení.",
+  "file": "f_video.js",
+  "line": 52,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Pes musí umět jít na překážku sám dopředu.','Zůstaň za psem a přejdi za ním na druhou stranu, když už míří na překážku.','Pes se po překážce otočí na tvou novou stranu.','Nacvič na jednom skoku s odměnou za správné otočení.'],",
+  "n": 1
+ },
+ {
+  "t": "Příliš brzký přechod pes chápe jako změnu směru ještě před překážkou.",
+  "file": "f_video.js",
+  "line": 53,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Příliš brzký přechod pes chápe jako změnu směru ještě před překážkou.','Záda se hodí, když psa nestíháš předběhnout.'],",
+  "n": 1
+ },
+ {
+  "t": "Záda se hodí, když psa nestíháš předběhnout.",
+  "file": "f_video.js",
+  "line": 53,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Příliš brzký přechod pes chápe jako změnu směru ještě před překážkou.','Záda se hodí, když psa nestíháš předběhnout.'],",
+  "n": 1
+ },
+ {
+  "t": "Doma se psem: outy (práce na dálku)",
+  "file": "f_video.js",
+  "line": 54,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Front and Rear Cross – základy','YouTube',YT('k-ANyPtCc4c')],['en','Front, blind a rear cross: jaký je rozdíl?','YouTube',YT('XOumJYkARv8')],['cz','Doma se psem: outy (práce na dálku)',ABS,YT('hzDQPrk5gT4')]]},",
+  "n": 1
+ },
+ {
+  "t": "hzDQPrk5gT4",
+  "file": "f_video.js",
+  "line": 54,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "v:[['en','Front and Rear Cross – základy','YouTube',YT('k-ANyPtCc4c')],['en','Front, blind a rear cross: jaký je rozdíl?','YouTube',YT('XOumJYkARv8')],['cz','Doma se psem: outy (práce na dálku)',ABS,YT('hzDQPrk5gT4')]]},",
+  "n": 1
+ },
+ {
+  "t": "Blind (blind cross)",
+  "file": "f_video.js",
+  "line": 55,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'blind',g:'Vedení psa',t:'Blind (blind cross)',s:'Změna strany zády k psovi',D:8,",
+  "n": 1
+ },
+ {
+  "t": "Změna strany zády k psovi",
+  "file": "f_video.js",
+  "line": 55,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'blind',g:'Vedení psa',t:'Blind (blind cross)',s:'Změna strany zády k psovi',D:8,",
+  "n": 1
+ },
+ {
+  "t": "Psovod je před psem a běží dál",
+  "file": "f_video.js",
+  "line": 56,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží po levé straně psovoda'],[.25,'Psovod je před psem a běží dál'],[.38,'Na okamžik se k psovi otočí zády a přejde na druhou stranu'],[.58,'Hned se ohlédne přes druhé rameno, pes je vpravo'],[.8,'Pokračují k další překážce']]",
+  "n": 1
+ },
+ {
+  "t": "Na okamžik se k psovi otočí zády a přejde na druhou stranu",
+  "file": "f_video.js",
+  "line": 56,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží po levé straně psovoda'],[.25,'Psovod je před psem a běží dál'],[.38,'Na okamžik se k psovi otočí zády a přejde na druhou stranu'],[.58,'Hned se ohlédne přes druhé rameno, pes je vpravo'],[.8,'Pokračují k další překážce']]",
+  "n": 1
+ },
+ {
+  "t": "Hned se ohlédne přes druhé rameno, pes je vpravo",
+  "file": "f_video.js",
+  "line": 56,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží po levé straně psovoda'],[.25,'Psovod je před psem a běží dál'],[.38,'Na okamžik se k psovi otočí zády a přejde na druhou stranu'],[.58,'Hned se ohlédne přes druhé rameno, pes je vpravo'],[.8,'Pokračují k další překážce']]",
+  "n": 1
+ },
+ {
+  "t": "Pokračují k další překážce",
+  "file": "f_video.js",
+  "line": 56,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží po levé straně psovoda'],[.25,'Psovod je před psem a běží dál'],[.38,'Na okamžik se k psovi otočí zády a přejde na druhou stranu'],[.58,'Hned se ohlédne přes druhé rameno, pes je vpravo'],[.8,'Pokračují k další překážce']]",
+  "n": 1
+ },
+ {
+  "t": "Jsi před psem a běžíš od něj.",
+  "file": "f_video.js",
+  "line": 57,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Jsi před psem a běžíš od něj.','Na okamžik se k psovi otoč zády a přejdi na jeho druhou stranu.','Hned se po něm ohlédni přes druhé rameno.','Hodí se tam, kde potřebuješ zůstat v pohybu dopředu.'],",
+  "n": 1
+ },
+ {
+  "t": "Na okamžik se k psovi otoč zády a přejdi na jeho druhou stranu.",
+  "file": "f_video.js",
+  "line": 57,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Jsi před psem a běžíš od něj.','Na okamžik se k psovi otoč zády a přejdi na jeho druhou stranu.','Hned se po něm ohlédni přes druhé rameno.','Hodí se tam, kde potřebuješ zůstat v pohybu dopředu.'],",
+  "n": 1
+ },
+ {
+  "t": "Hned se po něm ohlédni přes druhé rameno.",
+  "file": "f_video.js",
+  "line": 57,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Jsi před psem a běžíš od něj.','Na okamžik se k psovi otoč zády a přejdi na jeho druhou stranu.','Hned se po něm ohlédni přes druhé rameno.','Hodí se tam, kde potřebuješ zůstat v pohybu dopředu.'],",
+  "n": 1
+ },
+ {
+  "t": "Hodí se tam, kde potřebuješ zůstat v pohybu dopředu.",
+  "file": "f_video.js",
+  "line": 57,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Jsi před psem a běžíš od něj.','Na okamžik se k psovi otoč zády a přejdi na jeho druhou stranu.','Hned se po něm ohlédni přes druhé rameno.','Hodí se tam, kde potřebuješ zůstat v pohybu dopředu.'],",
+  "n": 1
+ },
+ {
+  "t": "Blind je rychlý, ale potřebuješ náskok před psem.",
+  "file": "f_video.js",
+  "line": 58,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Blind je rychlý, ale potřebuješ náskok před psem.','Psa při něm krátce nevidíš, trasu musíš mít jistou.'],",
+  "n": 1
+ },
+ {
+  "t": "Psa při něm krátce nevidíš, trasu musíš mít jistou.",
+  "file": "f_video.js",
+  "line": 58,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Blind je rychlý, ale potřebuješ náskok před psem.','Psa při něm krátce nevidíš, trasu musíš mít jistou.'],",
+  "n": 1
+ },
+ {
+  "t": "Blind Cross Agility Handling Technique",
+  "file": "f_video.js",
+  "line": 59,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Blind Cross Agility Handling Technique','YouTube',YT('Tf2jN41j2B8')],['en','Front, blind a rear cross: jaký je rozdíl?','YouTube',YT('XOumJYkARv8')]]},",
+  "n": 1
+ },
+ {
+  "t": "Tf2jN41j2B8",
+  "file": "f_video.js",
+  "line": 59,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','Blind Cross Agility Handling Technique','YouTube',YT('Tf2jN41j2B8')],['en','Front, blind a rear cross: jaký je rozdíl?','YouTube',YT('XOumJYkARv8')]]},",
+  "n": 1
+ },
+ {
+  "t": "Otočka vnitřkem (vlásenka)",
+  "file": "f_video.js",
+  "line": 60,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'wrap',g:'Vedení psa',t:'Otočka vnitřkem (vlásenka)',s:'Kolem křídla k psovodovi',D:7,",
+  "n": 1
+ },
+ {
+  "t": "Kolem křídla k psovodovi",
+  "file": "f_video.js",
+  "line": 60,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'wrap',g:'Vedení psa',t:'Otočka vnitřkem (vlásenka)',s:'Kolem křídla k psovodovi',D:7,",
+  "n": 1
+ },
+ {
+  "t": "Psovod je vpravo od psa, pes skáče rovně přes laťku",
+  "file": "f_video.js",
+  "line": 61,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Psovod je vpravo od psa, pes skáče rovně přes laťku'],[.42,'Hned za laťkou se otočí o 180° kolem křídla'],[.58,'Otočka vnitřkem: pes se točí směrem k psovodovi'],[.8,'Psovod mu pomáhá pozicí těla a přivoláním']],",
+  "n": 2
+ },
+ {
+  "t": "Hned za laťkou se otočí o 180° kolem křídla",
+  "file": "f_video.js",
+  "line": 61,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Psovod je vpravo od psa, pes skáče rovně přes laťku'],[.42,'Hned za laťkou se otočí o 180° kolem křídla'],[.58,'Otočka vnitřkem: pes se točí směrem k psovodovi'],[.8,'Psovod mu pomáhá pozicí těla a přivoláním']],",
+  "n": 1
+ },
+ {
+  "t": "Otočka vnitřkem: pes se točí směrem k psovodovi",
+  "file": "f_video.js",
+  "line": 61,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Psovod je vpravo od psa, pes skáče rovně přes laťku'],[.42,'Hned za laťkou se otočí o 180° kolem křídla'],[.58,'Otočka vnitřkem: pes se točí směrem k psovodovi'],[.8,'Psovod mu pomáhá pozicí těla a přivoláním']],",
+  "n": 1
+ },
+ {
+  "t": "Psovod mu pomáhá pozicí těla a přivoláním",
+  "file": "f_video.js",
+  "line": 61,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Psovod je vpravo od psa, pes skáče rovně přes laťku'],[.42,'Hned za laťkou se otočí o 180° kolem křídla'],[.58,'Otočka vnitřkem: pes se točí směrem k psovodovi'],[.8,'Psovod mu pomáhá pozicí těla a přivoláním']],",
+  "n": 1
+ },
+ {
+  "t": "Na jednom skoku nauč psa obtočit křídlo zpět k tobě.",
+  "file": "f_video.js",
+  "line": 62,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Na jednom skoku nauč psa obtočit křídlo zpět k tobě.','Odměňuj hned za křídlem u tvé nohy.','Nacvič otočku z obou stran, doleva i doprava.','Pro otočku vnitřkem a venkem používej dva různé povely.'],",
+  "n": 1
+ },
+ {
+  "t": "Odměňuj hned za křídlem u tvé nohy.",
+  "file": "f_video.js",
+  "line": 62,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Na jednom skoku nauč psa obtočit křídlo zpět k tobě.','Odměňuj hned za křídlem u tvé nohy.','Nacvič otočku z obou stran, doleva i doprava.','Pro otočku vnitřkem a venkem používej dva různé povely.'],",
+  "n": 1
+ },
+ {
+  "t": "Nacvič otočku z obou stran, doleva i doprava.",
+  "file": "f_video.js",
+  "line": 62,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Na jednom skoku nauč psa obtočit křídlo zpět k tobě.','Odměňuj hned za křídlem u tvé nohy.','Nacvič otočku z obou stran, doleva i doprava.','Pro otočku vnitřkem a venkem používej dva různé povely.'],",
+  "n": 1
+ },
+ {
+  "t": "Pro otočku vnitřkem a venkem používej dva různé povely.",
+  "file": "f_video.js",
+  "line": 62,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Na jednom skoku nauč psa obtočit křídlo zpět k tobě.','Odměňuj hned za křídlem u tvé nohy.','Nacvič otočku z obou stran, doleva i doprava.','Pro otočku vnitřkem a venkem používej dva různé povely.'],",
+  "n": 1
+ },
+ {
+  "t": "Čím dřív pes otočku pozná, tím kratší bude jeho dráha.",
+  "file": "f_video.js",
+  "line": 63,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Čím dřív pes otočku pozná, tím kratší bude jeho dráha.','V Plánu se otočka ukáže jako smyčka dráhy kolem křídla. Nastavíš ji u skoku v seznamu Pořadí překážek.'],",
+  "n": 1
+ },
+ {
+  "t": "V Plánu se otočka ukáže jako smyčka dráhy kolem křídla. Nastavíš ji u skoku v seznamu Pořadí překážek.",
+  "file": "f_video.js",
+  "line": 63,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Čím dřív pes otočku pozná, tím kratší bude jeho dráha.','V Plánu se otočka ukáže jako smyčka dráhy kolem křídla. Nastavíš ji u skoku v seznamu Pořadí překážek.'],",
+  "n": 1
+ },
+ {
+  "t": "Doma se psem: vlásenkovka",
+  "file": "f_video.js",
+  "line": 64,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: vlásenkovka',ABS,YT('FLXFPkvB9Z4')],['cz','Doma se psem: vlásenkovka II',ABS,YT('37uPQ63sGrc')],['en','Agility Jump Wrap Handling Techniques','YouTube',YT('xKS6UylV9t4')]]},",
+  "n": 1
+ },
+ {
+  "t": "FLXFPkvB9Z4",
+  "file": "f_video.js",
+  "line": 64,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: vlásenkovka',ABS,YT('FLXFPkvB9Z4')],['cz','Doma se psem: vlásenkovka II',ABS,YT('37uPQ63sGrc')],['en','Agility Jump Wrap Handling Techniques','YouTube',YT('xKS6UylV9t4')]]},",
+  "n": 1
+ },
+ {
+  "t": "Doma se psem: vlásenkovka II",
+  "file": "f_video.js",
+  "line": 64,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: vlásenkovka',ABS,YT('FLXFPkvB9Z4')],['cz','Doma se psem: vlásenkovka II',ABS,YT('37uPQ63sGrc')],['en','Agility Jump Wrap Handling Techniques','YouTube',YT('xKS6UylV9t4')]]},",
+  "n": 1
+ },
+ {
+  "t": "37uPQ63sGrc",
+  "file": "f_video.js",
+  "line": 64,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "v:[['cz','Doma se psem: vlásenkovka',ABS,YT('FLXFPkvB9Z4')],['cz','Doma se psem: vlásenkovka II',ABS,YT('37uPQ63sGrc')],['en','Agility Jump Wrap Handling Techniques','YouTube',YT('xKS6UylV9t4')]]},",
+  "n": 1
+ },
+ {
+  "t": "Agility Jump Wrap Handling Techniques",
+  "file": "f_video.js",
+  "line": 64,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: vlásenkovka',ABS,YT('FLXFPkvB9Z4')],['cz','Doma se psem: vlásenkovka II',ABS,YT('37uPQ63sGrc')],['en','Agility Jump Wrap Handling Techniques','YouTube',YT('xKS6UylV9t4')]]},",
+  "n": 2
+ },
+ {
+  "t": "xKS6UylV9t4",
+  "file": "f_video.js",
+  "line": 64,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "v:[['cz','Doma se psem: vlásenkovka',ABS,YT('FLXFPkvB9Z4')],['cz','Doma se psem: vlásenkovka II',ABS,YT('37uPQ63sGrc')],['en','Agility Jump Wrap Handling Techniques','YouTube',YT('xKS6UylV9t4')]]},",
+  "n": 2
+ },
+ {
+  "t": "Otočka venkem (topspin)",
+  "file": "f_video.js",
+  "line": 65,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'spin',g:'Vedení psa',t:'Otočka venkem (topspin)',s:'Kolem křídla od psovoda',D:7,",
+  "n": 1
+ },
+ {
+  "t": "Kolem křídla od psovoda",
+  "file": "f_video.js",
+  "line": 65,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'spin',g:'Vedení psa',t:'Otočka venkem (topspin)',s:'Kolem křídla od psovoda',D:7,",
+  "n": 1
+ },
+ {
+  "t": "Za laťkou se pes otočí kolem druhého křídla",
+  "file": "f_video.js",
+  "line": 66,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Psovod je vpravo od psa, pes skáče rovně přes laťku'],[.45,'Za laťkou se pes otočí kolem druhého křídla'],[.6,'Otočka venkem: pes se točí pryč od psovoda'],[.78,'Pak se vrací k psovodovi a pokračují dál']],",
+  "n": 1
+ },
+ {
+  "t": "Otočka venkem: pes se točí pryč od psovoda",
+  "file": "f_video.js",
+  "line": 66,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Psovod je vpravo od psa, pes skáče rovně přes laťku'],[.45,'Za laťkou se pes otočí kolem druhého křídla'],[.6,'Otočka venkem: pes se točí pryč od psovoda'],[.78,'Pak se vrací k psovodovi a pokračují dál']],",
+  "n": 1
+ },
+ {
+  "t": "Pak se vrací k psovodovi a pokračují dál",
+  "file": "f_video.js",
+  "line": 66,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Psovod je vpravo od psa, pes skáče rovně přes laťku'],[.45,'Za laťkou se pes otočí kolem druhého křídla'],[.6,'Otočka venkem: pes se točí pryč od psovoda'],[.78,'Pak se vrací k psovodovi a pokračují dál']],",
+  "n": 1
+ },
+ {
+  "t": "Na jednom skoku nauč psa otočit se kolem křídla směrem od tebe.",
+  "file": "f_video.js",
+  "line": 67,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Na jednom skoku nauč psa otočit se kolem křídla směrem od tebe.','Začni s odměnou hozenou za křídlo na tu stranu, kam se má pes točit.','Přidej vlastní povel, jiný než pro otočku vnitřkem.','Trénuj z obou stran a pak v krátkých sekv",
+  "n": 1
+ },
+ {
+  "t": "Začni s odměnou hozenou za křídlo na tu stranu, kam se má pes točit.",
+  "file": "f_video.js",
+  "line": 67,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Na jednom skoku nauč psa otočit se kolem křídla směrem od tebe.','Začni s odměnou hozenou za křídlo na tu stranu, kam se má pes točit.','Přidej vlastní povel, jiný než pro otočku vnitřkem.','Trénuj z obou stran a pak v krátkých sekv",
+  "n": 1
+ },
+ {
+  "t": "Přidej vlastní povel, jiný než pro otočku vnitřkem.",
+  "file": "f_video.js",
+  "line": 67,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Na jednom skoku nauč psa otočit se kolem křídla směrem od tebe.','Začni s odměnou hozenou za křídlo na tu stranu, kam se má pes točit.','Přidej vlastní povel, jiný než pro otočku vnitřkem.','Trénuj z obou stran a pak v krátkých sekv",
+  "n": 1
+ },
+ {
+  "t": "Trénuj z obou stran a pak v krátkých sekvencích z generátoru (Otočky kolem křídla).",
+  "file": "f_video.js",
+  "line": 67,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Na jednom skoku nauč psa otočit se kolem křídla směrem od tebe.','Začni s odměnou hozenou za křídlo na tu stranu, kam se má pes točit.','Přidej vlastní povel, jiný než pro otočku vnitřkem.','Trénuj z obou stran a pak v krátkých sekv",
+  "n": 1
+ },
+ {
+  "t": "Otočka venkem se hodí, když psovod nestihne být na vnitřní straně otočky.",
+  "file": "f_video.js",
+  "line": 68,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Otočka venkem se hodí, když psovod nestihne být na vnitřní straně otočky.','Pes musí rozlišit povel pro otočku k tobě a od tebe, jinak se otočí na špatnou stranu.'],",
+  "n": 1
+ },
+ {
+  "t": "Pes musí rozlišit povel pro otočku k tobě a od tebe, jinak se otočí na špatnou stranu.",
+  "file": "f_video.js",
+  "line": 68,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Otočka venkem se hodí, když psovod nestihne být na vnitřní straně otočky.','Pes musí rozlišit povel pro otočku k tobě a od tebe, jinak se otočí na špatnou stranu.'],",
+  "n": 1
+ },
+ {
+  "t": "Doma se psem: topspin",
+  "file": "f_video.js",
+  "line": 69,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: topspin',ABS,YT('CMP4sbLTa_s')],['en','Agility Jump Wrap Handling Techniques','AgilityNerd',YT('xKS6UylV9t4')]]},",
+  "n": 1
+ },
+ {
+  "t": "CMP4sbLTa_s",
+  "file": "f_video.js",
+  "line": 69,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: topspin',ABS,YT('CMP4sbLTa_s')],['en','Agility Jump Wrap Handling Techniques','AgilityNerd',YT('xKS6UylV9t4')]]},",
+  "n": 1
+ },
+ {
+  "t": "AgilityNerd",
+  "file": "f_video.js",
+  "line": 69,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: topspin',ABS,YT('CMP4sbLTa_s')],['en','Agility Jump Wrap Handling Techniques','AgilityNerd',YT('xKS6UylV9t4')]]},",
+  "n": 1
+ },
+ {
+  "t": "Zadní strana skoku",
+  "file": "f_video.js",
+  "line": 70,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'backside',g:'Vedení psa',t:'Zadní strana skoku',s:'Oběhnutí křídla a skok zezadu',D:8,",
+  "n": 1
+ },
+ {
+  "t": "Oběhnutí křídla a skok zezadu",
+  "file": "f_video.js",
+  "line": 70,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'backside',g:'Vedení psa',t:'Zadní strana skoku',s:'Oběhnutí křídla a skok zezadu',D:8,",
+  "n": 1
+ },
+ {
+  "t": "Pes běží podél skoku, laťku zatím mine",
+  "file": "f_video.js",
+  "line": 71,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží podél skoku, laťku zatím mine'],[.45,'Za skokem oběhne křídlo'],[.62,'Skočí laťku ze zadní strany, zpátky směrem k psovodovi'],[.8,'Pokračuje k další překážce']],",
+  "n": 1
+ },
+ {
+  "t": "Za skokem oběhne křídlo",
+  "file": "f_video.js",
+  "line": 71,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží podél skoku, laťku zatím mine'],[.45,'Za skokem oběhne křídlo'],[.62,'Skočí laťku ze zadní strany, zpátky směrem k psovodovi'],[.8,'Pokračuje k další překážce']],",
+  "n": 1
+ },
+ {
+  "t": "Skočí laťku ze zadní strany, zpátky směrem k psovodovi",
+  "file": "f_video.js",
+  "line": 71,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží podél skoku, laťku zatím mine'],[.45,'Za skokem oběhne křídlo'],[.62,'Skočí laťku ze zadní strany, zpátky směrem k psovodovi'],[.8,'Pokračuje k další překážce']],",
+  "n": 1
+ },
+ {
+  "t": "Pokračuje k další překážce",
+  "file": "f_video.js",
+  "line": 71,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes běží podél skoku, laťku zatím mine'],[.45,'Za skokem oběhne křídlo'],[.62,'Skočí laťku ze zadní strany, zpátky směrem k psovodovi'],[.8,'Pokračuje k další překážce']],",
+  "n": 1
+ },
+ {
+  "t": "Začni u jednoho skoku: pes oběhne křídlo a skočí laťku směrem k tobě.",
+  "file": "f_video.js",
+  "line": 72,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni u jednoho skoku: pes oběhne křídlo a skočí laťku směrem k tobě.','Odměnu dávej za laťkou, ať pes zadní stranu hledá sám.','Postupně stůj dál a posílej psa na zadní stranu z různých úhlů.','V parkuru psovi zadní stranu ukaž vča",
+  "n": 1
+ },
+ {
+  "t": "Odměnu dávej za laťkou, ať pes zadní stranu hledá sám.",
+  "file": "f_video.js",
+  "line": 72,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni u jednoho skoku: pes oběhne křídlo a skočí laťku směrem k tobě.','Odměnu dávej za laťkou, ať pes zadní stranu hledá sám.','Postupně stůj dál a posílej psa na zadní stranu z různých úhlů.','V parkuru psovi zadní stranu ukaž vča",
+  "n": 1
+ },
+ {
+  "t": "Postupně stůj dál a posílej psa na zadní stranu z různých úhlů.",
+  "file": "f_video.js",
+  "line": 72,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni u jednoho skoku: pes oběhne křídlo a skočí laťku směrem k tobě.','Odměnu dávej za laťkou, ať pes zadní stranu hledá sám.','Postupně stůj dál a posílej psa na zadní stranu z různých úhlů.','V parkuru psovi zadní stranu ukaž vča",
+  "n": 1
+ },
+ {
+  "t": "V parkuru psovi zadní stranu ukaž včas, dřív než skočí přední stranu.",
+  "file": "f_video.js",
+  "line": 72,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Začni u jednoho skoku: pes oběhne křídlo a skočí laťku směrem k tobě.','Odměnu dávej za laťkou, ať pes zadní stranu hledá sám.','Postupně stůj dál a posílej psa na zadní stranu z různých úhlů.','V parkuru psovi zadní stranu ukaž vča",
+  "n": 1
+ },
+ {
+  "t": "Když pes skočí laťku z přední strany, bere překážku v opačném směru. Podle pravidel FCI je to diskvalifikace.",
+  "file": "f_video.js",
+  "line": 73,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Když pes skočí laťku z přední strany, bere překážku v opačném směru. Podle pravidel FCI je to diskvalifikace.','Generátor staví zadní strany v A2 a A3. Na trénink je najdeš v Generátoru sekvencí.'],",
+  "n": 1
+ },
+ {
+  "t": "Generátor staví zadní strany v A2 a A3. Na trénink je najdeš v Generátoru sekvencí.",
+  "file": "f_video.js",
+  "line": 73,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Když pes skočí laťku z přední strany, bere překážku v opačném směru. Podle pravidel FCI je to diskvalifikace.','Generátor staví zadní strany v A2 a A3. Na trénink je najdeš v Generátoru sekvencí.'],",
+  "n": 1
+ },
+ {
+  "t": "How to Train the Dog Agility Backside Jump",
+  "file": "f_video.js",
+  "line": 74,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','How to Train the Dog Agility Backside Jump','YouTube',YT('EymhwnPnVwg')],['en','Teaching the Backside Jump (trénink na zahradě)','YouTube',YT('-IDlWb6IaYU')],['en','3 Ways To Do A Backside In Dog Agility','YouTube',YT('kP3flpmPj60",
+  "n": 1
+ },
+ {
+  "t": "EymhwnPnVwg",
+  "file": "f_video.js",
+  "line": 74,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','How to Train the Dog Agility Backside Jump','YouTube',YT('EymhwnPnVwg')],['en','Teaching the Backside Jump (trénink na zahradě)','YouTube',YT('-IDlWb6IaYU')],['en','3 Ways To Do A Backside In Dog Agility','YouTube',YT('kP3flpmPj60",
+  "n": 1
+ },
+ {
+  "t": "Teaching the Backside Jump (trénink na zahradě)",
+  "file": "f_video.js",
+  "line": 74,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','How to Train the Dog Agility Backside Jump','YouTube',YT('EymhwnPnVwg')],['en','Teaching the Backside Jump (trénink na zahradě)','YouTube',YT('-IDlWb6IaYU')],['en','3 Ways To Do A Backside In Dog Agility','YouTube',YT('kP3flpmPj60",
+  "n": 1
+ },
+ {
+  "t": "-IDlWb6IaYU",
+  "file": "f_video.js",
+  "line": 74,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "v:[['en','How to Train the Dog Agility Backside Jump','YouTube',YT('EymhwnPnVwg')],['en','Teaching the Backside Jump (trénink na zahradě)','YouTube',YT('-IDlWb6IaYU')],['en','3 Ways To Do A Backside In Dog Agility','YouTube',YT('kP3flpmPj60",
+  "n": 1
+ },
+ {
+  "t": "3 Ways To Do A Backside In Dog Agility",
+  "file": "f_video.js",
+  "line": 74,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','How to Train the Dog Agility Backside Jump','YouTube',YT('EymhwnPnVwg')],['en','Teaching the Backside Jump (trénink na zahradě)','YouTube',YT('-IDlWb6IaYU')],['en','3 Ways To Do A Backside In Dog Agility','YouTube',YT('kP3flpmPj60",
+  "n": 1
+ },
+ {
+  "t": "kP3flpmPj60",
+  "file": "f_video.js",
+  "line": 74,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "v:[['en','How to Train the Dog Agility Backside Jump','YouTube',YT('EymhwnPnVwg')],['en','Teaching the Backside Jump (trénink na zahradě)','YouTube',YT('-IDlWb6IaYU')],['en','3 Ways To Do A Backside In Dog Agility','YouTube',YT('kP3flpmPj60",
+  "n": 1
+ },
+ {
+  "t": "Backside Jump Training Challenge",
+  "file": "f_video.js",
+  "line": 74,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','How to Train the Dog Agility Backside Jump','YouTube',YT('EymhwnPnVwg')],['en','Teaching the Backside Jump (trénink na zahradě)','YouTube',YT('-IDlWb6IaYU')],['en','3 Ways To Do A Backside In Dog Agility','YouTube',YT('kP3flpmPj60",
+  "n": 1
+ },
+ {
+  "t": "OneMind Dogs, video zdarma",
+  "file": "f_video.js",
+  "line": 74,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['en','How to Train the Dog Agility Backside Jump','YouTube',YT('EymhwnPnVwg')],['en','Teaching the Backside Jump (trénink na zahradě)','YouTube',YT('-IDlWb6IaYU')],['en','3 Ways To Do A Backside In Dog Agility','YouTube',YT('kP3flpmPj60",
+  "n": 1
+ },
+ {
+  "t": "Start a náskok",
+  "file": "f_video.js",
+  "line": 75,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'start',g:'Vedení psa',t:'Start a náskok',s:'Čekání a uvolnění',D:8,",
+  "n": 1
+ },
+ {
+  "t": "Čekání a uvolnění",
+  "file": "f_video.js",
+  "line": 75,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'start',g:'Vedení psa',t:'Start a náskok',s:'Čekání a uvolnění',D:8,",
+  "n": 1
+ },
+ {
+  "t": "Pes čeká v sedu nebo lehu za první překážkou",
+  "file": "f_video.js",
+  "line": 76,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes čeká v sedu nebo lehu za první překážkou'],[.12,'Psovod odchází dopředu (náskok)'],[.38,'Uvolnění povelem: pes vybíhá až na něj'],[.6,'Psovod už běží dál, pes ho dobíhá']],",
+  "n": 1
+ },
+ {
+  "t": "Psovod odchází dopředu (náskok)",
+  "file": "f_video.js",
+  "line": 76,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes čeká v sedu nebo lehu za první překážkou'],[.12,'Psovod odchází dopředu (náskok)'],[.38,'Uvolnění povelem: pes vybíhá až na něj'],[.6,'Psovod už běží dál, pes ho dobíhá']],",
+  "n": 1
+ },
+ {
+  "t": "Uvolnění povelem: pes vybíhá až na něj",
+  "file": "f_video.js",
+  "line": 76,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes čeká v sedu nebo lehu za první překážkou'],[.12,'Psovod odchází dopředu (náskok)'],[.38,'Uvolnění povelem: pes vybíhá až na něj'],[.6,'Psovod už běží dál, pes ho dobíhá']],",
+  "n": 1
+ },
+ {
+  "t": "Psovod už běží dál, pes ho dobíhá",
+  "file": "f_video.js",
+  "line": 76,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "cap:[[0,'Pes čeká v sedu nebo lehu za první překážkou'],[.12,'Psovod odchází dopředu (náskok)'],[.38,'Uvolnění povelem: pes vybíhá až na něj'],[.6,'Psovod už běží dál, pes ho dobíhá']],",
+  "n": 1
+ },
+ {
+  "t": "Nauč psa spolehlivě čekat za první překážkou.",
+  "file": "f_video.js",
+  "line": 77,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Nauč psa spolehlivě čekat za první překážkou.','Odcházej postupně dál a vracej se odměnit na místo.','Uvolňuj jen povelem, ne pohybem.','Náskok ti dá čas dostat se na dobré místo pro první změnu směru.'],",
+  "n": 1
+ },
+ {
+  "t": "Odcházej postupně dál a vracej se odměnit na místo.",
+  "file": "f_video.js",
+  "line": 77,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Nauč psa spolehlivě čekat za první překážkou.','Odcházej postupně dál a vracej se odměnit na místo.','Uvolňuj jen povelem, ne pohybem.','Náskok ti dá čas dostat se na dobré místo pro první změnu směru.'],",
+  "n": 1
+ },
+ {
+  "t": "Uvolňuj jen povelem, ne pohybem.",
+  "file": "f_video.js",
+  "line": 77,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Nauč psa spolehlivě čekat za první překážkou.','Odcházej postupně dál a vracej se odměnit na místo.','Uvolňuj jen povelem, ne pohybem.','Náskok ti dá čas dostat se na dobré místo pro první změnu směru.'],",
+  "n": 1
+ },
+ {
+  "t": "Náskok ti dá čas dostat se na dobré místo pro první změnu směru.",
+  "file": "f_video.js",
+  "line": 77,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Nauč psa spolehlivě čekat za první překážkou.','Odcházej postupně dál a vracej se odměnit na místo.','Uvolňuj jen povelem, ne pohybem.','Náskok ti dá čas dostat se na dobré místo pro první změnu směru.'],",
+  "n": 1
+ },
+ {
+  "t": "Pes, kterému projde vyběhnutí před povelem, bude vybíhat dál.",
+  "file": "f_video.js",
+  "line": 78,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Pes, kterému projde vyběhnutí před povelem, bude vybíhat dál.','Odměnu občas dones na místo, kde pes čeká.'],",
+  "n": 1
+ },
+ {
+  "t": "Odměnu občas dones na místo, kde pes čeká.",
+  "file": "f_video.js",
+  "line": 78,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Pes, kterému projde vyběhnutí před povelem, bude vybíhat dál.','Odměnu občas dones na místo, kde pes čeká.'],",
+  "n": 1
+ },
+ {
+  "t": "Doma se psem: velký náskok na startu",
+  "file": "f_video.js",
+  "line": 79,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: velký náskok na startu',ABS,YT('DO7RWtavdgs')]]},",
+  "n": 1
+ },
+ {
+  "t": "DO7RWtavdgs",
+  "file": "f_video.js",
+  "line": 79,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: velký náskok na startu',ABS,YT('DO7RWtavdgs')]]},",
+  "n": 1
+ },
+ {
+  "t": "Závody",
+  "file": "f_video.js",
+  "line": 80,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'comp',g:'Závody',t:'První závody',s:'Co připravit',",
+  "n": 1
+ },
+ {
+  "t": "První závody",
+  "file": "f_video.js",
+  "line": 80,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'comp',g:'Závody',t:'První závody',s:'Co připravit',",
+  "n": 1
+ },
+ {
+  "t": "Co připravit",
+  "file": "f_video.js",
+  "line": 80,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{id:'comp',g:'Závody',t:'První závody',s:'Co připravit',",
+  "n": 1
+ },
+ {
+  "t": "Vyřiď si výkonnostní průkaz (VP) s předstihem, doručení může trvat až 30 dní.",
+  "file": "f_video.js",
+  "line": 81,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Vyřiď si výkonnostní průkaz (VP) s předstihem, doručení může trvat až 30 dní.','Pes musí být starší 18 měsíců a čipovaný nebo tetovaný.','Přihlášky na závody v ČR jsou na kacr.info, začíná se v A0 (bez zón, slalomu a kruhu) nebo A1.",
+  "n": 1
+ },
+ {
+  "t": "Pes musí být starší 18 měsíců a čipovaný nebo tetovaný.",
+  "file": "f_video.js",
+  "line": 81,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Vyřiď si výkonnostní průkaz (VP) s předstihem, doručení může trvat až 30 dní.','Pes musí být starší 18 měsíců a čipovaný nebo tetovaný.','Přihlášky na závody v ČR jsou na kacr.info, začíná se v A0 (bez zón, slalomu a kruhu) nebo A1.",
+  "n": 1
+ },
+ {
+  "t": "Přihlášky na závody v ČR jsou na kacr.info, začíná se v A0 (bez zón, slalomu a kruhu) nebo A1.",
+  "file": "f_video.js",
+  "line": 81,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Vyřiď si výkonnostní průkaz (VP) s předstihem, doručení může trvat až 30 dní.','Pes musí být starší 18 měsíců a čipovaný nebo tetovaný.','Přihlášky na závody v ČR jsou na kacr.info, začíná se v A0 (bez zón, slalomu a kruhu) nebo A1.",
+  "n": 1
+ },
+ {
+  "t": "Nacvič s psem měření u rozhodčího, na prvních závodech se pes měří.",
+  "file": "f_video.js",
+  "line": 81,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Vyřiď si výkonnostní průkaz (VP) s předstihem, doručení může trvat až 30 dní.','Pes musí být starší 18 měsíců a čipovaný nebo tetovaný.','Přihlášky na závody v ČR jsou na kacr.info, začíná se v A0 (bez zón, slalomu a kruhu) nebo A1.",
+  "n": 1
+ },
+ {
+  "t": "Před během máš čas na prohlídku parkuru bez psa: zapamatuj si pořadí (pomůže Trénink paměti v Plánu).",
+  "file": "f_video.js",
+  "line": 81,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "steps:['Vyřiď si výkonnostní průkaz (VP) s předstihem, doručení může trvat až 30 dní.','Pes musí být starší 18 měsíců a čipovaný nebo tetovaný.','Přihlášky na závody v ČR jsou na kacr.info, začíná se v A0 (bez zón, slalomu a kruhu) nebo A1.",
+  "n": 1
+ },
+ {
+  "t": "Při běhu nesmí mít pes obojek a psovod nic v ruce.",
+  "file": "f_video.js",
+  "line": 82,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Při běhu nesmí mít pes obojek a psovod nic v ruce.','Hodnocení: 0–5,99 trestných bodů Výborně, 6–15,99 Velmi dobře, 16–25,99 Dobře, víc Bez ohodnocení.'],",
+  "n": 1
+ },
+ {
+  "t": "Hodnocení: 0–5,99 trestných bodů Výborně, 6–15,99 Velmi dobře, 16–25,99 Dobře, víc Bez ohodnocení.",
+  "file": "f_video.js",
+  "line": 82,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tips:['Při běhu nesmí mít pes obojek a psovod nic v ruce.','Hodnocení: 0–5,99 trestných bodů Výborně, 6–15,99 Velmi dobře, 16–25,99 Dobře, víc Bez ohodnocení.'],",
+  "n": 1
+ },
+ {
+  "t": "Doma se psem: měření psa na prvních závodech",
+  "file": "f_video.js",
+  "line": 83,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: měření psa na prvních závodech',ABS,YT('oePbfjAmrkY')],['cz','Přes překážky – agility (reportáž)','YouTube',YT('CE6YquH2xQs')],['cz','Kalendář a přihlášky na závody','kacr.info','https://kacr.info/']]}",
+  "n": 1
+ },
+ {
+  "t": "oePbfjAmrkY",
+  "file": "f_video.js",
+  "line": 83,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "v:[['cz','Doma se psem: měření psa na prvních závodech',ABS,YT('oePbfjAmrkY')],['cz','Přes překážky – agility (reportáž)','YouTube',YT('CE6YquH2xQs')],['cz','Kalendář a přihlášky na závody','kacr.info','https://kacr.info/']]}",
+  "n": 1
+ },
+ {
+  "t": "Přes překážky – agility (reportáž)",
+  "file": "f_video.js",
+  "line": 83,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: měření psa na prvních závodech',ABS,YT('oePbfjAmrkY')],['cz','Přes překážky – agility (reportáž)','YouTube',YT('CE6YquH2xQs')],['cz','Kalendář a přihlášky na závody','kacr.info','https://kacr.info/']]}",
+  "n": 1
+ },
+ {
+  "t": "CE6YquH2xQs",
+  "file": "f_video.js",
+  "line": 83,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: měření psa na prvních závodech',ABS,YT('oePbfjAmrkY')],['cz','Přes překážky – agility (reportáž)','YouTube',YT('CE6YquH2xQs')],['cz','Kalendář a přihlášky na závody','kacr.info','https://kacr.info/']]}",
+  "n": 1
+ },
+ {
+  "t": "Kalendář a přihlášky na závody",
+  "file": "f_video.js",
+  "line": 83,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "v:[['cz','Doma se psem: měření psa na prvních závodech',ABS,YT('oePbfjAmrkY')],['cz','Přes překážky – agility (reportáž)','YouTube',YT('CE6YquH2xQs')],['cz','Kalendář a přihlášky na závody','kacr.info','https://kacr.info/']]}",
+  "n": 1
+ },
+ {
+  "t": "Animace ukazují správnou techniku. U každého tématu je postup nácviku a vybraná videa trenérů, česká i zahraniční.",
+  "file": "f_video.js",
+  "line": 96,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "$('vidList').innerHTML='<p class=\"hint\">Animace ukazují správnou techniku. U každého tématu je postup nácviku a vybraná videa trenérů, česká i zahraniční.</p>'+",
+  "n": 1
+ },
+ {
+  "t": "Knihy",
+  "file": "f_video.js",
+  "line": 96,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "$('vidList').innerHTML='<p class=\"hint\">Animace ukazují správnou techniku. U každého tématu je postup nácviku a vybraná videa trenérů, česká i zahraniční.</p>'+",
+  "n": 1
+ },
+ {
+  "t": "{IC.back}Všechna témata",
+  "file": "f_video.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "d.innerHTML='<button class=\"btn backlink\" data-vback=\"1\">'+IC.back+'Všechna témata</button><h2>'+esc(t.t)+'</h2>'+",
+  "n": 4
+ },
+ {
+  "t": "Pauza",
+  "file": "f_video.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "d.innerHTML='<button class=\"btn backlink\" data-vback=\"1\">'+IC.back+'Všechna témata</button><h2>'+esc(t.t)+'</h2>'+",
+  "n": 3
+ },
+ {
+  "t": "Od začátku",
+  "file": "f_video.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "d.innerHTML='<button class=\"btn backlink\" data-vback=\"1\">'+IC.back+'Všechna témata</button><h2>'+esc(t.t)+'</h2>'+",
+  "n": 2
+ },
+ {
+  "t": "0,5×",
+  "file": "f_video.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "maybe",
+  "src": "d.innerHTML='<button class=\"btn backlink\" data-vback=\"1\">'+IC.back+'Všechna témata</button><h2>'+esc(t.t)+'</h2>'+",
+  "n": 2
+ },
+ {
+  "t": "1×",
+  "file": "f_video.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "maybe",
+  "src": "d.innerHTML='<button class=\"btn backlink\" data-vback=\"1\">'+IC.back+'Všechna témata</button><h2>'+esc(t.t)+'</h2>'+",
+  "n": 2
+ },
+ {
+  "t": "Jak na to",
+  "file": "f_video.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "d.innerHTML='<button class=\"btn backlink\" data-vback=\"1\">'+IC.back+'Všechna témata</button><h2>'+esc(t.t)+'</h2>'+",
+  "n": 4
+ },
+ {
+  "t": "Na co si dát pozor",
+  "file": "f_video.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "d.innerHTML='<button class=\"btn backlink\" data-vback=\"1\">'+IC.back+'Všechna témata</button><h2>'+esc(t.t)+'</h2>'+",
+  "n": 2
+ },
+ {
+  "t": "Videa a články",
+  "file": "f_video.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "d.innerHTML='<button class=\"btn backlink\" data-vback=\"1\">'+IC.back+'Všechna témata</button><h2>'+esc(t.t)+'</h2>'+",
+  "n": 4
+ },
+ {
+  "t": "Videa se otevřou v aplikaci YouTube nebo v prohlížeči.",
+  "file": "f_video.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "d.innerHTML='<button class=\"btn backlink\" data-vback=\"1\">'+IC.back+'Všechna témata</button><h2>'+esc(t.t)+'</h2>'+",
+  "n": 4
+ },
+ {
+  "t": "Přehrát",
+  "file": "f_video.js",
+  "line": 124,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "function pauseVid(){ var t=topicById(VID.id); if(VID.on&&t){VID.pos=(VID.pos+(performance.now()-VID.t0)/1000*VID.spd/t.D)%1;} VID.on=false; cancelAnimationFrame(VID.raf); frameVid(); var b=$('vPlay'); if(b) b.textContent='Přehrát'; }",
+  "n": 1
+ },
+ {
+  "t": "M{s.map(function(p){return p…}",
+  "file": "f_anim.js",
+  "line": 22,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "},d:'M'+s.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join('L')};",
+  "n": 1
+ },
+ {
+  "t": "laťka",
+  "file": "f_anim.js",
+  "line": 50,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return ground(42)+'<rect x=\"49.3\" y=\"30\" width=\"1.4\" height=\"12\" fill=\"#b8493c\" opacity=\".35\"/><rect x=\"48.8\" y=\"30\" width=\".6\" height=\"12\" fill=\"#b8493c\"/><circle cx=\"50\" cy=\"36\" r=\".9\" fill=\"#b8493c\"/>'+",
+  "n": 1
+ },
+ {
+  "t": "✓ zóna",
+  "file": "f_anim.js",
+  "line": 74,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return ground(42)+'<path d=\"M29,42L50,25L71,42\" fill=\"none\" stroke=\"#b8703a\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/>'+",
+  "n": 1
+ },
+ {
+  "t": "čeká",
+  "file": "f_anim.js",
+  "line": 98,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return ground(42)+'<path d=\"M47,42L50,36L53,42z\" fill=\"#c9527e\" opacity=\".6\"/><line x1=\"'+lx.toFixed(2)+'\" y1=\"'+ly.toFixed(2)+'\" x2=\"'+rx.toFixed(2)+'\" y2=\"'+ry.toFixed(2)+'\" stroke=\"#c9527e\" stroke-width=\"1.1\"/>'+z+",
+  "n": 1
+ },
+ {
+  "t": "Hop!",
+  "file": "f_anim.js",
+  "line": 126,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "extra:function(t,dp,hp){return t>.36&&t<.47?'<text x=\"'+hp.x.toFixed(1)+'\" y=\"'+(hp.y-3.5).toFixed(1)+'\" font-size=\"2.6\" text-anchor=\"middle\" font-weight=\"700\" fill=\"var(--accent)\">Hop!</text>':'';}})",
+  "n": 1
+ },
+ {
+  "t": "{m} měsíc",
+  "file": "k_start.js",
+  "line": 8,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "function ageTxt(m){ if(m==null) return ''; if(m<24) return m+' '+(m===1?'měsíc':m>=2&&m<=4?'měsíce':'měsíců'); var y=Math.floor(m/12); return y+' '+(y<5?'roky':'let'); }",
+  "n": 1
+ },
+ {
+  "t": "{m} měsíce",
+  "file": "k_start.js",
+  "line": 8,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "function ageTxt(m){ if(m==null) return ''; if(m<24) return m+' '+(m===1?'měsíc':m>=2&&m<=4?'měsíce':'měsíců'); var y=Math.floor(m/12); return y+' '+(y<5?'roky':'let'); }",
+  "n": 1
+ },
+ {
+  "t": "{m} měsíců",
+  "file": "k_start.js",
+  "line": 8,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "function ageTxt(m){ if(m==null) return ''; if(m<24) return m+' '+(m===1?'měsíc':m>=2&&m<=4?'měsíce':'měsíců'); var y=Math.floor(m/12); return y+' '+(y<5?'roky':'let'); }",
+  "n": 1
+ },
+ {
+  "t": "8–16 týdnů: hra a vztah",
+  "file": "k_start.js",
+  "line": 11,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{od:2,l:'8–16 týdnů: hra a vztah',t:'Jméno a přivolání, hra s pamlskem i přetahovadlem, cíl rukou, chůze u psovoda z obou stran. Různé povrchy, krátký rovný tunel stažený na metr, prkno těsně nad zemí, které se trochu hýbe. Lekce 3–5 minut ",
+  "n": 1
+ },
+ {
+  "t": "Jméno a přivolání, hra s pamlskem i přetahovadlem, cíl rukou, chůze u psovoda z obou stran. Různé povrchy, krátký rovný tunel stažený na metr, prkno těsně nad zemí, které se trochu hýbe. Lekce 3–5 minut několikrát denně.",
+  "file": "k_start.js",
+  "line": 11,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{od:2,l:'8–16 týdnů: hra a vztah',t:'Jméno a přivolání, hra s pamlskem i přetahovadlem, cíl rukou, chůze u psovoda z obou stran. Různé povrchy, krátký rovný tunel stažený na metr, prkno těsně nad zemí, které se trochu hýbe. Lekce 3–5 minut ",
+  "n": 1
+ },
+ {
+  "t": "4–6 měsíců: vedení bez překážek",
+  "file": "k_start.js",
+  "line": 12,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{od:4,l:'4–6 měsíců: vedení bez překážek',t:'Pes běží k odměně u levé i pravé nohy, obíhá kužel nebo tyč na obě strany (základ otoček kolem křídla), přední a zadní křížení na place. Tyčka ležící na zemi místo skoku, delší tunel i do oblouku",
+  "n": 1
+ },
+ {
+  "t": "Pes běží k odměně u levé i pravé nohy, obíhá kužel nebo tyč na obě strany (základ otoček kolem křídla), přední a zadní křížení na place. Tyčka ležící na zemi místo skoku, delší tunel i do oblouku. Cíl na podložce na konci prkna jako příprava na zóny. Lekce 5–10 minut.",
+  "file": "k_start.js",
+  "line": 12,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{od:4,l:'4–6 měsíců: vedení bez překážek',t:'Pes běží k odměně u levé i pravé nohy, obíhá kužel nebo tyč na obě strany (základ otoček kolem křídla), přední a zadní křížení na place. Tyčka ležící na zemi místo skoku, delší tunel i do oblouku",
+  "n": 1
+ },
+ {
+  "t": "6–12 měsíců: první krátké sekvence",
+  "file": "k_start.js",
+  "line": 13,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{od:6,l:'6–12 měsíců: první krátké sekvence',t:'Skoky nízko (tyčka na zemi nebo pár centimetrů), skokové řady bez výšky na správné odrazy, sekvence 3–5 překážek s tunelem. Otočky kolem křídla v nízké výšce. Slalom jen kanálem nebo metodou 2",
+  "n": 1
+ },
+ {
+  "t": "Skoky nízko (tyčka na zemi nebo pár centimetrů), skokové řady bez výšky na správné odrazy, sekvence 3–5 překážek s tunelem. Otočky kolem křídla v nízké výšce. Slalom jen kanálem nebo metodou 2×2 s otevřenými tyčemi, zóny na nízkém prkně, houpačka jen nízko a pomalu. K tomu posilování a pohyb v terénu.",
+  "file": "k_start.js",
+  "line": 13,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{od:6,l:'6–12 měsíců: první krátké sekvence',t:'Skoky nízko (tyčka na zemi nebo pár centimetrů), skokové řady bez výšky na správné odrazy, sekvence 3–5 překážek s tunelem. Otočky kolem křídla v nízké výšce. Slalom jen kanálem nebo metodou 2",
+  "n": 1
+ },
+ {
+  "t": "12–18 měsíců: postupně k plné výšce",
+  "file": "k_start.js",
+  "line": 14,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{od:12,l:'12–18 měsíců: postupně k plné výšce',t:'Výšku skoků zvyšuj pomalu a až po uzavření růstových plotének: u malých plemen bývají uzavřené kolem 12 měsíců, u velkých a pomalu dospívajících později, jistotu dá veterinář. Celý slalom, p",
+  "n": 1
+ },
+ {
+  "t": "Výšku skoků zvyšuj pomalu a až po uzavření růstových plotének: u malých plemen bývají uzavřené kolem 12 měsíců, u velkých a pomalu dospívajících později, jistotu dá veterinář. Celý slalom, plnou kladinu a A-rampu doporučují zkušení trenéři až kolem 14–16 měsíců. Kratší parkury, hodně odměn.",
+  "file": "k_start.js",
+  "line": 14,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{od:12,l:'12–18 měsíců: postupně k plné výšce',t:'Výšku skoků zvyšuj pomalu a až po uzavření růstových plotének: u malých plemen bývají uzavřené kolem 12 měsíců, u velkých a pomalu dospívajících později, jistotu dá veterinář. Celý slalom, p",
+  "n": 1
+ },
+ {
+  "t": "Od 18 měsíců: závody",
+  "file": "k_start.js",
+  "line": 15,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{od:18,l:'Od 18 měsíců: závody',t:'V Česku smí na závody pes starší 18 měsíců. Začíná se v třídě A1, výkonnostní průkaz je potřeba vyřídit aspoň měsíc předem, pes musí mít platné očkování a na prvních závodech ho rozhodčí změří do kategorie",
+  "n": 1
+ },
+ {
+  "t": "V Česku smí na závody pes starší 18 měsíců. Začíná se v třídě A1, výkonnostní průkaz je potřeba vyřídit aspoň měsíc předem, pes musí mít platné očkování a na prvních závodech ho rozhodčí změří do kategorie.",
+  "file": "k_start.js",
+  "line": 15,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "{od:18,l:'Od 18 měsíců: závody',t:'V Česku smí na závody pes starší 18 měsíců. Začíná se v třídě A1, výkonnostní průkaz je potřeba vyřídit aspoň měsíc předem, pes musí mít platné očkování a na prvních závodech ho rozhodčí změří do kategorie",
+  "n": 1
+ },
+ {
+  "t": "Cíl rukou",
+  "file": "k_start.js",
+  "line": 17,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var DRILLS_START=[['Cíl rukou','Pes se dotkne nosem dlaně. Z toho pak vzniká přivolání k noze a vedení rukou.'],",
+  "n": 1
+ },
+ {
+  "t": "Pes se dotkne nosem dlaně. Z toho pak vzniká přivolání k noze a vedení rukou.",
+  "file": "k_start.js",
+  "line": 17,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var DRILLS_START=[['Cíl rukou','Pes se dotkne nosem dlaně. Z toho pak vzniká přivolání k noze a vedení rukou.'],",
+  "n": 1
+ },
+ {
+  "t": "Zóna odměny",
+  "file": "k_start.js",
+  "line": 18,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Zóna odměny','Odměna vždy u nohy psovoda, zleva i zprava. Pes se učí, kde má běžet.'],",
+  "n": 1
+ },
+ {
+  "t": "Odměna vždy u nohy psovoda, zleva i zprava. Pes se učí, kde má běžet.",
+  "file": "k_start.js",
+  "line": 18,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Zóna odměny','Odměna vždy u nohy psovoda, zleva i zprava. Pes se učí, kde má běžet.'],",
+  "n": 1
+ },
+ {
+  "t": "Obíhání kužele",
+  "file": "k_start.js",
+  "line": 19,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Obíhání kužele','Pes oběhne kužel nebo tyč a vrátí se k tobě, na obě strany. Základ otoček kolem křídla.'],",
+  "n": 1
+ },
+ {
+  "t": "Pes oběhne kužel nebo tyč a vrátí se k tobě, na obě strany. Základ otoček kolem křídla.",
+  "file": "k_start.js",
+  "line": 19,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Obíhání kužele','Pes oběhne kužel nebo tyč a vrátí se k tobě, na obě strany. Základ otoček kolem křídla.'],",
+  "n": 1
+ },
+ {
+  "t": "Tyčka na zemi a skoková řada",
+  "file": "k_start.js",
+  "line": 20,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Tyčka na zemi a skoková řada','Tyčky na zemi nebo úplně nízko v řadě. Pes se učí odraz a dopad bez zátěže kloubů.'],",
+  "n": 1
+ },
+ {
+  "t": "Tyčky na zemi nebo úplně nízko v řadě. Pes se učí odraz a dopad bez zátěže kloubů.",
+  "file": "k_start.js",
+  "line": 20,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Tyčka na zemi a skoková řada','Tyčky na zemi nebo úplně nízko v řadě. Pes se učí odraz a dopad bez zátěže kloubů.'],",
+  "n": 1
+ },
+ {
+  "t": "Tunel s pomocníkem",
+  "file": "k_start.js",
+  "line": 21,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Tunel s pomocníkem','Krátký rovný tunel, pomocník drží psa, ty ho voláš z druhé strany. Pak delší a do oblouku.'],",
+  "n": 1
+ },
+ {
+  "t": "Krátký rovný tunel, pomocník drží psa, ty ho voláš z druhé strany. Pak delší a do oblouku.",
+  "file": "k_start.js",
+  "line": 21,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Tunel s pomocníkem','Krátký rovný tunel, pomocník drží psa, ty ho voláš z druhé strany. Pak delší a do oblouku.'],",
+  "n": 1
+ },
+ {
+  "t": "Houpající se prkno",
+  "file": "k_start.js",
+  "line": 22,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Houpající se prkno','Prkno na nízké podložce, které se trochu hýbe. Příprava na houpačku bez strachu z pohybu.'],",
+  "n": 1
+ },
+ {
+  "t": "Prkno na nízké podložce, které se trochu hýbe. Příprava na houpačku bez strachu z pohybu.",
+  "file": "k_start.js",
+  "line": 22,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Houpající se prkno','Prkno na nízké podložce, které se trochu hýbe. Příprava na houpačku bez strachu z pohybu.'],",
+  "n": 1
+ },
+ {
+  "t": "Cíl na konci prkna",
+  "file": "k_start.js",
+  "line": 23,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Cíl na konci prkna','Pes zůstane stát zadníma nohama na prkně a předníma na podložce. Příprava na zóny.'],",
+  "n": 1
+ },
+ {
+  "t": "Pes zůstane stát zadníma nohama na prkně a předníma na podložce. Příprava na zóny.",
+  "file": "k_start.js",
+  "line": 23,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Cíl na konci prkna','Pes zůstane stát zadníma nohama na prkně a předníma na podložce. Příprava na zóny.'],",
+  "n": 1
+ },
+ {
+  "t": "Křížení bez překážek",
+  "file": "k_start.js",
+  "line": 24,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Křížení bez překážek','Přední a zadní křížení při chůzi a klusu na place. Pes se učí číst tvoje tělo.'],",
+  "n": 1
+ },
+ {
+  "t": "Přední a zadní křížení při chůzi a klusu na place. Pes se učí číst tvoje tělo.",
+  "file": "k_start.js",
+  "line": 24,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Křížení bez překážek','Přední a zadní křížení při chůzi a klusu na place. Pes se učí číst tvoje tělo.'],",
+  "n": 1
+ },
+ {
+  "t": "Slalom 2×2",
+  "file": "k_start.js",
+  "line": 25,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Slalom 2×2','Dvě dvojice tyček, které se postupně přidávají a natáčejí. Až od zhruba půl roku a jen krátce.']];",
+  "n": 1
+ },
+ {
+  "t": "Dvě dvojice tyček, které se postupně přidávají a natáčejí. Až od zhruba půl roku a jen krátce.",
+  "file": "k_start.js",
+  "line": 25,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Slalom 2×2','Dvě dvojice tyček, které se postupně přidávají a natáčejí. Až od zhruba půl roku a jen krátce.']];",
+  "n": 1
+ },
+ {
+  "t": "Do uzavření růstových plotének žádné skoky v plné výšce a žádné opakované ostré obraty ve velké rychlosti.",
+  "file": "k_start.js",
+  "line": 26,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var SAFE=['Do uzavření růstových plotének žádné skoky v plné výšce a žádné opakované ostré obraty ve velké rychlosti.',",
+  "n": 1
+ },
+ {
+  "t": "Před tréninkem rozcvička, po něm vychladnutí (záložka Rozcvička).",
+  "file": "k_start.js",
+  "line": 27,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "'Před tréninkem rozcvička, po něm vychladnutí (záložka Rozcvička).',",
+  "n": 1
+ },
+ {
+  "t": "Povrch s dobrou přilnavostí: tráva nebo umělý trávník, ne kluzká podlaha ani beton.",
+  "file": "k_start.js",
+  "line": 28,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "'Povrch s dobrou přilnavostí: tráva nebo umělý trávník, ne kluzká podlaha ani beton.',",
+  "n": 1
+ },
+ {
+  "t": "Krátké lekce, 2–3 opakování. Konči, dokud pes ještě chce.",
+  "file": "k_start.js",
+  "line": 29,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "'Krátké lekce, 2–3 opakování. Konči, dokud pes ještě chce.',",
+  "n": 1
+ },
+ {
+  "t": "U štěněte omez skákání z auta, z gauče a přes zábrany.",
+  "file": "k_start.js",
+  "line": 30,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "'U štěněte omez skákání z auta, z gauče a přes zábrany.',",
+  "n": 1
+ },
+ {
+  "t": "Před závodním tréninkem prohlídka u veterináře, u velkých plemen rentgen kyčlí a loktů.",
+  "file": "k_start.js",
+  "line": 31,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "'Před závodním tréninkem prohlídka u veterináře, u velkých plemen rentgen kyčlí a loktů.'];",
+  "n": 1
+ },
+ {
+  "t": "Klub agility ČR: Jak na závod",
+  "file": "k_start.js",
+  "line": 32,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var START_SRC=[['Klub agility ČR: Jak na závod','Věk nejméně 18 měsíců, výkonnostní průkaz, očkování.','https://klubagility.cz/akce/jak-na-zavod/'],",
+  "n": 1
+ },
+ {
+  "t": "Věk nejméně 18 měsíců, výkonnostní průkaz, očkování.",
+  "file": "k_start.js",
+  "line": 32,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var START_SRC=[['Klub agility ČR: Jak na závod','Věk nejméně 18 měsíců, výkonnostní průkaz, očkování.','https://klubagility.cz/akce/jak-na-zavod/'],",
+  "n": 1
+ },
+ {
+  "t": "Klub agility ČR: Nejčastější otázky",
+  "file": "k_start.js",
+  "line": 33,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Klub agility ČR: Nejčastější otázky','Začíná se v třídě A1, měření psa, postup do A2.','https://klubagility.cz/akce/nejcastejsi-otazky/'],",
+  "n": 1
+ },
+ {
+  "t": "Začíná se v třídě A1, měření psa, postup do A2.",
+  "file": "k_start.js",
+  "line": 33,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Klub agility ČR: Nejčastější otázky','Začíná se v třídě A1, měření psa, postup do A2.','https://klubagility.cz/akce/nejcastejsi-otazky/'],",
+  "n": 1
+ },
+ {
+  "t": "AKC: Is It Safe for Puppies to Jump?",
+  "file": "k_start.js",
+  "line": 34,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['AKC: Is It Safe for Puppies to Jump?','Růstové ploténky, skoky v plné výšce až od 12–15 měsíců, skokové řady.','https://www.akc.org/expert-advice/training/puppies-dogs-jump-safely/'],",
+  "n": 1
+ },
+ {
+  "t": "Růstové ploténky, skoky v plné výšce až od 12–15 měsíců, skokové řady.",
+  "file": "k_start.js",
+  "line": 34,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['AKC: Is It Safe for Puppies to Jump?','Růstové ploténky, skoky v plné výšce až od 12–15 měsíců, skokové řady.','https://www.akc.org/expert-advice/training/puppies-dogs-jump-safely/'],",
+  "n": 1
+ },
+ {
+  "t": "Susan Garrett: Agility With a Puppy",
+  "file": "k_start.js",
+  "line": 35,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Susan Garrett: Agility With a Puppy','Co trénovat se štěnětem a co odložit na 14–16 měsíců.','https://susangarrettdogagility.com/2026/01/agility-with-a-puppy/'],",
+  "n": 1
+ },
+ {
+  "t": "Co trénovat se štěnětem a co odložit na 14–16 měsíců.",
+  "file": "k_start.js",
+  "line": 35,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Susan Garrett: Agility With a Puppy','Co trénovat se štěnětem a co odložit na 14–16 měsíců.','https://susangarrettdogagility.com/2026/01/agility-with-a-puppy/'],",
+  "n": 1
+ },
+ {
+  "t": "VCA: Puppy exercise and growth plates",
+  "file": "k_start.js",
+  "line": 36,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['VCA: Puppy exercise and growth plates','Proč přetěžování škodí rostoucím kostem.','https://vcahospitals.com/pediatric/puppy/health-wellness/puppy-exercise']];",
+  "n": 1
+ },
+ {
+  "t": "Proč přetěžování škodí rostoucím kostem.",
+  "file": "k_start.js",
+  "line": 36,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['VCA: Puppy exercise and growth plates','Proč přetěžování škodí rostoucím kostem.','https://vcahospitals.com/pediatric/puppy/health-wellness/puppy-exercise']];",
+  "n": 1
+ },
+ {
+  "t": "{esc(d.name)} má {ageTxt(m)}. Aktuální fáze je zvýrazněná.",
+  "file": "k_start.js",
+  "line": 40,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var who=d?(m!=null?esc(d.name)+(d.name.length?' má ':'')+ageTxt(m)+'. '+(cur>=0?'Aktuální fáze je zvýrazněná.':'Je to ještě malé štěně, začni hrou.'):'U psa '+esc(d.name)+' doplň v záložce Psi datum narození a zvýrazní se fáze podle věku.')",
+  "n": 1
+ },
+ {
+  "t": "{esc(d.name)} má {ageTxt(m)}. Je to ještě malé štěně, začni hrou.",
+  "file": "k_start.js",
+  "line": 40,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var who=d?(m!=null?esc(d.name)+(d.name.length?' má ':'')+ageTxt(m)+'. '+(cur>=0?'Aktuální fáze je zvýrazněná.':'Je to ještě malé štěně, začni hrou.'):'U psa '+esc(d.name)+' doplň v záložce Psi datum narození a zvýrazní se fáze podle věku.')",
+  "n": 1
+ },
+ {
+  "t": "{esc(d.name)}{ageTxt(m)}. Aktuální fáze je zvýrazněná.",
+  "file": "k_start.js",
+  "line": 40,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var who=d?(m!=null?esc(d.name)+(d.name.length?' má ':'')+ageTxt(m)+'. '+(cur>=0?'Aktuální fáze je zvýrazněná.':'Je to ještě malé štěně, začni hrou.'):'U psa '+esc(d.name)+' doplň v záložce Psi datum narození a zvýrazní se fáze podle věku.')",
+  "n": 1
+ },
+ {
+  "t": "{esc(d.name)}{ageTxt(m)}. Je to ještě malé štěně, začni hrou.",
+  "file": "k_start.js",
+  "line": 40,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var who=d?(m!=null?esc(d.name)+(d.name.length?' má ':'')+ageTxt(m)+'. '+(cur>=0?'Aktuální fáze je zvýrazněná.':'Je to ještě malé štěně, začni hrou.'):'U psa '+esc(d.name)+' doplň v záložce Psi datum narození a zvýrazní se fáze podle věku.')",
+  "n": 1
+ },
+ {
+  "t": "U psa {esc(d.name)} doplň v záložce Psi datum narození a zvýrazní se fáze podle věku.",
+  "file": "k_start.js",
+  "line": 40,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var who=d?(m!=null?esc(d.name)+(d.name.length?' má ':'')+ageTxt(m)+'. '+(cur>=0?'Aktuální fáze je zvýrazněná.':'Je to ještě malé štěně, začni hrou.'):'U psa '+esc(d.name)+' doplň v záložce Psi datum narození a zvýrazní se fáze podle věku.')",
+  "n": 1
+ },
+ {
+  "t": "Přidej psa s datem narození a zvýrazní se fáze podle jeho věku.",
+  "file": "k_start.js",
+  "line": 40,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var who=d?(m!=null?esc(d.name)+(d.name.length?' má ':'')+ageTxt(m)+'. '+(cur>=0?'Aktuální fáze je zvýrazněná.':'Je to ještě malé štěně, začni hrou.'):'U psa '+esc(d.name)+' doplň v záložce Psi datum narození a zvýrazní se fáze podle věku.')",
+  "n": 1
+ },
+ {
+  "t": "Agility se dá začít už se štěnětem, jen ne na překážkách v plné výšce. Nejdřív vztah, hra a vedení, překážky postupně podle věku a růstu. {who}",
+  "file": "k_start.js",
+  "line": 41,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<p class=\"hint\">Agility se dá začít už se štěnětem, jen ne na překážkách v plné výšce. Nejdřív vztah, hra a vedení, překážky postupně podle věku a růstu. '+who+'</p>'+",
+  "n": 1
+ },
+ {
+  "t": "Program podle věku",
+  "file": "k_start.js",
+  "line": 41,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<p class=\"hint\">Agility se dá začít už se štěnětem, jen ne na překážkách v plné výšce. Nejdřív vztah, hra a vedení, překážky postupně podle věku a růstu. '+who+'</p>'+",
+  "n": 1
+ },
+ {
+  "t": "Cvičení pro začátek",
+  "file": "k_start.js",
+  "line": 41,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<p class=\"hint\">Agility se dá začít už se štěnětem, jen ne na překážkách v plné výšce. Nejdřív vztah, hra a vedení, překážky postupně podle věku a růstu. '+who+'</p>'+",
+  "n": 1
+ },
+ {
+  "t": "Sekvence pro štěně",
+  "file": "k_start.js",
+  "line": 41,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<p class=\"hint\">Agility se dá začít už se štěnětem, jen ne na překážkách v plné výšce. Nejdřív vztah, hra a vedení, překážky postupně podle věku a růstu. '+who+'</p>'+",
+  "n": 1
+ },
+ {
+  "t": "První sekvence",
+  "file": "k_start.js",
+  "line": 41,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<p class=\"hint\">Agility se dá začít už se štěnětem, jen ne na překážkách v plné výšce. Nejdřív vztah, hra a vedení, překážky postupně podle věku a růstu. '+who+'</p>'+",
+  "n": 1
+ },
+ {
+  "t": "Skoková řada",
+  "file": "k_start.js",
+  "line": 41,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<p class=\"hint\">Agility se dá začít už se štěnětem, jen ne na překážkách v plné výšce. Nejdřív vztah, hra a vedení, překážky postupně podle věku a růstu. '+who+'</p>'+",
+  "n": 2
+ },
+ {
+  "t": "Bezpečnost",
+  "file": "k_start.js",
+  "line": 41,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<p class=\"hint\">Agility se dá začít už se štěnětem, jen ne na překážkách v plné výšce. Nejdřív vztah, hra a vedení, překážky postupně podle věku a růstu. '+who+'</p>'+",
+  "n": 1
+ },
+ {
+  "t": "Zdroje",
+  "file": "k_start.js",
+  "line": 41,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<p class=\"hint\">Agility se dá začít už se štěnětem, jen ne na překážkách v plné výšce. Nejdřív vztah, hra a vedení, překážky postupně podle věku a růstu. '+who+'</p>'+",
+  "n": 1
+ },
+ {
+  "t": "Moravia Open 2019 – Agility L",
+  "file": "h_gen.js",
+  "line": 4,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var TRC_RAW=[{\"id\":\"tr-pupik-mo19-agl\",\"grp\":\"tr\",\"ord\":1,\"name\":\"Moravia Open 2019 – Agility L\",\"cls\":\"A3\",\"author\":\"Petr Pupík\",\"src\":\"https://www.agilitynow.eu/course-plans/petr-pupik-cze/06-07-2019-moravia-open-agility-large/\",\"data\":{\"",
+  "n": 1
+ },
+ {
+  "t": "A3",
+  "file": "h_gen.js",
+  "line": 4,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var TRC_RAW=[{\"id\":\"tr-pupik-mo19-agl\",\"grp\":\"tr\",\"ord\":1,\"name\":\"Moravia Open 2019 – Agility L\",\"cls\":\"A3\",\"author\":\"Petr Pupík\",\"src\":\"https://www.agilitynow.eu/course-plans/petr-pupik-cze/06-07-2019-moravia-open-agility-large/\",\"data\":{\"",
+  "n": 2
+ },
+ {
+  "t": "Petr Pupík",
+  "file": "h_gen.js",
+  "line": 4,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var TRC_RAW=[{\"id\":\"tr-pupik-mo19-agl\",\"grp\":\"tr\",\"ord\":1,\"name\":\"Moravia Open 2019 – Agility L\",\"cls\":\"A3\",\"author\":\"Petr Pupík\",\"src\":\"https://www.agilitynow.eu/course-plans/petr-pupik-cze/06-07-2019-moravia-open-agility-large/\",\"data\":{\"",
+  "n": 5
+ },
+ {
+  "t": "Hranické hrátky 2018 – Agility 2",
+  "file": "h_gen.js",
+  "line": 4,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var TRC_RAW=[{\"id\":\"tr-pupik-mo19-agl\",\"grp\":\"tr\",\"ord\":1,\"name\":\"Moravia Open 2019 – Agility L\",\"cls\":\"A3\",\"author\":\"Petr Pupík\",\"src\":\"https://www.agilitynow.eu/course-plans/petr-pupik-cze/06-07-2019-moravia-open-agility-large/\",\"data\":{\"",
+  "n": 1
+ },
+ {
+  "t": "A2",
+  "file": "h_gen.js",
+  "line": 4,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var TRC_RAW=[{\"id\":\"tr-pupik-mo19-agl\",\"grp\":\"tr\",\"ord\":1,\"name\":\"Moravia Open 2019 – Agility L\",\"cls\":\"A3\",\"author\":\"Petr Pupík\",\"src\":\"https://www.agilitynow.eu/course-plans/petr-pupik-cze/06-07-2019-moravia-open-agility-large/\",\"data\":{\"",
+  "n": 2
+ },
+ {
+  "t": "l..f.R....R.........",
+  "file": "h_gen.js",
+  "line": 4,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var TRC_RAW=[{\"id\":\"tr-pupik-mo19-agl\",\"grp\":\"tr\",\"ord\":1,\"name\":\"Moravia Open 2019 – Agility L\",\"cls\":\"A3\",\"author\":\"Petr Pupík\",\"src\":\"https://www.agilitynow.eu/course-plans/petr-pupik-cze/06-07-2019-moravia-open-agility-large/\",\"data\":{\"",
+  "n": 1
+ },
+ {
+  "t": "Hranické hrátky 2018 – Jumping open",
+  "file": "h_gen.js",
+  "line": 4,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var TRC_RAW=[{\"id\":\"tr-pupik-mo19-agl\",\"grp\":\"tr\",\"ord\":1,\"name\":\"Moravia Open 2019 – Agility L\",\"cls\":\"A3\",\"author\":\"Petr Pupík\",\"src\":\"https://www.agilitynow.eu/course-plans/petr-pupik-cze/06-07-2019-moravia-open-agility-large/\",\"data\":{\"",
+  "n": 1
+ },
+ {
+  "t": "r.........L.........",
+  "file": "h_gen.js",
+  "line": 4,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var TRC_RAW=[{\"id\":\"tr-pupik-mo19-agl\",\"grp\":\"tr\",\"ord\":1,\"name\":\"Moravia Open 2019 – Agility L\",\"cls\":\"A3\",\"author\":\"Petr Pupík\",\"src\":\"https://www.agilitynow.eu/course-plans/petr-pupik-cze/06-07-2019-moravia-open-agility-large/\",\"data\":{\"",
+  "n": 1
+ },
+ {
+  "t": "Norwegian Open 2018 – Agility Open L",
+  "file": "h_gen.js",
+  "line": 4,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var TRC_RAW=[{\"id\":\"tr-pupik-mo19-agl\",\"grp\":\"tr\",\"ord\":1,\"name\":\"Moravia Open 2019 – Agility L\",\"cls\":\"A3\",\"author\":\"Petr Pupík\",\"src\":\"https://www.agilitynow.eu/course-plans/petr-pupik-cze/06-07-2019-moravia-open-agility-large/\",\"data\":{\"",
+  "n": 1
+ },
+ {
+  "t": ".L.Rf.R......L........",
+  "file": "h_gen.js",
+  "line": 4,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var TRC_RAW=[{\"id\":\"tr-pupik-mo19-agl\",\"grp\":\"tr\",\"ord\":1,\"name\":\"Moravia Open 2019 – Agility L\",\"cls\":\"A3\",\"author\":\"Petr Pupík\",\"src\":\"https://www.agilitynow.eu/course-plans/petr-pupik-cze/06-07-2019-moravia-open-agility-large/\",\"data\":{\"",
+  "n": 1
+ },
+ {
+  "t": "Euskadi Sextuple 2018 – Agility A1",
+  "file": "h_gen.js",
+  "line": 4,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var TRC_RAW=[{\"id\":\"tr-pupik-mo19-agl\",\"grp\":\"tr\",\"ord\":1,\"name\":\"Moravia Open 2019 – Agility L\",\"cls\":\"A3\",\"author\":\"Petr Pupík\",\"src\":\"https://www.agilitynow.eu/course-plans/petr-pupik-cze/06-07-2019-moravia-open-agility-large/\",\"data\":{\"",
+  "n": 1
+ },
+ {
+  "t": "A1",
+  "file": "h_gen.js",
+  "line": 4,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var TRC_RAW=[{\"id\":\"tr-pupik-mo19-agl\",\"grp\":\"tr\",\"ord\":1,\"name\":\"Moravia Open 2019 – Agility L\",\"cls\":\"A3\",\"author\":\"Petr Pupík\",\"src\":\"https://www.agilitynow.eu/course-plans/petr-pupik-cze/06-07-2019-moravia-open-agility-large/\",\"data\":{\"",
+  "n": 3
+ },
+ {
+  "t": "Otočky kolem křídla (vnitřkem, venkem)",
+  "file": "h_gen.js",
+  "line": 9,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "wraps:{l:'Otočky kolem křídla (vnitřkem, venkem)',seq:['jump','jump','jump','jump','jump','jump','jump'],turn:90,mix:[.3,.5,.2],gap:[4.5,6.5],wrap:.6,wmin:2,wmax:4},",
+  "n": 1
+ },
+ {
+  "t": "Zadní strany skoků",
+  "file": "h_gen.js",
+  "line": 10,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "backs:{l:'Zadní strany skoků',seq:['jump','jump','jump','tunnel','jump','jump','jump'],turn:100,mix:[.2,.5,.3],gap:[5,6.5],back:.55,bmin:1,bmax:2,wrap:.15,wmax:1},",
+  "n": 1
+ },
+ {
+  "t": "Vstupy do slalomu",
+  "file": "h_gen.js",
+  "line": 11,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "weave:{l:'Vstupy do slalomu',seq:['jump','jump','weave','jump','tunnel','jump','weave','jump'],turn:120,mix:[.2,.45,.35],wv:95,gap:[5,7]},",
+  "n": 2
+ },
+ {
+  "t": "Změny strany (ostré obraty, hady)",
+  "file": "h_gen.js",
+  "line": 12,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "side:{l:'Změny strany (ostré obraty, hady)',seq:['jump','jump','jump','jump','jump','jump','jump'],turn:170,mix:[.08,.32,.6],gap:[5,6.5],wrap:.2,wmax:2},",
+  "n": 1
+ },
+ {
+  "t": "Zóny v rytmu parkuru",
+  "file": "h_gen.js",
+  "line": 13,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "contacts:{l:'Zóny v rytmu parkuru',seq:['jump','dogwalk','jump','aframe','tunnel','jump','seesaw','jump'],turn:100,mix:[.3,.5,.2],gap:[5.5,7]},",
+  "n": 1
+ },
+ {
+  "t": "Tunely do oblouku a odbočky",
+  "file": "h_gen.js",
+  "line": 14,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "tunnel:{l:'Tunely do oblouku a odbočky',seq:['jump','tunnel','jump','jump','tunnel','jump','jump'],turn:130,mix:[.15,.45,.4],bent:[1,2],gap:[5,7],wrap:.1,wmax:1},",
+  "n": 1
+ },
+ {
+  "t": "Rychlá skoková linie",
+  "file": "h_gen.js",
+  "line": 15,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "speed:{l:'Rychlá skoková linie',seq:['jump','jump','jump','tunnel','jump','jump','jump','jump'],turn:55,mix:[.5,.45,.05],gap:[6,7]},",
+  "n": 1
+ },
+ {
+  "t": "Štěně: tunel a nízké skoky",
+  "file": "h_gen.js",
+  "line": 16,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "puppy:{l:'Štěně: tunel a nízké skoky',seq:['jump','tunnel','jump','jump','tunnel','jump'],turn:70,mix:[.45,.5,.05],gap:[4,5.5],bent:[0,0]},",
+  "n": 1
+ },
+ {
+  "t": "Začátečník: první sekvence",
+  "file": "h_gen.js",
+  "line": 17,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "novice:{l:'Začátečník: první sekvence',seq:['jump','jump','tunnel','jump','jump','jump'],turn:90,mix:[.3,.6,.1],gap:[4.5,6],wrap:.15,wmax:1,bent:[0,1]}",
+  "n": 1
+ },
+ {
+  "t": "Čtverec (box)",
+  "file": "h_gen.js",
+  "line": 31,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "box:{l:'Čtverec (box)',t:'Čtyři skoky do čtverce. Pes vbíhá dovnitř a ven, kolem rohů čtverce se točí o 270°. Změny směru a vedení na malém prostoru.',n:[5,8],",
+  "n": 1
+ },
+ {
+  "t": "Čtyři skoky do čtverce. Pes vbíhá dovnitř a ven, kolem rohů čtverce se točí o 270°. Změny směru a vedení na malém prostoru.",
+  "file": "h_gen.js",
+  "line": 31,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "box:{l:'Čtverec (box)',t:'Čtyři skoky do čtverce. Pes vbíhá dovnitř a ven, kolem rohů čtverce se točí o 270°. Změny směru a vedení na malém prostoru.',n:[5,8],",
+  "n": 1
+ },
+ {
+  "t": "Mlýnek",
+  "file": "h_gen.js",
+  "line": 33,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "pin:{l:'Mlýnek',t:'Skoky do kruhu kolem středu. Plynulé oblouky, držení linie, otočka a změna směru.',n:[5,8],",
+  "n": 1
+ },
+ {
+  "t": "Skoky do kruhu kolem středu. Plynulé oblouky, držení linie, otočka a změna směru.",
+  "file": "h_gen.js",
+  "line": 33,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "pin:{l:'Mlýnek',t:'Skoky do kruhu kolem středu. Plynulé oblouky, držení linie, otočka a změna směru.',n:[5,8],",
+  "n": 1
+ },
+ {
+  "t": "Had (serpentina)",
+  "file": "h_gen.js",
+  "line": 35,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "ser:{l:'Had (serpentina)',t:'Skoky vedle sebe, pes je bere střídavě tam a zpět. Vedení na dálku a změny strany.',n:[5,7],",
+  "n": 1
+ },
+ {
+  "t": "Skoky vedle sebe, pes je bere střídavě tam a zpět. Vedení na dálku a změny strany.",
+  "file": "h_gen.js",
+  "line": 35,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "ser:{l:'Had (serpentina)',t:'Skoky vedle sebe, pes je bere střídavě tam a zpět. Vedení na dálku a změny strany.',n:[5,7],",
+  "n": 1
+ },
+ {
+  "t": "Skoky v řadě po 4,5 m. Rozběh, dlouhý skok a otočka na konci řady.",
+  "file": "h_gen.js",
+  "line": 37,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "line:{l:'Skoková řada',t:'Skoky v řadě po 4,5 m. Rozběh, dlouhý skok a otočka na konci řady.',n:[5,8],",
+  "n": 1
+ },
+ {
+  "t": "Slalom a skoky pod různými úhly ke vstupu: rovně, z oblouku i z ostrého úhlu.",
+  "file": "h_gen.js",
+  "line": 39,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "weave:{l:'Vstupy do slalomu',t:'Slalom a skoky pod různými úhly ke vstupu: rovně, z oblouku i z ostrého úhlu.',n:[3,6],start:'jump',",
+  "n": 1
+ },
+ {
+  "t": "Tunel, nebo skok",
+  "file": "h_gen.js",
+  "line": 41,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "disc:{l:'Tunel, nebo skok',t:'Vstup do tunelu hned vedle skoku. Pes se učí poslouchat, kam ho posíláš.',n:[4,7],",
+  "n": 1
+ },
+ {
+  "t": "Vstup do tunelu hned vedle skoku. Pes se učí poslouchat, kam ho posíláš.",
+  "file": "h_gen.js",
+  "line": 41,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "disc:{l:'Tunel, nebo skok',t:'Vstup do tunelu hned vedle skoku. Pes se učí poslouchat, kam ho posíláš.',n:[4,7],",
+  "n": 1
+ },
+ {
+  "t": "Threadle",
+  "file": "h_gen.js",
+  "line": 43,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "thr:{l:'Threadle',t:'Pes proběhne mezerou mezi dvěma skoky a druhý skočí z opačné strany. Učí poslouchat vedení a ne jen běžet vpřed.',n:[4,6],",
+  "n": 1
+ },
+ {
+  "t": "Pes proběhne mezerou mezi dvěma skoky a druhý skočí z opačné strany. Učí poslouchat vedení a ne jen běžet vpřed.",
+  "file": "h_gen.js",
+  "line": 43,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "thr:{l:'Threadle',t:'Pes proběhne mezerou mezi dvěma skoky a druhý skočí z opačné strany. Učí poslouchat vedení a ne jen běžet vpřed.',n:[4,6],",
+  "n": 1
+ },
+ {
+  "t": "Osmička kolem křídel",
+  "file": "h_gen.js",
+  "line": 45,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "f8:{l:'Osmička kolem křídel',t:'Jeden skok, pes ho bere střídavě tam a zpět s otočkou kolem levého a pravého křídla. Klasika na otočky na obě strany.',n:[5,5],max:2,",
+  "n": 1
+ },
+ {
+  "t": "Jeden skok, pes ho bere střídavě tam a zpět s otočkou kolem levého a pravého křídla. Klasika na otočky na obě strany.",
+  "file": "h_gen.js",
+  "line": 45,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "f8:{l:'Osmička kolem křídel',t:'Jeden skok, pes ho bere střídavě tam a zpět s otočkou kolem levého a pravého křídla. Klasika na otočky na obě strany.',n:[5,5],max:2,",
+  "n": 1
+ },
+ {
+  "t": "Zadní strana",
+  "file": "h_gen.js",
+  "line": 47,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "back:{l:'Zadní strana',t:'Skok zezadu: pes oběhne křídlo a skočí proti směru, odkud přiběhl.',n:[4,6],backs:1,",
+  "n": 1
+ },
+ {
+  "t": "Skok zezadu: pes oběhne křídlo a skočí proti směru, odkud přiběhl.",
+  "file": "h_gen.js",
+  "line": 47,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "back:{l:'Zadní strana',t:'Skok zezadu: pes oběhne křídlo a skočí proti směru, odkud přiběhl.',n:[4,6],backs:1,",
+  "n": 1
+ },
+ {
+  "t": "2 1R 3",
+  "file": "h_gen.js",
+  "line": 48,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "o:[['jump',0,0,0],['jump',-5.5,-2,20],['jump',-5.5,3,340],['jump',5,-3,0],['jump',4,4,0]],v:['2 1R 3','2 1L 3','3 1L 2','3 1R 2']}",
+  "n": 1
+ },
+ {
+  "t": "2 1L 3",
+  "file": "h_gen.js",
+  "line": 48,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "o:[['jump',0,0,0],['jump',-5.5,-2,20],['jump',-5.5,3,340],['jump',5,-3,0],['jump',4,4,0]],v:['2 1R 3','2 1L 3','3 1L 2','3 1R 2']}",
+  "n": 1
+ },
+ {
+  "t": "3 1L 2",
+  "file": "h_gen.js",
+  "line": 48,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "o:[['jump',0,0,0],['jump',-5.5,-2,20],['jump',-5.5,3,340],['jump',5,-3,0],['jump',4,4,0]],v:['2 1R 3','2 1L 3','3 1L 2','3 1R 2']}",
+  "n": 1
+ },
+ {
+  "t": "3 1R 2",
+  "file": "h_gen.js",
+  "line": 48,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "o:[['jump',0,0,0],['jump',-5.5,-2,20],['jump',-5.5,3,340],['jump',5,-3,0],['jump',4,4,0]],v:['2 1R 3','2 1L 3','3 1L 2','3 1R 2']}",
+  "n": 1
+ },
+ {
+  "t": "wL",
+  "file": "h_gen.js",
+  "line": 52,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var out=[], TT={l:'wL',r:'wR',L:'bL',R:'bR',f:'f'};",
+  "n": 3
+ },
+ {
+  "t": "wR",
+  "file": "h_gen.js",
+  "line": 52,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var out=[], TT={l:'wL',r:'wR',L:'bL',R:'bR',f:'f'};",
+  "n": 3
+ },
+ {
+  "t": "bL",
+  "file": "h_gen.js",
+  "line": 52,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var out=[], TT={l:'wL',r:'wR',L:'bL',R:'bR',f:'f'};",
+  "n": 3
+ },
+ {
+  "t": "bR",
+  "file": "h_gen.js",
+  "line": 52,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var out=[], TT={l:'wL',r:'wR',L:'bL',R:'bR',f:'f'};",
+  "n": 3
+ },
+ {
+  "t": "Plocha",
+  "file": "h_gen.js",
+  "line": 135,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var area='<label for=\"gArea\">Plocha<select id=\"gArea\"><option value=\"40x20\">40 × 20 m (závodní)</option><option value=\"30x20\">30 × 20 m</option><option value=\"25x15\">25 × 15 m</option><option value=\"20x15\" selected>20 × 15 m</option><option",
+  "n": 1
+ },
+ {
+  "t": "40 × 20 m (závodní)",
+  "file": "h_gen.js",
+  "line": 135,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var area='<label for=\"gArea\">Plocha<select id=\"gArea\"><option value=\"40x20\">40 × 20 m (závodní)</option><option value=\"30x20\">30 × 20 m</option><option value=\"25x15\">25 × 15 m</option><option value=\"20x15\" selected>20 × 15 m</option><option",
+  "n": 1
+ },
+ {
+  "t": "30 × 20 m",
+  "file": "h_gen.js",
+  "line": 135,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var area='<label for=\"gArea\">Plocha<select id=\"gArea\"><option value=\"40x20\">40 × 20 m (závodní)</option><option value=\"30x20\">30 × 20 m</option><option value=\"25x15\">25 × 15 m</option><option value=\"20x15\" selected>20 × 15 m</option><option",
+  "n": 1
+ },
+ {
+  "t": "25 × 15 m",
+  "file": "h_gen.js",
+  "line": 135,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var area='<label for=\"gArea\">Plocha<select id=\"gArea\"><option value=\"40x20\">40 × 20 m (závodní)</option><option value=\"30x20\">30 × 20 m</option><option value=\"25x15\">25 × 15 m</option><option value=\"20x15\" selected>20 × 15 m</option><option",
+  "n": 1
+ },
+ {
+  "t": "20 × 15 m",
+  "file": "h_gen.js",
+  "line": 135,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var area='<label for=\"gArea\">Plocha<select id=\"gArea\"><option value=\"40x20\">40 × 20 m (závodní)</option><option value=\"30x20\">30 × 20 m</option><option value=\"25x15\">25 × 15 m</option><option value=\"20x15\" selected>20 × 15 m</option><option",
+  "n": 1
+ },
+ {
+  "t": "15 × 10 m",
+  "file": "h_gen.js",
+  "line": 135,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var area='<label for=\"gArea\">Plocha<select id=\"gArea\"><option value=\"40x20\">40 × 20 m (závodní)</option><option value=\"30x20\">30 × 20 m</option><option value=\"25x15\">25 × 15 m</option><option value=\"20x15\" selected>20 × 15 m</option><option",
+  "n": 1
+ },
+ {
+  "t": "Dovednost",
+  "file": "h_gen.js",
+  "line": 136,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var seqB='<label for=\"gSkill\">Dovednost<select id=\"gSkill\">'+Object.keys(SKILLS).map(function(k){return '<option value=\"'+k+'\">'+SKILLS[k].l+'</option>';}).join('')+'</select></label>'+area;",
+  "n": 1
+ },
+ {
+  "t": "Cvičení",
+  "file": "h_gen.js",
+  "line": 137,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var drillB='<label for=\"gDrill\">Cvičení<select id=\"gDrill\">'+Object.keys(DRILLS).map(function(k){return '<option value=\"'+k+'\">'+DRILLS[k].l+'</option>';}).join('')+'</select></label><p class=\"hint\" id=\"gDrillT\"></p>';",
+  "n": 4
+ },
+ {
+  "t": "Co složit",
+  "file": "h_gen.js",
+  "line": 141,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var yardB='<label for=\"gStyle\">Co složit<select id=\"gStyle\"><option value=\"yard\">Trénink (5–18 překážek v trase)</option><option value=\"A1\">Celý parkur ve stylu A1</option><option value=\"A2\">Celý parkur ve stylu A2</option><option value=\"A3",
+  "n": 1
+ },
+ {
+  "t": "Trénink (5–18 překážek v trase)",
+  "file": "h_gen.js",
+  "line": 141,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var yardB='<label for=\"gStyle\">Co složit<select id=\"gStyle\"><option value=\"yard\">Trénink (5–18 překážek v trase)</option><option value=\"A1\">Celý parkur ve stylu A1</option><option value=\"A2\">Celý parkur ve stylu A2</option><option value=\"A3",
+  "n": 1
+ },
+ {
+  "t": "Celý parkur ve stylu A1",
+  "file": "h_gen.js",
+  "line": 141,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var yardB='<label for=\"gStyle\">Co složit<select id=\"gStyle\"><option value=\"yard\">Trénink (5–18 překážek v trase)</option><option value=\"A1\">Celý parkur ve stylu A1</option><option value=\"A2\">Celý parkur ve stylu A2</option><option value=\"A3",
+  "n": 1
+ },
+ {
+  "t": "Celý parkur ve stylu A2",
+  "file": "h_gen.js",
+  "line": 141,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var yardB='<label for=\"gStyle\">Co složit<select id=\"gStyle\"><option value=\"yard\">Trénink (5–18 překážek v trase)</option><option value=\"A1\">Celý parkur ve stylu A1</option><option value=\"A2\">Celý parkur ve stylu A2</option><option value=\"A3",
+  "n": 1
+ },
+ {
+  "t": "Celý parkur ve stylu A3",
+  "file": "h_gen.js",
+  "line": 141,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var yardB='<label for=\"gStyle\">Co složit<select id=\"gStyle\"><option value=\"yard\">Trénink (5–18 překážek v trase)</option><option value=\"A1\">Celý parkur ve stylu A1</option><option value=\"A2\">Celý parkur ve stylu A2</option><option value=\"A3",
+  "n": 1
+ },
+ {
+  "t": "Krátký úsek na jednu dovednost, na trénink se hodí víc než celý parkur.",
+  "file": "h_gen.js",
+  "line": 144,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var intro={seq:'Krátký úsek na jednu dovednost, na trénink se hodí víc než celý parkur.',",
+  "n": 1
+ },
+ {
+  "t": "Klasická cvičení na pevném rozestavení. Překážky postavíš jednou a generátor k nim skládá různá pořadí.",
+  "file": "h_gen.js",
+  "line": 145,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "drill:'Klasická cvičení na pevném rozestavení. Překážky postavíš jednou a generátor k nim skládá různá pořadí.',",
+  "n": 1
+ },
+ {
+  "t": "Zadej, co máte doma nebo v klubu. Generátor složí trasy, které se vejdou, a překážky v nich opakuje. Vybavení si aplikace pamatuje.",
+  "file": "h_gen.js",
+  "line": 146,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "yard:'Zadej, co máte doma nebo v klubu. Generátor složí trasy, které se vejdou, a překážky v nich opakuje. Vybavení si aplikace pamatuje.'}[tab];",
+  "n": 1
+ },
+ {
+  "t": "Generátor",
+  "file": "h_gen.js",
+  "line": 147,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>Generátor</h3><div class=\"seg wide\" id=\"gTabs\"><button data-a=\"tseq\" class=\"'+on('seq')+'\">Sekvence</button><button data-a=\"tdrill\" class=\"'+on('drill')+'\">Cvičení</button><button data-a=\"tyard\" class=\"'+on('yard')+'\">Zahrada",
+  "n": 3
+ },
+ {
+  "t": "Sekvence",
+  "file": "h_gen.js",
+  "line": 147,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>Generátor</h3><div class=\"seg wide\" id=\"gTabs\"><button data-a=\"tseq\" class=\"'+on('seq')+'\">Sekvence</button><button data-a=\"tdrill\" class=\"'+on('drill')+'\">Cvičení</button><button data-a=\"tyard\" class=\"'+on('yard')+'\">Zahrada",
+  "n": 3
+ },
+ {
+  "t": "Zahrada a klub",
+  "file": "h_gen.js",
+  "line": 147,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>Generátor</h3><div class=\"seg wide\" id=\"gTabs\"><button data-a=\"tseq\" class=\"'+on('seq')+'\">Sekvence</button><button data-a=\"tdrill\" class=\"'+on('drill')+'\">Cvičení</button><button data-a=\"tyard\" class=\"'+on('yard')+'\">Zahrada",
+  "n": 3
+ },
+ {
+  "t": "Zavřít",
+  "file": "h_gen.js",
+  "line": 147,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>Generátor</h3><div class=\"seg wide\" id=\"gTabs\"><button data-a=\"tseq\" class=\"'+on('seq')+'\">Sekvence</button><button data-a=\"tdrill\" class=\"'+on('drill')+'\">Cvičení</button><button data-a=\"tyard\" class=\"'+on('yard')+'\">Zahrada",
+  "n": 3
+ },
+ {
+  "t": "Vygenerovat",
+  "file": "h_gen.js",
+  "line": 147,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>Generátor</h3><div class=\"seg wide\" id=\"gTabs\"><button data-a=\"tseq\" class=\"'+on('seq')+'\">Sekvence</button><button data-a=\"tdrill\" class=\"'+on('drill')+'\">Cvičení</button><button data-a=\"tyard\" class=\"'+on('yard')+'\">Zahrada",
+  "n": 3
+ },
+ {
+  "t": "Celý parkur má 15–22 překážek a staví se podle cílů třídy (oblouky, obraty, tunely do oblouku, křížení). Potřebuje plochu aspoň 30 × 20 m, nejlépe 40 × 20 m.",
+  "file": "h_gen.js",
+  "line": 161,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "$('gStyleT').textContent=cl?'Celý parkur má 15–22 překážek a staví se podle cílů třídy (oblouky, obraty, tunely do oblouku, křížení). Potřebuje plochu aspoň 30 × 20 m, nejlépe 40 × 20 m.':'';",
+  "n": 1
+ },
+ {
+  "t": "Hledám další…",
+  "file": "h_gen.js",
+  "line": 170,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "el.innerHTML=out.length?out.map(function(c,i){var m=metrics(c.obs,c.route,'A1',c.turns), tt=c.turns||[], nW=tt.filter(function(t){return t&&t.charAt(0)==='w';}).length, nB=tt.filter(function(t){return t&&t.charAt(0)==='b';}).length;",
+  "n": 1
+ },
+ {
+  "t": "Skládám trasy…",
+  "file": "h_gen.js",
+  "line": 173,
+  "kind": "lit",
+  "conf": "ui",
+  "src": ":busy?'<div class=\"empty-state\">Skládám trasy…</div>':'<div class=\"empty-state\">Na téhle ploše se trasu nepodařilo složit. Zkus větší plochu, méně překážek v trase nebo víc skoků.</div>';",
+  "n": 1
+ },
+ {
+  "t": "Na téhle ploše se trasu nepodařilo složit. Zkus větší plochu, méně překážek v trase nebo víc skoků.",
+  "file": "h_gen.js",
+  "line": 173,
+  "kind": "lit",
+  "conf": "ui",
+  "src": ":busy?'<div class=\"empty-state\">Skládám trasy…</div>':'<div class=\"empty-state\">Na téhle ploše se trasu nepodařilo složit. Zkus větší plochu, méně překážek v trase nebo víc skoků.</div>';",
+  "n": 1
+ },
+ {
+  "t": "Klub {sty}",
+  "file": "h_gen.js",
+  "line": 189,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "if(sty!=='yard'){ var q=CFG[sty]; cfg={W:W,H:H,cls:sty,gap:[5,6.8],cl:2,reuse:.45,eq:eq,n:q.n,name:'Klub '+sty,wrap:q.wrap,wmin:Math.min(q.wmin,1),wmax:q.wmax,back:q.back,bmin:0,bmax:q.bmax,budget:500}; max=50; want=4; }",
+  "n": 1
+ },
+ {
+  "t": "Zahrada {W}×{H}",
+  "file": "h_gen.js",
+  "line": 190,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "else cfg={W:W,H:H,turn:120,mix:[.25,.5,.25],tmax:150,gap:W<25?[4,6]:[5,7],cl:W<25?1.5:2,reuse:.35,eq:eq,n:[n,n],name:'Zahrada '+W+'×'+H,wrap:.25,wmax:2,back:n>=8&&W>=20?.12:0,bmax:1,bent:[0,1]};",
+  "n": 1
+ },
+ {
+  "t": ".......R......r..",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "..R......f.......r.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "....R.......r.....",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": ".r.R..r...l....f.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "..R.l.....r......",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "....l.......f.Rl.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "...f......rr...R...f.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "..L....l......r......",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "..L........l.....L..r.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "....r.fr......l.L...",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": ".....l.......f..l..R.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "......l.r......R....",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "....L.......Rlr.......",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "..f.lr............R.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": ".........rr.....L...",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": ".l..l..l......fL....",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": ".........rl.......L.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "...........f.Rl..r.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "......f...r....fr.R.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "....rl.......L.......",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "........f..L......rl..",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "....rl...R.....l.....",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "........R...r.r.....",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "....l.R...r...r......",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": ".r.L.....f...l.....",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "...R......lr..f.......",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "........f......l.l..L.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "....L..l.......l....",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "..............Rr.r.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": ".r......r....f....L..",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": ".......R.l....L....r.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "...r...r.f..R........",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "......l...L......l..",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "..r.......f......R.r.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "..f.Lf........R.r..l.",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ },
+ {
+  "t": "....l..l....L..f..R...",
+  "file": "p_db.js",
+  "line": 2,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var DBT=[\"jump\",\"tunnel\",\"weave\",\"aframe\",\"dogwalk\",\"seesaw\",\"tire\",\"longjump\"], PREDB={\"A1\":[[\"A1-01\",\"A1-01-v5\",[0,5.5,10.2,10,0,4,16.5,10.7,0,0,0,28,11.5,15,0,0,32.8,10.1,315,0,0,31.3,4.5,190,0,3,35,5.7,60,0,1,34.5,14.7,180,-135,0,29.8,8",
+  "n": 1
+ }
+]
