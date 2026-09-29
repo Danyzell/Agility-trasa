@@ -1821,10 +1821,20 @@ function histRender(){
     return '<li><span class="g '+x.g+'">'+x.g+'</span><span>'+fmt2(x.t)+' s · '+x.f+' ch. · '+x.r+' odm.<br><small>'+d.toLocaleDateString('cs-CZ')+' · trestné body '+fmt2(x.tot)+(dn?' · '+esc(dn):'')+(x.sp?' · mezičasy':'')+'</small></span><span></span><button data-rm="'+o.i+'" aria-label="Smazat běh">×</button></li>';
   }).join(''):'<li><span></span><small>Zatím žádný běh. Po uložení se tu objeví s hodnocením.</small></li>';
 }
-function resetRun(){cancelAnimationFrame(RUN.raf); RUN={t0:0,acc:0,on:false,f:0,r:0,raf:0}; $('manT').value=''; $('disChk').checked=false; if(view==='run') runRender();}
+/* dokud běží stopky, obrazovka nezhasne (telefon zhasíná po 30 s a STOP by se nedal zmáčknout včas) */
+var WAKE=null;
+function wakeOn(){
+  if(WAKE||!navigator.wakeLock) return; WAKE='?';
+  navigator.wakeLock.request('screen').then(function(l){
+    if(WAKE!=='?'){ l.release().catch(function(){}); return; } WAKE=l; l.addEventListener('release',function(){ if(WAKE===l) WAKE=null; });
+  },function(){ if(WAKE==='?') WAKE=null; });
+}
+function wakeOff(){ var l=WAKE; WAKE=null; if(l&&l!=='?') l.release().catch(function(){}); }
+document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&RUN.on) wakeOn(); });
+function resetRun(){cancelAnimationFrame(RUN.raf); wakeOff(); RUN={t0:0,acc:0,on:false,f:0,r:0,raf:0}; $('manT').value=''; $('disChk').checked=false; if(view==='run') runRender();}
 $('startBtn').onclick=function(){
-  if(RUN.on){RUN.acc+=(performance.now()-RUN.t0)/1000; RUN.on=false; cancelAnimationFrame(RUN.raf); $('manT').value=fmt2(RUN.acc);}
-  else {$('manT').value=''; RUN.acc=0; RUN.sp=null; RUN.t0=performance.now(); RUN.on=true; RUN.raf=requestAnimationFrame(tick);}
+  if(RUN.on){RUN.acc+=(performance.now()-RUN.t0)/1000; RUN.on=false; cancelAnimationFrame(RUN.raf); wakeOff(); $('manT').value=fmt2(RUN.acc);}
+  else {$('manT').value=''; RUN.acc=0; RUN.sp=null; RUN.t0=performance.now(); RUN.on=true; RUN.raf=requestAnimationFrame(tick); wakeOn();}
   runRender();
 };
 $('resetClock').onclick=resetRun;
@@ -3118,7 +3128,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='start'){ h=startHTML(); }
   else {
     h='<div id="pwaInst"></div><div class="panel" style="display:flex;flex-direction:column;gap:8px"><b>Agility trasa 1.10</b><p class="hint">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do oblouku), parkury trenérů, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, otočky kolem křídla a zadní strany skoků, 3D průlet, trénink paměti, videa s technikou, deník a statistiky.</p>'+
-      '<p class="hint">Novinky v 1.10: tlačítko Zpět (↶ vedle Stavba / Trasa, na počítači Ctrl+Z) vrátí posunutí, otočení i smazání překážky a změny trasy. Parkur z kódu se před uložením zkontroluje, poškozená data už aplikaci neshodí. Obnova zálohy nahradí všechna data, a když se nepovede, nic se nezmění. Při plné paměti aplikace upozorní, že se změna neuložila. Při slabém signálu na cvičišti se aplikace otevře do 3 sekund z uložené verze a písmo funguje i offline.</p>'+
+      '<p class="hint">Novinky v 1.10: tlačítko Zpět (↶ vedle Stavba / Trasa, na počítači Ctrl+Z) vrátí posunutí, otočení i smazání překážky a změny trasy. Když běží stopky, obrazovka nezhasne. Tažení překážky je plynulejší. Parkur z kódu se před uložením zkontroluje, poškozená data už aplikaci neshodí. Obnova zálohy nahradí všechna data, a když se nepovede, nic se nezmění. Při plné paměti aplikace upozorní, že se změna neuložila. Při slabém signálu na cvičišti se aplikace otevře do 3 sekund z uložené verze a písmo funguje i offline.</p>'+
       '<p class="hint">Novinky v 1.9: aplikace k instalaci do telefonu (Chrome → Instalovat aplikaci). V ní funguje výběr fotky a videa, ukládání obrázku, PDF a zálohy, plánek jde poslat přes Sdílet z galerie rovnou do čtečky, katalog parkurů i záloha v cloudu. Aktualizuje se sama.</p>'+
       '<p class="hint">Novinky v 1.8: Plánek z obrázku přečte i trasu. Z čísel v kroužcích pozná pořadí, z nakreslené čáry směry skoků, vstupy do tunelů a zón, otočky kolem křídla a zadní strany. Chybějící kruh, skok daleký, dvojité břevno, zeď nebo kladinu dohledá u čísla. Nejistá místa označí otazníkem. V aplikaci pro Android jde plánek vložit i ze schránky.</p>'+
       '<p class="hint">Novinky v 1.7: tlačítko Zkontrolovat nové parkury v záložce Parkury, nové parkury mají štítek Nový a tečku u záložky, přibyl parkur trenéra Euskadi Sextuple 2018 A1.</p>'+

@@ -4,6 +4,9 @@ const { phone, offline } = require('./helpers');
 module.exports = async function ({ browser, base }) {
   const T = await phone(browser); const { page } = T;
   await offline(T.ctx, { get_catalog: { version: 0 } });
+  /* zámek obrazovky: náhrada, která si pamatuje, co aplikace chtěla */
+  await T.ctx.addInitScript(() => { window.__wl = []; Object.defineProperty(navigator, 'wakeLock', { configurable: true, value: { request: () => {
+    const l = new EventTarget(); l.released = false; l.release = () => { l.released = true; l.dispatchEvent(new Event('release')); return Promise.resolve(); }; window.__wl.push(l); return Promise.resolve(l); } } }); });
   const step = async (label, fn) => {
     T.step(label);
     try {
@@ -37,8 +40,11 @@ module.exports = async function ({ browser, base }) {
     await step('více ' + m, async () => { await page.click('.nav [data-v="more"]'); await page.click(`#moreTabs [data-m="${m}"]`); });
   await step('video', async () => { await page.click('.nav [data-v="video"]'); await page.click('#vidList button >> nth=0'); await page.waitForTimeout(300); });
   await step('stopky', async () => {
-    await page.click('.nav [data-v="run"]'); await page.click('#startBtn'); await page.waitForTimeout(400); await page.click('#startBtn');
+    await page.click('.nav [data-v="run"]'); await page.click('#startBtn'); await page.waitForTimeout(400);
+    T.ok(await T.ev(() => __wl.length === 1 && !__wl[0].released), 'při běhu stopek může obrazovka zhasnout');
+    await page.click('#startBtn');
     T.ok(await T.ev(() => parseFloat($('manT').value.replace(',', '.')) > 0.2), 'stopky neměří');
+    T.ok(await T.ev(() => __wl.every(l => l.released)), 'po zastavení stopek zůstal zámek obrazovky');
   });
   await T.ctx.close();
   return T.errs;
