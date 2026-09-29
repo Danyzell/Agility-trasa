@@ -68,7 +68,11 @@ module.exports = async function ({ browser, base }) {
   await step('otevřít parkur', async () => { await page.click('.nav [data-v="lib"]'); await page.click('#cards .pick >> nth=3'); T.ok(await T.ev(() => S.meta.id === listFor('A1')[3].id), 'parkur se neotevřel'); });
   for (const m of ['dogs', 'start', 'stats', 'diary', 'warm', 'coach', 'backup', 'about'])
     await step('více ' + m, async () => { await page.click('.nav [data-v="more"]'); await page.click(`#moreTabs [data-m="${m}"]`); });
-  await step('video', async () => { await page.click('.nav [data-v="video"]'); await page.click('#vidList button >> nth=0'); await page.waitForTimeout(300); });
+  await step('video', async () => {
+    await page.click('.nav [data-v="video"]'); await page.click('#vidList button >> nth=0');
+    await page.waitForFunction(() => V3D.api || V3D.fail || !V3D.gl, null, { timeout: 20000 }); await page.waitForTimeout(300);
+    T.ok(await T.ev(() => V3D.api ? !$('vStage3').hidden : $('vStage').innerHTML.length > 0), 'animace se neukázala');
+  });
   await step('stopky', async () => {
     await page.click('.nav [data-v="run"]');
     T.ok(await T.ev(() => $('spLive').getBoundingClientRect().top - $('startBtn').getBoundingClientRect().bottom >= 12), 'STOP se dotýká tlačítka Mezičasy');

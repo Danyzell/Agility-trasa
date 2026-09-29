@@ -235,6 +235,10 @@ select.btn{padding-right:8px;}
 .topic span{font-size:12.5px; color:var(--muted);}
 .stage{background:var(--field); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
 .stage svg{display:block; width:100%; height:auto;}
+.stage{position:relative;}
+.stage canvas{display:block; width:100%; height:auto; aspect-ratio:2/1; touch-action:pan-y;}
+.topic{position:relative;}
+.topic .b3d{position:absolute; top:10px; right:10px; font-size:10.5px; font-weight:700; letter-spacing:.5px; color:var(--accent); border:1px solid var(--accent); border-radius:6px; padding:1px 5px; line-height:1.3;}
 .caption{min-height:44px; font-size:15px; font-weight:500; padding:8px 2px 0;}
 .steps{margin:0; padding-left:22px; display:flex; flex-direction:column; gap:6px; font-size:14.5px;}
 .tips{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:4px; font-size:14px; color:var(--text);}
@@ -2874,37 +2878,76 @@ function videoRender(){
   var groups={}; TOPICS.forEach(function(t){(groups[t.g]=groups[t.g]||[]).push(t);});
   $('vidList').innerHTML='<p class="hint">Animace ukazují správnou techniku. U každého tématu je postup nácviku a vybraná videa trenérů, česká i zahraniční.</p>'+
     Object.keys(groups).map(function(g){return '<h2>'+esc(g)+'</h2><div class="topics">'+groups[g].map(function(t){
-      return '<button class="topic" data-top="'+t.id+'">'+topicIcon(t.id)+'<b>'+esc(t.t)+'</b><span>'+esc(t.s)+'</span></button>';}).join('')+'</div>';}).join('')+
+      return '<button class="topic" data-top="'+t.id+'">'+topicIcon(t.id)+(SC[t.id]&&v3dOK()?'<span class="b3d">3D</span>':'')+'<b>'+esc(t.t)+'</b><span>'+esc(t.s)+'</span></button>';}).join('')+'</div>';}).join('')+
     '<h2 style="margin-top:14px">Knihy</h2><div class="coach-list">'+BOOKS.map(function(b){return '<a class="coach" href="'+b[2]+'" target="_blank" rel="noopener"><span class="cc">CZ</span><span><b>'+esc(b[0])+'</b><span>'+esc(b[1])+'</span></span>'+IC.ext+'</a>';}).join('')+'</div>';
 }
 function topicById(id){for(var i=0;i<TOPICS.length;i++) if(TOPICS[i].id===id) return TOPICS[i]; return null;}
 function showTopic(id){
   var t=topicById(id); if(!t) return; VID.id=id; stopVid();
+  var use3=!!SC[id]&&v3dOK();
   $('vidList').hidden=true; var d=$('vidDetail'); d.hidden=false;
   d.innerHTML='<button class="btn backlink" data-vback="1">'+IC.back+'Všechna témata</button><h2>'+esc(t.t)+'</h2>'+
-    (SC[id]?'<div class="stage"><svg id="vStage" viewBox="0 0 100 50" role="img" aria-label="Animace: '+esc(t.t)+'"></svg></div><div class="caption" id="vCap" aria-live="polite"></div>'+
+    (SC[id]?'<div class="stage">'+(use3?'<canvas id="vStage3" width="360" height="180" hidden role="img" aria-label="3D animace: '+esc(t.t)+'"></canvas>':'')+'<svg id="vStage" viewBox="0 0 100 50" role="img" aria-label="Animace: '+esc(t.t)+'"></svg></div><div class="caption" id="vCap" aria-live="polite"></div>'+
       '<div class="row"><button class="btn primary" id="vPlay">Pauza</button><button class="btn" id="vRe">Od začátku</button><div class="seg" id="vSpd"><button data-s=".5">0,5×</button><button data-s="1" class="on">1×</button></div></div>':'')+
     '<h2>Jak na to</h2><ol class="steps">'+t.steps.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ol>'+
     (t.tips?'<h2>Na co si dát pozor</h2><ul class="tips">'+t.tips.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>':'')+
     '<h2>Videa a články</h2><div class="vlinks">'+t.v.map(function(v){return '<a class="vlink" href="'+esc(v[3])+'" target="_blank" rel="noopener"><span class="lang '+v[0]+'">'+v[0].toUpperCase()+'</span><span><b>'+esc(v[1])+'</b><span>'+esc(v[2])+'</span></span>'+IC.ext+'</a>';}).join('')+'</div>'+
     '<p class="hint">Videa se otevřou v aplikaci YouTube nebo v prohlížeči.</p>';
-  if(SC[id]){ VID.pos=0; VID.spd=1; playVid(); }
+  if(SC[id]){ VID.pos=0; VID.spd=1; playVid(); if(use3) v3dStart(id); }
   try{window.scrollTo(0,0);}catch(e){}
 }
 function frameVid(){
   var t=topicById(VID.id); if(!t||!SC[VID.id]) return;
   var now=performance.now(), p=VID.on?(VID.pos+(now-VID.t0)/1000*VID.spd/t.D)%1:VID.pos;
   var st=$('vStage'); if(!st){stopVid(); return;}
-  st.innerHTML=SC[VID.id](p);
+  if(V3D.api){ try{ V3D.api.render(p); }catch(e){ v3dFallback(); } } else st.innerHTML=SC[VID.id](p);
   var c=''; t.cap.forEach(function(k){if(p>=k[0]) c=k[1];}); var ce=$('vCap'); if(ce&&ce.textContent!==c) ce.textContent=c;
   if(VID.on) VID.raf=requestAnimationFrame(frameVid);
 }
 function playVid(){ VID.on=true; VID.t0=performance.now(); cancelAnimationFrame(VID.raf); VID.raf=requestAnimationFrame(frameVid); var b=$('vPlay'); if(b) b.textContent='Pauza'; }
 function pauseVid(){ var t=topicById(VID.id); if(VID.on&&t){VID.pos=(VID.pos+(performance.now()-VID.t0)/1000*VID.spd/t.D)%1;} VID.on=false; cancelAnimationFrame(VID.raf); frameVid(); var b=$('vPlay'); if(b) b.textContent='Přehrát'; }
-function stopVid(){ VID.on=false; cancelAnimationFrame(VID.raf); }
+function stopVid(){ VID.on=false; cancelAnimationFrame(VID.raf); v3dStop(); }
+
+/* ---------- 3D animace techniky (three.js v souboru v3d/v3d.js, stáhne se až při otevření tématu) ----------
+   Když chybí WebGL, soubor se nenačte nebo se ztratí kontext grafiky, zůstane 2D animace (SVG). */
+var V3D={api:null,gen:0,fail:false,gl:null,mod:null};
+function v3dOK(){
+  if(V3D.fail) return false;
+  if(V3D.gl==null){ V3D.gl=false; try{ var c=document.createElement('canvas'), g=window.WebGLRenderingContext&&(c.getContext('webgl2')||c.getContext('webgl'));
+    if(g){ V3D.gl=true; var x=g.getExtension('WEBGL_lose_context'); if(x) x.loseContext(); } }catch(e){ V3D.gl=false; } }
+  return V3D.gl;
+}
+function v3dLoad(){
+  /* dynamický import přes Function: starší prohlížeče bez import() tak neshodí celý skript */
+  if(!V3D.mod){ try{ V3D.mod=(new Function('u','return import(u)'))('./v3d/v3d.js'); }catch(e){ V3D.mod=Promise.reject(e); } }
+  return V3D.mod;
+}
+function v3dStart(id){
+  var g=++V3D.gen, t=topicById(id);
+  v3dLoad().then(function(m){
+    if(g!==V3D.gen||VID.id!==id) return;
+    var cv=$('vStage3'), sv=$('vStage'); if(!cv||!sv||(m.hasScene&&!m.hasScene(id))) return;   /* scéna v 3D (zatím) není: zůstane 2D */
+    cv.hidden=false; sv.style.display='none';
+    var api=m.mount(cv,id,{D:t.D});
+    cv.addEventListener('webglcontextlost',function(e){ if(V3D.api===api){ e.preventDefault(); v3dFallback(); } });
+    V3D.api=api; api.resize(); frameVid();
+  }).catch(function(){ if(g===V3D.gen) v3dFallback(); });
+}
+function v3dStop(){ V3D.gen++; var a=V3D.api; V3D.api=null; if(a){ try{a.dispose();}catch(e){} } }
+function v3dFallback(){
+  V3D.fail=true; v3dStop();
+  var cv=$('vStage3'), sv=$('vStage'); if(cv) cv.hidden=true; if(sv) sv.style.display='';
+  if(VID.id) frameVid();
+}
+window.addEventListener('resize',function(){ if(V3D.api) V3D.api.resize(); if(V3D.api&&!VID.on) frameVid(); });
+/* skrytá stránka: animace se zastaví a po návratu pokračuje */
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='hidden'){ if(VID.on){ VID.resume=true; pauseVid(); } }
+  else if(VID.resume){ VID.resume=false; if(VID.id&&$('vStage')) playVid(); }
+});
 $('vidList').onclick=function(e){var b=e.target.closest('[data-top]'); if(b) showTopic(b.getAttribute('data-top'));};
 $('vidDetail').onclick=function(e){
-  if(e.target.closest('[data-vback]')){stopVid(); VID.id=null; videoRender(); return;}
+  if(e.target.closest('[data-vback]')){stopVid(); VID.id=null; $('vidDetail').innerHTML=''; videoRender(); return;}
   if(e.target.closest('#vPlay')){VID.on?pauseVid():playVid(); return;}
   if(e.target.closest('#vRe')){VID.pos=0; playVid(); return;}
   var s=e.target.closest('#vSpd button'); if(s){ if(VID.on) pauseVid(); VID.spd=+s.getAttribute('data-s'); Array.prototype.forEach.call(document.querySelectorAll('#vSpd button'),function(x){x.classList.toggle('on',x===s);}); playVid(); }
@@ -3533,7 +3576,8 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='backup'){ h=backupHTML(); }
   else if(moreTab==='start'){ h=startHTML(); }
   else {
-    h='<div id="pwaInst"></div><div class="panel" style="display:flex;flex-direction:column;gap:8px"><b>Agility trasa 1.12</b><p class="hint">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do oblouku), parkury trenérů, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, otočky kolem křídla a zadní strany skoků, 3D průlet, trénink paměti, videa s technikou, deník a statistiky.</p>'+
+    h='<div id="pwaInst"></div><div class="panel" style="display:flex;flex-direction:column;gap:8px"><b>Agility trasa 1.13</b><p class="hint">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do oblouku), parkury trenérů, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, otočky kolem křídla a zadní strany skoků, 3D průlet, trénink paměti, videa s technikou, deník a statistiky.</p>'+
+      '<p class="hint">Novinky v 1.13: 3D animace techniky ve Videích – pes a psovod na skutečných překážkách (skok, tunel, slalom, áčko, kladina, houpačka, kruh, skok daleký) i při vedení psa (čelo, záda, blind, otočky, zadní strana, start). Animace se stáhne až při otevření tématu, na slabším telefonu se sama zjednoduší a bez podpory 3D zůstane dosavadní 2D animace.</p>'+
       '<p class="hint">Novinky v 1.12: nová úvodní obrazovka Domů – série tréninkových dní, zaběhnuté parkury, průměrná rychlost a podíl čistých běhů, tlačítko Pokračovat na rozdělaný parkur, Parkury pro tebe podle třídy psa, Výzva dne a přehled tréninků v tomto týdnu. Parkur týdne: každý týden jeden parkur pro třídu, výsledek pošleš do žebříčku a porovnáš se s ostatními podle velikosti psa.</p>'+
       '<p class="hint">Novinky v 1.11: aplikace se aktualizuje hned a nabídne Obnovit, když je připravená nová verze. STOP na stopkách je dál od Mezičasů, větší tlačítka pro palec (počítadla chyb, překážky na ploše, strana psa L/P), parkury po dvou vedle sebe i na malém telefonu, plocha při klepání trasy neposkakuje, klávesnice nepřekrývá tlačítka. Kontrola FCI počítá mezi skoky i kruh a skok daleký, hlídá nejvýš 5 průběhů tunelem a SČP i MČP vychází z ukázané délky trati.</p>'+
       '<p class="hint">Novinky v 1.10: tlačítko Zpět (↶ vedle Stavba / Trasa, na počítači Ctrl+Z) vrátí posunutí, otočení i smazání překážky a změny trasy. Když běží stopky, obrazovka nezhasne. Tažení překážky je plynulejší. Čas ručně jde zadat i jako 1:05,30. Plánek z obrázku při čtení nezamrzne telefon a kompas ve Stavbě v terénu funguje i na iPhonu. PDF se stavebním plánem se vejde i u čtvercové plochy. Parkur z kódu se před uložením zkontroluje, poškozená data už aplikaci neshodí. Obnova zálohy nahradí všechna data, a když se nepovede, nic se nezmění. Při plné paměti aplikace upozorní, že se změna neuložila. Při slabém signálu na cvičišti se aplikace otevře do 3 sekund z uložené verze a písmo funguje i offline.</p>'+
