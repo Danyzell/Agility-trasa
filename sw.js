@@ -1,9 +1,10 @@
 /* Agility trasa: offline a příjem plánku přes Sdílet */
-var CACHE='agility-trasa-1.10', FONTS='agility-fonts';
+var CACHE='agility-trasa-1.11', FONTS='agility-fonts';
 var CORE=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable-512.png'];
 /* na cvičišti bývá slabý signál: když server do 3 s neodpoví, otevře se uložená verze (nová se mezitím stáhne na příště) */
 var NAV_WAIT=3000;
-self.addEventListener('install',function(e){ e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(CORE);}).then(function(){return self.skipWaiting();})); });
+/* cache:'reload': nová verze se stáhne ze serveru, ne z mezipaměti prohlížeče (GitHub Pages ji drží až 10 minut) */
+self.addEventListener('install',function(e){ e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(CORE.map(function(u){return new Request(u,{cache:'reload'});}));}).then(function(){return self.skipWaiting();})); });
 self.addEventListener('activate',function(e){ e.waitUntil(caches.keys().then(function(ks){ return Promise.all(ks.filter(function(k){return k!==CACHE&&k!=='agility-share'&&k!==FONTS;}).map(function(k){return caches.delete(k);})); }).then(function(){return self.clients.claim();})); });
 self.addEventListener('fetch',function(e){
   var u=new URL(e.request.url);
@@ -23,7 +24,7 @@ self.addEventListener('fetch',function(e){
   if(u.origin!==location.origin) return;
   if(e.request.mode==='navigate'){ /* nová verze, když je internet; jinak (nebo když server dlouho neodpovídá) uložená */
     /* jako aplikace se uloží jen stránka HTML (ne ikona nebo jiný soubor, který se otevřel v rozsahu aplikace) */
-    var put=null, net=fetch(e.request).then(function(r){ if(r&&r.ok&&/^text\/html/.test(r.headers.get('content-type')||'')){ var cp=r.clone(); put=caches.open(CACHE).then(function(c){ return c.put('index.html',cp); }); } return r; });
+    var put=null, net=fetch(e.request.url,{cache:'no-cache',credentials:'same-origin',redirect:'manual'}).then(function(r){ if(r&&r.ok&&/^text\/html/.test(r.headers.get('content-type')||'')){ var cp=r.clone(); put=caches.open(CACHE).then(function(c){ return c.put('index.html',cp); }); } return r; });
     e.waitUntil(net.then(function(){ return put; }).catch(function(){}));
     e.respondWith(new Promise(function(res){
       var sent=false; function send(r){ if(r&&!sent){ sent=true; res(r); } }
