@@ -7,7 +7,7 @@ module.exports = async function ({ browser, base }) {
   let shared = null;
   const bkPath = path.join(os.tmpdir(), 'agility-zaloha-test-' + process.pid + '.json');
   await offline(T.ctx, { get_catalog: { version: 0 }, get_course: () => shared });
-  await page.goto(base + '/'); await page.waitForTimeout(400);
+  await page.goto('about:blank'); await page.goto(base + '/#plan'); await page.waitForTimeout(400);
 
   try {
   T.step('nový parkur');

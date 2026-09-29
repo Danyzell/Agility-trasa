@@ -14,7 +14,7 @@ module.exports = async function ({ browser, base }) {
     r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([{ code: 'QQQQQQ', name: 'Z kódu', cls: 'A1', data: { W: 40, H: 20, obs: [{ id: 1, type: 'jump', x: 5, y: 5, rot: 0 }, { id: 2, type: 'jump', x: 11, y: 5, rot: 0 }], route: [1, 2] } }]) }); });
   await T.ctx.addInitScript(() => { window.__wl = []; Object.defineProperty(navigator, 'wakeLock', { configurable: true, value: { request: () => {
     const l = new EventTarget(); l.released = false; l.release = () => { l.released = true; l.dispatchEvent(new Event('release')); return Promise.resolve(); }; window.__wl.push(l); return Promise.resolve(l); } } }); });
-  const fresh = async () => { await page.goto(base + '/'); await page.waitForTimeout(300); await ev(() => { $('toast').hidden = true; }); };
+  const fresh = async () => { await page.goto('about:blank'); await page.goto(base + '/#plan'); await page.waitForTimeout(300); await ev(() => { $('toast').hidden = true; }); };
   /* čistý start kroku: vestavěný parkur bez úprav */
   const clean = async (i) => { await fresh(); await ev(i => { S.meta.dirty = false; loadCourse(listFor('A1')[i || 0], true); $('toast').hidden = true; }, i); };
   try {

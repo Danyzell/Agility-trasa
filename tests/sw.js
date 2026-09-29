@@ -6,7 +6,7 @@ module.exports = async function ({ browser, base }) {
   const errs = [], ok = (c, m) => { if (!c) errs.push(m); };
   page.on('pageerror', e => errs.push('chyba stránky: ' + e.message));
   await page.request.get(base + '/__slow?ms=0');
-  await page.goto(base + '/'); await page.waitForTimeout(300);
+  await page.goto('about:blank'); await page.goto(base + '/#plan'); await page.waitForTimeout(300);
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload(); await page.waitForTimeout(1500);
   ok(await page.evaluate(() => !!navigator.serviceWorker.controller), 'stránku neřídí service worker');
@@ -19,7 +19,7 @@ module.exports = async function ({ browser, base }) {
   await page.goto(base + '/tests/run.js'); await page.waitForTimeout(300);
   const ct = await page.evaluate(async () => { const r = await caches.match(location.origin + '/index.html'); return r ? r.headers.get('content-type') : ''; });
   ok(/text\/html/.test(ct), 'jako aplikace se uložil jiný soubor (' + ct + ')');
-  await page.goto(base + '/'); await page.waitForTimeout(400);
+  await page.goto('about:blank'); await page.goto(base + '/#plan'); await page.waitForTimeout(400);
 
   await ctx.setOffline(true);
   await page.reload(); await page.waitForTimeout(600);
