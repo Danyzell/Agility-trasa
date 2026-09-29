@@ -84,8 +84,9 @@ select.btn{padding-right:8px;}
 .ob-btn{flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 8px; min-width:62px; border-radius:10px; border:2px solid var(--border); background:var(--surface); font-size:11px; color:var(--text);}
 .ob-btn svg{width:26px; height:26px;}
 .ob-btn.on{border-color:var(--accent); background:color-mix(in srgb,var(--accent) 12%,var(--surface));}
-.selrow{display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--muted);}
-.selrow input{flex:1; accent-color:var(--accent);}
+.selrow{display:flex; align-items:center; gap:8px 10px; flex-wrap:wrap; font-size:13.5px; color:var(--muted);}
+.selrow input{flex:1 1 110px; min-width:110px; accent-color:var(--accent);}
+.selacts{display:flex; gap:8px; margin-left:auto;}
 
 #wrap{overflow:auto; max-height:70vh; border:1px solid var(--border); border-radius:12px; background:var(--field);}
 #field{display:block; height:auto; user-select:none; -webkit-user-select:none;}
@@ -414,8 +415,8 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
       <div class="palette" id="palette"></div>
       <div class="selrow" id="selRow" hidden>
         <span>Otočení</span><input type="range" id="rot" min="0" max="355" step="5" aria-label="Otočení překážky"><span id="rotLbl" class="num"></span>
-        <select class="btn" id="bendSel" aria-label="Tvar tunelu" hidden><option value="0">Rovný</option><option value="90">Oblouk 90° ↶</option><option value="-90">Oblouk 90° ↷</option><option value="135">Oblouk 135° ↶</option><option value="-135">Oblouk 135° ↷</option><option value="180">Do U ↶</option><option value="-180">Do U ↷</option></select>
-        <button class="btn danger" id="delBtn">Smazat</button>
+        <span class="selacts"><select class="btn" id="bendSel" aria-label="Tvar tunelu" hidden><option value="0">Rovný</option><option value="90">Oblouk 90° ↶</option><option value="-90">Oblouk 90° ↷</option><option value="135">Oblouk 135° ↶</option><option value="-135">Oblouk 135° ↷</option><option value="180">Do U ↶</option><option value="-180">Do U ↷</option></select>
+        <button class="btn danger" id="delBtn">Smazat</button></span>
       </div>
     </div>
     <div class="row" id="routeTools" hidden>

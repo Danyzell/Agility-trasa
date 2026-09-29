@@ -6,13 +6,21 @@ module.exports = async function ({ browser, base }) {
   await offline(T.ctx, { get_catalog: { version: 0 } });
   const step = async (label, fn) => {
     T.step(label);
-    try { await page.goto(base + '/'); await page.waitForTimeout(300); await fn(); await page.waitForTimeout(250); }
+    try {
+      await page.goto(base + '/'); await page.waitForTimeout(300); await fn(); await page.waitForTimeout(250);
+      const w = await T.ev(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
+      T.ok(w[0] <= w[1], `stránka přetéká do strany (${w[0]} > ${w[1]} px)`);
+    }
     catch (e) { T.errs.push(`[${label}] krok selhal: ${e.message.split('\n')[0]}`); }
   };
   await step('plán', async () => T.ok(await T.ev(() => S.obs.length > 0 && S.route.length > 1), 'výchozí parkur se nenačetl'));
   for (const t of ['ana', 'say', 'quiz', 'side', 'imp', 'bg', 'fld', 'export', 'share', '3d'])
     await step('nástroj ' + t, async () => { await page.click(`#planTools [data-t="${t}"]`); await page.waitForTimeout(t === '3d' ? 1200 : 400); });
   await step('režim trasa', async () => { await page.click('#mRoute'); });
+  await page.setViewportSize({ width: 360, height: 780 });
+  for (const t of ['tunnel', 'jump'])
+    await step('vybraná překážka ' + t + ' na 360 px', async () => { await T.ev(t => { sel = S.obs.find(o => o.type === t).id; ui(); render(); }, t); T.ok(await page.isVisible('#delBtn'), 'chybí Smazat'); });
+  await page.setViewportSize({ width: 390, height: 844 });
   await step('kontrola FCI', async () => { await page.click('#fciBar'); T.ok(await page.isVisible('#sheet .fcilist'), 'kontrola FCI se neotevřela'); });
   for (const v of ['lib', 'run', 'video', 'more'])
     await step('záložka ' + v, async () => { await page.click(`.nav [data-v="${v}"]`); T.ok(await page.isVisible('#v-' + v), 'záložka se neukázala'); });
