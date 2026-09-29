@@ -1326,7 +1326,11 @@ function sideChanges(){
   for(var i=1;i<S.route.length;i++) if(sd[i]&&sd[i-1]&&sd[i]!==sd[i-1]) out.push(i-1);
   return out;
 }
+/* při tažení prstem chodí pohybů víc, než kolik obrazovka stihne snímků: překresluje se nejvýš jednou za snímek */
+var renderRaf=0;
+function renderSoon(){ if(!renderRaf) renderRaf=requestAnimationFrame(function(){ renderRaf=0; render(); }); }
 function render(){
+  if(renderRaf){ cancelAnimationFrame(renderRaf); renderRaf=0; }
   syncSides();
   var obsG=$('obs'); obsG.innerHTML='';
   S.obs.forEach(function(o){obsG.appendChild(obEl(o));});
@@ -1414,7 +1418,7 @@ svg.addEventListener('pointerdown',function(e){
 svg.addEventListener('pointermove',function(e){
   if(hpDraw){
     var p=pt(e), l=hpDraw[hpDraw.length-1];
-    if(Math.hypot(l[0]-p.x,l[1]-p.y)>.35){hpDraw.push([r1(cl(p.x,0,S.W)),r1(cl(p.y,0,S.H))]); S.hp=hpDraw; render();}
+    if(Math.hypot(l[0]-p.x,l[1]-p.y)>.35){hpDraw.push([r1(cl(p.x,0,S.W)),r1(cl(p.y,0,S.H))]); S.hp=hpDraw; renderSoon();}
     return;
   }
   if(!drag||!tap) return;
@@ -1422,7 +1426,7 @@ svg.addEventListener('pointermove',function(e){
   if(!drag.moved) return;
   var q=pt(e), o=getO(drag.id);
   o.x=cl(r1(q.x+drag.dx),0,S.W); o.y=cl(r1(q.y+drag.dy),0,S.H);
-  render();
+  renderSoon();
 });
 svg.addEventListener('pointerup',function(e){
   var still=tap&&Math.hypot(e.clientX-tap.x,e.clientY-tap.y)<=6;
@@ -1450,7 +1454,7 @@ $('mBuild').onclick=function(){mode='build'; ui(); render();};
 $('mRoute').onclick=function(){mode='route'; sel=null; ui(); render();};
 $('zIn').onclick=function(){zoom=Math.min(4,zoom+.5); ui();};
 $('zOut').onclick=function(){zoom=Math.max(1,zoom-.5); ui();};
-$('rot').oninput=function(){var o=getO(sel); if(!o) return; o.rot=+this.value; $('rotLbl').textContent=o.rot+'°'; touch('rot'+o.id); render();};
+$('rot').oninput=function(){var o=getO(sel); if(!o) return; o.rot=+this.value; $('rotLbl').textContent=o.rot+'°'; touch('rot'+o.id); renderSoon();};
 $('rot').onchange=function(){UNDO_G=null;};
 $('undoAll').onclick=undo;
 document.addEventListener('keydown',function(e){
