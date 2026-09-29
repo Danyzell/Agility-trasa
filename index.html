@@ -1598,7 +1598,8 @@ function planReset(){
   sel=null; drag=null; tap=null; hpDraw=null; mode='build';
   ANA={};
   if(SET.psz){ SET.psz=null; lsSet(SETK,SET); }
-  var w=$('wrap'); if(w){ w.scrollLeft=0; w.scrollTop=0; }
+  var w=$('wrap'); if(w){ w.scrollLeft=0; w.scrollTop=0; w.classList.remove('flash-bad'); }
+  clearTimeout(toast.h); $('toast').hidden=true; /* hláška k předchozímu parkuru (třeba k přehrávání) */
 }
 $('bgDel').onclick=function(){bgClear(); drawGrid(); ui(); toast('Podklad odebrán');};
 $('bgFit').onclick=function(){if(!BG) return; BG.fit=BG.fit==='none'?'meet':'none'; lsSet('agility-bg-v1',BG); drawBg(); ui();};
@@ -2323,7 +2324,7 @@ function shareSheet(){
           var c=Array.isArray(rows)&&rows[0]; if(!c||typeof c!=='object'){toast('Parkur s kódem '+code+' neexistuje.'); return;}
           var d=courseClean(c.data); if(d.route.length<2){toast('Parkur s kódem '+code+' je poškozený, načíst nejde.'); return;}
           var nm=String(c.name||'Parkur '+code).slice(0,60), rec={id:'my-'+Date.now().toString(36),name:nm,cls:clsClean(c.cls),author:String(c.author||'').slice(0,60),W:d.W,H:d.H,obs:d.obs,route:d.route,sides:d.sides,turns:d.turns,hp:d.hp.slice(0,400),src:'kód '+code};
-          var L=myDB(); L.push(rec); if(!mySave(L)) return; closeSheet(); toast('Parkur '+nm+' uložen do Moje'); loadCourse(rec,true);
+          var L=myDB(); L.push(rec); if(!mySave(L)) return; closeSheet(); loadCourse(rec,true); toast('Parkur '+nm+' uložen do Moje');
         },function(err){done(); toast('Načtení se nepovedlo: '+err.message);});
       }
     });
