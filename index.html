@@ -1589,7 +1589,9 @@ $('hpClear').onclick=function(){S.hp=[]; touch(); render();};
 $('sideDone').onclick=function(){setPanel(null);};
 $('bgDone').onclick=function(){setPanel(null);};
 $('bgPick').onclick=function(){ if(APK_LITE){toast('Fotku jako podklad vložíš ve webové verzi aplikace.'); return;} $('bgFile').click(); };
-$('bgDel').onclick=function(){BG=null; try{localStorage.removeItem('agility-bg-v1');}catch(e){} drawGrid(); ui(); toast('Podklad odebrán');};
+/* podklad z fotky patří k rozpracovanému plánu: při Nový a načtení jiného parkuru se odebere */
+function bgClear(){ BG=null; try{localStorage.removeItem('agility-bg-v1');}catch(e){} if(panel==='bg') panel=null; }
+$('bgDel').onclick=function(){bgClear(); drawGrid(); ui(); toast('Podklad odebrán');};
 $('bgFit').onclick=function(){if(!BG) return; BG.fit=BG.fit==='none'?'meet':'none'; lsSet('agility-bg-v1',BG); drawBg(); ui();};
 $('bgOp').oninput=function(){if(!BG) return; BG.op=this.value/100; drawBg();};
 $('bgOp').onchange=function(){if(BG) lsSet('agility-bg-v1',BG);};
@@ -1754,7 +1756,7 @@ function findCourse(id){
 }
 function loadCourse(c,quiet){
   function go(){
-    sayStop(); simStop();
+    sayStop(); simStop(); bgClear();
     S.W=c.W||40; S.H=c.H||20; setSizeSel();
     S.obs=c.obs.map(function(o){var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.type==='tunnel'&&o.bend) n.bend=o.bend; return n;}); S.route=c.route.slice(); sel=null;
     S.sides=(c.sides||[]).slice(); S.turns=(c.turns||[]).slice(); S.hp=(c.hp||[]).map(function(p){return p.slice();}); if(panel==='quiz'){quizStop(); panel=null;}
@@ -1817,7 +1819,7 @@ function saveSheet(){
 $('saveBtn').onclick=saveSheet;
 $('titleBtn').onclick=saveSheet;
 $('newBtn').onclick=function(){
-  function go(){sayStop(); simStop(); S.obs=[]; S.route=[]; S.sides=[]; S.turns=[]; S.hp=[]; S.chk=null; sel=null; if(panel==='quiz'){quizStop();} panel=null; S.meta={id:null,name:'Nový parkur',cls:S.meta.cls||'A1',author:'',gen:false,dirty:false}; mode='build'; save(); render(); ui(); topbar(); resetRun(); undoReset();}
+  function go(){sayStop(); simStop(); bgClear(); drawGrid(); S.obs=[]; S.route=[]; S.sides=[]; S.turns=[]; S.hp=[]; S.chk=null; sel=null; if(panel==='quiz'){quizStop();} panel=null; S.meta={id:null,name:'Nový parkur',cls:S.meta.cls||'A1',author:'',gen:false,dirty:false}; mode='build'; save(); render(); ui(); topbar(); resetRun(); undoReset();}
   if(S.obs.length&&(S.meta.dirty||!S.meta.id)) ask('Začít nový parkur?','Plocha se vyčistí a neuložené změny se ztratí.','Začít nový',go,true); else go();
 };
 function needId(){if(!S.meta.id){toast('Nejdřív parkur ulož, pak si ho můžeš označit.'); return true;} return false;}

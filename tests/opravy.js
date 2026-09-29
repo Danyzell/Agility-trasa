@@ -129,6 +129,9 @@ module.exports = async function ({ browser, base }) {
     await page.click('#newBtn'); if (await page.isVisible('#scrim')) await T.sheet('ok');
     await page.reload(); await page.waitForTimeout(400);
     ok(await ev(() => S.obs.length === 0 && !S.meta.id), 'po Nový a restartu se plocha znovu zaplnila ukázkovým parkurem');
+    await ev(() => { BG = { src: 'data:image/gif;base64,R0lGODlhAQABAAAAACw=', op: .5, fit: 'meet' }; lsSet('agility-bg-v1', BG); drawGrid(); });
+    await ev(() => loadCourse(listFor('A1')[2], true)); if (await page.isVisible('#scrim')) await T.sheet('ok');
+    ok(await ev(() => !BG && !localStorage.getItem('agility-bg-v1') && !$('bgimg').innerHTML), 'podklad z fotky zůstal pod jiným parkurem');
 
     T.step('pravidla FCI a časy');
     const fc = await ev(() => {
