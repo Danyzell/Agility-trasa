@@ -22,7 +22,8 @@ self.addEventListener('fetch',function(e){
     return; }
   if(u.origin!==location.origin) return;
   if(e.request.mode==='navigate'){ /* nová verze, když je internet; jinak (nebo když server dlouho neodpovídá) uložená */
-    var put=null, net=fetch(e.request).then(function(r){ if(r&&r.ok){ var cp=r.clone(); put=caches.open(CACHE).then(function(c){ return c.put('index.html',cp); }); } return r; });
+    /* jako aplikace se uloží jen stránka HTML (ne ikona nebo jiný soubor, který se otevřel v rozsahu aplikace) */
+    var put=null, net=fetch(e.request).then(function(r){ if(r&&r.ok&&/^text\/html/.test(r.headers.get('content-type')||'')){ var cp=r.clone(); put=caches.open(CACHE).then(function(c){ return c.put('index.html',cp); }); } return r; });
     e.waitUntil(net.then(function(){ return put; }).catch(function(){}));
     e.respondWith(new Promise(function(res){
       var sent=false; function send(r){ if(r&&!sent){ sent=true; res(r); } }

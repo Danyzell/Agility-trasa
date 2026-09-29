@@ -8,7 +8,7 @@ Verze 1.10.
 
 ## Testy
 
-Automatické testy v prohlížeči (všechny obrazovky, uložení parkuru, běh, záloha a obnova, tlačítko Zpět, offline start) běží na GitHubu při každé změně, v záložce Actions → Testy. Ručně:
+Automatické testy v prohlížeči (všechny obrazovky, uložení parkuru, běh, záloha a obnova, tlačítko Zpět, Plánek z obrázku, kompas, offline start) běží na GitHubu při každé změně, v záložce Actions → Testy. Ručně:
 
 ```
 npm install --no-save playwright && npx playwright install chromium && node tests/run.js

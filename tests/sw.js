@@ -15,6 +15,12 @@ module.exports = async function ({ browser, base }) {
   /* písmo se uloží, jen když je Google Fonts dostupné */
   if (await page.evaluate(() => document.fonts.check('16px Barlow'))) ok(c['agility-fonts'] > 0, 'písmo se neuložilo pro offline');
 
+  /* jiný soubor otevřený v rozsahu aplikace se nesmí uložit místo aplikace */
+  await page.goto(base + '/tests/run.js'); await page.waitForTimeout(300);
+  const ct = await page.evaluate(async () => { const r = await caches.match(location.origin + '/index.html'); return r ? r.headers.get('content-type') : ''; });
+  ok(/text\/html/.test(ct), 'jako aplikace se uložil jiný soubor (' + ct + ')');
+  await page.goto(base + '/'); await page.waitForTimeout(400);
+
   await ctx.setOffline(true);
   await page.reload(); await page.waitForTimeout(600);
   ok(await page.evaluate(() => typeof S === 'object' && document.querySelectorAll('#obs .ob').length > 0), 'aplikace se bez internetu neotevřela');

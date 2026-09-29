@@ -3174,7 +3174,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='start'){ h=startHTML(); }
   else {
     h='<div id="pwaInst"></div><div class="panel" style="display:flex;flex-direction:column;gap:8px"><b>Agility trasa 1.10</b><p class="hint">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do oblouku), parkury trenérů, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, otočky kolem křídla a zadní strany skoků, 3D průlet, trénink paměti, videa s technikou, deník a statistiky.</p>'+
-      '<p class="hint">Novinky v 1.10: tlačítko Zpět (↶ vedle Stavba / Trasa, na počítači Ctrl+Z) vrátí posunutí, otočení i smazání překážky a změny trasy. Když běží stopky, obrazovka nezhasne. Tažení překážky je plynulejší. Parkur z kódu se před uložením zkontroluje, poškozená data už aplikaci neshodí. Obnova zálohy nahradí všechna data, a když se nepovede, nic se nezmění. Při plné paměti aplikace upozorní, že se změna neuložila. Při slabém signálu na cvičišti se aplikace otevře do 3 sekund z uložené verze a písmo funguje i offline.</p>'+
+      '<p class="hint">Novinky v 1.10: tlačítko Zpět (↶ vedle Stavba / Trasa, na počítači Ctrl+Z) vrátí posunutí, otočení i smazání překážky a změny trasy. Když běží stopky, obrazovka nezhasne. Tažení překážky je plynulejší. Čas ručně jde zadat i jako 1:05,30. Plánek z obrázku při čtení nezamrzne telefon a kompas ve Stavbě v terénu funguje i na iPhonu. PDF se stavebním plánem se vejde i u čtvercové plochy. Parkur z kódu se před uložením zkontroluje, poškozená data už aplikaci neshodí. Obnova zálohy nahradí všechna data, a když se nepovede, nic se nezmění. Při plné paměti aplikace upozorní, že se změna neuložila. Při slabém signálu na cvičišti se aplikace otevře do 3 sekund z uložené verze a písmo funguje i offline.</p>'+
       '<p class="hint">Novinky v 1.9: aplikace k instalaci do telefonu (Chrome → Instalovat aplikaci). V ní funguje výběr fotky a videa, ukládání obrázku, PDF a zálohy, plánek jde poslat přes Sdílet z galerie rovnou do čtečky, katalog parkurů i záloha v cloudu. Aktualizuje se sama.</p>'+
       '<p class="hint">Novinky v 1.8: Plánek z obrázku přečte i trasu. Z čísel v kroužcích pozná pořadí, z nakreslené čáry směry skoků, vstupy do tunelů a zón, otočky kolem křídla a zadní strany. Chybějící kruh, skok daleký, dvojité břevno, zeď nebo kladinu dohledá u čísla. Nejistá místa označí otazníkem. V aplikaci pro Android jde plánek vložit i ze schránky.</p>'+
       '<p class="hint">Novinky v 1.7: tlačítko Zkontrolovat nové parkury v záložce Parkury, nové parkury mají štítek Nový a tečku u záložky, přibyl parkur trenéra Euskadi Sextuple 2018 A1.</p>'+
@@ -3998,7 +3998,7 @@ function numbers(L,w,h,s,opt){
         if(r.G.length===1&&lab<10) c=r.G[0][lab]; else if(r.G.length===2&&lab>=10&&lab<100) c=r.G[0][Math.floor(lab/10)]+r.G[1][lab%10];
         row.push(c); } return row; });
     a=hungarian(C); var worst=-1,wc=.25; for(var i=0;i<n;i++){ if(C[i][a[i]]>wc){ wc=C[i][a[i]]; worst=i; } }
-    if(worst<0) break; Rg.splice(worst,1); }
+    if(worst<0||guard===4) break; Rg.splice(worst,1); } /* v posledním kole už nevyřazovat: C, a a n by pak neseděly na Rg */
   /* jistota čísla: o kolik by se zhoršilo nejlepší přiřazení všech čísel, kdyby tenhle kroužek dostal jiné číslo */
   var tot=0; for(var i1=0;i1<n;i1++) tot+=C[i1][a[i1]];
   var reg=Rg.map(function(r,i){ var C2=C.map(function(row){return row.slice();}); C2[i][a[i]]=BIG*4; var a2=hungarian(C2),t2=0; for(var j=0;j<n;j++) t2+=C2[j][a2[j]]; return t2-tot; });
@@ -4062,7 +4062,9 @@ function pathMap(L,w,h,s,obs,nums,thr,opt){
   return {DT:DT,near:near,body:body,P:P,cs:cs,gw:gw,gh:gh,A:A}; }
 /* ---------- směry: varianty otoček, jejichž dráha nejlépe vysvětlí nakreslenou čáru ----------
    skóre = pokrytí nakreslené čáry modelem − délka modelu mimo čáru − cena neobvyklých variant (vše v buňkách 20 cm) */
-function fit(obs,route,PM,w,h,s,opt){
+/* fitG je generátor: po každém výpočtu skóre se dá přerušit, aby čtení velkého plánku nezamrazilo telefon (fit ho doběhne naráz) */
+function fit(obs,route,PM,w,h,s,opt){ var it=fitG(obs,route,PM,w,h,s,opt),r; do r=it.next(); while(!r.done); return r.value; }
+function* fitG(obs,route,PM,w,h,s,opt){
   opt=opt||{}; var by={},n=route.length,sig=opt.sig||.45,beta=opt.beta==null?1:opt.beta,cs=PM.cs,gw=PM.gw,gh=PM.gh,G=new Float32Array(gw*gh),step=cs/2,W=w/s,H=h/s;
   obs.forEach(function(o){by[o.id]=o;});
   function states(i){ var o=by[route[i]],t=o.type; if(t==='jump') return i===n-1?['']:i>0?['','f','wL','wR','bL','bR']:['','f','wL','wR']; if(DEF[t].hl>0) return ['','f']; return ['']; }
@@ -4114,21 +4116,22 @@ function fit(obs,route,PM,w,h,s,opt){
     var pri=0; t.forEach(function(x){ if(x) pri+=x==='f'?(opt.pf||1):(opt.pw||5); });
     var xc=0; if(XP) g.segs.forEach(function(sg,j){ var sk=(t[j]||'').charAt(0)==='b'?by[route[j]]:null; sg.pcs.forEach(function(c){ xc+=wingX(c,sk); }); });
     return {sc:rec-beta*pen*step/cs-pri-XP*xc,per:per,rec:rec,pen:pen*step/cs,xc:xc,g:g}; }
-  var t=route.map(function(){return '';}),cur=score(t);
+  var t=route.map(function(){return '';}),cur=score(t),allows=[function(st){return st===''||st==='f';},function(){return true;}],ai,sweep,i,j,st,t2,r;
+  yield;
   /* nejdřív jen strany a vstupy (f), potom i otočky kolem křídla a zadní strany */
-  [function(st){return st===''||st==='f';},function(){return true;}].forEach(function(allow){
-    for(var sweep=0;sweep<4;sweep++){ var changed=false;
-      for(var i=0;i<n;i++){ var ss=states(i).filter(allow); if(ss.length<2) continue;
-        ss.forEach(function(st){ if(st===t[i]) return; var t2=t.slice(); t2[i]=st; var r=score(t2); if(r.sc>cur.sc+1e-6){ t=t2; cur=r; changed=true; } }); }
-      if(!changed) break; } });
+  for(ai=0;ai<allows.length;ai++) for(sweep=0;sweep<4;sweep++){ var changed=false;
+    for(i=0;i<n;i++){ var ss=states(i).filter(allows[ai]); if(ss.length<2) continue;
+      for(j=0;j<ss.length;j++){ st=ss[j]; if(st===t[i]) continue; t2=t.slice(); t2[i]=st; r=score(t2); if(r.sc>cur.sc+1e-6){ t=t2; cur=r; changed=true; } yield; } }
+    if(!changed) break; }
   /* jistota: o kolik buněk je zvolená varianta lepší než nejlepší jiná na stejném místě */
-  function margins(){ return route.map(function(_,i){ var ss=states(i); if(ss.length<2) return 99; var alt=-1e9; ss.forEach(function(st){ if(st===t[i]) return; var t2=t.slice(); t2[i]=st; var r=score(t2); if(r.sc>alt) alt=r.sc; }); return cur.sc-alt; }); }
-  var marg=margins();
+  function* margins(){ var out=[]; for(var i=0;i<n;i++){ var ss=states(i); if(ss.length<2){ out.push(99); continue; } var alt=-1e9;
+    for(var j=0;j<ss.length;j++){ var st=ss[j]; if(st===t[i]) continue; var t2=t.slice(); t2[i]=st; var r=score(t2); if(r.sc>alt) alt=r.sc; yield; } out.push(cur.sc-alt); } return out; }
+  var marg=yield* margins();
   /* dvojice sousedních míst najednou (např. otočka + vstup do dalšího tunelu), jen kde je rozhodnutí těsné */
   for(var pass=0;pass<2;pass++){ var ch2=false;
     for(var i2=0;i2<n-1;i2++){ var s1=states(i2),s2=states(i2+1); if(s1.length<2||s2.length<2||Math.min(marg[i2],marg[i2+1])>(opt.pairAll===false?12:1e9)) continue;
-      s1.forEach(function(a1){ s2.forEach(function(a2){ if(a1===t[i2]&&a2===t[i2+1]) return; var t2=t.slice(); t2[i2]=a1; t2[i2+1]=a2; var r=score(t2); if(r.sc>cur.sc+1e-6){ t=t2; cur=r; ch2=true; } }); }); }
-    if(!ch2) break; marg=margins(); }
+      for(var p1=0;p1<s1.length;p1++) for(var p2=0;p2<s2.length;p2++){ var a1=s1[p1],a2=s2[p2]; if(a1===t[i2]&&a2===t[i2+1]) continue; t2=t.slice(); t2[i2]=a1; t2[i2+1]=a2; r=score(t2); if(r.sc>cur.sc+1e-6){ t=t2; cur=r; ch2=true; } yield; } }
+    if(!ch2) break; marg=yield* margins(); }
   return {turns:t,score:cur.sc,per:cur.per,rec:cur.rec,pen:cur.pen,nA:PM.A.length,margin:marg,eval:score,nev:NEV}; }
 /* ---------- celé čtení ---------- */
 /* čísla z plánku (srovnaného na s px/m); L = šedotón, lze předat, ať se nepočítá znovu */
@@ -4244,7 +4247,8 @@ function findPlank(M,w,h,s,cx,cy,rad){
       if(!best||sc>best.sc) best={type:ty,x:px,y:py,rot:deg,len:len,wid:dp,sc:sc}; } }
   return best; }
 /* trasa z čísel a překážek + směry podle nakreslené čáry */
-function route(D,s,obs,N,opt){
+function route(D,s,obs,N,opt){ var it=routeG(D,s,obs,N,opt),r; do r=it.next(); while(!r.done); return r.value; }
+function* routeG(D,s,obs,N,opt){
   opt=opt||{}; var w=D.width,h=D.height,L=N.L||gray(D),thr=opt.thr||150,issues=[];
   if(!N.list||N.list.length<2) return {ok:false,why:'nums',nums:N.list||[]};
   var T1=performance.now(),rt=[],nn=[],added=[];
@@ -4315,11 +4319,12 @@ function route(D,s,obs,N,opt){
   obs.forEach(function(o){ if(rt.indexOf(o.id)<0) issues.push({o:o.id,t:'unused'}); });
   var mx=0; N.list.forEach(function(q){ if(q.n>mx) mx=q.n; });
   if(rt.length<2) return {ok:false,why:'attach',nums:N.list};
-  var PM=pathMap(L,w,h,s,obs,N.list,thr+30,opt),T2=performance.now(),F=fit(obs,rt,PM,w,h,s,opt),T3=performance.now();
+  yield; var PM=pathMap(L,w,h,s,obs,N.list,thr+30,opt); yield;
+  var T2=performance.now(),F=yield* fitG(obs,rt,PM,w,h,s,opt),T3=performance.now();
   F.margin.forEach(function(m,i){ if(m<3) issues.push({n:nn[i],t:'dir'}); });
   return {ok:true,ms:[Math.round(T2-T1),Math.round(T3-T2)],obs:obs,added:added,route:rt,nn:nn,turns:F.turns,nums:N.list,att:A.map(function(x){return {n:x.q.n,o:x.o&&x.o.id,d:+x.d.toFixed(2),moved:!!x.moved};}),fit:F,issues:issues,max:mx,PM:PM}; }
 function run(D,s,W,H,obs,opt){ var T0=performance.now(),N=nums(D,s,opt),T1=performance.now(),r=route(D,s,obs,N,opt); if(r.ok) r.ms=[Math.round(T1-T0)].concat(r.ms); return r; }
-return {run:run,nums:nums,clean:clean,rescue:rescue,needRescue:needRescue,route:route,findLJ:findLJ,findPar:findPar,findTire:findTire,findPlank:findPlank,findBar:findBar,digitsOf:ringDigits,numbers:numbers,rings:rings,attach:attach,pathMap:pathMap,fit:fit,gray:gray,hungarian:hungarian,classify:classify,tpl:tpl};
+return {run:run,nums:nums,clean:clean,rescue:rescue,needRescue:needRescue,route:route,routeG:routeG,findLJ:findLJ,findPar:findPar,findTire:findTire,findPlank:findPlank,findBar:findBar,digitsOf:ringDigits,numbers:numbers,rings:rings,attach:attach,pathMap:pathMap,fit:fit,gray:gray,hungarian:hungarian,classify:classify,tpl:tpl};
 })();
 
 
@@ -4358,7 +4363,7 @@ function impOpen(){
     '<div class="acts"><button class="btn" id="imPick"'+(APK_LITE?' hidden':'')+'>Vybrat obrázek</button><button class="btn primary" id="imGo" disabled>Rozpoznat</button></div>'+
     '<input type="file" id="imFile" accept="image/*" hidden>';
   document.body.appendChild(ov);
-  $('imClose').onclick=impClose; $('imPick').onclick=function(){ IMP.tok=(IMP.tok||0)+1; if(IMP.step==='res'){ impCorners(); return; } $('imFile').click(); };
+  $('imClose').onclick=impClose; $('imPick').onclick=function(){ IMP.tok=(IMP.tok||0)+1; if(IMP.step==='res'){ impCorners(); return; } if(IMP.img) impCorners(); $('imFile').click(); };
   $('imFile').onchange=function(){ var f=this.files&&this.files[0]; this.value=''; if(f) impLoad(f); };
   $('imGo').onclick=function(){ if(IMP.step==='res') impApply(); else impDetect(); };
   $('imW').value=S.W||40; $('imH').value=S.H||20; $('imSize').hidden=true;
@@ -4440,11 +4445,11 @@ function impDetect(){
   var st=impStages(W,H),tok=IMP.tok=(IMP.tok||0)+1;
   function done(){ if(IMP&&$('imGo')) $('imGo').disabled=IMP.step==='res'&&!(IMP.obs&&IMP.obs.length); }
   (function step(){ if(!IMP||IMP.tok!==tok) return; var more=false; if(st.msg) $('imHint').textContent=st.msg;
-    setTimeout(function(){ if(!IMP||IMP.tok!==tok) return; try{ more=st.next(); }catch(e){ more=false; } if(more) step(); else done(); },30); })();
+    setTimeout(function(){ if(!IMP||IMP.tok!==tok) return; try{ more=st.next(); }catch(e){ more=false; } if(more) step(); else done(); },st.again?0:30); })();
 }
 function impDetect2(W,H){ var st=impStages(W,H); while(st.next()); }
 function impStages(W,H){
-  var s=25, s2=50, D, show, N=null, D50=null, g, flat, G25, res, obs, R=null, k=0;
+  var s=25, s2=50, D, show, N=null, D50=null, g, flat, G25, res, obs, R=null, RG=null, k=0;
   function inBand(o){ var b=res&&res.bands; if(!b) return false; var P=opoly(o).concat([{x:o.x,y:o.y}]),e=.15;
     return b.T&&P.every(function(p){return p.y<1-e;})||b.B&&P.every(function(p){return p.y>H-1+e;})||b.L&&P.every(function(p){return p.x<1-e;})||b.R&&P.every(function(p){return p.x>W-1+e;}); }
   function toObs(r){ return r.obs.filter(function(o){return DEF[o.type];}).map(function(o){ var n={type:o.type,x:r1(cl(o.x,.3,W-.3)),y:r1(cl(o.y,.3,H-.3)),rot:((Math.round(o.rot)%360)+360)%360}; if(o.type==='tunnel'&&o.bend) n.bend=o.bend; if(o.info&&o.info.bar) n.bar=o.info.bar; return n; }); }
@@ -4467,7 +4472,11 @@ function impStages(W,H){
       if(N&&PRR.needRescue(obs,N)){ try{ var r0=flat?PR.read(IMP.D,{grid:g}):PR.read(show,G25); if(r0&&r0.obs) obs=obs.concat(PRR.rescue(obs,toObs(r0).filter(function(o){ return !inBand(o); }),N)); }catch(e){} }
       obs.forEach(function(o,i){ o.id=i+1; delete o.bar; }); },
     /* 3) trasa: čísla k překážkám, chybějící překážky u čísel, směry podle nakreslené čáry */
-    function(){ if(N&&obs.length>=2){ try{ R=PRR.route(D50,s2,obs,N); }catch(e){ R=null; } } },
+    function(){ if(!(N&&obs.length>=2)) return;
+      var it, t0=performance.now();
+      try{ if(!RG) RG=PRR.routeG(D50,s2,obs,N); do it=RG.next(); while(!it.done&&performance.now()-t0<40); }catch(e){ R=null; RG=null; return; }
+      if(!it.done) return 'again'; /* ještě nehotovo: pokračuje se po překreslení obrazovky */
+      R=it.value; RG=null; },
     /* 4) výsledek */
     function(){ var c=document.createElement('canvas'); c.width=D.width; c.height=D.height; c.getContext('2d').putImageData(show,0,0);
       /* s přečtenou trasou: skoky a kruhy bez čísla jsou skoro vždy omyl čtečky (kus čáry, okraj tunelu), vynechají se */
@@ -4484,7 +4493,8 @@ function impStages(W,H){
       $('imSize').hidden=true; $('imGo').textContent='Použít'; $('imGo').disabled=!obs.length; $('imPick').textContent='Zpět k rohům';
       impDraw(); }
   ], msgs=['Čtu čísla v kroužcích…','Hledám překážky…','Čtu trasu a směry podle nakreslené čáry…',''];
-  var st={msg:msgs[0],next:function(){ if(k>=steps.length) return false; var r=steps[k++](); if(r===false){ k=steps.length; return false; } st.msg=msgs[k]||''; return k<steps.length; }};
+  var st={msg:msgs[0],again:false,next:function(){ if(k>=steps.length) return false; var r=steps[k](); if(r===false){ k=steps.length; return false; }
+    st.again=r==='again'; if(!st.again){ k++; st.msg=msgs[k]||''; } return k<steps.length; }};
   return st;
 }
 /* srozumitelný seznam míst, kde si čtečka nebyla jistá */
@@ -4535,7 +4545,10 @@ function fldOpen(){
   ov.innerHTML='<div class="ovsp-top"><b>Stavba v terénu</b><span class="grow"></span><button class="btn" id="fdClose">Zavřít</button></div><div id="fdBody"></div>';
   document.body.appendChild(ov);
   $('fdClose').onclick=fldClose;
-  FLD.onOri=function(e){ var h=fldHeading(e); if(h==null) return; FLD.h=h; if(FLD.cal) fldLive(); };
+  FLD.onOri=function(e){ var h=fldHeading(e); if(h==null) return; FLD.h=h;
+    /* iPhone: kompas se povolí až klepnutím na Stojím v rohu, první směr po povolení je ten z rohu */
+    if(FLD.calWait){ FLD.calWait=false; if(FLD.k===0){ FLD.h0=h; SET.fldH0=h; lsSet(SETK,SET); FLD.cal=true; fldCard(); return; } }
+    if(FLD.cal) fldLive(); };
   var ev='ondeviceorientationabsolute' in window?'deviceorientationabsolute':'deviceorientation'; FLD.ev=ev;
   function listen(){ window.addEventListener(ev,FLD.onOri); }
   try{ if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){ FLD.needPerm=listen; } else listen(); }catch(e){}
@@ -4549,11 +4562,12 @@ function fldSetup(){
     '<p class="hint">Krok si změříš tak, že ujdeš 10 m a spočítáš kroky: délka = 10 / počet kroků. Kompas: <b id="fdCmp">čekám na signál…</b></p>'+
     '<div class="acts"><button class="btn" id="fdNoCmp">Bez kompasu</button><button class="btn primary" id="fdCal">Stojím v rohu</button></div>';
   $('fdCal').onclick=function(){
-    if(FLD.needPerm){ var nf=FLD.needPerm; FLD.needPerm=null; DeviceOrientationEvent.requestPermission().then(function(r){ if(r==='granted') nf(); },function(){}); }
+    if(FLD.needPerm){ var nf=FLD.needPerm; FLD.needPerm=null; DeviceOrientationEvent.requestPermission().then(function(r){ if(r==='granted'&&FLD){ FLD.calWait=true; nf(); } },function(){}); }
     FLD.step=cl(parseFloat(String($('fdStep').value).replace(',','.'))||.75,.4,1.2); SET.step=FLD.step;
     if(FLD.h!=null){ FLD.h0=FLD.h; SET.fldH0=FLD.h0; } FLD.cal=FLD.h!=null; lsSet(SETK,SET); FLD.k=0; fldCard(); };
   $('fdNoCmp').onclick=function(){ FLD.step=cl(parseFloat(String($('fdStep').value).replace(',','.'))||.75,.4,1.2); SET.step=FLD.step; lsSet(SETK,SET); FLD.cal=false; FLD.k=0; fldCard(); };
-  var t0=Date.now(); (function wait(){ if(!FLD||!$('fdCmp')) return; if(FLD.h!=null){ $('fdCmp').textContent='funguje'; return; } if(Date.now()-t0>2500){ $('fdCmp').textContent='nedostupný, aplikace popíše směr slovy'; return; } setTimeout(wait,300); })();
+  var t0=Date.now(); (function wait(){ if(!FLD||!$('fdCmp')) return; if(FLD.h!=null){ $('fdCmp').textContent='funguje'; return; }
+    if(FLD.needPerm){ $('fdCmp').textContent='zapne se po klepnutí na Stojím v rohu'; return; } if(Date.now()-t0>2500){ $('fdCmp').textContent='nedostupný, aplikace popíše směr slovy'; return; } setTimeout(wait,300); })();
 }
 function fldMini(cur){
   var prev=FLD.k>0?FLD.ord[FLD.k-1]:{x:0,y:0};
