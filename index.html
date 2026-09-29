@@ -1016,7 +1016,7 @@ function flowStats(ob,rt,tu,g){
     if(ad>45){ var sg=dg>0?1:-1; if(lastS&&sg!==lastS) alt++; lastS=sg; }
   });
   var bent={}, wraps=0, backs=0;
-  rt.forEach(function(id,k){ var o=by[id], t=tu&&tu[k]; if(o&&o.type==='tunnel'&&o.bend) bent[id]=1; if(t&&t.charAt(0)==='w') wraps++; if(t&&t.charAt(0)==='b') backs++; });
+  rt.forEach(function(id,k){ var o=by[id], t=tu&&tu[k]; if(o&&o.type==='tunnel'&&o.bend) bent[id]=1; if(t&&t.charAt(0)==='w'&&k<rt.length-1) wraps++; if(t&&t.charAt(0)==='b'&&k>0) backs++; }); /* otočka po posledním skoku a zadní strana prvního se nekreslí ani neměří */
   var traps=0;
   for(i=0;i<g.P.length-1;i++){
     var Pa=g.P[i]; if(Pa.w||Math.abs(turns[i]||0)<40) continue;
@@ -1219,7 +1219,8 @@ function metrics(obs,route,cls,turns,geo){
   var zones=route.some(function(id){return by[id]&&ZN.indexOf(by[id].type)>=0;});
   var mcs=zones?2.5:3.0, spd=spdOf(cls);
   return {len:len,n:route.length,disc:zones?'Agility':'Jumping',mcs:mcs,spd:spd,cls:cls,
-    sct:len?Math.ceil(len/spd):0, mct:len?Math.ceil(len/mcs):0};
+    /* časy z délky zaokrouhlené na desetiny, jak ji aplikace ukazuje (130,0 m / 2,5 m/s = 52 s, ne 53 s) */
+    sct:len?Math.ceil(Math.round(len*10)/10/spd-1e-9):0, mct:len?Math.ceil(Math.round(len*10)/10/mcs-1e-9):0};
 }
 function curM(){return metrics(S.obs,S.route,S.meta.cls,S.turns);}
 function specsHTML(m){
@@ -1507,7 +1508,8 @@ function fciCheck(obs,route,turns,sides,cls,geo){
   function add(ok,t){out.push({ok:ok,t:t});}
   var types=route.map(function(id){return by[id].type;}), cnt=function(t){return types.filter(function(x){return x===t;}).length;};
   add(n>=15&&n<=22,'Počet překážek '+n+' (FCI: 15–22)');
-  add(cnt('jump')>=7,'Skoků '+cnt('jump')+' (FCI: aspoň 7)');
+  /* skoky podle FCI: překážka, zeď, kruh i skok daleký */
+  var nJ=cnt('jump')+cnt('tire')+cnt('longjump'); add(nJ>=7,'Skoků '+nJ+' (FCI: aspoň 7, počítá se i kruh a skok daleký)');
   add(geo.total>=100&&geo.total<=220,'Délka trati '+fmt(geo.total)+' m (FCI: 100–220 m)');
   var gaps=[];
   geo.segs.forEach(function(s,i){
@@ -1519,6 +1521,7 @@ function fciCheck(obs,route,turns,sides,cls,geo){
   add(!gaps.length,'Rozestupy (FCI: po dráze 5–9 m, vzdušnou čarou nejvýš 7 m)'+(gaps.length?': '+gaps.join('; '):''));
   add(cnt('weave')===1,'Slalom '+(cnt('weave')?cnt('weave')+'×':'chybí')+' (FCI: v každém parkuru, jen jednou)');
   if(cnt('tire')) add(cnt('tire')===1,'Kruh '+cnt('tire')+'× (FCI: jen jednou)');
+  if(cnt('tunnel')) add(cnt('tunnel')<=5,'Tunel '+cnt('tunnel')+'× (FCI: nejvýš 5 průběhů)');
   var zt=types.filter(function(t){return ZN.indexOf(t)>=0;}), kinds={}; zt.forEach(function(t){kinds[t]=1;});
   if(zt.length){ var mx=cls==='A1'?3:4; add(Object.keys(kinds).length===3&&zt.length<=mx,'Zónové překážky '+zt.length+'×, druhů '+Object.keys(kinds).length+' (FCI: všechny 3 druhy, v '+cls+' nejvýš '+mx+')'); }
   var sd=(sides||[]).slice(0,n);

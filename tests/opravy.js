@@ -124,6 +124,28 @@ module.exports = async function ({ browser, base }) {
     ok(await ev(() => $('yDate').value === '2026-10-01'), 'deník nabízí včerejší datum');
     await T.sheet('x');
 
+    T.step('pravidla FCI a časy');
+    const fc = await ev(() => {
+      const c = JSON.parse(JSON.stringify(listFor('A1')[0])), by = {}; c.obs.forEach(o => by[o.id] = o);
+      const jumps = c.route.map(id => by[id]).filter(o => o.type === 'jump');
+      /* dva skoky → kruh a skok daleký: skoků podle FCI je pořád stejně */
+      jumps[1].type = 'tire'; jumps[2].type = 'longjump';
+      const want = c.route.filter(id => ['jump', 'tire', 'longjump'].includes(by[id].type)).length;
+      const nJ = fciCheck(c.obs, c.route, c.turns, [], 'A1').find(x => new RegExp('^Skoků ' + want + ' ').test(x.t));
+      /* 6 tunelů v trase */
+      const c2 = JSON.parse(JSON.stringify(listFor('A3')[0])), by2 = {}; c2.obs.forEach(o => by2[o.id] = o);
+      let nt = c2.route.filter(id => by2[id].type === 'tunnel').length; c2.route.forEach(id => { if (nt < 6 && by2[id].type === 'jump') { by2[id].type = 'tunnel'; nt++; } });
+      const tu = fciCheck(c2.obs, c2.route, [], [], 'A3').find(x => /^Tunel/.test(x.t));
+      const c7 = listFor('A1')[6], m = metrics(c7.obs, c7.route, 'A1', c7.turns);
+      const L1 = Math.round(m.len * 10) / 10;
+      return { nJ: nJ && nJ.ok, tu: tu && tu.ok, mct: m.mct === Math.ceil(L1 / m.mcs - 1e-9) };
+    });
+    ok(fc.nJ === true, 'kruh a skok daleký se nepočítají do skoků FCI');
+    ok(fc.tu === false, 'chybí kontrola nejvýš 5 průběhů tunelem');
+    ok(fc.mct, 'MČP se nepočítá z ukázané délky');
+    const fl = await ev(() => { const c = listFor('A1')[0], t = c.route.map(() => null); t[t.length - 1] = 'wL'; return flowStats(c.obs, c.route, t).wraps; });
+    ok(fl === 0, 'otočka po posledním skoku se počítá do rozboru');
+
     T.step('rozcvička');
     await fresh();
     await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="warm"]');
