@@ -1589,7 +1589,19 @@ $('hpClear').onclick=function(){S.hp=[]; touch(); render();};
 $('sideDone').onclick=function(){setPanel(null);};
 $('bgDone').onclick=function(){setPanel(null);};
 $('bgPick').onclick=function(){ if(APK_LITE){toast('Fotku jako podklad vložíš ve webové verzi aplikace.'); return;} $('bgFile').click(); };
-$('bgDel').onclick=function(){BG=null; try{localStorage.removeItem('agility-bg-v1');}catch(e){} drawGrid(); ui(); toast('Podklad odebrán');};
+/* podklad z fotky patří k rozpracovanému plánu: při Nový a načtení jiného parkuru se odebere */
+function bgClear(){ BG=null; try{localStorage.removeItem('agility-bg-v1');}catch(e){} if(panel==='bg') panel=null; }
+/* Nový, načtení parkuru a plánek z obrázku: z předchozího parkuru ani z nástrojů na ploše nic nezůstane */
+function planReset(){
+  sayStop(); simStop();
+  if(QZ) quizStop(); panel=null;
+  sel=null; drag=null; tap=null; hpDraw=null; mode='build';
+  ANA={};
+  if(SET.psz){ SET.psz=null; lsSet(SETK,SET); }
+  var w=$('wrap'); if(w){ w.scrollLeft=0; w.scrollTop=0; w.classList.remove('flash-bad'); }
+  clearTimeout(toast.h); $('toast').hidden=true; /* hláška k předchozímu parkuru (třeba k přehrávání) */
+}
+$('bgDel').onclick=function(){bgClear(); drawGrid(); ui(); toast('Podklad odebrán');};
 $('bgFit').onclick=function(){if(!BG) return; BG.fit=BG.fit==='none'?'meet':'none'; lsSet('agility-bg-v1',BG); drawBg(); ui();};
 $('bgOp').oninput=function(){if(!BG) return; BG.op=this.value/100; drawBg();};
 $('bgOp').onchange=function(){if(BG) lsSet('agility-bg-v1',BG);};
@@ -1754,7 +1766,7 @@ function findCourse(id){
 }
 function loadCourse(c,quiet){
   function go(){
-    sayStop(); simStop();
+    planReset(); bgClear();
     S.W=c.W||40; S.H=c.H||20; setSizeSel();
     S.obs=c.obs.map(function(o){var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.type==='tunnel'&&o.bend) n.bend=o.bend; return n;}); S.route=c.route.slice(); sel=null;
     S.sides=(c.sides||[]).slice(); S.turns=(c.turns||[]).slice(); S.hp=(c.hp||[]).map(function(p){return p.slice();}); if(panel==='quiz'){quizStop(); panel=null;}
@@ -1817,7 +1829,7 @@ function saveSheet(){
 $('saveBtn').onclick=saveSheet;
 $('titleBtn').onclick=saveSheet;
 $('newBtn').onclick=function(){
-  function go(){sayStop(); simStop(); S.obs=[]; S.route=[]; S.sides=[]; S.turns=[]; S.hp=[]; S.chk=null; sel=null; if(panel==='quiz'){quizStop();} panel=null; S.meta={id:null,name:'Nový parkur',cls:S.meta.cls||'A1',author:'',gen:false,dirty:false}; mode='build'; save(); render(); ui(); topbar(); resetRun(); undoReset();}
+  function go(){planReset(); bgClear(); S.W=40; S.H=20; setSizeSel(); drawGrid(); S.obs=[]; S.route=[]; S.sides=[]; S.turns=[]; S.hp=[]; S.chk=null; sel=null; if(panel==='quiz'){quizStop();} panel=null; S.meta={id:null,name:'Nový parkur',cls:S.meta.cls||'A1',author:'',gen:false,dirty:false}; mode='build'; save(); render(); ui(); topbar(); resetRun(); undoReset();}
   if(S.obs.length&&(S.meta.dirty||!S.meta.id)) ask('Začít nový parkur?','Plocha se vyčistí a neuložené změny se ztratí.','Začít nový',go,true); else go();
 };
 function needId(){if(!S.meta.id){toast('Nejdřív parkur ulož, pak si ho můžeš označit.'); return true;} return false;}
@@ -2312,7 +2324,7 @@ function shareSheet(){
           var c=Array.isArray(rows)&&rows[0]; if(!c||typeof c!=='object'){toast('Parkur s kódem '+code+' neexistuje.'); return;}
           var d=courseClean(c.data); if(d.route.length<2){toast('Parkur s kódem '+code+' je poškozený, načíst nejde.'); return;}
           var nm=String(c.name||'Parkur '+code).slice(0,60), rec={id:'my-'+Date.now().toString(36),name:nm,cls:clsClean(c.cls),author:String(c.author||'').slice(0,60),W:d.W,H:d.H,obs:d.obs,route:d.route,sides:d.sides,turns:d.turns,hp:d.hp.slice(0,400),src:'kód '+code};
-          var L=myDB(); L.push(rec); if(!mySave(L)) return; closeSheet(); toast('Parkur '+nm+' uložen do Moje'); loadCourse(rec,true);
+          var L=myDB(); L.push(rec); if(!mySave(L)) return; closeSheet(); loadCourse(rec,true); toast('Parkur '+nm+' uložen do Moje');
         },function(err){done(); toast('Načtení se nepovedlo: '+err.message);});
       }
     });
@@ -3591,7 +3603,7 @@ function saySheet(){
 function sayStop(){ try{speechSynthesis.cancel();}catch(e){} SAY=null; var g=$('sayG'); if(g) g.parentNode.removeChild(g); var bar=$('sayBar'); if(bar) bar.parentNode.removeChild(bar); }
 function sayRoute(){
   sayStop(); show('plan');
-  if(SET.sayHs!==false&&!(S.sides||[]).filter(Boolean).length){ var g0=calc(); ANA.hsd=handSides({obs:S.obs,route:S.route,turns:S.turns},g0,flowStats(S.obs,S.route,S.turns,g0)); }
+  if(SET.sayHs!==false&&(S.sides||[]).filter(Boolean).length<S.route.length){ var g0=calc(); ANA.hsd=handSides({obs:S.obs,route:S.route,turns:S.turns},g0,flowStats(S.obs,S.route,S.turns,g0)); }
   var voice=null; try{ voice=speechSynthesis.getVoices().filter(function(v){return /^cs/i.test(v.lang);})[0]||null; }catch(e){}
   var tok={}; SAY=tok;
   var bar=document.createElement('div'); bar.className='saybar'; bar.id='sayBar'; bar.innerHTML='<span id="sayTxt">Čtu trasu…</span><button class="btn" id="sayStop">Zastavit</button>'; document.body.appendChild(bar);
@@ -4539,7 +4551,7 @@ function impIssues(R){
 function impApply(){
   var W=IMP.W, H=IMP.H, url=IMP.out.toDataURL('image/jpeg',.8), obs=IMP.obs, R=IMP.R;
   function go(){
-    sayStop(); simStop();
+    planReset();
     S.W=W; S.H=H; setSizeSel();
     S.obs=obs.map(function(o){ var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.bend) n.bend=o.bend; return n; });
     S.sides=[]; S.hp=[]; sel=null;
@@ -4642,7 +4654,8 @@ function fldLive(){
 }
 
 setSizeSel();
-if(!S.obs.length&&!S.meta.id){ var first=listFor('A1')[0]; if(first) loadCourse(first,true); }
+/* ukázkový parkur jen při úplně prvním spuštění; prázdná plocha po Nový zůstane prázdná */
+if(FRESH&&!S.obs.length&&!S.meta.id){ var first=listFor('A1')[0]; if(first) loadCourse(first,true); }
 /* nová verze vestavěných parkurů má nová id; rozběhnutý starší parkur bez úprav se nahradí stejnojmenným z nové verze */
 else if(S.meta.gen&&S.meta.id&&/^A[123]-\d\d(-v\d+)?$/.test(S.meta.id)&&!S.meta.dirty&&!findCourse(S.meta.id)){
   var nm0=S.meta.id.slice(0,5), nc=listFor(nm0.slice(0,2)).filter(function(c){return c.name===nm0;})[0]; if(nc) loadCourse(nc,true); }
