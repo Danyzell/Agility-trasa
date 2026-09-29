@@ -33,7 +33,7 @@ module.exports = async function ({ browser, base }) {
   await offline(T.ctx, { get_catalog: { version: 0 } });
   const MP = '(' + makePlan.toString() + ')';
   try {
-    await page.goto(base + '/'); await page.waitForTimeout(300);
+    await page.goto('about:blank'); await page.goto(base + '/#plan'); await page.waitForTimeout(300);
 
     for (const n of [12, 21]) {
       T.step('plánek s ' + n + ' čísly');
@@ -74,7 +74,7 @@ module.exports = async function ({ browser, base }) {
     ok(bad === 0, 'kroužky s čísly dostaly posunutá čísla: ' + bad);
 
     T.step('kompas na iPhonu');
-    await page.goto(base + '/'); await page.waitForTimeout(300);
+    await page.goto('about:blank'); await page.goto(base + '/#plan'); await page.waitForTimeout(300);
     await ev(() => {
       DeviceOrientationEvent.requestPermission = () => new Promise(r => setTimeout(() => r('granted'), 30));
       window.__fire = hd => ['deviceorientation', 'deviceorientationabsolute'].forEach(t => { const e = new Event(t); e.webkitCompassHeading = hd; e.alpha = 0; e.absolute = false; window.dispatchEvent(e); });

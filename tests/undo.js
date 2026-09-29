@@ -4,7 +4,7 @@ const { phone, offline } = require('./helpers');
 module.exports = async function ({ browser, base }) {
   const T = await phone(browser); const { page, ok, ev } = T;
   await offline(T.ctx, { get_catalog: { version: 0 } });
-  await page.goto(base + '/'); await page.waitForTimeout(400);
+  await page.goto('about:blank'); await page.goto(base + '/#plan'); await page.waitForTimeout(400);
   const plan = () => ev(() => JSON.stringify({ o: S.obs, r: S.route, t: S.turns, W: S.W }));
 
   try {
