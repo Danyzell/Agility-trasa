@@ -299,6 +299,9 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 .sheet>*{flex-shrink:0;}
 .quizbar-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
 .quizbar-row b{font-family:var(--display); font-size:22px; font-variant-numeric:tabular-nums;}
+.qz-chunks{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; font-size:13.5px;}
+.qz-chunks li{display:flex; align-items:center; gap:8px;} .qz-chunks i{width:14px; height:14px; border-radius:4px; flex:0 0 auto;} .qz-chunks span{color:var(--muted);}
+.qz-mode button{font-size:13.5px;} .qz-rng{font-size:18px !important;}
 .flash-bad{animation:fb .35s;}
 #field.side{touch-action:none; cursor:crosshair;}
 #field.quiz .ob{cursor:pointer;}
@@ -993,6 +996,25 @@ var I18N_EXTRA={exact:{
 "Pes na kacr.info (odkaz, nepovinné)": "Dog on kacr.info (link, optional)",
 "Pes na kacr.info (nepovinné)": "Dog on kacr.info (optional)",
 "Prohlížet": "View",
+"Trénink paměti": "Memory training",
+"Celý parkur": "Whole course",
+"Po kouscích": "In chunks",
+"Odzadu": "Backwards",
+"Prohlídka": "Walkthrough",
+"Začít": "Start",
+"Ukončit": "End",
+"Začít test": "Start the test",
+"Další úsek": "Next chunk",
+"Prohlédni si celý parkur, pak klepej na překážky v pořadí.": "Study the whole course, then tap the obstacles in order.",
+"Parkur je rozdělený na úseky. Nauč se první, pak přidávej další, až zvládneš celý.": "The course is split into chunks. Learn the first one, then keep adding until you know the whole course.",
+"Začni posledním úsekem a přidávej úseky před ním. Konec parkuru pak znáš nejlíp.": "Start with the last chunk and add the ones before it. You'll then know the end of the course best.",
+"Zapamatuj si překážky": "Memorise obstacles",
+"obrat do U": "U-turn",
+"had": "serpentine",
+"oblouk doleva": "curve left",
+"oblouk doprava": "curve right",
+"rovně": "straight",
+"Úsek zvládnutý bez chyby. Přidáme další.": "Chunk done without a mistake. Let's add the next one.",
 "Pasti": "Traps",
 "Pasti: kde může pes vběhnout jinam": "Traps: where the dog may take the wrong obstacle",
 "mimo trasu": "not on the course",
@@ -1057,6 +1079,9 @@ var I18N_EXTRA={exact:{
 "· 6 skoků, tunel, slalom": "· 6 jumps, tunnel, weaves",
 },num:{
 "Zahrada týdne #": "Garden of the week #",
+"Krok # z #": "Step #1 of #2",
+"Úsek zvládnutý, chyby #. Přidáme další.": "Chunk done, # mistakes. Let's add the next one.",
+"Nejvíc chyb v úseku #–#. Projdi si ho ještě jednou.": "Most mistakes in chunk #1–#2. Go through it once more.",
 "Po č. #": "After no. #",
 "trasa zatáčí doleva o #°": "the course turns left #°",
 "trasa zatáčí doprava o #°": "the course turns right #°",
@@ -1082,6 +1107,7 @@ var I18N_EXTRA={exact:{
 "o # s nad SČP · # m/s": "# s over SCT · # m/s",
 "# tb · # m/s ·": "# pp · # m/s ·",
 },re:[
+["^(obrat do U|had|oblouk doleva|oblouk doprava|rovně) · (.+?)$","@1 · @2"],
 ["^(\\d+) × (\\d+) m · zbývá poslední den$","$1 × $2 m · last day left"],
 ["^Ligu se nepodařilo načíst: (.+?)$","The league couldn't be loaded: @1"]
 ]};
@@ -3821,9 +3847,12 @@ function render(){
   var obsG=$('obs'); obsG.innerHTML='';
   S.obs.forEach(function(o){obsG.appendChild(obEl(o));});
   var pf=pathProf(), c=calc(undefined,undefined,undefined,pf), cs=pf?calc():c, h='', quiz=panel==='quiz'&&QZ, showN=quiz&&QZ.phase==='test'?QZ.pos:Infinity;
+  /* trénink paměti po kouscích: úseky barevně, mimo zkoušený rozsah tlumeně */
+  var qc=quiz&&QZ.mode!=='all'&&QZ.phase!=='test'?function(i){ var k=quizChunkOf(i); return QZ_COL[k%QZ_COL.length]; }:null;
+  var qdim=quiz&&QZ.phase==='look'&&QZ.mode!=='all'?function(i){ return i<QZ.from||i>=QZ.to; }:null;
   c.segs.forEach(function(s,i){
     if(i+1>=showN) return;
-    h+='<path d="'+s.d+'" fill="none" stroke="var(--zone)" stroke-width=".14" stroke-dasharray=".5 .35" marker-end="url(#arr)"/>'+
+    h+='<path d="'+s.d+'" fill="none" stroke="'+(qc?qc(i):'var(--zone)')+'" stroke-width="'+(qc?'.2':'.14')+'" stroke-dasharray=".5 .35" marker-end="url(#arr)"'+(qdim&&qdim(i)?' opacity=".25"':'')+'/>'+
       (quiz?'':'<text x="'+r(s.m.x)+'" y="'+r(s.m.y)+'" font-size=".62" text-anchor="middle" fill="var(--muted)" stroke="var(--field)" stroke-width=".22" paint-order="stroke">'+fmt(s.len)+' m</text>');
   });
   $('pth').innerHTML=h;
@@ -4083,39 +4112,107 @@ $('bgFile').onchange=function(){
   };
   rd.readAsDataURL(f);
 };
+/* ---------- Trénink paměti: celý parkur, po kouscích, nebo odzadu ----------
+   Trenéři radí nepamatovat si 20 překážek, ale 5–7 úseků ohraničených výraznými překážkami (tunel, slalom, zóny)
+   a ostrými obraty, a učit se i odzadu (poslední úsek, pak přidávat). Úseky se počítají z parkuru samy. */
+var QZ_COL=['#2f7de1','#e0731f','#8a5fc9','#1f9e6b','#c9527e','#b8a12a','#4fa8ae'];
+var QZ_LOOK=[30,45,120];
+function memChunks(obs,route,turns){
+  var n=route.length, by={}; obs.forEach(function(o){by[o.id]=o;});
+  if(n<3) return [[0,n-1]];
+  var tn=[]; try{ tn=flowStats(obs,route,turns).turns; }catch(e){}
+  var lm=function(i){ var o=by[route[i]]; return !!o&&o.type!=='jump'; };
+  var sc=function(e){ var t=Math.abs(tn[e]||0); return (lm(e)?2:0)+(e+1<n&&lm(e+1)?1:0)+(t>=120?1.5:t>=80?.7:0); };
+  var out=[], a=0;
+  while(a<n){
+    if(n-a<=5){ out.push([a,n-1]); break; }
+    var best=-1, be=a+3;
+    for(var e=a+1;e<=a+4;e++){ if(n-1-e<2) continue; var v=sc(e)+(e-a>=2&&e-a<=3?.3:0); if(v>best){best=v; be=e;} }
+    out.push([a,be]); a=be+1;
+  }
+  return out;
+}
+/* tvar úseku podle zatáček mezi jeho překážkami a výrazná překážka na konci */
+function memShape(c,obs,route,turns,tn){
+  var by={}; obs.forEach(function(o){by[o.id]=o;});
+  var T=tn.slice(c[0],c[1]), big=T.filter(function(t){return Math.abs(t)>45;}), sum=T.reduce(function(x,y){return x+y;},0), alt=0;
+  for(var i=1;i<big.length;i++) if((big[i]>0)!==(big[i-1]>0)) alt++;
+  var sh=T.some(function(t){return Math.abs(t)>=150;})?'obrat do U':alt?'had':Math.abs(sum)>60?(sum<0?'oblouk doleva':'oblouk doprava'):'rovně';
+  var last=by[route[c[1]]], lmk=last&&last.type!=='jump'?(DEF[last.type].l.charAt(1)==='-'?DEF[last.type].l:DEF[last.type].l.toLowerCase()):'';
+  return sh+(lmk?' · '+lmk:'');
+}
 function quizStart(){
   if(S.route.length<3){toast('Trénink paměti potřebuje trasu aspoň se 3 překážkami.'); panel=null; return;}
-  QZ={phase:'look',pos:0,miss:0,lookEnd:Date.now()+45000,t0:0,timer:setInterval(quizBar,250)};
-  quizBar();
+  var ch=memChunks(S.obs,S.route,S.turns);
+  QZ={phase:'setup',mode:SET.qzMode||'all',look:SET.qzLook||45,chunks:ch,step:0,pos:0,from:0,to:S.route.length-1,miss:0,missBy:ch.map(function(){return 0;}),t0:0,timer:setInterval(quizBar,250)};
+  quizBar(); render();
 }
 function quizStop(){ if(QZ){clearInterval(QZ.timer);} QZ=null; }
+/* rozsah, který se v daném kroku zkouší: po kouscích přibývá od začátku, odzadu od konce */
+function quizRange(){
+  var C=QZ.chunks, n=S.route.length;
+  if(QZ.mode==='chunk') return [0,C[QZ.step][1]];
+  if(QZ.mode==='back') return [C[C.length-1-QZ.step][0],n-1];
+  return [0,n-1];
+}
+function quizSteps(){ return QZ.mode==='all'?1:QZ.chunks.length; }
+function quizLook(){ if(!QZ) return; var r=quizRange(); QZ.from=r[0]; QZ.to=r[1]; QZ.phase='look'; QZ.lookEnd=Date.now()+(QZ.mode==='all'?QZ.look:Math.max(15,Math.round(QZ.look/2)))*1000; render(); quizBar(); }
+function quizChunkOf(i){ var C=QZ.chunks; for(var k=0;k<C.length;k++) if(i>=C[k][0]&&i<=C[k][1]) return k; return 0; }
 function quizBar(){
-  if(!QZ) return; var el=$('quizBar'), h;
-  if(QZ.phase==='look'){
+  if(!QZ) return; var el=$('quizBar'), h, n=S.route.length, steps=quizSteps();
+  var stepTxt=QZ.mode==='all'?'':'<span>Krok '+(QZ.step+1)+' z '+steps+'</span>';
+  if(QZ.phase==='setup'){
+    var tn=[]; try{ tn=flowStats(S.obs,S.route,S.turns).turns; }catch(e){}
+    h='<div class="quizbar-row"><span class="grow">Trénink paměti</span></div>'+
+      '<div class="seg wide qz-mode" role="group" aria-label="Způsob"><button data-qm="all" class="'+(QZ.mode==='all'?'on':'')+'">Celý parkur</button><button data-qm="chunk" class="'+(QZ.mode==='chunk'?'on':'')+'">Po kouscích</button><button data-qm="back" class="'+(QZ.mode==='back'?'on':'')+'">Odzadu</button></div>'+
+      '<div class="quizbar-row"><span class="grow">Prohlídka</span><div class="seg" role="group" aria-label="Délka prohlídky">'+QZ_LOOK.map(function(t){return '<button data-ql="'+t+'" class="'+(QZ.look===t?'on':'')+'">'+(t<60?t+' s':(t/60)+' min')+'</button>';}).join('')+'</div></div>'+
+      '<p class="hint">'+(QZ.mode==='all'?'Prohlédni si celý parkur, pak klepej na překážky v pořadí.':QZ.mode==='chunk'?'Parkur je rozdělený na úseky. Nauč se první, pak přidávej další, až zvládneš celý.':'Začni posledním úsekem a přidávej úseky před ním. Konec parkuru pak znáš nejlíp.')+'</p>'+
+      '<ol class="qz-chunks">'+QZ.chunks.map(function(c,k){return '<li><i style="background:'+QZ_COL[k%QZ_COL.length]+'"></i><b>'+(c[0]+1)+'–'+(c[1]+1)+'</b> <span>'+memShape(c,S.obs,S.route,S.turns,tn)+'</span></li>';}).join('')+'</ol>'+
+      '<div class="row"><button class="btn primary" data-q="go">Začít</button><button class="btn" data-q="stop">Ukončit</button></div>';
+  } else if(QZ.phase==='look'){
     var left=Math.max(0,Math.ceil((QZ.lookEnd-Date.now())/1000));
     if(!left){quizTest(); return;}
-    h='<div class="quizbar-row"><span class="grow">Prohlídka: zapamatuj si pořadí překážek.</span><b>'+left+' s</b></div><div class="row"><button class="btn primary" data-q="test">Začít test</button><button class="btn" data-q="stop">Ukončit</button></div>';
+    h='<div class="quizbar-row"><span class="grow">Zapamatuj si překážky <b class="qz-rng">'+(QZ.from+1)+'–'+(QZ.to+1)+'</b></span>'+stepTxt+'<b>'+left+' s</b></div><div class="row"><button class="btn primary" data-q="test">Začít test</button><button class="btn" data-q="stop">Ukončit</button></div>';
   } else if(QZ.phase==='test'){
-    h='<div class="quizbar-row"><span class="grow">Klepni na překážku č. <b>'+(QZ.pos+1)+'</b></span><span>Chyby: <b>'+QZ.miss+'</b></span><span><b>'+fmt((Date.now()-QZ.t0)/1000)+' s</b></span></div><div class="row"><button class="btn" data-q="stop">Ukončit</button></div>';
+    h='<div class="quizbar-row"><span class="grow">Klepni na překážku č. <b>'+(QZ.pos+1)+'</b></span>'+stepTxt+'<span>Chyby: <b>'+QZ.miss+'</b></span><span><b>'+fmt((Date.now()-QZ.t0)/1000)+' s</b></span></div><div class="row"><button class="btn" data-q="stop">Ukončit</button></div>';
+  } else if(QZ.phase==='next'){
+    h='<div class="quizbar-row"><span class="grow">Úsek zvládnutý'+(QZ.stepMiss?', chyby '+QZ.stepMiss:' bez chyby')+'. Přidáme další.</span>'+stepTxt+'</div><div class="row"><button class="btn primary" data-q="next">Další úsek</button><button class="btn" data-q="stop">Ukončit</button></div>';
   } else {
-    h='<div class="quizbar-row"><span class="grow">Hotovo! Čas <b>'+fmt(QZ.time)+' s</b>, chyby <b>'+QZ.miss+'</b>.</span></div><div class="row"><button class="btn primary" data-q="again">Znovu</button><button class="btn" data-q="stop">Zavřít</button></div>';
+    var worst=-1, wk=-1; QZ.missBy.forEach(function(m,k){ if(m>worst){worst=m; wk=k;} });
+    h='<div class="quizbar-row"><span class="grow">Hotovo! Čas <b>'+fmt(QZ.time)+' s</b>, chyby <b>'+QZ.miss+'</b>.</span></div>'+
+      (QZ.miss&&worst>0?'<p class="hint">Nejvíc chyb v úseku '+(QZ.chunks[wk][0]+1)+'–'+(QZ.chunks[wk][1]+1)+'. Projdi si ho ještě jednou.</p>':'')+
+      '<div class="row"><button class="btn primary" data-q="again">Znovu</button><button class="btn" data-q="stop">Zavřít</button></div>';
   }
   if(el.getAttribute('data-h')!==h){el.innerHTML=h; el.setAttribute('data-h',h);}
 }
-function quizTest(){ if(!QZ) return; QZ.phase='test'; QZ.pos=0; QZ.miss=0; QZ.t0=Date.now(); render(); quizBar(); }
+function quizTest(){
+  if(!QZ) return;
+  if(QZ.phase==='setup'){ var r=quizRange(); QZ.from=r[0]; QZ.to=r[1]; }
+  QZ.phase='test'; QZ.pos=QZ.from; QZ.stepMiss=0; if(!QZ.t0||QZ.mode==='all'){ QZ.t0=Date.now(); QZ.miss=0; QZ.missBy=QZ.chunks.map(function(){return 0;}); }
+  render(); quizBar();
+}
 function quizTap(id){
   if(!QZ||QZ.phase!=='test') return;
   if(S.route[QZ.pos]===id){
     QZ.pos++;
-    if(QZ.pos>=S.route.length){QZ.phase='done'; QZ.time=(Date.now()-QZ.t0)/1000; clearInterval(QZ.timer);}
+    if(QZ.pos>QZ.to){
+      if(QZ.step+1<quizSteps()){ QZ.phase='next'; }
+      else { QZ.phase='done'; QZ.time=(Date.now()-QZ.t0)/1000; clearInterval(QZ.timer); }
+    }
   } else {
-    QZ.miss++; var w=$('wrap'); w.classList.remove('flash-bad'); void w.offsetWidth; w.classList.add('flash-bad');
+    QZ.miss++; QZ.stepMiss=(QZ.stepMiss||0)+1; QZ.missBy[quizChunkOf(QZ.pos)]++;
+    var w=$('wrap'); w.classList.remove('flash-bad'); void w.offsetWidth; w.classList.add('flash-bad');
   }
   render(); quizBar();
 }
 $('quizBar').onclick=function(e){
+  var m=e.target.closest('[data-qm]'), l=e.target.closest('[data-ql]');
+  if(m&&QZ){ QZ.mode=m.getAttribute('data-qm'); SET.qzMode=QZ.mode; lsSet(SETK,SET); quizBar(); render(); return; }
+  if(l&&QZ){ QZ.look=+l.getAttribute('data-ql'); SET.qzLook=QZ.look; lsSet(SETK,SET); quizBar(); return; }
   var b=e.target.closest('[data-q]'); if(!b) return; var q=b.getAttribute('data-q');
-  if(q==='test') quizTest();
+  if(q==='go'){ QZ.step=0; QZ.t0=0; quizLook(); }
+  else if(q==='test') quizTest();
+  else if(q==='next'){ QZ.step++; quizLook(); }
   else if(q==='again'){quizStop(); quizStart(); render();}
   else setPanel(null);
 };
