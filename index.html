@@ -473,6 +473,11 @@ body.at-home .top{display:none;}
 .hm-skill{flex:0 0 auto; display:flex; flex-direction:column; gap:2px; text-align:left; border:1px solid var(--border); background:var(--surface); border-radius:14px; padding:9px 12px; min-height:52px; max-width:170px; font:inherit; color:inherit;}
 .hm-skill b{font-size:13.5px; line-height:1.2;} .hm-skill span{font-size:12px; color:var(--muted);} .hm-skill.tip{border-color:var(--accent);} .hm-skill.tip span{color:var(--accent); font-weight:700;}
 .card .gdone{color:var(--accent); font-weight:700;}
+.care{display:flex; align-items:center; gap:8px; background:color-mix(in srgb,#e0731f 12%,var(--surface)); border:1px solid color-mix(in srgb,#e0731f 45%,var(--border)); border-radius:14px; padding:8px 10px; font-size:13.5px;}
+.care.cool{background:color-mix(in srgb,var(--accent) 10%,var(--surface)); border-color:color-mix(in srgb,var(--accent) 40%,var(--border));}
+.care .ic{font-size:20px;} .care .btn{padding:8px 11px;}
+.hist .hvid{display:inline-block; margin-top:2px; font-size:12.5px; font-weight:700; color:var(--accent); text-decoration:none;}
+.hist button.on{color:var(--accent);}
 .cp-home{margin:0 16px; display:flex; flex-direction:column; gap:8px;}
 .cp-row{display:flex; gap:12px; align-items:flex-start; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:10px 12px;}
 .cp-row.mine{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset;}
@@ -805,6 +810,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
     <div class="filters" id="runDogs"></div>
     <div class="specs" id="runSpecs"></div>
     <div class="speed" id="speedRow" hidden></div>
+    <div id="runCare"></div>
     <div class="panel">
       <div class="clock" id="clock">0,00</div>
       <div class="clock-sub" id="clockSub"></div>
@@ -1029,6 +1035,18 @@ var I18N_EXTRA={exact:{
 "rovně": "straight",
 "Úsek zvládnutý bez chyby. Přidáme další.": "Chunk done without a mistake. Let's add the next one.",
 "Pasti": "Traps",
+"Dnes ještě bez rozcvičky. Pět minut snižuje riziko zranění.": "No warm-up yet today. Five minutes lowers the risk of injury.",
+"Na konec tréninku vychladnutí: 5 minut volné chůze a protažení.": "End the session with a cool-down: 5 minutes of easy walking and stretching.",
+"Rozcvičku jsme udělali": "We did the warm-up",
+"Video běhu": "Run video",
+"Vlož odkaz na video (YouTube, Disk Google, Facebook…). Video zůstane tam, kde je, aplikace si pamatuje jen odkaz.": "Paste a link to the video (YouTube, Google Drive, Facebook…). The video stays where it is; the app only remembers the link.",
+"Odkaz": "Link",
+"Odkaz musí začínat https://": "The link must start with https://",
+"Odkaz uložen": "Link saved",
+"Odkaz odebrán": "Link removed",
+"Přidat odkaz na video": "Add a video link",
+"Upravit odkaz na video": "Edit the video link",
+"▶ Video": "▶ Video",
 "zkus dnes": "try today",
 "nezkoušeno": "not tried",
 "Závody": "Competitions",
@@ -4491,18 +4509,40 @@ function runRender(){
   var rs=$('runSpecs'); rs.className='specs mini';
   rs.innerHTML='<button class="smini" data-rs="1" aria-expanded="'+(PLANUI.speed?'true':'false')+'" aria-controls="speedRow"><b>'+(m.len?fmt(m.len)+' m':'–')+'</b><span>'+m.n+' překážek</span><span>'+m.disc+' '+m.cls+'</span><span><b>'+fmt(m.spd)+'</b> m/s</span><i aria-hidden="true">'+(PLANUI.speed?'▴':'▾')+'</i></button>'+kacrEstHTML(m);
   $('speedRow').hidden=!PLANUI.speed;
+  $('runCare').innerHTML=careHTML();
   $('speedRow').innerHTML='<span class="grow">Rychlost pro SČP ('+m.cls+')<small>volí ji rozhodčí podle obtížnosti</small></span><button data-sp="-1" aria-label="Snížit rychlost">−</button><b class="num">'+fmt(m.spd)+' m/s</b><button data-sp="1" aria-label="Zvýšit rychlost">+</button>';
   $('clockSub').innerHTML='SČP <b class="num">'+(m.sct||'–')+' s</b><span>MČP <b class="num">'+(m.mct||'–')+' s</b></span>';
   $('startBtn').textContent=RUN.on?'STOP':'START'; $('startBtn').className='startbtn'+(RUN.on?' stop':'');
   tick(); resultRender(); histRender();
 }
+/* ---------- rozcvička a vychladnutí u Běhu ----------
+   Rozcvička a vychladnutí jsou podle trenérů nejčastěji vynechávaná část tréninku (zranění má asi 40 % agility psů).
+   Před prvním během dne připomene rozcvičku, po prvním uloženém běhu vychladnutí. Jen lišta, START nic neblokuje. */
+var WARMK='agility-warm-v1';
+function runsToday(){ var t=localDate(), n=0; Object.keys(MK).forEach(function(id){ ((MK[id]&&MK[id].runs)||[]).forEach(function(x){ if(x.d&&localDate(new Date(x.d))===t) n++; }); }); return n; }
+function warmDone(){ var w=lsGet(WARMK,{})||{}; w.d=localDate(); lsSet(WARMK,w); }
+function careHTML(){
+  var t=localDate(), w=lsGet(WARMK,{})||{}, n=runsToday();
+  if(n>0){ if(w.c===t) return ''; return '<div class="care cool"><span class="ic" aria-hidden="true">🐾</span><span class="grow">Na konec tréninku vychladnutí: 5 minut volné chůze a protažení.</span><button class="btn" data-care="cool">Hotovo</button></div>'; }
+  if(w.d===t||w.x===t) return '';
+  return '<div class="care"><span class="ic" aria-hidden="true">🔥</span><span class="grow">Dnes ještě bez rozcvičky. Pět minut snižuje riziko zranění.</span><button class="btn primary" data-care="warm">Rozcvička</button><button class="btn" data-care="done" aria-label="Rozcvičku jsme udělali">✓</button></div>';
+}
+$('runCare').onclick=function(e){
+  var b=e.target.closest('[data-care]'); if(!b) return; var a=b.getAttribute('data-care'), w=lsGet(WARMK,{})||{}, t=localDate();
+  if(a==='warm'){ moreTab='warm'; show('more'); return; }
+  if(a==='done') w.d=t; else if(a==='cool') w.c=t;
+  lsSet(WARMK,w); $('runCare').innerHTML=careHTML();
+};
+function vidOK(u){ return /^https?:\/\/[^\s<>"']{4,300}$/.test(String(u||'').trim()); }
 function histRender(){
   var runs=getMark(S.meta.id).runs||[];
   if(!S.meta.id){$('hist').innerHTML='<li><span></span><small>Běhy se zapisují k uloženému parkuru. Ulož ho nebo načti z Parkurů.</small></li>'; return;}
   $('hist').innerHTML=runs.length?runs.map(function(x,i){return {x:x,i:i};}).reverse().map(function(o){
     var x=o.x, d=new Date(x.d);
     var dn=dogName(x.dog);
-    return '<li><span class="g '+x.g+'">'+x.g+'</span><span>'+fmt2(x.t)+' s · '+x.f+' ch. · '+x.r+' odm.<br><small>'+d.toLocaleDateString(LOC)+' · trestné body '+fmt2(x.tot)+(dn?' · '+esc(dn):'')+(x.sp?' · mezičasy':'')+'</small></span><span></span><button data-rm="'+o.i+'" aria-label="Smazat běh">×</button></li>';
+    return '<li><span class="g '+x.g+'">'+x.g+'</span><span>'+fmt2(x.t)+' s · '+x.f+' ch. · '+x.r+' odm.<br><small>'+d.toLocaleDateString(LOC)+' · trestné body '+fmt2(x.tot)+(dn?' · '+esc(dn):'')+(x.sp?' · mezičasy':'')+'</small>'+
+      (x.vid&&vidOK(x.vid)?'<a class="hvid" href="'+esc(x.vid)+'" target="_blank" rel="noopener">▶ Video</a>':'')+'</span>'+
+      '<button data-vid="'+o.i+'" aria-label="'+(x.vid?'Upravit odkaz na video':'Přidat odkaz na video')+'" class="'+(x.vid?'on':'')+'">🎥</button><button data-rm="'+o.i+'" aria-label="Smazat běh">×</button></li>';
   }).join(''):'<li><span></span><small>Zatím žádný běh. Po uložení se tu objeví s hodnocením.</small></li>';
 }
 /* dokud běží stopky nebo rozcvička, obrazovka nezhasne (telefon zhasíná po 30 s a STOP by se nedal zmáčknout včas) */
@@ -4556,11 +4596,27 @@ $('saveRun').onclick=function(){
   HM.emit('runSaved',{cid:S.meta.id,idx:runs.length-1,run:rec});
 };
 $('hist').onclick=function(e){
+  var v=e.target.closest('[data-vid]'); if(v){ vidSheet(+v.getAttribute('data-vid')); return; }
   var b=e.target.closest('[data-rm]'); if(!b) return; var i=+b.getAttribute('data-rm');
   ask('Smazat záznam běhu?','Záznam zmizí z historie tohoto parkuru.','Smazat',function(){
     var runs=(getMark(S.meta.id).runs||[]).slice(); runs.splice(i,1); setMark(S.meta.id,{runs:runs}); histRender();
   },true);
 };
+
+/* odkaz na video běhu (YouTube, Disk Google…): video zůstává tam, kde je, aplikace si pamatuje jen odkaz */
+function vidSheet(i){
+  var runs=(getMark(S.meta.id).runs||[]).slice(), x=runs[i]; if(!x) return;
+  openSheet('<h3>Video běhu</h3><p class="hint">Vlož odkaz na video (YouTube, Disk Google, Facebook…). Video zůstane tam, kde je, aplikace si pamatuje jen odkaz.</p>'+
+    '<label for="vidIn">Odkaz<input id="vidIn" type="url" inputmode="url" placeholder="https://youtu.be/…" value="'+esc(x.vid||'')+'"></label>'+
+    '<div class="acts">'+(x.vid?'<button class="btn danger" data-a="del">Odebrat</button>':'')+'<button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="ok">Uložit</button></div>',
+    function(e){
+      var b=e.target.closest('[data-a]'); if(!b) return; var a=b.getAttribute('data-a');
+      if(a==='ok'){ var u=$('vidIn').value.trim(); if(u&&!vidOK(u)){ toast('Odkaz musí začínat https://'); return; } if(u) x.vid=u; else delete x.vid; }
+      else if(a==='del') delete x.vid;
+      if(a!=='x'){ runs[i]=x; setMark(S.meta.id,{runs:runs}); histRender(); toast(a==='del'||!x.vid?'Odkaz odebrán':'Odkaz uložen'); }
+      closeSheet();
+    });
+}
 
 /* ---------- trenéři a rozhodčí ---------- */
 var AN='https://www.agilitynow.eu/course-plans/';
@@ -6612,7 +6668,7 @@ function warmTick(){
   var i0=WU.i, now=Date.now();
   WU.left=Math.ceil((WU.end-now)/1000);
   while(WU.left<=0&&WU.i<WARM.length){ WU.i++; if(WU.i<WARM.length){ WU.end+=WARM[WU.i][1]*1000; WU.left=Math.ceil((WU.end-now)/1000); } }
-  if(WU.i>=WARM.length){ WU.on=false; clearInterval(WU.timer); WU.left=0; wakeSet('warm',false); }
+  if(WU.i>=WARM.length){ WU.on=false; clearInterval(WU.timer); WU.left=0; wakeSet('warm',false); warmDone(); }
   if(view==='more'&&moreTab==='warm'){ var cd=document.querySelector('#moreBody .warm .cd'); /* jen hodiny: přestavěná tlačítka by ztrácela klepnutí */
     if(cd&&WU.on&&WU.i===i0) cd.textContent=warmClock(); else $('moreBody').innerHTML=warmHTML(); }
 }
@@ -6621,7 +6677,7 @@ function warmAct(a){
     if(WU.on){ WU.left=Math.max(1,Math.ceil((WU.end-Date.now())/1000)); WU.on=false; clearInterval(WU.timer); }
     else { if(WU.i>=WARM.length){WU.i=0; WU.left=WARM[0][1];} WU.on=true; WU.end=Date.now()+WU.left*1000; clearInterval(WU.timer); WU.timer=setInterval(warmTick,1000); }
   }
-  else if(a==='next'){WU.i=Math.min(WARM.length,WU.i+1); WU.left=WU.i<WARM.length?WARM[WU.i][1]:0; WU.end=Date.now()+WU.left*1000; if(WU.i>=WARM.length){WU.on=false; clearInterval(WU.timer);}}
+  else if(a==='next'){WU.i=Math.min(WARM.length,WU.i+1); WU.left=WU.i<WARM.length?WARM[WU.i][1]:0; WU.end=Date.now()+WU.left*1000; if(WU.i>=WARM.length){WU.on=false; clearInterval(WU.timer); warmDone();}}
   else {WU.on=false; clearInterval(WU.timer); WU.i=0; WU.left=WARM[0][1];}
   wakeSet('warm',WU.on);
   $('moreBody').innerHTML=warmHTML();
