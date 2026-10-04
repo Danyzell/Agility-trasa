@@ -101,11 +101,107 @@ module.exports = async function ({ browser, base }) {
 
   await step('Domů: karta Trénink doma', async () => {
     await fresh('#home');
+    /* bez uložené plochy je na Domů karta s tlačítkem Vybrat */
+    await ev(() => { delete SET.cut; lsSet(SETK, SET); show('home'); });
     ok(await page.isVisible('#v-home .hm-cut'), 'na Domů chybí karta Trénink doma');
     await page.click('#v-home [data-h="cut"]'); await page.waitForTimeout(200);
     ok(await page.isVisible('#gSrc') && await ev(() => GEN.tab === 'cut'), 'karta neotevřela generátor na záložce Z parkurů');
     const w = await ev(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
     ok(w[0] <= w[1], `dialog přetéká do strany (${w[0]} > ${w[1]} px)`);
+    await ev(() => closeSheet());
+  });
+
+  await step('zrcadlově: dráha psa je přesný zrcadlový obraz', async () => {
+    await fresh();
+    const r = await ev(() => {
+      let all = []; cutSources('all').forEach(c => { all = all.concat(cutCourse(c, { jump: 8, tunnel: 2 }, 25, 15)); });
+      const withT = all.filter(c => c.turns.some(t => t && /^[wb]/.test(t))).slice(0, 12), bad = [];
+      const pts = g => { const out = []; g.segs.forEach(s => s.pcs.forEach(p => { for (let t = 0; t <= 6; t++) out.push(bz(p[0], p[1], p[2], p[3], t / 6)); })); return out; };
+      withT.forEach(c => {
+        const m = cutMirror(c), a = pts(calc(c.obs, c.route, c.turns)), b = pts(calc(m.obs, m.route, m.turns));
+        if (a.length !== b.length) { bad.push(c.name + ': jiný počet bodů'); return; }
+        for (let i = 0; i < a.length; i++) if (Math.abs(c.W - a[i].x - b[i].x) > .12 || Math.abs(a[i].y - b[i].y) > .12) { bad.push(c.name + ': dráha není zrcadlová'); break; }
+        const sw = { wL: 'wR', wR: 'wL', bL: 'bR', bR: 'bL' };
+        if (!m.turns.every((t, i) => t === (sw[c.turns[i]] || c.turns[i]))) bad.push(c.name + ': otočky se neotočily');
+        if (!m.obs.every(o => o.x >= 0 && o.x <= m.W)) bad.push(c.name + ': mimo plochu');
+      });
+      return { n: withT.length, bad };
+    });
+    ok(r.n >= 5, 'málo úseků s otočkami na zkoušku: ' + r.n);
+    ok(!r.bad.length, r.bad.slice(0, 4).join('; '));
+  });
+
+  await step('náhrada kruhu a skoku dalekého skokem', async () => {
+    await fresh();
+    const r = await ev(() => {
+      const run = eq => { let all = []; cutSources('all').forEach(c => { all = all.concat(cutCourse(c, eq, 30, 20)); }); return all; };
+      const no = run({ jump: 8, tunnel: 1 }), yes = run({ jump: 8, tunnel: 1, sub: 1 });
+      const subd = yes.filter(c => c.cut.feats.indexOf('Náhrada skokem') >= 0);
+      const okTypes = yes.every(c => c.obs.every(o => o.type !== 'tire' && o.type !== 'longjump'));
+      const okJumps = yes.every(c => c.obs.filter(o => o.type === 'jump').length <= 8);
+      /* s vlastním kruhem se kruh nenahrazuje */
+      const own = run({ jump: 8, tunnel: 1, tire: 1, sub: 1 }), keepTire = own.some(c => c.obs.some(o => o.type === 'tire'));
+      return { no: no.length, yes: yes.length, subd: subd.length, okTypes, okJumps, keepTire };
+    });
+    ok(r.yes > r.no && r.subd > 0, `s náhradou se nenašlo víc úseků (${r.no} → ${r.yes}, nahrazeno ${r.subd})`);
+    ok(r.okTypes && r.okJumps, 'po náhradě zůstal kruh nebo skok daleký, nebo je skoků víc než 8');
+    ok(r.keepTire, 's vlastním kruhem se kruh přesto nahradil skokem');
+  });
+
+  await step('stálé id: úsek jde znovu sestavit (i zrcadlově a s náhradou)', async () => {
+    await fresh();
+    const r = await ev(() => {
+      let all = []; cutSources('all').forEach(c => { all = all.concat(cutCourse(c, { jump: 8, tunnel: 1, sub: 1 }, 25, 18)); });
+      const L = cutPick(all, 12).concat(all.filter(c => /~[tl]+$/.test(c.id)).slice(0, 3)), bad = [];
+      const same = (a, b) => b && JSON.stringify([a.obs, a.route, a.turns, a.W, a.H, a.name]) === JSON.stringify([b.obs, b.route, b.turns, b.W, b.H, b.name]);
+      L.forEach(c => {
+        if (!/^cut~/.test(c.id)) { bad.push(c.name + ': chybí id'); return; }
+        if (!same(c, findCourse(c.id))) bad.push(c.name + ': findCourse vrátil jiný úsek');
+        const m = cutMirror(c); if (!same(m, findCourse(m.id))) bad.push(c.name + ': zrcadlový úsek nejde sestavit');
+      });
+      return { n: L.length, bad, junk: [findCourse('cut~A9-99~1~5~20x15~'), findCourse('cut~A1-01~3~2~20x15~'), findCourse('cut~A1-01~1~5~5x5~')] };
+    });
+    ok(r.n > 5 && !r.bad.length, r.n + ' úseků; ' + r.bad.slice(0, 4).join('; '));
+    ok(r.junk.every(x => x === null), 'nesmyslné id vrátilo úsek');
+  });
+
+  await step('filtr, zrcadlení, oblíbené a běhy u úseku', async () => {
+    await fresh('#lib');
+    await ev(() => { SET.eq = { jump: 8, tunnel: 1, weave: 1, sub: 1 }; SET.cut = { W: 25, H: 18, src: 'all' }; lsSet(SETK, SET); });
+    await page.click('#genBtn'); await page.click('#sheet [data-a="tcut"]');
+    ok(await page.isChecked('#gSub') && await page.isChecked('#gW'), 'vybavení se nenačetlo z nastavení');
+    await page.click('#sheet [data-a="go"]');
+    await page.waitForFunction(() => !CUT.busy && GEN.out.length > 0, null, { timeout: 15000 });
+    ok(await page.isVisible('#gOut [data-cf="b"]'), 'chybí filtr Zadní strany');
+    await page.click('#gOut [data-cf="b"]');
+    ok(await ev(() => GEN.out.length > 0 && GEN.out.every(c => c.cut.k.b > 0)), 'filtr pustil úsek bez zadní strany');
+    await page.click('#gOut [data-a="cmir"]');
+    ok(await ev(() => CUT.m && GEN.out.every(c => / ⇋$/.test(c.name) && /m$/.test(c.id))), 'zrcadlení se nepřepnulo');
+    const id = await ev(() => GEN.out[0].id);
+    await page.click('#gOut [data-gi="0"]'); await page.waitForTimeout(300);
+    ok(await ev(i => S.meta.id === i, id), 'otevřený úsek nemá stálé id');
+    /* oblíbené a zapsaný běh se uloží k úseku */
+    await ev(() => { setMark(S.meta.id, { fav: true }); });
+    await page.click('.nav [data-v="run"]');
+    await page.fill('#manT', '21,5'); await page.click('#saveRun'); await page.waitForTimeout(300);
+    ok(await ev(i => getMark(i).fav && (getMark(i).runs || []).length === 1, id), 'oblíbené nebo běh se k úseku nezapsaly');
+    /* úsek z historie: findCourse ho sestaví znovu */
+    ok(await ev(i => { const c = findCourse(i); return !!c && c.id === i && c.route.length === S.route.length; }, id), 'úsek z historie nejde otevřít');
+    await ev(() => { CUT.f = 'all'; CUT.m = false; });
+  });
+
+  await step('Domů: nejlepší úseky pro uloženou plochu', async () => {
+    await fresh('#home');
+    ok(await page.locator('#v-home .hm-cutcar [data-hcut]').count() > 0, 'na Domů chybí úseky pro uloženou plochu');
+    /* zaběhnutý úsek ustoupí nezaběhnutým; když jsou zaběhnuté všechny, ukážou se se značkou ✓ */
+    const r = await ev(() => { const c = HOME_CUT[0]; setMark(c.id, { done: true }); show('home'); const ids = HOME_CUT.map(x => x.id); return { id: c.id, first: ids[0], last: ids[ids.length - 1], has: ids.indexOf(c.id) >= 0 }; });
+    ok(r.first !== r.id && (!r.has || r.last === r.id), 'zaběhnutý úsek se na Domů neposunul dozadu');
+    await ev(() => { CUTHOME.list.forEach(c => setMark(c.id, { done: true })); show('home'); });
+    ok(await page.locator('#v-home .hm-cutcar .hm-done').count() === await page.locator('#v-home .hm-cutcar [data-hcut]').count(), 'zaběhnuté úseky nemají značku ✓');
+    await page.click('#v-home .hm-cutcar [data-hcut="0"]'); await page.waitForTimeout(300);
+    ok(await ev(() => view === 'plan' && /^cut~/.test(S.meta.id)), 'úsek z Domů se neotevřel');
+    await page.click('.nav [data-v="home"]'); await page.click('#v-home [data-h="cut"]'); await page.waitForTimeout(200);
+    ok(await ev(() => GEN.tab === 'cut' && $('gCW').value === '25'), 'Upravit neotevřelo generátor s uloženou plochou');
     await ev(() => closeSheet());
   });
 
