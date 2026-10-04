@@ -458,6 +458,11 @@ body.at-home .top{display:none;}
 .hm-wk:after{content:""; position:absolute; right:-40px; bottom:-60px; width:150px; height:150px; border:14px solid rgba(198,244,50,.12); border-radius:50%; pointer-events:none;}
 .hm-wk > div{position:relative; z-index:1; min-width:0;}
 .hm-wk .wk-a{display:flex; gap:12px; align-items:center;}
+/* Zahrada týdne: teplejší zelená, řádek Zahradní ligy */
+.hm-wk.zg{background:radial-gradient(120% 110% at 100% 0%,#7fae3a 0%,#3d6b25 50%,#1d3a12 100%);}
+.lg-line{display:flex; align-items:center; gap:10px; width:100%; text-align:left; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.08); color:inherit; border-radius:14px; padding:9px 12px; position:relative; z-index:1; font:inherit;}
+.lg-line .lg-ic{font-size:20px;} .lg-line .lg-tx{flex:1; min-width:0; display:flex; flex-direction:column;} .lg-line .lg-tx span{font-size:12.5px; opacity:.8;} .lg-line i{font-style:normal; opacity:.7;}
+.wkboard .lg-line{border-color:var(--border); background:var(--sunk); margin:8px 0;}
 .hm-wk .m{flex:0 0 auto; width:108px; height:58px; border-radius:12px; overflow:hidden; background:#e4eddb; border:2px solid rgba(198,244,50,.55);}
 .hm-wk .m svg{width:100%; height:100%; display:block;}
 .hm-wk .tx{flex:1; min-width:0;}
@@ -1031,7 +1036,23 @@ var I18N_EXTRA={exact:{
 "ZÓNY": "CONTACTS",
 "TUNEL": "TUNNEL",
 "SKOKY": "JUMPS",
+"Zahrada týdne": "Garden of the week",
+"Body za každý odeslaný týden": "Points for every week you submit",
+"Načítám ligu…": "Loading the league…",
+"Liga zatím nemá body. Zaběhni Zahradu týdne a odešli výsledek!": "The league has no points yet. Run the Garden of the week and submit your result!",
+"Body za každý týden podle umístění ve velikosti psa: 1. místo 10, 2. 8, 3. 6, 4. 5, 5. 4, 6. 3, 7. 2, každé další 1.": "Points every week by placing within the dog's size: 1st 10, 2nd 8, 3rd 6, 4th 5, 5th 4, 6th 3, 7th 2, any other 1.",
+"· 6 skoků, tunel, slalom": "· 6 jumps, tunnel, weaves",
 },num:{
+"Zahrada týdne #": "Garden of the week #",
+"Týden #": "Week #",
+"# × # m · 6 skoků, tunel, slalom": "# × # m · 6 jumps, tunnel, weaves",
+"Zahradní liga #": "Garden league #",
+"#. místo · # b · # týdnů": "place #1 · #2 pts · #3 weeks",
+"# b": "# pts",
+"# týd.": "# wk",
+"V lize je celkem # týmů": "# teams in the league",
+"# × # m · zbývá # dny": "# × # m · # days left",
+"# × # m · zbývá # dní": "# × # m · # days left",
 "Otočky #": "Wraps #",
 "Zadní strany #": "Backsides #",
 "Překážky #–#": "Obstacles #–#",
@@ -1043,6 +1064,8 @@ var I18N_EXTRA={exact:{
 "o # s nad SČP · # m/s": "# s over SCT · # m/s",
 "# tb · # m/s ·": "# pp · # m/s ·",
 },re:[
+["^(\\d+) × (\\d+) m · zbývá poslední den$","$1 × $2 m · last day left"],
+["^Ligu se nepodařilo načíst: (.+?)$","The league couldn't be loaded: @1"]
 ]};
 function i18nStart(){
   i18nAdd(I18N_EXTRA);
@@ -3667,6 +3690,7 @@ function specsHTML(m){
 
 /* ---------- horní lišta ---------- */
 function authorLine(meta){
+  if(String(meta.id||'').indexOf('zahrada-')===0) return ZG.W+' × '+ZG.H+' m · 6 skoků, tunel, slalom';
   if(meta.author) return 'Stavěl/a: '+meta.author;
   if(meta.gen) return meta.id?'Generátor podle pravidel FCI':'Vygenerováno v aplikaci';
   return 'Autor neuveden';
@@ -4181,6 +4205,7 @@ function libRender(){
 }
 function findCourse(id){
   if(String(id).indexOf('cut~')===0) return cutById(id);
+  if(String(id).indexOf('zahrada-')===0) return gardenCourse(String(id).slice(8));
   var tab=id.indexOf('my-')===0?'my':id.indexOf('tr-')===0?'tr':id.slice(0,2), L=['my','tr','A1','A2','A3'].indexOf(tab)>=0?listFor(tab):[];
   for(var j=0;j<L.length;j++) if(L[j].id===id) return L[j];
   return null;
@@ -4348,7 +4373,10 @@ $('saveRun').onclick=function(){
   runs.push(rec);
   setMark(S.meta.id,{runs:runs,done:true}); topbar(); resetRun(); runRender(); toast('Běh uložen: '+GNAME[e.g]);
   /* běh na Parkuru týdne (neupraveném): nabídnout odeslání do žebříčku; tot už obsahuje i trestné body za čas */
-  if(e.g!=='DIS'&&['A1','A2','A3'].indexOf(S.meta.cls)>=0&&!S.meta.dirty){ var wc=weekCourse(S.meta.cls); if(wc&&wc.id===S.meta.id) wkSend(rec); }
+  if(e.g!=='DIS'&&!S.meta.dirty){
+    if(S.meta.id===('zahrada-'+weekKey())) wkSend(rec,'Z');
+    else if(['A1','A2','A3'].indexOf(S.meta.cls)>=0){ var wc=weekCourse(S.meta.cls); if(wc&&wc.id===S.meta.id) wkSend(rec,S.meta.cls); }
+  }
   HM.emit('runSaved',{cid:S.meta.id,idx:runs.length-1,run:rec});
 };
 $('hist').onclick=function(e){
@@ -4444,6 +4472,7 @@ function homeRender(){
   } else h+='<div class="hm-sec"><h3>Trénink doma</h3></div><div class="hm-ch hm-cut"><div class="ic">🏡</div><div class="tx"><b>Úseky ze skutečných parkurů</b><span>'+
     (SET.cut?'Plocha '+SET.cut.W+' × '+SET.cut.H+' m a tvoje vybavení':'Vejdou se na tvou zahradu a postavíš je z toho, co máš')+'</span></div><button class="hm-go" data-h="cut">Vybrat</button></div>';
   h+=wkHomeHTML(cls);
+  h+=wkHomeHTML('Z');
   var ch=homeChallenge();
   if(ch) h+='<div class="hm-sec"><h3>Výzva dne</h3></div><div class="hm-ch"><div class="ic">🎯</div><div class="tx"><b>Zaběhni čistě pod SČP</b><span>'+esc(ch.c.name)+' · '+ch.c.route.length+' překážek</span></div>'+
     (ch.ok?'<span class="hm-go ok" style="display:grid;place-items:center">Splněno ✓</span>':'<button class="hm-go" data-h="ch">Start</button>')+'</div>';
@@ -4453,7 +4482,7 @@ function homeRender(){
     wk+='<div class="'+(k===today?'today':'')+'"><i class="'+(days[k]?'on':'')+'"></i>'+n+'</div>'; });
   h+='<div class="hm-sec"><h3>Tento týden</h3><button data-h="diary">Deník ›</button></div><div class="hm-week">'+wk+'</div>';
   $('v-home').innerHTML=h;
-  wkRefresh(cls);
+  wkRefresh(cls); wkRefresh('Z'); lgRefresh();
 }
 $('v-home').onclick=function(e){
   var c=e.target.closest('[data-hc]'); if(c){ var x=HOME_C[+c.getAttribute('data-hc')]; if(x) loadCourse(x); return; }
@@ -4464,8 +4493,9 @@ $('v-home').onclick=function(e){
   else if(a==='dog'){ moreTab='dogs'; show('more'); if(!DOGS.length) dogSheet(null); }
   else if(a==='diary'){ moreTab='diary'; show('more'); }
   else if(a==='ch'){ var ch=homeChallenge(); if(ch) loadCourse(ch.c); }
-  else if(a==='wkopen'){ var wc=weekCourse(homeCls()); if(wc) loadCourse(wc); }
-  else if(a==='wkboard') wkBoard();
+  else if(a==='wkopen'){ var wc=weekCourse(b.getAttribute('data-wc')||homeCls()); if(wc) loadCourse(wc); }
+  else if(a==='wkboard') wkBoard(null,b.getAttribute('data-wc')||homeCls());
+  else if(a==='league') lgBoard();
   else if(a==='cut'){ GEN.tab='cut'; genSheet(); }
 };
 
@@ -4479,10 +4509,24 @@ function weekKey(d){
   var w=1+Math.round((t-j4)/(7*86400000));
   return y+'-W'+('0'+w).slice(-2);
 }
-function wkCls(cls){ return ['A1','A2','A3'].indexOf(cls)>=0?cls:'A1'; }
+function wkCls(cls){ return ['A1','A2','A3','Z'].indexOf(cls)>=0?cls:'A1'; }
+function wkName(cls){ return cls==='Z'?'Zahrada týdne':'Parkur týdne'; }
+/* Zahrada týdne: parkur 20 × 15 m z domácího vybavení (6 skoků, tunel, slalom), každý týden nový.
+   Generátor zahrad dostane semínko z čísla týdne, takže všem vyjde stejný parkur (bez serveru). */
+var ZG={W:20,H:15,n:9,eq:{jump:6,tunnel:1,weave:1,tire:0,aframe:0,dogwalk:0,seesaw:0,longjump:0}}, ZGC={};
+function zHash(t){ var h=2166136261; for(var i=0;i<t.length;i++){ h^=t.charCodeAt(i); h=Math.imul(h,16777619); }
+  h^=h>>>16; h=Math.imul(h,2246822507); h^=h>>>13; h=Math.imul(h,3266489909); h^=h>>>16; return h>>>0; }
+function gardenCourse(wk){
+  wk=wk||weekKey(); if(!/^\d{4}-W\d{2}$/.test(wk)) return null;
+  if(ZGC.hasOwnProperty(wk)) return ZGC[wk];
+  var g=null, cfg={W:ZG.W,H:ZG.H,turn:120,mix:[.25,.5,.25],tmax:150,gap:[5,7],cl:2,reuse:.35,eq:ZG.eq,n:[ZG.n,ZG.n],wrap:.25,wmax:2,back:.12,bmax:1,bent:[0,1]};
+  for(var k=0;k<40&&!g;k++){ var R=mb(zHash(wk)+k*7919), c=Object.assign({},cfg); try{ c.seq=yardSeq(ZG.eq,ZG.n,R); g=genCustom(c,R); }catch(e){ g=null; } }
+  return (ZGC[wk]=g?{id:'zahrada-'+wk,name:'Zahrada týdne '+(+wk.split('-W')[1]),cls:'A1',author:'',gen:true,garden:wk,W:ZG.W,H:ZG.H,obs:g.obs,route:g.route,turns:g.turns||[]}:null);
+}
 /* parkur týdne: stejný celý týden, výběr podle otisku týdne a třídy */
 function weekCourse(cls){
-  cls=wkCls(cls); var L=listFor(cls).filter(function(c){return c.route&&c.route.length>1;}); if(!L.length) return null;
+  cls=wkCls(cls); if(cls==='Z') return gardenCourse(weekKey());
+  var L=listFor(cls).filter(function(c){return c.route&&c.route.length>1;}); if(!L.length) return null;
   var k=weekKey()+'|'+cls, h=0; for(var i=0;i<k.length;i++) h=(h*31+k.charCodeAt(i))|0;
   return L[Math.abs(h)%L.length];
 }
@@ -4501,8 +4545,8 @@ function wkPen(p){ p=+p||0; return (p%1?fmt2(p):String(p))+' tb'; }
 function wkBetter(a,b){ return !b||a.pen<b.pen||(a.pen===b.pen&&a.t<b.t); }
 /* uložená čísla ze žebříčku a moje odeslané výsledky: jen tento týden */
 function wkStore(k){ var o=lsGet(k,{}), w=weekKey(); if(!o||typeof o!=='object') o={}; Object.keys(o).forEach(function(x){ if(x.indexOf(w+'|')!==0) delete o[x]; }); return o; }
-function wkMyBest(c){
-  var me=wkStore(WKME)[weekKey()+'|'+c.cls], w=weekKey(), b=null;
+function wkMyBest(c,cls){
+  var me=wkStore(WKME)[weekKey()+'|'+(cls||c.cls)], w=weekKey(), b=null;
   (getMark(c.id).runs||[]).forEach(function(x){ if(x.g!=='DIS'&&x.d&&weekKey(new Date(x.d))===w){ var r={t:x.t,pen:x.tot}; if(wkBetter(r,b)) b=r; } });
   return {run:b,me:me||null};
 }
@@ -4515,15 +4559,16 @@ function wkTopHTML(cls){
 }
 function wkHomeHTML(cls){
   cls=wkCls(cls); var c=weekCourse(cls); if(!c) return '';
-  var s=cStats(c), mb=wkMyBest(c), me=mb.me, mine='';
+  var s=cStats(c), mb=wkMyBest(c,cls), me=mb.me, mine='', Z=cls==='Z';
   if(me) mine='Tvůj výsledek: <b>'+fmt2(+me.t||0)+' s · '+wkPen(me.pen)+'</b>'+(me.rank_size?' · '+(+me.rank_size)+'. z '+(+me.total_size||0)+' v '+esc(me.size):'');
   else if(mb.run) mine='Tvůj nejlepší běh: <b>'+fmt2(mb.run.t)+' s · '+wkPen(mb.run.pen)+'</b> · neodesláno';
   else mine='Tento týden jsi ho ještě nezaběhl/a';
-  return '<div class="hm-sec"><h3>Parkur týdne</h3><button data-h="wkboard">Žebříček ›</button></div>'+
-    '<div class="hm-wk"><div class="wk-a"><span class="m">'+thumb(c,s.geo)+'</span><div class="tx"><small>'+cls+' · '+wkLeft()+'</small><b>'+esc(c.name)+'</b>'+
-    '<span>'+fmt(s.geo.total)+' m · '+c.route.length+' překážek</span></div></div>'+
+  return '<div class="hm-sec"><h3>'+wkName(cls)+'</h3><button data-h="wkboard" data-wc="'+cls+'">Žebříček ›</button></div>'+
+    '<div class="hm-wk'+(Z?' zg':'')+'"><div class="wk-a"><span class="m">'+thumb(c,s.geo)+'</span><div class="tx"><small>'+(Z?ZG.W+' × '+ZG.H+' m':cls)+' · '+wkLeft()+'</small><b>'+(Z?'Týden '+(+c.garden.split('-W')[1]):esc(c.name))+'</b>'+
+    '<span>'+fmt(s.geo.total)+' m · '+c.route.length+' překážek'+(Z?' · 6 skoků, tunel, slalom':'')+'</span></div></div>'+
     '<div class="wk-me">'+mine+'</div>'+
-    '<div class="wk-b"><div class="wk-top" id="hmWkTop">'+wkTopHTML(cls)+'</div><button class="wk-go" data-h="wkopen">Zaběhnout</button></div></div>';
+    '<div class="wk-b"><div class="wk-top" id="hmWkTop'+cls+'">'+wkTopHTML(cls)+'</div><button class="wk-go" data-h="wkopen" data-wc="'+cls+'">Zaběhnout</button></div>'+
+    (Z?'<button class="lg-line" data-h="league">'+lgLineHTML()+'</button>':'')+'</div>';
 }
 function wkCachePut(cls,r){
   var o=wkStore(WKCACHE), rows=(r&&Array.isArray(r.rows))?r.rows:[];
@@ -4538,7 +4583,7 @@ function wkRefresh(cls){
   try{
     sbCall('week_board',{p_cls:cls,p_size:null,p_device:devId(),p_week:null}).then(function(r){
       if(!r) return; wkCachePut(cls,r);
-      var el=$('hmWkTop'); if(el&&view==='home'&&homeCls()===cls) el.innerHTML=wkTopHTML(cls);
+      var el=$('hmWkTop'+cls); if(el&&view==='home') el.innerHTML=wkTopHTML(cls);
     },function(){});
   }catch(e){}
 }
@@ -4552,10 +4597,11 @@ function wkBoard(size,cls){
   if(size==null){ var d=curDog(); size=d&&SIZES.hasOwnProperty(d.size)?d.size:''; }
   WKB={n:WKB.n+1,cls:cls,size:size,c:c};
   var ch=[['','Vše']].concat(Object.keys(SIZES).map(function(k){return [k,k];}));
-  openSheet('<div class="wkboard"><h3>Parkur týdne · '+esc(c.name)+' · '+cls+'</h3>'+
+  openSheet('<div class="wkboard"><h3>'+(cls==='Z'?esc(c.name):'Parkur týdne · '+esc(c.name)+' · '+cls)+'</h3>'+
     '<div class="filters wk-sz">'+ch.map(function(x){return '<button class="chip'+(x[0]===size?' on':'')+'" data-wsz="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>'+
     '<p class="hint">Týden '+weekKey().split('-W')[1]+' · '+wkLeft()+' · pořadí podle trestných bodů, pak času</p>'+
     '<div class="wk-list" id="wkList"></div>'+
+    (cls==='Z'?'<button class="lg-line" data-a="league">'+lgLineHTML()+'</button>':'')+
     '<div class="acts"><button class="btn" data-a="x">Zavřít</button><button class="btn primary" data-a="open">Zaběhnout parkur</button></div></div>',
     function(e){
       var z=e.target.closest('[data-wsz]'), b=e.target.closest('[data-a]');
@@ -4564,6 +4610,7 @@ function wkBoard(size,cls){
       if(!b) return; var a=b.getAttribute('data-a');
       if(a==='retry') wkLoad();
       else if(a==='open'){ closeSheet(); loadCourse(WKB.c); }
+      else if(a==='league') lgBoard(WKB.size);
       else if(a==='x') closeSheet();
     });
   wkLoad();
@@ -4586,10 +4633,72 @@ function wkLoad(){
     el.innerHTML='<p class="wk-st">Žebříček se nepodařilo načíst: '+esc(err&&err.message||err)+'</p><div class="acts"><button class="btn" data-a="retry">Zkusit znovu</button></div>';
   });
 }
+/* ---------- Zahradní liga: body za umístění v Zahradě týdne (ve velikosti psa), sezóna = rok ----------
+   10-8-6-5-4-3-2 za 1.–7. místo, každý další odeslaný týden 1 bod. Počítá server (league_board). */
+var LGK='agility-league-v1', LGB={n:0}, LG_TRY=0;
+var LG_PTS='Body za každý týden podle umístění ve velikosti psa: 1. místo 10, 2. 8, 3. 6, 4. 5, 5. 4, 6. 3, 7. 2, každé další 1.';
+function lgYear(){ return weekKey().slice(0,4); }
+function lgLineHTML(){
+  var c=lsGet(LGK,{})||{}, me=c.year===lgYear()?c.me:null;
+  return '<span class="lg-ic" aria-hidden="true">🏆</span><span class="lg-tx"><b>Zahradní liga '+lgYear()+'</b>'+
+    (me?'<span>'+(+me.rank||0)+'. místo · '+(+me.pts||0)+' b · '+(+me.weeks||0)+' týdnů</span>':'<span>Body za každý odeslaný týden</span>')+'</span><i aria-hidden="true">›</i>';
+}
+/* pořadí pro kartu na Domů: nejvýš jednou za 10 minut, chyby potichu */
+function lgRefresh(){
+  var c=lsGet(LGK,{})||{}, now=Date.now();
+  if((c.year===lgYear()&&now-(c.at||0)<600000)||now-LG_TRY<600000) return;
+  LG_TRY=now;
+  try{ sbCall('league_board',{p_size:null,p_device:devId(),p_year:null}).then(function(r){
+    if(!r) return; var me=(Array.isArray(r.me)&&r.me[0])||null;
+    lsSet(LGK,{year:String(r.year||lgYear()),at:Date.now(),me:me?{rank:me.rank,pts:me.pts,weeks:me.weeks}:null});
+    var el=document.querySelector('#v-home .lg-line'); if(el&&view==='home') el.innerHTML=lgLineHTML();
+  },function(){}); }catch(e){}
+}
+function lgRowHTML(x,mine){
+  return '<div class="wkrow lgrow'+(mine?' mine':'')+'"><span class="rk">'+(+x.rank||0)+'.</span><span class="who"><b>'+esc(x.dog)+'</b><small>'+esc(x.handler)+'</small></span>'+
+    '<span class="sz">'+esc(x.size)+'</span><span class="tm"><b>'+(+x.pts||0)+' b</b><small>'+(+x.weeks||0)+' týd.'+(+x.wins?' · 🥇'+(+x.wins):'')+'</small></span></div>';
+}
+function lgBoard(size){
+  if(size==null){ var d=curDog(); size=d&&SIZES.hasOwnProperty(d.size)?d.size:''; }
+  LGB={n:LGB.n+1,size:size};
+  var ch=[['','Vše']].concat(Object.keys(SIZES).map(function(k){return [k,k];}));
+  openSheet('<div class="wkboard lgboard"><h3>Zahradní liga '+lgYear()+'</h3>'+
+    '<div class="filters wk-sz">'+ch.map(function(x){return '<button class="chip'+(x[0]===size?' on':'')+'" data-lsz="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>'+
+    '<p class="hint">'+LG_PTS+'</p>'+
+    '<div class="wk-list" id="lgList"></div>'+
+    '<div class="acts"><button class="btn" data-a="x">Zavřít</button><button class="btn primary" data-a="open">Zahrada týdne</button></div></div>',
+    function(e){
+      var z=e.target.closest('[data-lsz]'), b=e.target.closest('[data-a]');
+      if(z){ LGB.size=z.getAttribute('data-lsz');
+        Array.prototype.forEach.call($('sheet').querySelectorAll('[data-lsz]'),function(x){x.classList.toggle('on',x===z);}); lgLoad(); return; }
+      if(!b) return; var a=b.getAttribute('data-a');
+      if(a==='retry') lgLoad();
+      else if(a==='open'){ closeSheet(); var gc=gardenCourse(); if(gc) loadCourse(gc); }
+      else if(a==='x') closeSheet();
+    });
+  lgLoad();
+}
+function lgLoad(){
+  var n=++LGB.n, B=LGB, el=$('lgList'); if(!el) return;
+  el.innerHTML='<p class="wk-st">Načítám ligu…</p>';
+  function live(){ return n===LGB.n&&$('lgList')===el&&document.body.contains(el); }
+  var p; try{ p=sbCall('league_board',{p_size:B.size||null,p_device:devId(),p_year:null}); }catch(e){ p=Promise.reject(e); }
+  p.then(function(r){
+    if(!live()) return;
+    var rows=(r&&Array.isArray(r.rows))?r.rows:[], me=(r&&Array.isArray(r.me))?r.me:[];
+    if(!rows.length&&!me.length){ el.innerHTML='<p class="wk-st">Liga zatím nemá body. Zaběhni Zahradu týdne a odešli výsledek!</p>'; return; }
+    var h=rows.map(function(x){return lgRowHTML(x,!!x.mine);}).join('');
+    if(me.length&&!rows.some(function(x){return x.mine;})) h+='<div class="wk-sep">…</div>'+me.map(function(x){return lgRowHTML(x,true);}).join('');
+    el.innerHTML=h+(r.total>rows.length?'<p class="wk-st">V lize je celkem '+(+r.total)+' týmů</p>':'');
+  },function(err){
+    if(!live()) return;
+    el.innerHTML='<p class="wk-st">Ligu se nepodařilo načíst: '+esc(err&&err.message||err)+'</p><div class="acts"><button class="btn" data-a="retry">Zkusit znovu</button></div>';
+  });
+}
 /* po uloženém běhu na parkuru týdne: odeslat výsledek do žebříčku */
-function wkSend(rec){
-  var d=curDog(), cls=S.meta.cls, cid=S.meta.id, pen=Math.round((+rec.tot||0)*100)/100, nick=lsStr(NICKK);
-  openSheet('<div class="wksend"><h3>Parkur týdne</h3><p>'+esc(S.meta.name)+' · '+cls+' · '+wkLeft()+'</p>'+
+function wkSend(rec,cls){
+  var d=curDog(); cls=cls||S.meta.cls; var cid=S.meta.id, pen=Math.round((+rec.tot||0)*100)/100, nick=lsStr(NICKK);
+  openSheet('<div class="wksend"><h3>'+wkName(cls)+'</h3><p>'+esc(S.meta.name)+' · '+(cls==='Z'?ZG.W+' × '+ZG.H+' m':cls)+' · '+wkLeft()+'</p>'+
     '<div class="wk-res"><div><b>'+fmt2(rec.t)+' s</b><span>čas</span></div><div><b>'+wkPen(pen)+'</b><span>trestné body</span></div></div>'+
     '<label for="wkNick">Psovod (přezdívka v žebříčku)<input id="wkNick" type="text" maxlength="30" autocomplete="nickname" value="'+esc(nick)+'"></label>'+
     (d?'<p>Pes: <b>'+esc(d.name)+'</b> · velikost '+esc(d.size)+'</p>'
@@ -4612,6 +4721,7 @@ function wkSend(rec){
         var cc=wkStore(WKCACHE); if(cc[k]){ delete cc[k]; lsSet(WKCACHE,cc); } delete WK_TRY[k];
         if($('sheet').querySelector('.wksend')) closeSheet();
         toast('Jsi '+(+r.rank_size||0)+'. z '+(+r.total_size||0)+' ve velikosti '+sz,4000);
+        if(cls==='Z'){ var lc=lsGet(LGK,{}); if(lc&&typeof lc==='object'){ lc.at=0; lsSet(LGK,lc); } }
         wkBoard(sz,cls);
       },function(err){
         b.disabled=false; b.textContent='Odeslat do žebříčku';

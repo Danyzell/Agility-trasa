@@ -12,6 +12,8 @@ Trénink doma (Domů → Trénink doma, nebo Parkury → Generátor → Z parkur
 
 Výsledky ze závodů: v profilu psa (Více → Psi) najdi psa na kacr.info podle jeho jména nebo podle jména psovoda (nebo vlož odkaz). Aplikace stáhne jeho výsledky (serverová funkce `supabase/functions/kacr`), ukáže statistiky a graf rychlosti a v Plánu odhadne čas psa na parkuru vůči SČP.
 
+Zahrada týdne a Zahradní liga (Domů): každé pondělí se všem vygeneruje stejný parkur 20 × 15 m z domácího vybavení (6 skoků, tunel, slalom) – semínko je číslo týdne, takže parkur nepotřebuje server. Výsledky jdou do týdenního žebříčku podle velikosti psa a za umístění se sbírají body do ligy na celou sezónu (10-8-6-5-4-3-2, za každý další odeslaný týden 1 bod). Žebříčky počítá Supabase (`supabase/migrations`, funkce `week_submit`, `week_board`, `league_board`).
+
 Na aplikaci pracuje víc sezení Claude Code najednou – pravidla jsou v [SPOLUPRACE.md](SPOLUPRACE.md).
 
 3D animace techniky v záložce Videa jsou ve `v3d/src` (three.js); balíček `v3d/v3d.js` se sestaví příkazem `v3d/build.sh` (esbuild).
