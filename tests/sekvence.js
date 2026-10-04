@@ -210,6 +210,27 @@ module.exports = async function ({ browser, base }) {
     ok(await ev(() => trLookup('Překážky 4–10') === 'Obstacles 4–10' && trLookup('Plocha 20 × 15 m a tvoje vybavení') === 'Space 20 × 15 m and your equipment'), 'chybí překlad rozsahu nebo plochy');
   });
 
+  T.step('cvičení se stálým id');
+  try {
+    const r = await ev(() => Object.keys(DRILLS).map(k => { const a = drillCourse(k, 's777'), b = drillCourse(k, 's777'), v = drillCourse(k, 'v0');
+      return { k, same: !!a && JSON.stringify([a.route, a.turns, a.obs]) === JSON.stringify([b.route, b.turns, b.obs]), v: !!v && v.id === 'drill~' + k + '~v0', find: (findCourse('drill~' + k + '~v0') || {}).id === 'drill~' + k + '~v0' }; }));
+    ok(r.every(x => x.same && x.v && x.find), 'cvičení se nesestaví znovu podle id: ' + JSON.stringify(r.filter(x => !(x.same && x.v && x.find))));
+    ok(await ev(() => drillById('drill~nic~v0') === null && drillById('drill~box~x1') === null && drillById('drill~box~v99') === null), 'neplatné id cvičení');
+    /* běh na cvičení se zapíše a počítá se na Domů i v generátoru */
+    await page.goto('about:blank'); await page.goto(base + '/#plan'); await page.waitForTimeout(300);
+    await ev(() => { S.meta.dirty = false; loadCourse(drillCourse('box', 'v0'), true); $('toast').hidden = true; });
+    await page.click('.nav [data-v="run"]'); await page.fill('#manT', '9,5');
+    await page.evaluate(() => $('saveRun').scrollIntoView({ block: 'center' })); await page.click('#saveRun'); await page.waitForTimeout(200);
+    ok(await ev(() => (getMark('drill~box~v0').runs || []).length === 1 && drillRuns('box') === 1), 'běh se k cvičení nezapsal');
+    await ev(() => { if (!$('scrim').hidden) closeSheet(); show('home'); }); await page.waitForTimeout(200);
+    ok(/✓ 1×/.test(await page.textContent('[data-hdrill="box"]')) && !(await ev(() => document.querySelector('[data-hdrill="box"]').classList.contains('tip'))), 'dlaždice Čtverec neukazuje 1 běh');
+    await page.click('[data-hdrill="pin"]'); await page.waitForSelector('#gOut .card', { timeout: 5000 });
+    ok(await ev(() => GEN.tab === 'drill' && $('gDrill').value === 'pin' && GEN.out.every(c => /^drill~pin~[vs]\d+$/.test(c.id))), 'dlaždice neotevřela cvičení Mlýnek se stálými id');
+    await ev(() => { closeSheet(); GEN.tab = 'drill'; GEN.drill = 'box'; genSheet(); genRun(); }); await page.waitForSelector('#gOut .card', { timeout: 5000 });
+    ok(/✓ zaběhnuto 1×/.test(await page.textContent('#gOut')), 'karta cvičení neukazuje zaběhnutí');
+    await ev(() => closeSheet());
+  } catch (e) { T.fail(e); }
+
   await T.ctx.close();
   return T.errs;
 };

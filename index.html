@@ -469,6 +469,10 @@ body.at-home .top{display:none;}
 .hm-wk.zg{background:radial-gradient(120% 110% at 100% 0%,#7fae3a 0%,#3d6b25 50%,#1d3a12 100%);}
 .lg-line{display:flex; align-items:center; gap:10px; width:100%; text-align:left; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.08); color:inherit; border-radius:14px; padding:9px 12px; position:relative; z-index:1; font:inherit;}
 .lg-line .lg-ic{font-size:20px;} .lg-line .lg-tx{flex:1; min-width:0; display:flex; flex-direction:column;} .lg-line .lg-tx span{font-size:12.5px; opacity:.8;} .lg-line i{font-style:normal; opacity:.7;}
+.hm-skills{display:flex; gap:8px; overflow-x:auto; padding:2px 16px 4px; margin-top:10px; scrollbar-width:none;}
+.hm-skill{flex:0 0 auto; display:flex; flex-direction:column; gap:2px; text-align:left; border:1px solid var(--border); background:var(--surface); border-radius:14px; padding:9px 12px; min-height:52px; max-width:170px; font:inherit; color:inherit;}
+.hm-skill b{font-size:13.5px; line-height:1.2;} .hm-skill span{font-size:12px; color:var(--muted);} .hm-skill.tip{border-color:var(--accent);} .hm-skill.tip span{color:var(--accent); font-weight:700;}
+.card .gdone{color:var(--accent); font-weight:700;}
 .cp-home{margin:0 16px; display:flex; flex-direction:column; gap:8px;}
 .cp-row{display:flex; gap:12px; align-items:flex-start; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:10px 12px;}
 .cp-row.mine{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset;}
@@ -1025,6 +1029,8 @@ var I18N_EXTRA={exact:{
 "rovně": "straight",
 "Úsek zvládnutý bez chyby. Přidáme další.": "Chunk done without a mistake. Let's add the next one.",
 "Pasti": "Traps",
+"zkus dnes": "try today",
+"nezkoušeno": "not tried",
 "Závody": "Competitions",
 "Do 100 km": "Within 100 km",
 "Do 200 km": "Within 200 km",
@@ -1120,6 +1126,7 @@ var I18N_EXTRA={exact:{
 "Úsek zvládnutý, chyby #. Přidáme další.": "Chunk done, # mistakes. Let's add the next one.",
 "Nejvíc chyb v úseku #–#. Projdi si ho ještě jednou.": "Most mistakes in chunk #1–#2. Go through it once more.",
 "Po č. #": "After no. #",
+"✓ zaběhnuto #×": "✓ run #×",
 "# km": "# km",
 "přihlášky do #. #. #:#": "entries until #1/#2 #3:#4",
 "přihlášky do #. #. #:# · přihlášeno #": "entries until #1/#2 #3:#4 · #5 entered",
@@ -4373,6 +4380,7 @@ function libRender(){
 }
 function findCourse(id){
   if(String(id).indexOf('cut~')===0) return cutById(id);
+  if(String(id).indexOf('drill~')===0) return drillById(id);
   if(String(id).indexOf('zahrada-')===0) return gardenCourse(String(id).slice(8));
   var tab=id.indexOf('my-')===0?'my':id.indexOf('tr-')===0?'tr':id.slice(0,2), L=['my','tr','A1','A2','A3'].indexOf(tab)>=0?listFor(tab):[];
   for(var j=0;j<L.length;j++) if(L[j].id===id) return L[j];
@@ -4639,6 +4647,7 @@ function homeRender(){
     }).join('')+'</div><p class="hm-note">Plocha '+SET.cut.W+' × '+SET.cut.H+' m a tvoje vybavení</p>';
   } else h+='<div class="hm-sec"><h3>Trénink doma</h3></div><div class="hm-ch hm-cut"><div class="ic">🏡</div><div class="tx"><b>Úseky ze skutečných parkurů</b><span>'+
     (SET.cut?'Plocha '+SET.cut.W+' × '+SET.cut.H+' m a tvoje vybavení':'Vejdou se na tvou zahradu a postavíš je z toho, co máš')+'</span></div><button class="hm-go" data-h="cut">Vybrat</button></div>';
+  h+=drillHomeHTML();
   h+=wkHomeHTML(cls);
   h+=wkHomeHTML('Z');
   h+=compHomeHTML();
@@ -4656,6 +4665,7 @@ function homeRender(){
 $('v-home').onclick=function(e){
   var c=e.target.closest('[data-hc]'); if(c){ var x=HOME_C[+c.getAttribute('data-hc')]; if(x) loadCourse(x); return; }
   var hc=e.target.closest('[data-hcut]'); if(hc){ var y=HOME_CUT[+hc.getAttribute('data-hcut')]; if(y) loadCourse(y); return; }
+  var hd=e.target.closest('[data-hdrill]'); if(hd){ GEN.tab='drill'; GEN.drill=hd.getAttribute('data-hdrill'); genSheet(); genRun(); return; }
   var b=e.target.closest('[data-h]'); if(!b) return; var a=b.getAttribute('data-h');
   if(a==='plan') show('plan');
   else if(a==='lib'){ libTab=homeCls(); show('lib'); }
@@ -5855,6 +5865,25 @@ var DRILLS={
   back:{l:'Zadní strana',t:'Skok zezadu: pes oběhne křídlo a skočí proti směru, odkud přiběhl.',n:[4,6],backs:1,
     o:[['jump',0,0,0],['jump',-5.5,-2,20],['jump',-5.5,3,340],['jump',5,-3,0],['jump',4,4,0]],v:['2 1R 3','2 1L 3','3 1L 2','3 1R 2']}
 };
+/* cvičení se stálým id 'drill~klíč~vN' (N-tá klasická varianta) nebo 'drill~klíč~sSEMÍNKO' (varianta z generátoru):
+   dá se znovu sestavit, takže se k němu zapisují běhy, oblíbené a otevře se i z historie */
+function drillCourse(key,tag){
+  var d=DRILLS[key]; if(!d||!/^[vs]\d{1,9}$/.test(tag||'')) return null;
+  var L=drillLayout(d), v=null, nm;
+  if(tag.charAt(0)==='v'){ var k=+tag.slice(1); v=drillFixed(d,L)[k]; nm=d.l+' · '+(k+1); }
+  else { v=drillGen(d,L,mb(+tag.slice(1))); nm=d.l+' · '+tag.slice(-3); }
+  if(!v) return null;
+  return {id:'drill~'+key+'~'+tag,name:nm,cls:'A1',author:'',gen:true,drill:key,W:L.W,H:L.H,obs:L.obs.map(function(o){return Object.assign({},o);}),route:v.route.slice(),turns:v.turns.slice()};
+}
+function drillById(id){ var p=String(id).split('~'); return p.length===3&&p[0]==='drill'?drillCourse(p[1],p[2]):null; }
+/* kolik běhů je zapsaných u všech variant cvičení */
+function drillRuns(key){ var n=0, pre='drill~'+key+'~'; Object.keys(MK).forEach(function(id){ if(id.indexOf(pre)===0) n+=((MK[id]&&MK[id].runs)||[]).length; }); return n; }
+/* Domů: dlaždice dovedností (klasická cvičení) s počtem zapsaných běhů; nejméně trénovaná je zvýrazněná */
+function drillHomeHTML(){
+  var K=Object.keys(DRILLS), n=K.map(drillRuns), lo=Math.min.apply(null,n), lk=K[n.indexOf(lo)];
+  return '<div class="hm-skills" role="list">'+K.map(function(k,i){ var tip=k===lk;
+    return '<button role="listitem" class="hm-skill'+(tip?' tip':'')+'" data-hdrill="'+k+'"><b>'+esc(DRILLS[k].l)+'</b><span>'+(n[i]?'✓ '+n[i]+'×':tip?'zkus dnes':'nezkoušeno')+'</span></button>'; }).join('')+'</div>';
+}
 /* klasické varianty, které na rozestavení opravdu projdou (dráha nevede přes jinou překážku a nezatáčí nesmyslně) */
 function drillFixed(d,L){
   var out=[], TT={l:'wL',r:'wR',L:'bL',R:'bR',f:'f'};
@@ -6001,7 +6030,8 @@ function genShow(out,busy,kind){
     return;
   }
   el.innerHTML=out.length?out.map(function(c,i){var m=metrics(c.obs,c.route,'A1',c.turns), tt=c.turns||[], nW=tt.filter(function(t){return t&&t.charAt(0)==='w';}).length, nB=tt.filter(function(t){return t&&t.charAt(0)==='b';}).length;
-    return '<div class="card"><button class="pick" data-gi="'+i+'">'+thumb(c)+'<div class="meta"><b>'+esc(c.name)+'</b><span>'+fmt(m.len)+' m · '+m.n+' překážek</span><span>'+c.obs.length+' kusů vybavení</span>'+(nW||nB?'<span>Otočky '+nW+(nB?' · zadní strany '+nB:'')+'</span>':'')+'</div></button></div>';}).join('')+
+    var rn=c.id?((getMark(c.id).runs)||[]).length:0;
+    return '<div class="card"><button class="pick" data-gi="'+i+'">'+thumb(c)+'<div class="meta"><b>'+esc(c.name)+'</b>'+(rn?'<span class="gdone">✓ zaběhnuto '+rn+'×</span>':'')+'<span>'+fmt(m.len)+' m · '+m.n+' překážek</span><span>'+c.obs.length+' kusů vybavení</span>'+(nW||nB?'<span>Otočky '+nW+(nB?' · zadní strany '+nB:'')+'</span>':'')+'</div></button></div>';}).join('')+
     (busy?'<div class="empty-state">Hledám další…</div>':'')
     :busy?'<div class="empty-state">Skládám trasy…</div>':'<div class="empty-state">Na téhle ploše se trasu nepodařilo složit. Zkus větší plochu, méně překážek v trase nebo víc skoků.</div>';
 }
@@ -6010,9 +6040,9 @@ function genRun(){
   if(GEN.tab==='cut'){ cutRun(); return; }
   var job=++GENJOB, out=[], base=Date.now()%100000, k=0, max=60, want=6, tryOne;
   if(GEN.tab==='drill'){
-    var d=DRILLS[$('gDrill').value], L=drillLayout(d), seen={}, fx=drillFixed(d,L); max=d.max?fx.length:40+fx.length; if(d.max) want=d.max;
-    tryOne=function(k){ var v=k<fx.length?fx[k]:drillGen(d,L,mb(base*31+k*7919+13)); if(!v) return; var key=v.route.join(',')+'|'+v.turns.join(','); if(seen[key]) return; seen[key]=1;
-      out.push({id:null,name:d.l+' '+(out.length+1),cls:'A1',author:'',gen:true,W:L.W,H:L.H,obs:L.obs.map(function(o){return Object.assign({},o);}),route:v.route,turns:v.turns}); };
+    var dk=$('gDrill').value, d=DRILLS[dk], L=drillLayout(d), seen={}, fx=drillFixed(d,L); max=d.max?fx.length:40+fx.length; if(d.max) want=d.max;
+    tryOne=function(k){ var c=drillCourse(dk,k<fx.length?'v'+k:'s'+(base*31+k*7919+13)); if(!c) return; var key=c.route.join(',')+'|'+c.turns.join(','); if(seen[key]) return; seen[key]=1;
+      out.push(c); };
   } else {
     var ar=$('gArea').value.split('x'), W=+ar[0], H=+ar[1], cfg;
     if(GEN.tab==='seq'){var sk=SKILLS[$('gSkill').value]; cfg={W:W,H:H,seq:sk.seq,turn:sk.turn,mix:sk.mix,tmax:sk.turn,wv:sk.wv,bent:sk.bent||[0,1],gap:W<25?[4.5,6]:sk.gap,cl:W<25?1.6:2,reuse:.1,eq:{weave:W<25?2:1,tunnel:sk.seq.filter(function(t){return t==='tunnel';}).length||1,dogwalk:1,aframe:1,seesaw:1},name:sk.l,wrap:sk.wrap||0,wmin:W<20?Math.min(1,sk.wmin||0):(sk.wmin||0),wmax:sk.wmax||0,back:sk.back||0,bmin:sk.bmin||0,bmax:sk.bmax||0};}
