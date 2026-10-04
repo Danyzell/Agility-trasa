@@ -1,8 +1,10 @@
 /* HandlerMap: výsledky psa z kacr.info (veřejné stránky, jeden požadavek na dotaz).
    Vstup: { dog: "14756" } nebo odkaz https://kacr.info/dogs/14756 → pes (jméno, plemeno, velikost, narození) a jeho běhy po závodech;
    { q: "Wampi" } → hledání psů a psovodů podle jména (kacr.info/search/<text>);
-   { handler: "6625" } → psi psovoda (jeho průkazy).
-   Stahuje jen tyhle tři druhy stránek kacr.info, nic jiného (žádný otevřený proxy). */
+   { handler: "6625" } → psi psovoda (jeho průkazy);
+   { comps: 1 } → kalendář závodů na 60 dní dopředu (datum, GPS, rozhodčí, povrch, uzávěrka, přihlášení psi).
+   Kalendář je asi 50 stránek, proto se ukládá do tabulky kacr_cache a stahuje se nejvýš jednou za 12 hodin.
+   Stahuje jen tyhle druhy stránek kacr.info, nic jiného (žádný otevřený proxy). */
 const UA = 'HandlerMap/2.0 (+https://danyzell.github.io/Agility-trasa/)';
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -58,6 +60,62 @@ function parseHandler(id: string, html: string) {
   return { id: +id, name, dogs };
 }
 
+/* ---------- kalendář závodů ---------- */
+const SBU = Deno.env.get('SUPABASE_URL') || '', SRK = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
+const CACHE_MS = 12 * 3600 * 1000, DAYS = 60;
+async function cacheGet(key: string) {
+  if (!SBU || !SRK) return null;
+  const r = await fetch(`${SBU}/rest/v1/kacr_cache?key=eq.${key}&select=data,at`, { headers: { apikey: SRK, Authorization: `Bearer ${SRK}` } });
+  if (!r.ok) return null; const j = await r.json(); return j[0] || null;
+}
+async function cachePut(key: string, data: unknown) {
+  if (!SBU || !SRK) return;
+  await fetch(`${SBU}/rest/v1/kacr_cache`, { method: 'POST', headers: { apikey: SRK, Authorization: `Bearer ${SRK}`, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates' },
+    body: JSON.stringify({ key, data, at: new Date().toISOString() }) });
+}
+const ymd = (d: Date) => d.toISOString().slice(0, 10);
+function parseComp(id: number, html: string) {
+  const name = text((html.match(/<h1>([\s\S]*?)<\/h1>/) || [])[1] || '');
+  const info: Record<string, string> = {};
+  const sum = (html.match(/<div class='summary'>([\s\S]*?)<\/div>/) || [])[1] || '';
+  for (const m of sum.matchAll(/<span>([^<]+?):\s*<\/span><span>([\s\S]*?)<\/span>/g)) info[text(m[1])] = m[2];
+  const dates = [...text(info['Datum'] || '').matchAll(/(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})/g)].map((m) => `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`);
+  const gps = html.match(/L\.marker\(\[\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\]\)/);
+  const judges = [...(info['Rozhodčí'] || '').matchAll(/<a[^>]*>([\s\S]*?)<\/a>/g)].map((m) => text(m[1])).slice(0, 6);
+  const dl = html.match(/Přihlašování na tento závod je otevřené, končí (\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4}) v (\d{1,2}):(\d{2})/);
+  const closed = /Přihlašování na tento závod (už )?skončilo/.test(html);
+  /* potvrzené přihlášky: číslo psa → kategorie (např. IA2) */
+  const entries: Record<string, string> = {}; let n = 0;
+  const tab = (html.split(/<table[^>]*id='confirmed'[^>]*>/)[1] || '').split('</table>')[0];
+  for (const tr of tab.split(/<tr[\s>]/).slice(1)) {
+    const cat = text((tr.match(/<td class='first_on_mobile'>([\s\S]*?)<\/td>/) || [])[1] || ''), dog = (tr.match(/kacr\.info\/dogs\/(\d+)/) || [])[1];
+    if (cat) n++; if (dog && cat && Object.keys(entries).length < 600) entries[dog] = cat.slice(0, 8);
+  }
+  const lat = gps ? +gps[1] : null, lng = gps ? +gps[2] : null;
+  return { id, name, from: dates[0] || null, to: dates[1] || dates[0] || null,
+    lat: lat != null && lat > 40 && lat < 60 ? lat : null, lng: lng != null && lng > 5 && lng < 30 ? lng : null,
+    terrain: text(info['Terén'] || '') || null, indoor: text(info['Uvnitř'] || '') === 'Ano', judges,
+    deadline: dl ? `${dl[3]}-${dl[2].padStart(2, '0')}-${dl[1].padStart(2, '0')}T${dl[4].padStart(2, '0')}:${dl[5]}` : null, open: dl ? true : closed ? false : null,
+    n, entries };
+}
+async function scrapeComps() {
+  const now = new Date(), to = new Date(now.getTime() + DAYS * 86400000), ids: number[] = [];
+  for (let p = 1; p <= 12; p++) {
+    const r = await get(`/competitions/search?competition%5Bdate_from%5D=${ymd(now)}&competition%5Bdate_to%5D=${ymd(to)}&competition%5Blength%5D=any&page=${p}`);
+    if (!r.ok) break;
+    const h = (await r.text()).split("<div id='container'>")[1] || '';
+    const found = [...h.matchAll(/<span class='title'>\s*<a href="https:\/\/kacr\.info\/competitions\/(\d+)">/g)].map((m) => +m[1]).filter((x) => ids.indexOf(x) < 0);
+    if (!found.length) break; ids.push(...found);
+  }
+  const out: ReturnType<typeof parseComp>[] = [];
+  for (let i = 0; i < ids.length; i += 4) {
+    const part = await Promise.all(ids.slice(i, i + 4).map(async (id) => { try { const r = await get('/competitions/' + id); return r.ok ? parseComp(id, await r.text()) : null; } catch (_) { return null; } }));
+    part.forEach((c) => { if (c && c.name && c.from) out.push(c); });
+  }
+  out.sort((a, b) => (a.from! < b.from! ? -1 : a.from! > b.from! ? 1 : a.id - b.id));
+  return { at: Date.now(), days: DAYS, comps: out };
+}
+
 const get = (path: string) => fetch('https://kacr.info' + path, { headers: { 'User-Agent': UA, 'Accept-Language': 'cs' }, redirect: 'manual' });
 
 Deno.serve(async (req: Request) => {
@@ -70,6 +128,14 @@ Deno.serve(async (req: Request) => {
       const r = await get('/search/' + encodeURIComponent(q));
       if (!r.ok) return json({ error: `kacr.info teď neodpovídá (${r.status}).` }, 502);
       return json(parseSearch(await r.text()));
+    }
+    if (b?.comps) {
+      const c = await cacheGet('comps');
+      if (c && Date.now() - Date.parse(c.at) < CACHE_MS && c.data && Array.isArray(c.data.comps)) return json(c.data);
+      const d = await scrapeComps();
+      if (!d.comps.length) { if (c && c.data) return json(c.data); return json({ error: 'Kalendář závodů se nepodařilo načíst.' }, 502); }
+      await cachePut('comps', d);
+      return json(d);
     }
     if (b?.handler != null) {
       const h = String(b.handler).match(/^(?:https?:\/\/(?:www\.)?kacr\.info\/handlers\/)?(\d{1,7})\/?$/);
