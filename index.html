@@ -469,6 +469,15 @@ body.at-home .top{display:none;}
 .hm-wk.zg{background:radial-gradient(120% 110% at 100% 0%,#7fae3a 0%,#3d6b25 50%,#1d3a12 100%);}
 .lg-line{display:flex; align-items:center; gap:10px; width:100%; text-align:left; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.08); color:inherit; border-radius:14px; padding:9px 12px; position:relative; z-index:1; font:inherit;}
 .lg-line .lg-ic{font-size:20px;} .lg-line .lg-tx{flex:1; min-width:0; display:flex; flex-direction:column;} .lg-line .lg-tx span{font-size:12.5px; opacity:.8;} .lg-line i{font-style:normal; opacity:.7;}
+.cp-home{margin:0 16px; display:flex; flex-direction:column; gap:8px;}
+.cp-row{display:flex; gap:12px; align-items:flex-start; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:10px 12px;}
+.cp-row.mine{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset;}
+.cp-d{flex:0 0 70px; font-family:var(--display); font-weight:700; font-size:17px; line-height:1.15; color:var(--accent); display:flex; flex-direction:column;} .cp-d small{font-size:12.5px; color:var(--text); font-weight:600; white-space:nowrap;}
+.cp-t{flex:1; min-width:0; display:flex; flex-direction:column; gap:2px;} .cp-t b{font-size:14.5px; line-height:1.25;} .cp-t > span{font-size:12.5px; color:var(--muted);}
+.cp-t .cp-me{color:var(--accent); font-weight:700;} .cp-t .cp-me:before{content:"✓ ";}
+.cp-ln a{color:var(--accent); font-weight:600; text-decoration:none; margin-right:12px;}
+.cp-st{margin:0; color:var(--muted); font-size:13.5px;} .cp-loc{align-self:flex-start; border:0; background:none; color:var(--accent); font-weight:600; padding:4px 2px; font:inherit;}
+.cp-list{display:flex; flex-direction:column; gap:8px; max-height:58vh; overflow-y:auto;} .cp-locrow{font-size:13px; color:var(--muted);}
 .wkboard .lg-line{border-color:var(--border); background:var(--sunk); margin:8px 0;}
 .hm-wk .m{flex:0 0 auto; width:108px; height:58px; border-radius:12px; overflow:hidden; background:#e4eddb; border:2px solid rgba(198,244,50,.55);}
 .hm-wk .m svg{width:100%; height:100%; display:block;}
@@ -1016,6 +1025,26 @@ var I18N_EXTRA={exact:{
 "rovně": "straight",
 "Úsek zvládnutý bez chyby. Přidáme další.": "Chunk done without a mistake. Let's add the next one.",
 "Pasti": "Traps",
+"Závody": "Competitions",
+"Do 100 km": "Within 100 km",
+"Do 200 km": "Within 200 km",
+"Moji psi": "My dogs",
+"📍 Poloha": "📍 Location",
+"📍 Seřadit podle vzdálenosti": "📍 Sort by distance",
+"Vzdálenost od tvé polohy": "Distance from your location",
+"Poloha není zjištěná": "Location not known",
+"Načítám kalendář z kacr.info…": "Loading the kacr.info calendar…",
+"V příštích týdnech tu nejsou žádné závody.": "No competitions in the coming weeks.",
+"Kalendář závodů teď nejde načíst.": "The competition calendar can't be loaded right now.",
+"Pro vzdálenost klepni na Poloha.": "Tap Location to see distances.",
+"Žádné závody.": "No competitions.",
+"Tvoji psi zatím nejsou na žádný závod přihlášení (nebo nemají v profilu odkaz na kacr.info).": "Your dogs aren't entered in any competition yet (or their profile has no kacr.info link).",
+"Kalendář a přihlášky z kacr.info na 60 dní dopředu. Přihlášené psy pozná aplikace podle odkazu na kacr.info v profilu psa.": "Calendar and entries from kacr.info for the next 60 days. The app recognises your entered dogs by the kacr.info link in the dog's profile.",
+"přihlášky uzavřené": "entries closed",
+"hala": "indoor",
+"Telefon polohu nezjistí": "This phone can't determine its location",
+"Polohu se nepodařilo zjistit": "The location couldn't be determined",
+"Mapa ›": "Map ›",
 "Sdílet výsledek": "Share result",
 "Sdílet pořadí": "Share standing",
 "čas": "time",
@@ -1091,6 +1120,11 @@ var I18N_EXTRA={exact:{
 "Úsek zvládnutý, chyby #. Přidáme další.": "Chunk done, # mistakes. Let's add the next one.",
 "Nejvíc chyb v úseku #–#. Projdi si ho ještě jednou.": "Most mistakes in chunk #1–#2. Go through it once more.",
 "Po č. #": "After no. #",
+"# km": "# km",
+"přihlášky do #. #. #:#": "entries until #1/#2 #3:#4",
+"přihlášky do #. #. #:# · přihlášeno #": "entries until #1/#2 #3:#4 · #5 entered",
+"přihlášky uzavřené · přihlášeno #": "entries closed · # entered",
+" · přihlášeno #": " · # entered",
 "#. místo": "place #",
 "velikost #": "size #",
 "Zahradní liga #: #. místo · # b": "Garden league #1: place #2 · #3 pts",
@@ -1119,6 +1153,7 @@ var I18N_EXTRA={exact:{
 "o # s nad SČP · # m/s": "# s over SCT · # m/s",
 "# tb · # m/s ·": "# pp · # m/s ·",
 },re:[
+["^Kalendář závodů se nepodařilo načíst: (.+?)$","The competition calendar couldn't be loaded: @1"],
 ["^Parkur týdne · (A\\d)$","Course of the week · $1"],
 ["^Zahrada týdne (\\d+): (.+?) s, (.+?) tb(?:, (\\d+)\\. místo z (\\d+) \\((.+?)\\))?$","Garden of the week $1: $2 s, $3 pp"],
 ["^(obrat do U|had|oblouk doleva|oblouk doprava|rovně) · (.+?)$","@1 · @2"],
@@ -4606,6 +4641,7 @@ function homeRender(){
     (SET.cut?'Plocha '+SET.cut.W+' × '+SET.cut.H+' m a tvoje vybavení':'Vejdou se na tvou zahradu a postavíš je z toho, co máš')+'</span></div><button class="hm-go" data-h="cut">Vybrat</button></div>';
   h+=wkHomeHTML(cls);
   h+=wkHomeHTML('Z');
+  h+=compHomeHTML();
   var ch=homeChallenge();
   if(ch) h+='<div class="hm-sec"><h3>Výzva dne</h3></div><div class="hm-ch"><div class="ic">🎯</div><div class="tx"><b>Zaběhni čistě pod SČP</b><span>'+esc(ch.c.name)+' · '+ch.c.route.length+' překážek</span></div>'+
     (ch.ok?'<span class="hm-go ok" style="display:grid;place-items:center">Splněno ✓</span>':'<button class="hm-go" data-h="ch">Start</button>')+'</div>';
@@ -4615,7 +4651,7 @@ function homeRender(){
     wk+='<div class="'+(k===today?'today':'')+'"><i class="'+(days[k]?'on':'')+'"></i>'+n+'</div>'; });
   h+='<div class="hm-sec"><h3>Tento týden</h3><button data-h="diary">Deník ›</button></div><div class="hm-week">'+wk+'</div>';
   $('v-home').innerHTML=h;
-  wkRefresh(cls); wkRefresh('Z'); lgRefresh();
+  wkRefresh(cls); wkRefresh('Z'); lgRefresh(); compHomeRefresh();
 }
 $('v-home').onclick=function(e){
   var c=e.target.closest('[data-hc]'); if(c){ var x=HOME_C[+c.getAttribute('data-hc')]; if(x) loadCourse(x); return; }
@@ -4629,6 +4665,8 @@ $('v-home').onclick=function(e){
   else if(a==='wkopen'){ var wc=weekCourse(b.getAttribute('data-wc')||homeCls()); if(wc) loadCourse(wc); }
   else if(a==='wkboard') wkBoard(null,b.getAttribute('data-wc')||homeCls());
   else if(a==='league') lgBoard();
+  else if(a==='comps') compsSheet();
+  else if(a==='comploc') compLocate().then(function(){ homeRender(); },function(){});
   else if(a==='cut'){ GEN.tab='cut'; genSheet(); }
 };
 
@@ -6261,6 +6299,89 @@ function kacrFind(by){
       (H.length?'<p class="kc-cap">Psovodi</p>'+H.map(function(x){return '<button class="kc-hit h" data-kh="'+(+x.id)+'"><b translate="no">'+esc(x.name)+'</b><span>'+(x.osa?'<span translate="no">'+esc(x.osa)+'</span> · ':'')+'ukázat psy ›</span></button>';}).join(''):'')+
       (D.length>=10?'<p class="hint">Ukazuje se jen prvních 10 psů. Napiš celé jméno, nebo hledej podle psovoda.</p>':'');
   },function(e){ if(n===KACR_Q&&$('dKres')) box.innerHTML='<p class="hint">kacr.info: '+esc(e.message)+'</p>'; });
+}
+/* ---------- Závody poblíž: kalendář z kacr.info (serverová funkce, mezipaměť na serveru 12 h, v telefonu 6 h) ----------
+   Datum, místo (GPS), rozhodčí, povrch, uzávěrka přihlášek a přihlášení psi. Poloha se ukládá jen v telefonu, zaokrouhlená na ~1 km. */
+var COMPK='agility-comps-v1', LOCK='agility-loc-v1', COMPS=lsGet(COMPK,null), COMP_BUSY=null, COMPF={f:'all'};
+function compDays(){ return ['Ne','Po','Út','St','Čt','Pá','So']; }
+function compDate(c){
+  var d=new Date(c.from+'T12:00:00'), e=c.to&&c.to!==c.from?new Date(c.to+'T12:00:00'):null;
+  var wd=T(compDays()[d.getDay()])+(e?'–'+T(compDays()[e.getDay()]):'');
+  var dt=e?(d.getMonth()===e.getMonth()?d.getDate()+'.–'+e.getDate()+'. '+(e.getMonth()+1)+'.':d.getDate()+'. '+(d.getMonth()+1)+'.–'+e.getDate()+'. '+(e.getMonth()+1)+'.'):d.getDate()+'. '+(d.getMonth()+1)+'.';
+  return '<span translate="no">'+wd+'</span><small translate="no">'+dt+'</small>';
+}
+function compDist(c,loc){
+  loc=loc||lsGet(LOCK,null); if(!loc||c.lat==null) return null;
+  var R=6371, dLa=(c.lat-loc.lat)*D2R, dLo=(c.lng-loc.lng)*D2R, a=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(loc.lat*D2R)*Math.cos(c.lat*D2R)*Math.sin(dLo/2)*Math.sin(dLo/2);
+  return 2*R*Math.asin(Math.sqrt(a));
+}
+/* moji psi s odkazem na kacr.info, kteří jsou na závod přihlášení */
+function compMine(c){ return DOGS.filter(function(d){ return d.kacr&&c.entries&&c.entries[d.kacr]; }).map(function(d){ return {name:d.name,cat:c.entries[d.kacr]}; }); }
+function compUpcoming(){ var today=localDate(); return ((COMPS&&COMPS.data&&COMPS.data.comps)||[]).filter(function(c){ return c&&c.from&&(c.to||c.from)>=today; }).slice().sort(function(a,b){ return a.from<b.from?-1:a.from>b.from?1:a.id-b.id; }); }
+function compsLoad(force){
+  if(COMP_BUSY) return COMP_BUSY;
+  if(!force&&COMPS&&COMPS.data&&Date.now()-(COMPS.at||0)<6*3600000) return Promise.resolve(COMPS.data);
+  COMP_BUSY=kacrAsk({comps:1}).then(function(d){ COMP_BUSY=null; if(!d||!Array.isArray(d.comps)) throw new Error('prázdná odpověď'); COMPS={at:Date.now(),data:d}; lsSet(COMPK,COMPS); return d; },function(e){ COMP_BUSY=null; throw e; });
+  return COMP_BUSY;
+}
+function compLocate(){
+  if(!navigator.geolocation){ toast('Telefon polohu nezjistí'); return Promise.reject(new Error('geo')); }
+  return new Promise(function(res,rej){ navigator.geolocation.getCurrentPosition(function(p){
+      var l={lat:Math.round(p.coords.latitude*100)/100,lng:Math.round(p.coords.longitude*100)/100,at:Date.now()}; lsSet(LOCK,l); res(l); },
+    function(){ toast('Polohu se nepodařilo zjistit'); rej(new Error('geo')); },{maximumAge:3600000,timeout:15000}); });
+}
+function compJudge(j){ return String(j).replace(/,\s*[^(]*\(/,' ('); }
+function compRowHTML(c,full){
+  var km=compDist(c), mine=compMine(c), dl=c.deadline?new Date(c.deadline):null;
+  var meta=[km!=null?Math.round(km)+' km':null, (c.judges||[]).slice(0,full?3:1).map(compJudge).join(', ')||null, full?[c.terrain,c.indoor?'hala':null].filter(Boolean).join(', ')||null:null].filter(Boolean);
+  return '<div class="cp-row'+(mine.length?' mine':'')+'"><div class="cp-d">'+compDate(c)+'</div><div class="cp-t"><b translate="no">'+esc(c.name)+'</b>'+
+    '<span>'+meta.map(function(m){return '<span translate="no">'+esc(m)+'</span>';}).join(' · ')+'</span>'+
+    (mine.length?'<span class="cp-me">'+mine.map(function(m){return '<span translate="no">'+esc(m.name)+'</span> '+esc(m.cat);}).join(', ')+'</span>':'')+
+    (full?'<span class="cp-dl">'+(c.open===true&&dl?'přihlášky do '+dl.getDate()+'. '+(dl.getMonth()+1)+'. '+('0'+dl.getHours()).slice(-2)+':'+('0'+dl.getMinutes()).slice(-2):c.open===false?'přihlášky uzavřené':'')+(c.n?' · přihlášeno '+c.n:'')+'</span>'+
+      '<span class="cp-ln"><a href="https://kacr.info/competitions/'+(+c.id)+'" target="_blank" rel="noopener">kacr.info ›</a>'+(c.lat!=null?' <a href="https://mapy.cz/zakladni?source=coor&amp;id='+(+c.lng)+'%2C'+(+c.lat)+'" target="_blank" rel="noopener">Mapa ›</a>':'')+'</span>':'')+
+    '</div></div>';
+}
+/* výběr pro Domů: nejdřív závody, kam jsou přihlášení moji psi, pak nejbližší (do 150 km) nebo nejdřívější */
+function compHomeList(){
+  var L=compUpcoming(), loc=lsGet(LOCK,null), mine=L.filter(function(c){return compMine(c).length;});
+  var rest=L.filter(function(c){return !compMine(c).length;});
+  if(loc){ var near=rest.filter(function(c){var k=compDist(c,loc); return k!=null&&k<=150;}); rest=near.length?near:rest; }
+  return mine.concat(rest).slice(0,3);
+}
+function compHomeHTML(){
+  var L=compHomeList();
+  return '<div class="hm-sec"><h3>Závody</h3><button data-h="comps">Vše ›</button></div><div class="cp-home" id="hmComps">'+
+    (L.length?L.map(function(c){return compRowHTML(c,false);}).join(''):'<p class="cp-st">'+(COMPS?'V příštích týdnech tu nejsou žádné závody.':'Načítám kalendář z kacr.info…')+'</p>')+
+    (L.length&&!lsGet(LOCK,null)?'<button class="cp-loc" data-h="comploc">📍 Seřadit podle vzdálenosti</button>':'')+'</div>';
+}
+function compHomeRefresh(){
+  compsLoad().then(function(){ var el=$('hmComps'); if(el&&view==='home'){ var t=document.createElement('div'); t.innerHTML=compHomeHTML(); el.innerHTML=t.querySelector('#hmComps').innerHTML; } },function(){ var el=$('hmComps'); if(el&&!COMPS) el.innerHTML='<p class="cp-st">Kalendář závodů teď nejde načíst.</p>'; });
+}
+function compsSheet(){
+  var F=[['all','Vše'],['100','Do 100 km'],['200','Do 200 km'],['mine','Moji psi']];
+  openSheet('<div class="cpsheet"><h3>Závody</h3><div class="filters" id="cpF">'+F.map(function(x){return '<button class="chip'+(COMPF.f===x[0]?' on':'')+'" data-cf2="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>'+
+    '<div class="row cp-locrow"><span class="grow" id="cpLoc"></span><button class="btn" data-a="loc">📍 Poloha</button></div>'+
+    '<div id="cpList" class="cp-list"></div><p class="hint">Kalendář a přihlášky z kacr.info na 60 dní dopředu. Přihlášené psy pozná aplikace podle odkazu na kacr.info v profilu psa.</p>'+
+    '<div class="acts"><button class="btn primary" data-a="x">Zavřít</button></div></div>',
+    function(e){
+      var f=e.target.closest('[data-cf2]'), b=e.target.closest('[data-a]');
+      if(f){ COMPF.f=f.getAttribute('data-cf2'); Array.prototype.forEach.call($('cpF').querySelectorAll('[data-cf2]'),function(x){x.classList.toggle('on',x===f);}); compsList(); return; }
+      if(!b) return; var a=b.getAttribute('data-a');
+      if(a==='loc') compLocate().then(function(){ compsList(); if(view==='home') homeRender(); },function(){});
+      else if(a==='retry'){ compsLoad(true).then(compsList,compsList); }
+      else if(a==='x') closeSheet();
+    });
+  compsList();
+  if(!COMPS||Date.now()-(COMPS.at||0)>=6*3600000) compsLoad().then(compsList,function(err){ var el=$('cpList'); if(el&&!COMPS) el.innerHTML='<p class="cp-st">Kalendář závodů se nepodařilo načíst: '+esc(err&&err.message||err)+'</p><div class="acts"><button class="btn" data-a="retry">Zkusit znovu</button></div>'; });
+}
+function compsList(){
+  var el=$('cpList'); if(!el) return;
+  var loc=lsGet(LOCK,null), lt=$('cpLoc'); if(lt) lt.textContent=loc?'Vzdálenost od tvé polohy':'Poloha není zjištěná';
+  if(!COMPS){ el.innerHTML='<p class="cp-st">Načítám kalendář z kacr.info…</p>'; return; }
+  var L=compUpcoming(), f=COMPF.f;
+  if(f==='mine') L=L.filter(function(c){return compMine(c).length;});
+  else if(f!=='all'){ if(!loc){ el.innerHTML='<p class="cp-st">Pro vzdálenost klepni na Poloha.</p>'; return; } L=L.filter(function(c){var k=compDist(c,loc); return k!=null&&k<=+f;}); }
+  el.innerHTML=L.length?L.map(function(c){return compRowHTML(c,true);}).join(''):'<p class="cp-st">'+(f==='mine'?'Tvoji psi zatím nejsou na žádný závod přihlášení (nebo nemají v profilu odkaz na kacr.info).':'Žádné závody.')+'</p>';
 }
 /* stáhne a uloží výsledky psa; quiet = jen krátké oznámení */
 function kacrLoad(dog,quiet){
