@@ -19,6 +19,8 @@ exports.phone = async function (browser, opts) {
       const b = await page.locator('#field').boundingBox(), W = await page.evaluate(() => S.W), H = await page.evaluate(() => S.H);
       await page.mouse.click(b.x + x / W * b.width, b.y + y / H * b.height); await page.waitForTimeout(60);
     },
+    /* nástroj plánu: nabídka Nástroje se nejdřív rozbalí */
+    async tool(t) { if (await page.isHidden('#planTools')) await page.click('#toolsBtn'); await page.click(`#planTools [data-t="${t}"]`); },
     async sheet(a) { await page.click(`#sheet [data-a="${a}"]`); await page.waitForTimeout(150); },
   };
 };

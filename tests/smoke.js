@@ -17,12 +17,29 @@ module.exports = async function ({ browser, base }) {
     catch (e) { T.errs.push(`[${label}] krok selhal: ${e.message.split('\n')[0]}`); }
   };
   await step('plán', async () => T.ok(await T.ev(() => S.obs.length > 0 && S.route.length > 1), 'výchozí parkur se nenačetl'));
+  await step('přehledný běh', async () => {
+    await page.click('.nav [data-v="run"]'); await page.waitForTimeout(200);
+    T.ok(await page.isHidden('#speedRow') && await page.isVisible('#runSpecs .smini'), 'Běh: souhrn má být v řádku a rychlost schovaná');
+    await page.click('#runSpecs [data-rs]'); T.ok(await page.isVisible('#speedRow [data-sp="1"]'), 'rychlost pro SČP se neukázala');
+    await page.click('#runSpecs [data-rs]'); T.ok(await page.isHidden('#speedRow'), 'rychlost pro SČP se neschovala');
+    T.ok(await T.ev(() => new Set([...document.querySelectorAll('.spbtns .btn')].map(b => Math.round(b.getBoundingClientRect().top))).size === 1), 'Mezičasy a Vynulovat nejsou v jednom řádku');
+  });
+  await step('přehledný plán', async () => {
+    T.ok(await T.ev(() => mode === 'view' && !!document.querySelector('#specs.mini .smini') && $('planTools').hidden), 'plán se má otevřít v režimu Prohlížet, se souhrnem v řádku a schovanými nástroji');
+    await page.click('#specs [data-sp="1"]');
+    T.ok(await T.ev(() => document.querySelectorAll('#specs .spec').length >= 4 && lsGet('agility-planui-v1', {}).specs === true), 'souhrn se nerozbalil nebo se volba neuložila');
+    await page.click('#specs [data-sp="0"]');
+    T.ok(await T.ev(() => !!document.querySelector('#specs .smini') && lsGet('agility-planui-v1', {}).specs === false), 'souhrn se nesbalil');
+    await page.click('#toolsBtn'); T.ok(await page.isVisible('#planTools [data-t="3d"]'), 'nabídka Nástroje se neotevřela');
+    await page.click('#toolsBtn'); T.ok(await page.isHidden('#planTools'), 'nabídka Nástroje se nezavřela');
+    T.ok(await T.ev(() => trLookup('Prohlížet') === 'View' && trLookup('Nástroje') === 'Tools'), 'chybí anglický překlad');
+  });
   for (const t of ['ana', 'say', 'quiz', 'side', 'imp', 'bg', 'fld', 'export', 'share', '3d'])
-    await step('nástroj ' + t, async () => { await page.click(`#planTools [data-t="${t}"]`); await page.waitForTimeout(t === '3d' ? 1200 : 400); });
+    await step('nástroj ' + t, async () => { await T.tool(t); await page.waitForTimeout(t === '3d' ? 1200 : 400); });
   await step('režim trasa', async () => { await page.click('#mRoute'); });
   await page.setViewportSize({ width: 360, height: 780 });
   for (const t of ['tunnel', 'jump'])
-    await step('vybraná překážka ' + t + ' na 360 px', async () => { await T.ev(t => { sel = S.obs.find(o => o.type === t).id; ui(); render(); }, t); T.ok(await page.isVisible('#delBtn'), 'chybí Smazat'); });
+    await step('vybraná překážka ' + t + ' na 360 px', async () => { await T.ev(t => { mode = 'build'; sel = S.obs.find(o => o.type === t).id; ui(); render(); }, t); T.ok(await page.isVisible('#delBtn'), 'chybí Smazat'); });
   await page.setViewportSize({ width: 390, height: 844 });
   await step('kontrola FCI', async () => { await page.click('#fciBar'); T.ok(await page.isVisible('#sheet .fcilist'), 'kontrola FCI se neotevřela'); });
   for (const v of ['lib', 'run', 'video', 'more'])

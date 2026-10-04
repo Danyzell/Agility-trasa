@@ -330,7 +330,7 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 .kv.plain li{grid-template-columns:1fr;}
 .kv.plain small{text-align:left; font-size:13px;}
 /* v1.6: mezičasy, předčítání */
-.spbtns{justify-content:center;}
+.spbtns{justify-content:center; flex-wrap:nowrap; gap:8px;} .spbtns .btn{padding-left:10px; padding-right:10px; font-size:13px; white-space:nowrap;} @media (max-width:379px){ .spbtns{gap:5px;} .spbtns .btn{padding-left:7px; padding-right:7px; font-size:12.5px;} }
 .ovsp{position:fixed; inset:0; z-index:70; background:var(--bg); display:flex; flex-direction:column; gap:10px; padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px)); overflow:auto;}
 .ovsp-top{display:flex; align-items:center; gap:8px;}
 .ovsp-top b{font-family:var(--display); font-size:22px;}
@@ -376,6 +376,25 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 .fcibar.warn{border-color:var(--warn);}
 .fcibar.warn .ic{background:var(--warn);}
 .fcibar .more{font-size:12.5px; color:var(--muted);}
+/* Plán: souhrn v jednom řádku, nástroje pod tlačítkem, zoom na ploše */
+.plansum{display:flex; gap:8px; align-items:stretch;}
+.plansum .specs{flex:1; min-width:0;}
+.plansum .fcibar{width:auto; flex:0 0 auto; padding:6px 10px; font-weight:600;}
+.specs.mini{display:flex; flex-direction:column; background:none; border:0; border-radius:0; overflow:visible; gap:6px;}
+.smini{display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 12px; width:100%; text-align:left; border:1px solid var(--border); background:var(--surface); border-radius:12px; padding:9px 12px; font-size:13.5px; color:var(--muted);}
+.smini b{color:var(--text); font-size:15px; font-variant-numeric:tabular-nums;}
+.smini i{margin-left:auto; font-style:normal;}
+.specs.mini .spec.est{border:1px solid var(--border); border-radius:12px;}
+.spec.sfold{grid-column:1/-1; border:0; font-size:13px; color:var(--muted); text-align:center; padding:6px;}
+#planTools:not([hidden]){display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); overflow:visible;}
+#toolsBtn.on{border-color:var(--accent); color:var(--accent);}
+.specs:not(.mini)+.fcibar{align-self:flex-start; min-height:48px;}
+#modeRow{flex-wrap:nowrap;} #modeRow .seg button{padding-left:12px; padding-right:12px;}
+@media (max-width:430px){ #toolsBtn .lbl{display:none;} #toolsBtn{padding:8px 11px;} }
+.fieldbox{position:relative;}
+.fieldbox .zoom{position:absolute; right:8px; top:8px; z-index:2; background:color-mix(in srgb,var(--surface) 88%,transparent); border:1px solid var(--border); border-radius:14px; padding:3px; box-shadow:var(--shadow);}
+.fieldbox .zoom .btn{border:0; background:none; min-height:36px; width:36px;}
+#field.look .ob{cursor:default;}
 .fcilist{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px; font-size:14px;}
 .fcilist li{display:grid; grid-template-columns:22px 1fr; gap:6px; align-items:start;}
 .fcilist .i{font-weight:700; text-align:center;}
@@ -663,9 +682,14 @@ html.onb-open,html.onb-open body{overflow:hidden;}
   <section class="view home" id="v-home" hidden></section>
   <!-- PLÁN -->
   <section class="view" id="v-plan">
-    <div class="specs" id="specs"></div>
-    <button class="fcibar" id="fciBar" hidden></button>
-    <div class="tools" id="planTools">
+    <div class="plansum"><div class="specs" id="specs"></div><button class="fcibar" id="fciBar" hidden></button></div>
+    <div class="row" id="modeRow">
+      <div class="seg" role="group" aria-label="Režim"><button id="mView">Prohlížet</button><button id="mBuild" class="on">Stavba</button><button id="mRoute">Trasa</button></div>
+      <button class="btn" id="undoAll" title="Zpět: vrátit poslední změnu plánu" aria-label="Zpět" data-ic="undo" disabled></button>
+      <span class="grow"></span>
+      <button class="btn" id="toolsBtn" aria-label="Nástroje" title="Nástroje" aria-expanded="false" aria-controls="planTools" data-ic="dots"><span class="lbl">Nástroje</span></button>
+    </div>
+    <div class="tools" id="planTools" hidden>
       <button class="tool" data-t="ana" data-ic="gauge">Rozbor</button>
       <button class="tool" data-t="3d" data-ic="cube">3D průlet</button>
       <button class="tool" data-t="say" data-ic="speak">Předčítat</button>
@@ -676,12 +700,6 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       <button class="tool" data-t="fld" data-ic="compass">Stavba v terénu</button>
       <button class="tool" data-t="export" data-ic="file">Export</button>
       <button class="tool" data-t="share" data-ic="share">Sdílet</button>
-    </div>
-    <div class="row" id="modeRow">
-      <div class="seg" role="group" aria-label="Režim"><button id="mBuild" class="on">Stavba</button><button id="mRoute">Trasa</button></div>
-      <button class="btn" id="undoAll" title="Zpět: vrátit poslední změnu plánu" aria-label="Zpět" data-ic="undo" disabled></button>
-      <span class="grow"></span>
-      <div class="zoom"><button class="btn" id="zOut" aria-label="Oddálit">−</button><span id="zLbl" class="num"></span><button class="btn" id="zIn" aria-label="Přiblížit">+</button></div>
     </div>
     <p class="hint" id="hint"></p>
     <div class="modebar" id="quizBar" hidden></div>
@@ -706,11 +724,14 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       <button class="btn" id="undoBtn">↶ Vrátit poslední</button>
       <button class="btn danger" id="clrRoute">Smazat trasu</button>
     </div>
+    <div class="fieldbox">
+    <div class="zoom"><button class="btn" id="zOut" aria-label="Oddálit">−</button><span id="zLbl" class="num"></span><button class="btn" id="zIn" aria-label="Přiblížit">+</button></div>
     <div id="wrap" tabindex="0" aria-label="Plocha parkuru, posouvá se šipkami">
       <svg id="field" class="build" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plocha parkuru">
         <defs><marker id="arr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth=".8" markerHeight=".8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--zone)"/></marker></defs>
         <g id="fieldbg"></g><g id="bgimg"></g><g id="grid"></g><g id="hp"></g><g id="obs"></g><g id="pth"></g><g id="bdg"></g><g id="marks"></g>
       </svg>
+    </div>
     </div>
     <div class="row">
       <button class="btn primary" id="saveBtn" data-ic="save">Uložit</button>
@@ -757,13 +778,12 @@ html.onb-open,html.onb-open body{overflow:hidden;}
   <section class="view" id="v-run" hidden>
     <div class="filters" id="runDogs"></div>
     <div class="specs" id="runSpecs"></div>
-    <div class="speed" id="speedRow"></div>
+    <div class="speed" id="speedRow" hidden></div>
     <div class="panel">
       <div class="clock" id="clock">0,00</div>
       <div class="clock-sub" id="clockSub"></div>
       <button class="startbtn" id="startBtn">START</button>
-      <div class="row spbtns"><button class="btn" id="spLive">Mezičasy naživo</button><button class="btn" id="spVideo">Mezičasy z videa</button></div>
-      <div class="row" style="justify-content:center;margin-top:8px"><button class="btn" id="resetClock">Vynulovat</button></div>
+      <div class="row spbtns"><button class="btn" id="spLive">Mezičasy naživo</button><button class="btn" id="spVideo">Mezičasy z videa</button><button class="btn" id="resetClock" data-ic="refresh" aria-label="Vynulovat" title="Vynulovat"></button></div>
     </div>
     <div class="counters">
       <div class="counter"><div><small>Chyby</small><b id="fN">0</b></div><div class="pm"><button data-k="f" data-d="-1" aria-label="Ubrat chybu">−</button><button data-k="f" data-d="1" aria-label="Přidat chybu">+</button></div></div>
@@ -962,6 +982,10 @@ var I18N_EXTRA={exact:{
 "Skoky": "Jumps",
 "Pes na kacr.info (odkaz, nepovinné)": "Dog on kacr.info (link, optional)",
 "Pes na kacr.info (nepovinné)": "Dog on kacr.info (optional)",
+"Prohlížet": "View",
+"Nástroje": "Tools",
+"Méně ▴": "Less ▴",
+"Překážky upravíš v režimu Stavba, pořadí v režimu Trasa.": "Edit obstacles in Build mode, the order in Route mode.",
 "jméno psa, psovoda nebo odkaz": "dog or handler name, or a link",
 "Hledat": "Search",
 "Napiš jméno psa nebo své jméno a vyber psa ze seznamu. Výsledky ze závodů se pak načtou do aplikace: rychlost, čisté běhy a odhad času na parkuru.": "Type the dog's name or your own name and pick the dog from the list. Competition results are then loaded into the app: speed, clean runs and a time estimate for the course.",
@@ -3559,7 +3583,7 @@ if(typeof S.meta.id!=='string') S.meta.id=null;
 var BG=lsGet('agility-bg-v1',null), panel=null, QZ=null, hpDraw=null;
 var SET=lsGet(SETK,{spd:{A1:3.0,A2:3.5,A3:4.0}});
 var MK=lsGet(MKK,{});
-var mode='build', tool='jump', sel=null, zoom=(window.innerWidth<600?2:1), drag=null, tap=null, view='plan';
+var mode='view', tool='jump', sel=null, zoom=(window.innerWidth<600?2:1), drag=null, tap=null, view='plan';
 var svg=$('field');
 function getO(id){for(var i=0;i<S.obs.length;i++)if(S.obs[i].id===id)return S.obs[i];return null;}
 function nid(){return S.obs.reduce(function(m,o){return Math.max(m,o.id);},0)+1;}
@@ -3625,6 +3649,14 @@ function metrics(obs,route,cls,turns,geo){
     sct:len?Math.ceil(Math.round(len*10)/10/spd-1e-9):0, mct:len?Math.ceil(Math.round(len*10)/10/mcs-1e-9):0};
 }
 function curM(){return metrics(S.obs,S.route,S.meta.cls,S.turns);}
+/* Plán: čísla parkuru v jednom řádku, klepnutím se rozbalí do dlaždic (volba se pamatuje) */
+var PLANUI=lsGet('agility-planui-v1',{})||{};
+function planSpecs(m){
+  var el=$('specs'); if(el) el.classList.toggle('mini',!PLANUI.specs);
+  if(PLANUI.specs) return specsHTML(m)+'<button class="spec sfold" data-sp="0" aria-expanded="true">Méně ▴</button>';
+  var dash='–';
+  return '<button class="smini" data-sp="1" aria-expanded="false"><b>'+(m.len?fmt(m.len)+' m':dash)+'</b><span>'+m.n+' překážek</span><span><span>SČP</span> <b>'+(m.sct?m.sct+' s':dash)+'</b></span><span><span>MČP</span> <b>'+(m.mct?m.mct+' s':dash)+'</b></span><i aria-hidden="true">▾</i></button>'+kacrEstHTML(m);
+}
 function specsHTML(m){
   var dash='–';
   return '<div class="spec"><small>Délka trati</small><b>'+(m.len?fmt(m.len)+' m':dash)+'</b><i>'+m.n+' překážek</i></div>'+
@@ -3773,7 +3805,7 @@ function render(){
   if(panel==='side') sideChanges().forEach(function(i){var m=c.segs[i]&&c.segs[i].m; if(m) mk+='<g transform="translate('+r(m.x)+','+r(m.y-.9)+')"><circle r=".55" fill="var(--accent)"/><path d="M-.25,-.25L.25,.25M.25,-.25L-.25,.25" stroke="var(--on-accent)" stroke-width=".12"/></g>';});
   if(pf&&S.route.length>1) mk+='<text x=".5" y="'+r(S.H-.5)+'" font-size=".8" font-weight="600" fill="var(--accent)" stroke="var(--field)" stroke-width=".2" paint-order="stroke">Dráha psa velikosti '+SET.psz+'</text>';
   $('marks').innerHTML=mk;
-  $('specs').innerHTML=specsHTML(metrics(S.obs,S.route,S.meta.cls,S.turns,cs));
+  $('specs').innerHTML=planSpecs(metrics(S.obs,S.route,S.meta.cls,S.turns,cs));
   if(!drag) fciBar(cs);
   var ol=$('routeList'); ol.className='order'+(panel==='side'?' sidemode':'');
   if(S.chk&&S.chk.length!==S.route.length) S.chk=null;
@@ -3786,11 +3818,12 @@ function render(){
 }
 function ui(){
   var special=panel==='side'||panel==='quiz';
-  $('mBuild').className=mode==='build'?'on':''; $('mRoute').className=mode==='route'?'on':'';
+  if(mode==='view'&&!S.obs.length) mode='build'; /* prázdná plocha: rovnou stavět */
+  $('mView').className=mode==='view'?'on':''; $('mBuild').className=mode==='build'?'on':''; $('mRoute').className=mode==='route'?'on':'';
   $('modeRow').hidden=special;
   $('buildTools').hidden=mode!=='build'||special; $('routeTools').hidden=mode!=='route'||special;
   $('sideBar').hidden=panel!=='side'; $('quizBar').hidden=panel!=='quiz'; $('bgBar').hidden=panel!=='bg';
-  svg.setAttribute('class',special?panel:mode);
+  svg.setAttribute('class',special?panel:mode==='view'?'look':mode);
   Array.prototype.forEach.call(document.querySelectorAll('.ob-btn'),function(b){b.classList.toggle('on',b.getAttribute('data-type')===tool);});
   Array.prototype.forEach.call(document.querySelectorAll('#planTools .tool'),function(b){var t=b.getAttribute('data-t'); b.classList.toggle('on',t===panel);});
   var o=sel!=null?getO(sel):null;
@@ -3806,7 +3839,7 @@ function ui(){
   $('hint').textContent=panel==='side'?'':panel==='quiz'?'':mode==='build'
     ? 'Vyber překážku a klepnutím ji polož na plochu. Tažením ji přesuneš, posuvníkem otočíš.'
     : 'Klepej na překážky v pořadí, v jakém je pes poběží. Stejnou překážku můžeš použít víckrát. Otočku kolem křídla nebo zadní stranu nastavíš u skoku v seznamu pod plochou.';
-  $('hint').hidden=special;
+  $('hint').hidden=special||mode==='view';
 }
 function pt(e){var b=svg.getBoundingClientRect(); return {x:(e.clientX-b.left)/b.width*S.W, y:(e.clientY-b.top)/b.height*S.H};}
 
@@ -3850,6 +3883,8 @@ svg.addEventListener('pointerup',function(e){
   } else if(tap&&still){
     if(mode==='route'){
       if(tap.id!=null){S.route.push(tap.id); if(S.chk) S.chk.push(0); syncSides(); touch(); render();}
+    } else if(mode==='view'){
+      if(tap.id!=null&&!ui.tipped){ ui.tipped=1; toast('Překážky upravíš v režimu Stavba, pořadí v režimu Trasa.'); }
     } else if(tool){
       var p=pt(e), o={id:nid(),type:tool,x:cl(r1(p.x),0,S.W),y:cl(r1(p.y),0,S.H),rot:0};
       S.obs.push(o); sel=o.id; touch(); render(); ui();
@@ -3863,6 +3898,7 @@ $('palette').addEventListener('click',function(e){
   var b=e.target.closest('.ob-btn'); if(!b) return;
   var t=b.getAttribute('data-type'); tool=(tool===t)?null:t; ui();
 });
+$('mView').onclick=function(){mode='view'; sel=null; ui(); render();};
 $('mBuild').onclick=function(){mode='build'; ui(); render();};
 $('mRoute').onclick=function(){mode='route'; sel=null; ui(); render();};
 $('zIn').onclick=function(){zoom=Math.min(4,zoom+.5); ui();};
@@ -3944,10 +3980,11 @@ function fciCheck(obs,route,turns,sides,cls,geo){
 function fciBar(geo){
   var el=$('fciBar'); if(!el) return;
   if(S.route.length<2){ /* místo zůstane, jinak by plocha při klepání trasy poskočila */
-    el.hidden=false; el.className='fcibar'; el.innerHTML='<span class="ic">•</span><span class="grow">Pravidla FCI: vyznač trasu</span>'; return; }
+    el.hidden=false; el.className='fcibar'; el.innerHTML='<span class="ic">•</span><span class="grow">FCI</span>'; el.title='Pravidla FCI: vyznač trasu'; return; }
   var bad=fciCheck(S.obs,S.route,S.turns,S.sides,S.meta.cls,geo).filter(function(x){return x.ok===false;}).length;
   el.hidden=false; el.className='fcibar '+(bad?'warn':'ok');
-  el.innerHTML='<span class="ic">'+(bad?'!':'✓')+'</span><span class="grow">'+(bad?'Pravidla FCI: '+bad+' '+(bad===1?'problém':bad<5?'problémy':'problémů'):'Pravidla FCI v pořádku')+'</span><span class="more">Podrobnosti</span>';
+  el.title=bad?'Pravidla FCI: '+bad+' '+(bad===1?'problém':bad<5?'problémy':'problémů'):'Pravidla FCI v pořádku';
+  el.innerHTML='<span class="ic">'+(bad?'!':'✓')+'</span><span class="grow">FCI'+(bad?' · '+bad:'')+'</span>';
 }
 function fciSheet(){
   var items=fciCheck(S.obs,S.route,S.turns,S.sides,S.meta.cls);
@@ -3957,6 +3994,7 @@ function fciSheet(){
     '<div class="acts"><button class="btn primary" data-a="x">Zavřít</button></div>',
     function(e){if(e.target.closest('[data-a]')) closeSheet();});
 }
+$('specs').onclick=function(e){ var b=e.target.closest('[data-sp]'); if(!b) return; PLANUI.specs=b.getAttribute('data-sp')==='1'; lsSet('agility-planui-v1',PLANUI); render(); };
 $('fciBar').onclick=function(){ if(S.route.length<2){ toast('Kontrola pravidel potřebuje trasu aspoň se 2 překážkami.'); return; } fciSheet(); };
 function setPanel(p){
   if(panel==='quiz'&&p!=='quiz') quizStop();
@@ -3974,7 +4012,7 @@ function bgClear(){ BG=null; try{localStorage.removeItem('agility-bg-v1');}catch
 function planReset(){
   sayStop(); simStop();
   if(QZ) quizStop(); panel=null;
-  sel=null; drag=null; tap=null; hpDraw=null; mode='build';
+  sel=null; drag=null; tap=null; hpDraw=null; mode='view'; toolsOpen(false);
   ANA={};
   if(SET.psz){ SET.psz=null; lsSet(SETK,SET); }
   var w=$('wrap'); if(w){ w.scrollLeft=0; w.scrollTop=0; w.classList.remove('flash-bad'); }
@@ -4037,8 +4075,11 @@ $('quizBar').onclick=function(e){
   else if(q==='again'){quizStop(); quizStart(); render();}
   else setPanel(null);
 };
+/* nástroje plánu jsou schované pod tlačítkem Nástroje, ať je plocha hned vidět */
+function toolsOpen(on){ var t=$('planTools'), b=$('toolsBtn'); if(!t||!b) return; t.hidden=!on; b.setAttribute('aria-expanded',on?'true':'false'); b.classList.toggle('on',!!on); }
+$('toolsBtn').onclick=function(){ toolsOpen($('planTools').hidden); };
 $('planTools').onclick=function(e){
-  var b=e.target.closest('.tool'); if(!b) return; var t=b.getAttribute('data-t');
+  var b=e.target.closest('.tool'); if(!b) return; var t=b.getAttribute('data-t'); toolsOpen(false);
   if(t==='side'||t==='bg'||t==='quiz') setPanel(t);
   else if(t==='ana') anaSheet();
   else if(t==='say') saySheet();
@@ -4245,7 +4286,10 @@ function resultRender(){
 function runRender(){
   dogChips('runDogs');
   var m=curM();
-  $('runSpecs').innerHTML=specsHTML(m);
+  /* Běh: parkur v jednom řádku (SČP a MČP jsou pod stopkami); klepnutím se ukáže nastavení rychlosti pro SČP */
+  var rs=$('runSpecs'); rs.className='specs mini';
+  rs.innerHTML='<button class="smini" data-rs="1" aria-expanded="'+(PLANUI.speed?'true':'false')+'" aria-controls="speedRow"><b>'+(m.len?fmt(m.len)+' m':'–')+'</b><span>'+m.n+' překážek</span><span>'+m.disc+' '+m.cls+'</span><span><b>'+fmt(m.spd)+'</b> m/s</span><i aria-hidden="true">'+(PLANUI.speed?'▴':'▾')+'</i></button>'+kacrEstHTML(m);
+  $('speedRow').hidden=!PLANUI.speed;
   $('speedRow').innerHTML='<span class="grow">Rychlost pro SČP ('+m.cls+')<small>volí ji rozhodčí podle obtížnosti</small></span><button data-sp="-1" aria-label="Snížit rychlost">−</button><b class="num">'+fmt(m.spd)+' m/s</b><button data-sp="1" aria-label="Zvýšit rychlost">+</button>';
   $('clockSub').innerHTML='SČP <b class="num">'+(m.sct||'–')+' s</b><span>MČP <b class="num">'+(m.mct||'–')+' s</b></span>';
   $('startBtn').textContent=RUN.on?'STOP':'START'; $('startBtn').className='startbtn'+(RUN.on?' stop':'');
@@ -4285,6 +4329,7 @@ document.querySelector('.counters').onclick=function(e){
   var k=b.getAttribute('data-k'); RUN[k]=Math.max(0,RUN[k]+(+b.getAttribute('data-d'))); resultRender();
 };
 $('manT').oninput=resultRender; $('disChk').onchange=resultRender;
+$('runSpecs').onclick=function(e){ if(!e.target.closest('[data-rs]')) return; PLANUI.speed=!PLANUI.speed; lsSet('agility-planui-v1',PLANUI); runRender(); };
 $('speedRow').onclick=function(e){
   var b=e.target.closest('[data-sp]'); if(!b) return; var c=S.meta.cls;
   SET.spd=SET.spd||{}; SET.spd[c]=Math.round(cl(spdOf(c)+(+b.getAttribute('data-sp'))*0.1,2.5,5.5)*10)/10; lsSet(SETK,SET);
@@ -5902,7 +5947,7 @@ function kacrLoad(dog,quiet){
   return kacrFetch(dog.kacr).then(function(d){
     KACR[dog.id]=d; lsSet(KACRK,KACR); delete KACR_BUSY[dog.id];
     var n=kacrRuns(d).length; toast(quiet?'Načteno z kacr.info: '+n+' běhů':'Výsledky načteny: '+n+' běhů');
-    if($('specs')) $('specs').innerHTML=specsHTML(metrics(S.obs,S.route,S.meta.cls,S.turns));
+    if($('specs')) $('specs').innerHTML=planSpecs(metrics(S.obs,S.route,S.meta.cls,S.turns));
     return d;
   },function(e){ delete KACR_BUSY[dog.id]; toast('kacr.info: '+e.message); throw e; });
 }

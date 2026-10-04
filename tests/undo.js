@@ -15,6 +15,10 @@ module.exports = async function ({ browser, base }) {
 
   T.step('položení');
   const n0 = await ev(() => S.obs.length);
+  ok(await ev(() => mode === 'view' && $('palette').offsetParent === null), 'načtený parkur se má otevřít v režimu Prohlížet');
+  await T.tapField(20, 17);
+  ok(await ev(() => S.obs.length) === n0, 'v režimu Prohlížet se klepnutím položila překážka');
+  await page.click('#mBuild');
   await ev(() => { tool = 'jump'; ui(); });
   await T.tapField(20, 17);
   ok(await ev(() => S.obs.length) === n0 + 1, 'překážka se nepoložila');
