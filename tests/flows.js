@@ -77,7 +77,7 @@ module.exports = async function ({ browser, base }) {
       { id: 3, type: 'jump', x: 10, y: 5, rot: 0 }, { id: 4, type: 'tunnel', x: 18, y: 8, rot: 90, bend: 'x' }, { id: 5, type: 'jump', x: 26, y: 5, rot: 0 }],
     route: [1, 2, 3, 4, 5, 99], sides: ['L', 'P', 'L', '<b>', 'P'], turns: ['wL', null, 'bogus', 'f', 'wR'] } }];
   await page.click('.nav [data-v="plan"]');
-  await page.click('#planTools [data-t="share"]'); await page.fill('#shIn', 'abc123'); await T.sheet('get'); await page.waitForTimeout(300);
+  await T.tool('share'); await page.fill('#shIn', 'abc123'); await T.sheet('get'); await page.waitForTimeout(300);
   if (await page.isVisible('#scrim')) await T.sheet('ok');
   const imp = await ev(() => { const c = myDB().filter(x => x.src === 'kód ABC123')[0]; return c && { cls: c.cls, route: c.route, sides: c.sides, turns: c.turns, n: c.obs.length, cur: S.meta.id === c.id }; });
   ok(imp && imp.cls === 'A1' && JSON.stringify(imp.route) === '[3,4,5]' && JSON.stringify(imp.sides) === '["L",null,"P"]' &&

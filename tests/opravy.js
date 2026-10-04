@@ -33,13 +33,13 @@ module.exports = async function ({ browser, base }) {
 
     T.step('sdílení kódem');
     shareResp = '<img src=x onerror=alert(1)>';
-    await page.click('#planTools [data-t="share"]'); await page.click('#sheet [data-a="mk"]'); await page.waitForTimeout(250);
+    await T.tool('share'); await page.click('#sheet [data-a="mk"]'); await page.waitForTimeout(250);
     ok(await ev(() => !$('shOut').innerHTML && /neplatný kód/.test($('toast').textContent)), 'neplatný kód ze serveru se vložil do stránky');
     shareResp = 'K7P2QX'; await page.click('#sheet [data-a="mk"]'); await page.waitForTimeout(250);
     ok(await ev(() => $('shOut').querySelector('.code').textContent === 'K7P2QX'), 'platný kód se neukázal');
     await ev(() => closeSheet());
     getDelay = 600; gets = 0; const n0 = await ev(() => myDB().length);
-    await page.click('#planTools [data-t="share"]'); await page.fill('#shIn', 'qqqqqq');
+    await T.tool('share'); await page.fill('#shIn', 'qqqqqq');
     await ev(() => { const b = document.querySelector('#sheet [data-a="get"]'); b.click(); b.click(); b.click(); });
     await page.waitForTimeout(1000); if (await page.isVisible('#scrim')) await T.sheet('ok');
     ok(gets === 1 && await ev(() => myDB().length) === n0 + 1, 'opakované klepnutí na Načíst uložilo parkur víckrát (' + gets + ' požadavků)');
@@ -137,7 +137,7 @@ module.exports = async function ({ browser, base }) {
     await clean();
     await ev(() => { SET.psz = 'XS'; mode = 'route'; setPanel('side'); $('wrap').scrollLeft = 300; render(); ui(); });
     await ev(() => loadCourse(listFor('A2')[3], true)); if (await page.isVisible('#scrim')) await T.sheet('ok');
-    ok(await ev(() => panel === null && mode === 'build' && !SET.psz && $('sideBar').hidden && !$('modeRow').hidden && !/Dráha psa/.test($('marks').innerHTML) && $('wrap').scrollLeft === 0),
+    ok(await ev(() => panel === null && mode === 'view' && !SET.psz && $('sideBar').hidden && !$('modeRow').hidden && !/Dráha psa/.test($('marks').innerHTML) && $('wrap').scrollLeft === 0),
       'po načtení parkuru zůstal nástroj z předchozího: ' + await ev(() => JSON.stringify({ panel, mode, psz: SET.psz })));
     await ev(() => { setPanel('quiz'); S.W = 40; S.H = 30; drawGrid(); });
     await page.click('#newBtn'); if (await page.isVisible('#scrim')) await T.sheet('ok');
