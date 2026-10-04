@@ -17,6 +17,13 @@ module.exports = async function ({ browser, base }) {
     catch (e) { T.errs.push(`[${label}] krok selhal: ${e.message.split('\n')[0]}`); }
   };
   await step('plán', async () => T.ok(await T.ev(() => S.obs.length > 0 && S.route.length > 1), 'výchozí parkur se nenačetl'));
+  await step('přehledný běh', async () => {
+    await page.click('.nav [data-v="run"]'); await page.waitForTimeout(200);
+    T.ok(await page.isHidden('#speedRow') && await page.isVisible('#runSpecs .smini'), 'Běh: souhrn má být v řádku a rychlost schovaná');
+    await page.click('#runSpecs [data-rs]'); T.ok(await page.isVisible('#speedRow [data-sp="1"]'), 'rychlost pro SČP se neukázala');
+    await page.click('#runSpecs [data-rs]'); T.ok(await page.isHidden('#speedRow'), 'rychlost pro SČP se neschovala');
+    T.ok(await T.ev(() => new Set([...document.querySelectorAll('.spbtns .btn')].map(b => Math.round(b.getBoundingClientRect().top))).size === 1), 'Mezičasy a Vynulovat nejsou v jednom řádku');
+  });
   await step('přehledný plán', async () => {
     T.ok(await T.ev(() => mode === 'view' && !!document.querySelector('#specs.mini .smini') && $('planTools').hidden), 'plán se má otevřít v režimu Prohlížet, se souhrnem v řádku a schovanými nástroji');
     await page.click('#specs [data-sp="1"]');

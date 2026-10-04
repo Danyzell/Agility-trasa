@@ -330,7 +330,7 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 .kv.plain li{grid-template-columns:1fr;}
 .kv.plain small{text-align:left; font-size:13px;}
 /* v1.6: mezičasy, předčítání */
-.spbtns{justify-content:center;}
+.spbtns{justify-content:center; flex-wrap:nowrap; gap:8px;} .spbtns .btn{padding-left:10px; padding-right:10px; font-size:13px; white-space:nowrap;} @media (max-width:379px){ .spbtns{gap:5px;} .spbtns .btn{padding-left:7px; padding-right:7px; font-size:12.5px;} }
 .ovsp{position:fixed; inset:0; z-index:70; background:var(--bg); display:flex; flex-direction:column; gap:10px; padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px)); overflow:auto;}
 .ovsp-top{display:flex; align-items:center; gap:8px;}
 .ovsp-top b{font-family:var(--display); font-size:22px;}
@@ -778,13 +778,12 @@ html.onb-open,html.onb-open body{overflow:hidden;}
   <section class="view" id="v-run" hidden>
     <div class="filters" id="runDogs"></div>
     <div class="specs" id="runSpecs"></div>
-    <div class="speed" id="speedRow"></div>
+    <div class="speed" id="speedRow" hidden></div>
     <div class="panel">
       <div class="clock" id="clock">0,00</div>
       <div class="clock-sub" id="clockSub"></div>
       <button class="startbtn" id="startBtn">START</button>
-      <div class="row spbtns"><button class="btn" id="spLive">Mezičasy naživo</button><button class="btn" id="spVideo">Mezičasy z videa</button></div>
-      <div class="row" style="justify-content:center;margin-top:8px"><button class="btn" id="resetClock">Vynulovat</button></div>
+      <div class="row spbtns"><button class="btn" id="spLive">Mezičasy naživo</button><button class="btn" id="spVideo">Mezičasy z videa</button><button class="btn" id="resetClock" data-ic="refresh" aria-label="Vynulovat" title="Vynulovat"></button></div>
     </div>
     <div class="counters">
       <div class="counter"><div><small>Chyby</small><b id="fN">0</b></div><div class="pm"><button data-k="f" data-d="-1" aria-label="Ubrat chybu">−</button><button data-k="f" data-d="1" aria-label="Přidat chybu">+</button></div></div>
@@ -4287,7 +4286,10 @@ function resultRender(){
 function runRender(){
   dogChips('runDogs');
   var m=curM();
-  $('runSpecs').innerHTML=specsHTML(m);
+  /* Běh: parkur v jednom řádku (SČP a MČP jsou pod stopkami); klepnutím se ukáže nastavení rychlosti pro SČP */
+  var rs=$('runSpecs'); rs.className='specs mini';
+  rs.innerHTML='<button class="smini" data-rs="1" aria-expanded="'+(PLANUI.speed?'true':'false')+'" aria-controls="speedRow"><b>'+(m.len?fmt(m.len)+' m':'–')+'</b><span>'+m.n+' překážek</span><span>'+m.disc+' '+m.cls+'</span><span><b>'+fmt(m.spd)+'</b> m/s</span><i aria-hidden="true">'+(PLANUI.speed?'▴':'▾')+'</i></button>'+kacrEstHTML(m);
+  $('speedRow').hidden=!PLANUI.speed;
   $('speedRow').innerHTML='<span class="grow">Rychlost pro SČP ('+m.cls+')<small>volí ji rozhodčí podle obtížnosti</small></span><button data-sp="-1" aria-label="Snížit rychlost">−</button><b class="num">'+fmt(m.spd)+' m/s</b><button data-sp="1" aria-label="Zvýšit rychlost">+</button>';
   $('clockSub').innerHTML='SČP <b class="num">'+(m.sct||'–')+' s</b><span>MČP <b class="num">'+(m.mct||'–')+' s</b></span>';
   $('startBtn').textContent=RUN.on?'STOP':'START'; $('startBtn').className='startbtn'+(RUN.on?' stop':'');
@@ -4327,6 +4329,7 @@ document.querySelector('.counters').onclick=function(e){
   var k=b.getAttribute('data-k'); RUN[k]=Math.max(0,RUN[k]+(+b.getAttribute('data-d'))); resultRender();
 };
 $('manT').oninput=resultRender; $('disChk').onchange=resultRender;
+$('runSpecs').onclick=function(e){ if(!e.target.closest('[data-rs]')) return; PLANUI.speed=!PLANUI.speed; lsSet('agility-planui-v1',PLANUI); runRender(); };
 $('speedRow').onclick=function(e){
   var b=e.target.closest('[data-sp]'); if(!b) return; var c=S.meta.cls;
   SET.spd=SET.spd||{}; SET.spd[c]=Math.round(cl(spdOf(c)+(+b.getAttribute('data-sp'))*0.1,2.5,5.5)*10)/10; lsSet(SETK,SET);

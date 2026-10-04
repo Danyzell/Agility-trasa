@@ -28,7 +28,7 @@ module.exports = async function ({ browser, base }) {
 
   T.step('běh');
   await page.click('.nav [data-v="run"]');
-  await page.fill('#manT', '12,34'); await page.click('#saveRun'); await page.waitForTimeout(150);
+  await page.fill('#manT', '12,34'); await page.evaluate(() => $('saveRun').scrollIntoView({ block: 'center' })); await page.click('#saveRun'); await page.waitForTimeout(150);
   ok(await ev(() => getMark(S.meta.id).runs.length === 1 && getMark(S.meta.id).runs[0].t === 12.34), 'běh se neuložil');
 
   T.step('pes');

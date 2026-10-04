@@ -84,7 +84,7 @@ module.exports = async function ({ browser, base }) {
 
     T.step('běh bez trasy');
     await ev(() => { S.route = []; S.sides = []; S.turns = []; touch(); render(); runRender(); });
-    await page.fill('#manT', '30'); await page.click('#saveRun');
+    await page.fill('#manT', '30'); await page.evaluate(() => $('saveRun').scrollIntoView({ block: 'center' })); await page.click('#saveRun');
     ok(await ev(() => !(getMark(S.meta.id).runs || []).length && !/BO/.test($('result').textContent)), 'běh bez trasy se ohodnotil a uložil');
 
     T.step('otazníky z plánku');

@@ -183,7 +183,7 @@ module.exports = async function ({ browser, base }) {
     /* oblíbené a zapsaný běh se uloží k úseku */
     await ev(() => { setMark(S.meta.id, { fav: true }); });
     await page.click('.nav [data-v="run"]');
-    await page.fill('#manT', '21,5'); await page.click('#saveRun'); await page.waitForTimeout(300);
+    await page.fill('#manT', '21,5'); await page.evaluate(() => $('saveRun').scrollIntoView({ block: 'center' })); await page.click('#saveRun'); await page.waitForTimeout(300);
     ok(await ev(i => getMark(i).fav && (getMark(i).runs || []).length === 1, id), 'oblíbené nebo běh se k úseku nezapsaly');
     /* úsek z historie: findCourse ho sestaví znovu */
     ok(await ev(i => { const c = findCourse(i); return !!c && c.id === i && c.route.length === S.route.length; }, id), 'úsek z historie nejde otevřít');

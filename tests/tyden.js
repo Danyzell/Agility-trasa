@@ -22,7 +22,7 @@ module.exports = async function ({ browser, base }) {
     const t = await ev(() => Math.max(5, Math.round(curM().sct * 0.9 * 100) / 100));
     await page.fill('#manT', String(t).replace('.', ','));
     if (dis) await ev(() => { $('disChk').checked = true; $('disChk').dispatchEvent(new Event('change')); });
-    await page.click('#saveRun'); await page.waitForTimeout(250);
+    await page.evaluate(() => $('saveRun').scrollIntoView({ block: 'center' })); await page.click('#saveRun'); await page.waitForTimeout(250);
     return t;
   };
   const wkLoad = async () => ev(() => { S.meta.dirty = false; const c = weekCourse(homeCls()); loadCourse(c, true); return c.id; });
