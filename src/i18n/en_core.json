@@ -1,0 +1,956 @@
+{
+"exact": {
+"Upravit název, třídu a autora parkuru": "Edit the course name, class and author",
+"Oblíbený": "Favourite",
+"Zaběhnuto": "Done",
+"Rozbor": "Analysis",
+"3D průlet": "3D flythrough",
+"Předčítat": "Read aloud",
+"Trénink paměti": "Memory training",
+"Dráha psovoda": "Handler's path",
+"Plánek z obrázku": "Course map from photo",
+"Podklad z fotky": "Photo underlay",
+"Stavba v terénu": "Build on the field",
+"Sdílet": "Share",
+"Režim": "Mode",
+"Stavba": "Build",
+"Trasa": "Route",
+"Oddálit": "Zoom out",
+"Přiblížit": "Zoom in",
+"Smazat čáru": "Clear line",
+"Hotovo": "Done",
+"U každé překážky v seznamu níže nastav, na které straně psovoda pes běží (L / P). Tahem prstem po ploše nakreslíš svoji dráhu.": "For each obstacle in the list below, set which side of the handler the dog runs on (L / R). Drag a finger across the field to draw your own path.",
+"Podklad": "Underlay",
+"Průhlednost podkladu": "Underlay opacity",
+"Vybrat fotku": "Choose photo",
+"Roztáhnout": "Stretch",
+"Odebrat": "Remove",
+"Vyfoť nebo vyber plánek parkuru. Zobrazí se pod mřížkou a překážky na něj jen položíš.": "Take or pick a photo of the course map. It appears under the grid and you just place the obstacles on top of it.",
+"Otočení": "Rotation",
+"Otočení překážky": "Obstacle rotation",
+"Tvar tunelu": "Tunnel shape",
+"Rovný": "Straight",
+"Oblouk 90° ↶": "90° curve ↶",
+"Oblouk 90° ↷": "90° curve ↷",
+"Oblouk 135° ↶": "135° curve ↶",
+"Oblouk 135° ↷": "135° curve ↷",
+"Do U ↶": "U-shape ↶",
+"Do U ↷": "U-shape ↷",
+"Smazat": "Delete",
+"↶ Vrátit poslední": "↶ Undo last",
+"Smazat trasu": "Clear route",
+"Plocha parkuru": "Course field",
+"Uložit": "Save",
+"Nový": "New",
+"Velikost plochy": "Field size",
+"Plocha 40 × 20 m": "Field 40 × 20 m",
+"Plocha 40 × 24 m": "Field 40 × 24 m",
+"Plocha 30 × 20 m": "Field 30 × 20 m",
+"Zahrada 25 × 15 m": "Garden 25 × 15 m",
+"Zahrada 20 × 15 m": "Garden 20 × 15 m",
+"Zahrada 15 × 10 m": "Garden 15 × 10 m",
+"Pořadí překážek": "Obstacle order",
+"Zkontrolovat nové parkury": "Check for new courses",
+"Sbírka": "Collection",
+"Trenéři": "Trainers",
+"Moje": "Mine",
+"Vše": "All",
+"Nové": "New",
+"★ Oblíbené": "★ Favourites",
+"Nezaběhnuté": "Not run yet",
+"✓ Zaběhnuté": "✓ Done",
+"Plynulé": "Flowing",
+"Technické": "Technical",
+"Náhodný nezaběhnutý": "Random course not run yet",
+"Generátor sekvencí a zahrady": "Sequence and garden generator",
+"Řadit": "Sort",
+"Podle čísla": "By number",
+"Od nejlehčího": "Easiest first",
+"Od nejtěžšího": "Hardest first",
+"Nejplynulejší": "Most flowing",
+"Nejkratší": "Shortest",
+"Mezičasy naživo": "Live split times",
+"Mezičasy z videa": "Split times from video",
+"Vynulovat": "Reset",
+"Chyby": "Faults",
+"Ubrat chybu": "Remove a fault",
+"Přidat chybu": "Add a fault",
+"Odmítnutí": "Refusals",
+"Ubrat odmítnutí": "Remove a refusal",
+"Přidat odmítnutí": "Add a refusal",
+"Čas ručně (s)": "Time manually (s)",
+"např. 41,52": "e.g. 41.52",
+"Diskvalifikace": "Disqualification",
+"Uložit běh": "Save run",
+"Historie běhů": "Run history",
+"Psi": "Dogs",
+"Začínáme": "Getting started",
+"Statistiky": "Statistics",
+"Deník": "Training log",
+"Rozcvička": "Warm-up",
+"Záloha": "Backup",
+"O aplikaci": "About",
+"Hlavní navigace": "Main navigation",
+"Plán": "Plan",
+"Parkury": "Courses",
+"Běh": "Run",
+"Videa": "Videos",
+"Více": "More",
+"Pauza": "Pause",
+"Očima psa": "Dog's view",
+"Za psem": "Behind the dog",
+"Shora": "From above",
+"0,5×": "0.5×",
+"Zavřít": "Close",
+"Rozpracovaný plán": "Work in progress",
+"Nový parkur": "New course",
+"Délka trati": "Course length",
+"Disciplína": "Discipline",
+"SČP": "SCT",
+"MČP (max.)": "MCT (max.)",
+"Generátor podle pravidel FCI": "Generator following FCI rules",
+"Vygenerováno v aplikaci": "Generated in the app",
+"Autor neuveden": "Author not given",
+"⇄ z druhé strany": "⇄ from the other side",
+"Bližším koncem": "Near end",
+"Pes vběhne do překážky koncem, který je blíž předchozí překážce.": "The dog enters the obstacle through the end closer to the previous obstacle.",
+"Vzdálenějším koncem": "Far end",
+"Pes překážku oběhne a vběhne do ní z druhé strany, třeba do odvráceného konce tunelu.": "The dog runs around the obstacle and enters it from the other side, e.g. the far end of a tunnel.",
+"Aplikace sama volí konec, který je blíž předchozí překážce. Když trenér posílá psa do vzdálenějšího konce, přepni to tady.": "The app picks the end closer to the previous obstacle. If the trainer sends the dog to the far end, switch it here.",
+"Bez otočky": "No wrap",
+"Pes skok skočí a běží rovnou k další překážce.": "The dog takes the jump and runs straight on to the next obstacle.",
+"Skok z druhé strany": "Jump from the other side",
+"Aplikace volí směr skoku podle toho, odkud pes přibíhá. Když ho trenér posílá na skok z opačné strany, přepni to tady.": "The app picks the jumping direction from where the dog approaches. If the trainer sends it over the jump from the opposite side, switch it here.",
+"Otočka doleva": "Wrap left",
+"Po skoku se pes otočí o 180° kolem levého křídla.": "After the jump the dog turns 180° around the left wing.",
+"Otočka doprava": "Wrap right",
+"Po skoku se pes otočí o 180° kolem pravého křídla.": "After the jump the dog turns 180° around the right wing.",
+"Zadní strana, otočka doleva": "Backside, wrap left",
+"Pes skok mine, oběhne křídlo doleva a skočí ho z druhé strany.": "The dog passes the jump, runs around the wing to the left and takes it from the other side.",
+"Zadní strana, otočka doprava": "Backside, wrap right",
+"Pes skok mine, oběhne křídlo doprava a skočí ho z druhé strany.": "The dog passes the jump, runs around the wing to the right and takes it from the other side.",
+"Pes běží u psovoda vlevo, takže otočka doprava je vnitřkem (k psovodovi) a otočka doleva venkem (od psovoda).": "The dog runs on the handler's left, so a right wrap is an inside wrap (towards the handler) and a left wrap is an outside wrap (away from the handler).",
+"Pes běží u psovoda vlevo, takže otočka doprava je vnitřkem (k psovodovi) a otočka doprava venkem (od psovoda).": "The dog runs on the handler's left, so a right wrap is an inside wrap (towards the handler) and a right wrap is an outside wrap (away from the handler).",
+"Pes běží u psovoda vlevo, takže otočka doleva je vnitřkem (k psovodovi) a otočka doleva venkem (od psovoda).": "The dog runs on the handler's left, so a left wrap is an inside wrap (towards the handler) and a left wrap is an outside wrap (away from the handler).",
+"Pes běží u psovoda vlevo, takže otočka doleva je vnitřkem (k psovodovi) a otočka doprava venkem (od psovoda).": "The dog runs on the handler's left, so a left wrap is an inside wrap (towards the handler) and a right wrap is an outside wrap (away from the handler).",
+"Pes běží u psovoda vpravo, takže otočka doprava je vnitřkem (k psovodovi) a otočka doleva venkem (od psovoda).": "The dog runs on the handler's right, so a right wrap is an inside wrap (towards the handler) and a left wrap is an outside wrap (away from the handler).",
+"Pes běží u psovoda vpravo, takže otočka doprava je vnitřkem (k psovodovi) a otočka doprava venkem (od psovoda).": "The dog runs on the handler's right, so a right wrap is an inside wrap (towards the handler) and a right wrap is an outside wrap (away from the handler).",
+"Pes běží u psovoda vpravo, takže otočka doleva je vnitřkem (k psovodovi) a otočka doleva venkem (od psovoda).": "The dog runs on the handler's right, so a left wrap is an inside wrap (towards the handler) and a left wrap is an outside wrap (away from the handler).",
+"Pes běží u psovoda vpravo, takže otočka doleva je vnitřkem (k psovodovi) a otočka doprava venkem (od psovoda).": "The dog runs on the handler's right, so a left wrap is an inside wrap (towards the handler) and a right wrap is an outside wrap (away from the handler).",
+"Doleva a doprava je z pohledu psa. Když v Dráze psovoda nastavíš, na které straně psovoda pes běží, aplikace ukáže, jestli je otočka vnitřkem (k psovodovi), nebo venkem (od psovoda).": "Left and right are from the dog's point of view. When you set in Handler's path which side of the handler the dog runs on, the app shows whether a wrap is inside (towards the handler) or outside (away from the handler).",
+"+ otočka": "+ wrap",
+"P": "R",
+"Zatím žádná trasa. Přepni na Trasa a klepej na překážky v pořadí.": "No route yet. Switch to Route and tap the obstacles in order.",
+"Zachovat poměr": "Keep aspect ratio",
+"Vyber překážku a klepnutím ji polož na plochu. Tažením ji přesuneš, posuvníkem otočíš.": "Choose an obstacle and tap to place it on the field. Drag to move it, use the slider to rotate it.",
+"Klepej na překážky v pořadí, v jakém je pes poběží. Stejnou překážku můžeš použít víckrát. Otočku kolem křídla nebo zadní stranu nastavíš u skoku v seznamu pod plochou.": "Tap the obstacles in the order the dog will run them. You can use the same obstacle more than once. Set a wrap around the wing or a backside on the jump in the list below the field.",
+"Smazat trasu?": "Clear the route?",
+"Překážky zůstanou na ploše, smaže se jen pořadí.": "The obstacles stay on the field, only the order is removed.",
+"Rozestupy (FCI: po dráze 5–9 m, vzdušnou čarou nejvýš 7 m)": "Distances (FCI: 5–9 m along the path, at most 7 m in a straight line)",
+"Slalom chybí (FCI: v každém parkuru, jen jednou)": "Weave poles missing (FCI: in every course, only once)",
+"Změny strany psovoda: v Dráze psovoda nastav stranu psa u všech překážek (FCI chce aspoň 2)": "Handler side changes: set the dog's side at every obstacle in Handler's path (FCI requires at least 2)",
+"Dráha psa nevede přes jinou překážku": "The dog's path doesn't cross another obstacle",
+"Podrobnosti": "Details",
+"Pravidla FCI v pořádku": "FCI rules OK",
+"Kontrola podle pravidel FCI": "Check against FCI rules",
+"Rozestupy se měří po dráze psa, jak ji ukazuje plán, i se smyčkami otoček. Pravidla platí pro závody, na trénink si můžeš postavit cokoli.": "Distances are measured along the dog's path as shown in the plan, including wrap loops. The rules apply to competitions; for training you can build anything.",
+"Fotku jako podklad vložíš ve webové verzi aplikace.": "You can add a photo underlay in the web version of the app.",
+"Podklad odebrán": "Underlay removed",
+"Podklad vložen": "Underlay added",
+"Tenhle soubor se nepodařilo načíst jako obrázek.": "This file could not be loaded as an image.",
+"Trénink paměti potřebuje trasu aspoň se 3 překážkami.": "Memory training needs a route with at least 3 obstacles.",
+"Prohlídka: zapamatuj si pořadí překážek.": "Course walk: memorise the order of the obstacles.",
+"Začít test": "Start the test",
+"Ukončit": "Finish",
+"Klepni na překážku č.": "Tap obstacle no.",
+"Chyby:": "Faults:",
+"Hotovo! Čas": "Done! Time",
+"Znovu": "Again",
+"Zrušit": "Cancel",
+"Náročnost": "Difficulty",
+"Původní plánek": "Original course map",
+"✓ zaběhnuto": "✓ done",
+"V téhle záložce nic nového není. Nové parkury mají štítek Nový a tečku u názvu záložky.": "Nothing new in this tab. New courses have a New label and a dot next to the tab name.",
+"Zatím tu nejsou žádné parkury trenérů. Pošli do chatu s Claudem screenshoty plánků a přepíše je sem i se jménem autora. Nebo v Plánu zvol Plánek z obrázku: aplikace překážky rozpozná, pořadí naklepeš a při ukládání vyplníš, kdo parkur stavěl.": "There are no trainers' courses yet. In Plan choose Course map from photo: the app recognises the obstacles, you tap in the order and fill in who built the course when saving.",
+"Zatím tu nemáš žádný vlastní parkur. Postav ho v Plánu nebo si otevři některý z A1–A3, uprav ho a ulož.": "You don't have any course of your own yet. Build one in Plan, or open one of A1–A3, edit it and save it.",
+"V tomhle filtru nic není. Zkus jiný filtr nebo třídu.": "Nothing in this filter. Try another filter or class.",
+"Přepsané plánky trenérů a rozhodčích pro vlastní trénink. Rozmístění překážek je přibližné, zdroj je uvedený u parkuru.": "Trainers' and judges' course maps transcribed for your own training. Obstacle positions are approximate; the source is given with each course.",
+"Parkury A1–A3 složil generátor v aplikaci podle Řádu agility FCI a podle toho, jak stavějí rozhodčí: dráha vede v obloucích a hadech, skoky stojí šikmo, tunely jsou i do oblouku a do U a dráha se kříží (A1 nejvýš jednou, A2 jednou až dvakrát, A3 dvakrát až třikrát). 15–22 překážek, start i cíl skokem, v A1 právě 3 zónové překážky, v A2 a A3 nejvýš 4. Otočky kolem křídla (v A3 aspoň dvě), v A3 vždy i zadní strana skoku.": "Courses A1–A3 were composed by the app's generator according to the FCI Agility Regulations and the way judges build: the path runs in curves and serpentines, jumps stand at angles, tunnels are also curved and U-shaped, and the path crosses itself (A1 at most once, A2 once or twice, A3 two or three times). 15–22 obstacles, start and finish over a jump, exactly 3 contact obstacles in A1, at most 4 in A2 and A3. Wraps around the wing (at least two in A3), and always a backside in A3.",
+"Nahradit rozpracovaný plán?": "Replace the course you're working on?",
+"Neuložené změny se ztratí. Chceš je zachovat, zruš to a nejdřív plán ulož.": "Unsaved changes will be lost. To keep them, cancel and save the plan first.",
+"Parkur zmizí ze záložky Moje. Zapsané běhy se smažou s ním.": "The course disappears from Mine. Its recorded runs are deleted with it.",
+"V záložce Moje už máš zaběhnuté všechno.": "You've already run everything in Mine.",
+"Nejdřív vyznač trasu v režimu Trasa.": "Mark the route in Route mode first.",
+"Uložit parkur": "Save course",
+"Název": "Name",
+"Třída (podle ní se počítá SČP)": "Class (used to calculate the SCT)",
+"Stavěl/a (trenér, rozhodčí)": "Built by (trainer, judge)",
+"Uložit jako nový": "Save as new",
+"Uložit změny": "Save changes",
+"Uložit do Moje": "Save to Mine",
+"Můj parkur": "My course",
+"Změny uloženy": "Changes saved",
+"Uloženo do Moje": "Saved to Mine",
+"Začít nový parkur?": "Start a new course?",
+"Plocha se vyčistí a neuložené změny se ztratí.": "The field will be cleared and unsaved changes will be lost.",
+"Začít nový": "Start new",
+"Nejdřív parkur ulož, pak si ho můžeš označit.": "Save the course first, then you can mark it.",
+"Přidáno do oblíbených": "Added to favourites",
+"Odebráno z oblíbených": "Removed from favourites",
+"Označeno jako zaběhnuté": "Marked as done",
+"Označení zaběhnutí zrušeno": "Done mark removed",
+"3 odmítnutí": "3 refusals",
+"překročen MČP": "MCT exceeded",
+"Výborně": "Excellent",
+"Velmi dobře": "Very good",
+"Dobře": "Good",
+"Bez ohodnocení": "Not classified",
+"Změř čas stopkami nebo ho zadej ručně. Výsledek se spočítá podle Řádu agility.": "Time the run with the stopwatch or enter it manually. The result is calculated according to the Agility Regulations.",
+"Čas": "Time",
+"· chyby a odmítnutí": "· faults and refusals",
+"· za čas": "· time faults",
+"Trestné body celkem": "Total penalty points",
+"· čistý běh": "· clean run",
+"volí ji rozhodčí podle obtížnosti": "chosen by the judge according to difficulty",
+"MČP": "MCT",
+"Běhy se zapisují k uloženému parkuru. Ulož ho nebo načti z Parkurů.": "Runs are recorded for a saved course. Save it or load one from Courses.",
+"Zatím žádný běh. Po uložení se tu objeví s hodnocením.": "No runs yet. Once saved they appear here with their grade.",
+"Nejdřív parkur ulož.": "Save the course first.",
+"Nejdřív zastav stopky.": "Stop the stopwatch first.",
+"Chybí čas běhu.": "The run time is missing.",
+"Smazat záznam běhu?": "Delete this run?",
+"Záznam zmizí z historie tohoto parkuru.": "The record disappears from this course's history.",
+"Česko a Slovensko": "Czechia and Slovakia",
+"Rozhodčí FCI, soudil MS 2017. Plánky z Moravia Open, Hranických hrátek a Norwegian Open.": "FCI judge, judged the 2017 World Championship. Course maps from Moravia Open, Hranické hrátky and Norwegian Open.",
+"Rozhodčí FCI. Sbírka jeho plánků parkurů.": "FCI judge. A collection of his course maps.",
+"Slovenský rozhodčí FCI. Plánky parkurů.": "Slovak FCI judge. Course maps.",
+"Kniha Agility – Pracovní sešit s 90 tréninkovými sekvencemi.": "The book Agility – Pracovní sešit (workbook) with 90 training sequences.",
+"Klub agility ČR": "Czech Agility Club (KAČR)",
+"Řád agility FCI a ČR (platný od 2023): pravidla pro SČP, MČP a hodnocení.": "FCI and Czech Agility Regulations (valid from 2023): rules for SCT, MCT and grading.",
+"Zahraničí": "Abroad",
+"MS 2025 Kalmar": "World Championship 2025 Kalmar",
+"Plánky všech běhů mistrovství světa. Stavěli Joakim Tangfelt, Fanny Gott, Stefanie Semkat a Vittorio Papavero.": "Course maps of all runs of the World Championship. Built by Joakim Tangfelt, Fanny Gott, Stefanie Semkat and Vittorio Papavero.",
+"Rozhodčí MS 2025. Jeho plánky parkurů.": "Judge of the 2025 World Championship. His course maps.",
+"Rozhodčí MS 2025 a EO 2023. Její plánky parkurů.": "Judge of the 2025 World Championship and EO 2023. Her course maps.",
+"Maďarská rozhodčí FCI. Plánky parkurů.": "Hungarian FCI judge. Course maps.",
+"Rozhodčí MS 2019. Plánky parkurů.": "Judge of the 2019 World Championship. Course maps.",
+"Mistryně světa 2024. Její parkur je v týdenních plánech Corral Creek.": "2024 World Champion. Her course is in the Corral Creek weekly plans.",
+"Trenéři OneMind Dogs: e-book se 7 parkury na zahradu zdarma.": "OneMind Dogs trainers: free e-book with 7 garden courses.",
+"Všichni rozhodčí na agilitynow.eu": "All judges on agilitynow.eu",
+"Plánky od 39 rozhodčích z 18 zemí, řazené podle jmen.": "Course maps from 39 judges from 18 countries, sorted by name.",
+"bez připojení k internetu": "no internet connection",
+"ve webové verzi server nejde": "the server isn't available in the web version",
+"prázdná odpověď serveru": "empty server response",
+"katalog na serveru je prázdný": "the catalogue on the server is empty",
+"chyba spojení": "connection error",
+"Kontroluji…": "Checking…",
+"Máš všechny parkury, nic nového zatím není.": "You have all courses, nothing new yet.",
+"Parkury aktualizovány, nové žádné nepřibyly.": "Courses updated, no new ones added.",
+"Nový parkur: 1": "New course: 1",
+"Parkury aktualizovány.": "Courses updated.",
+"Mají v Parkurech štítek Nový, dokud je neotevřeš.": "They carry a New label in Courses until you open them.",
+"Ukázat v Parkurech": "Show in Courses",
+"Sdílení se nepovedlo": "Sharing failed",
+"Otevírám sdílení": "Opening share",
+"Uloženo do telefonu, složka Obrázky/Agility": "Saved to the phone, folder Pictures/Agility",
+"Uloženo do telefonu, složka Stažené soubory/Agility": "Saved to the phone, folder Downloads/Agility",
+"Uložení zrušeno": "Saving cancelled",
+"Chvilku počkej a zkus to znovu.": "Wait a moment and try again.",
+"Soubor tady nejde uložit přímo. Zkopíruj si text a ulož ho jinam.": "The file can't be saved directly here. Copy the text and save it elsewhere.",
+"Kopírovat": "Copy",
+"V aplikaci se obrázek do telefonu uložit nedá. Udělej snímek obrazovky, nebo ho ulož ve webové verzi.": "The image can't be saved to the phone in the app. Take a screenshot, or save it in the web version.",
+"V aplikaci se PDF do telefonu uložit nedá. Ulož ho ve webové verzi HandlerMap.": "The PDF can't be saved to the phone in the app. Save it in the HandlerMap web version.",
+"Podrž prst na obrázku a ulož ho, nebo si udělej snímek obrazovky.": "Press and hold the image to save it, or take a screenshot.",
+"PDF tady nejde uložit přímo. Ulož si obrázek.": "The PDF can't be saved directly here. Save the image instead.",
+"Označeno, zkopíruj ručně": "Selected, copy it manually",
+"Zkopírováno": "Copied",
+"obrázek plochy": "field image",
+"do U": "U-shape",
+"Čísla": "Numbers",
+"Překážka": "Obstacle",
+"Směr běhu": "Running direction",
+"Poznámka": "Note",
+"mimo trasu": "off route",
+"Obrázek parkuru si v aplikaci ulož snímkem obrazovky. PDF se stavebním plánem a ukládání souborů fungují ve webové verzi HandlerMap.": "Save the course image in the app with a screenshot. The PDF with the build plan and saving files work in the HandlerMap web version.",
+"Obrázek se hodí na sdílení, PDF se stavebním plánem na tisk: u každé překážky jsou metry od okraje plochy a směr běhu.": "The image is good for sharing, the PDF with the build plan for printing: each obstacle has its distances from the field edges and the running direction.",
+"Sdílet obrázek": "Share image",
+"Sdílet PDF": "Share PDF",
+"Uložit PDF": "Save PDF",
+"Uložit obrázek": "Save image",
+"Export parkuru": "Export course",
+"Připravuji náhled…": "Preparing preview…",
+"Náhled se nepodařilo vytvořit.": "The preview could not be created.",
+"Sdílet parkur": "Share course",
+"Vytvoř kód, pošli ho kamarádovi a on si parkur načte ve své aplikaci.": "Create a code, send it to a friend and they load the course in their app.",
+"Vytvořit kód parkuru": "Create course code",
+"Načíst parkur z kódu": "Load course from code",
+"Načíst": "Load",
+"Sdílení kódem funguje v aplikaci pro Android. Tady můžeš parkur uložit jako obrázek nebo PDF v Exportu a poslat ho dál.": "Sharing by code works in the installed app. Here you can save the course as an image or PDF in Export and send it on.",
+"Otevřít Export": "Open Export",
+"Sdílet jinam": "Share elsewhere",
+"Kód má 6 znaků.": "The code has 6 characters.",
+"Aplikace je nainstalovaná, najdeš ji na ploše.": "The app is installed, you'll find it on your home screen.",
+"Nainstalovat do telefonu": "Install on the phone",
+"Aplikace pak poběží z ikony na ploše přes celou obrazovku, i bez internetu.": "The app will then run full screen from its home-screen icon, even without internet.",
+"Nainstalovat": "Install",
+"Obrázek se nepodařilo převzít, vyber ho v Plánu → Plánek z obrázku.": "The image couldn't be received, pick it in Plan → Course map from photo.",
+"Skok": "Jump",
+"Tunel": "Tunnel",
+"Slalom": "Weave poles",
+"Kladina": "Dog walk",
+"Houpačka": "Seesaw",
+"Kruh": "Tyre",
+"Skok daleký": "Long jump",
+"časté střídání směru zatáček": "frequent change of turn direction",
+"lehký": "easy",
+"střední": "medium",
+"těžký": "hard",
+"velmi těžký": "very hard",
+"přední křížení": "front cross",
+"zadní křížení": "rear cross",
+"slepé křížení": "blind cross",
+"Dlouhá rovná linka, psovod přeběhne na druhou stranu bez zpomalení.": "A long straight line, the handler crosses to the other side without slowing down.",
+"mřížka nenalezena": "grid not found",
+"Zkopíruj obrázek plánku (v galerii nebo prohlížeči Kopírovat) a vlož ho do pole níž: podrž na něm prst a zvol Vložit. Nic se nenahrává, obrázek zůstane v telefonu.": "Copy the course map image (Copy in the gallery or browser) and paste it into the box below: press and hold it and choose Paste. Nothing is uploaded, the image stays on your phone.",
+"Sem vlož obrázek plánku": "Paste the course map image here",
+"Šířka plochy (m)": "Field width (m)",
+"Hloubka plochy (m)": "Field depth (m)",
+"Vybrat obrázek": "Choose image",
+"Rozpoznat": "Recognise",
+"Sem můžeš vložit obrázek ze schránky": "You can paste an image from the clipboard here",
+"Vyber snímek obrazovky nebo fotku plánku, nebo obrázek vlož ze schránky (Ctrl+V). Nic se nenahrává, obrázek zůstane v zařízení.": "Choose a screenshot or a photo of the course map, or paste an image from the clipboard (Ctrl+V). Nothing is uploaded, the image stays on your device.",
+"Ve schránce není obrázek. V galerii zvol u plánku Kopírovat a vlož ho sem.": "There's no image in the clipboard. In the gallery choose Copy on the course map and paste it here.",
+"Ve schránce není obrázek.": "There's no image in the clipboard.",
+"Tenhle obrázek nejde přečíst. Ulož ho do zařízení a vlož znovu.": "This image can't be read. Save it to the device and paste it again.",
+"Jiný obrázek": "Another image",
+"Mřížka plochy nalezena. Zkontroluj rohy a rozměr plochy a klepni na Rozpoznat.": "Field grid found. Check the corners and the field size and tap Recognise.",
+"Posuň čtyři body na rohy plochy (vnější okraj mřížky) a vyplň rozměr plochy v metrech.": "Move the four points to the corners of the field (outer edge of the grid) and fill in the field size in metres.",
+"Rozměr plochy: šířka 10–60 m, hloubka 10–40 m.": "Field size: width 10–60 m, depth 10–40 m.",
+"Rohy netvoří čtyřúhelník, posuň je.": "The corners don't form a quadrilateral, move them.",
+"Překážky se nepodařilo rozpoznat. Zkus ostřejší obrázek nebo přesnější rohy.": "The obstacles couldn't be recognised. Try a sharper image or more precise corners.",
+", směry podle nakreslené čáry. Vše vypadá jistě. Po použití jde cokoli opravit v Plánu.": ", directions from the drawn line. Everything looks certain. After applying you can fix anything in Plan.",
+"Na obrázku se nenašly žádné překážky. Zkus jiný obrázek nebo je polož ručně na podklad.": "No obstacles were found in the image. Try another image or place them by hand on the underlay.",
+"Použít": "Apply",
+"Zpět k rohům": "Back to corners",
+"Čtu čísla v kroužcích…": "Reading the numbers in circles…",
+"Hledám překážky…": "Looking for obstacles…",
+"Čtu trasu a směry podle nakreslené čáry…": "Reading the route and directions from the drawn line…",
+"překážka jen odhadem": "obstacle only estimated",
+"ověř překážku": "check the obstacle",
+"číslo": "number",
+"směr": "direction",
+"Plocha se nahradí překážkami z obrázku.": "The field will be replaced with the obstacles from the image.",
+"Nahradit": "Replace",
+"Na ploše zatím nejsou žádné překážky.": "There are no obstacles on the field yet.",
+"Postav se do rohu plochy, který je na plánu": "Stand in the corner of the field that is on the plan",
+"vlevo nahoře": "top left",
+", a otoč se čelem": ", and face",
+"podél dlouhé strany": "along the long side",
+"(na plánu doprava). Telefon drž naplocho před sebou.": "(to the right on the plan). Hold the phone flat in front of you.",
+"Délka tvého kroku (m)": "Your step length (m)",
+"Krok si změříš tak, že ujdeš 10 m a spočítáš kroky: délka = 10 / počet kroků. Kompas:": "Measure your step by walking 10 m and counting steps: length = 10 / number of steps. Compass:",
+"čekám na signál…": "waiting for signal…",
+"Bez kompasu": "Without compass",
+"Stojím v rohu": "I'm in the corner",
+"nedostupný, aplikace popíše směr slovy": "unavailable, the app describes the direction in words",
+"rovně podél dlouhé strany": "straight along the long side",
+"zpátky podél dlouhé strany": "back along the long side",
+"Jdi ve směru šipky.": "Walk in the direction of the arrow.",
+"Zpět": "Back",
+"Postaveno, další": "Built, next",
+"Parkur postavený. Zkontroluj ho podle plánu a hurá na trénink!": "The course is built. Check it against the plan and off you go to train!",
+"napříč plochou": "across the field",
+"Pes skáče ve směru šipky, laťka je napříč.": "The dog jumps in the direction of the arrow, the bar is across.",
+"Slalom vede ve směru šipky.": "The weave poles run in the direction of the arrow.",
+"Tunel vede ve směru šipky.": "The tunnel runs in the direction of the arrow.",
+"Zóna vede ve směru šipky.": "The contact runs in the direction of the arrow.",
+"A-rampa": "A-frame",
+"skok": "jump",
+"tunel": "tunnel",
+"slalom": "weave poles",
+"a-rampa": "A-frame",
+"kladina": "dog walk",
+"houpačka": "seesaw",
+"kruh": "tyre",
+"skok daleký": "long jump",
+"Zeď": "Wall",
+"zeď": "wall",
+"Stůl": "Table",
+"pes": "dog",
+"· lehký": "· easy",
+"· střední": "· medium",
+"· těžký": "· hard",
+"· velmi těžký": "· very hard",
+"Snížit rychlost": "Decrease speed",
+"Zvýšit rychlost": "Increase speed",
+"Všechna témata": "All topics",
+"např. Petr Pupík": "e.g. Petr Pupík",
+"Náhled exportu parkuru": "Course export preview",
+"např. K7P2QX": "e.g. K7P2QX",
+"Oblouky (poloměr 2–10 m)": "Curves (radius 2–10 m)",
+"Rovné úseky": "Straight sections",
+"Ostré obraty přes 90°": "Sharp turns over 90°",
+"Křížení dráhy": "Path crossings",
+"Nástrahy v přímém směru": "Traps straight ahead",
+"Otočky · zadní strany": "Wraps · backsides",
+"Postup A1 → A2: 3× hodnocení Výborně": "Promotion A1 → A2: 3× Excellent",
+"Postup A2 → A3: 5× bez trestných bodů do 3. místa": "Promotion A2 → A3: 5× clean runs placed in the top 3",
+"+ vstup": "+ entry",
+"Tunely do oblouku": "Curved tunnels",
+"Start": "Start",
+"START": "START",
+"STOP": "STOP"
+},
+"num": {
+"# překážek": "#1 obstacles",
+"# m/s dle FCI": "#1 m/s per FCI",
+"Skok č. #: otočka": "Jump no. #1: wrap",
+"Skok č. #: #": "Jump no. #1: #2",
+"Změny strany: # (FCI chce aspoň 2)": "Side changes: #1 (FCI requires at least 2)",
+"Změny strany: #": "Side changes: #1",
+"Oblouk #° ↶": "#1° curve ↶",
+"Oblouk #° ↷": "#1° curve ↷",
+"Počet překážek # (FCI: 15–22)": "Number of obstacles #1 (FCI: 15–22)",
+"Skoků # (FCI: aspoň 7)": "Jumps #1 (FCI: at least 7)",
+"Délka trati # m (FCI: 100–220 m)": "Course length #1 m (FCI: 100–220 m)",
+"Slalom #× (FCI: v každém parkuru, jen jednou)": "Weave poles #1× (FCI: in every course, only once)",
+"Kruh #× (FCI: jen jednou)": "Tyre #1× (FCI: only once)",
+"Zaběhnuto # z #": "Done #1 of #2",
+"# m · # překážek": "#1 m · #2 obstacles",
+"SČP # s · MČP # s": "SCT #1 s · MCT #2 s",
+"Otočky # · zadní strany #": "Wraps #1 · backsides #2",
+"# · najdeš ho v Parkurech": "#1 · you'll find it in Courses",
+"# · najdeš je v Parkurech": "#1 · you'll find them in Courses",
+"Nové parkury: #": "New courses: #1",
+"Nových parkurů: #": "New courses: #1",
+", nové: #": ", new: #1",
+"oblouk #°": "#1° curve",
+"použita #×": "used #1×",
+"Za překážkou # je obrat o #°, psovod musí být před psem.": "After obstacle #1 there is a #2° turn, the handler must be ahead of the dog.",
+"Pes jde na překážku # první, psovod přejde za ním.": "The dog goes to obstacle #1 first, the handler crosses behind it.",
+"Nalezeno: #.": "Found: #1.",
+"Trasa 1–# přečtená z čísel na plánku": "Route 1–#1 read from the numbers on the course map",
+"č. #": "no. #1",
+"Trasa načtená z plánku: # překážek. Ulož ji tlačítkem Uložit.": "Route read from the course map: #1 obstacles. Save it with the Save button.",
+"Rozpoznáno # překážek. Teď na ně klepej v pořadí podle čísel na plánku.": "Recognised #1 obstacles. Now tap them in the order of the numbers on the course map.",
+"o #° doprava od dlouhé strany": "#1° to the right of the long side",
+"o #° doleva od dlouhé strany": "#1° to the left of the long side",
+"do oblouku #°": "curved #1°",
+"# kroků od předchozí překážky": "#1 steps from the previous obstacle",
+"#° doprava od dlouhé strany": "#1° to the right of the long side",
+"#° doleva od dlouhé strany": "#1° to the left of the long side",
+"Otočky #": "Wraps #",
+"Nové: #": "New: #",
+"Otočka u skoku č. #": "Wrap at jump no. #",
+"Vstup do překážky č. #": "Entry into obstacle no. #",
+"v A# #–# %": "in A#1 #2–#3 %",
+"# → # · přední křížení": "# → # · front cross",
+"# → # · zadní křížení": "# → # · rear cross",
+"# → # · slepé křížení": "# → # · blind cross",
+"Chůze # m/s": "Walk # m/s",
+"Běh # m/s": "Run # m/s",
+"Oblouky # %": "Curves # %",
+"z # · lehký": "of # · easy",
+"z # · střední": "of # · medium",
+"z # · těžký": "of # · hard",
+"z # · velmi těžký": "of # · very hard"
+},
+"re": [
+[
+"^(.+?) překážek$",
+"@1 obstacles"
+],
+[
+"^třída (.+?)$",
+"class @1"
+],
+[
+"^(.+?) m/s dle FCI$",
+"@1 m/s per FCI"
+],
+[
+"^Stavěl/a: (.+?)$",
+"Built by: @1"
+],
+[
+"^(.+?) · (.+?) · upraveno$",
+"@1 · @2 · edited"
+],
+[
+"^(.+?) zadní strana$",
+"@1 backside"
+],
+[
+"^(.+?) otočka vnitřkem$",
+"@1 inside wrap"
+],
+[
+"^(.+?) otočka venkem$",
+"@1 outside wrap"
+],
+[
+"^(.+?) otočka doleva$",
+"@1 wrap left"
+],
+[
+"^(.+?) otočka doprava$",
+"@1 wrap right"
+],
+[
+"^(.+?) č\\. (.+?): vstup$",
+"@1 no. @2: entry"
+],
+[
+"^(.+?) č\\. (.+?): vstup vzdálenějším koncem$",
+"@1 no. @2: entry through the far end"
+],
+[
+"^(.+?) č\\. (.+?): vstup bližším koncem$",
+"@1 no. @2: entry through the near end"
+],
+[
+"^Skok č\\. (.+?): otočka$",
+"Jump no. @1: wrap"
+],
+[
+"^Skok č\\. (.+?): (.+?)$",
+"Jump no. @1: @2"
+],
+[
+"^Dráha psa velikosti (.+?)$",
+"Path of a size @1 dog"
+],
+[
+"^Změny strany: (.+?) \\(FCI chce aspoň 2\\)$",
+"Side changes: @1 (FCI requires at least 2)"
+],
+[
+"^Změny strany: (.+?)$",
+"Side changes: @1"
+],
+[
+"^Oblouk (.+?)° ↶$",
+"@1° curve ↶"
+],
+[
+"^Oblouk (.+?)° ↷$",
+"@1° curve ↷"
+],
+[
+"^Plocha (.+?) × (.+?) m$",
+"Field @1 × @2 m"
+],
+[
+"^Počet překážek (.+?) \\(FCI: 15–22\\)$",
+"Number of obstacles @1 (FCI: 15–22)"
+],
+[
+"^Skoků (.+?) \\(FCI: aspoň 7\\)$",
+"Jumps @1 (FCI: at least 7)"
+],
+[
+"^Délka trati (.+?) m \\(FCI: 100–220 m\\)$",
+"Course length @1 m (FCI: 100–220 m)"
+],
+[
+"^(.+?) po dráze jen (.+?) m$",
+"@1 only @2 m along the path"
+],
+[
+"^(.+?) vzdušnou čarou (.+?) m$",
+"@1 @2 m in a straight line"
+],
+[
+"^(.+?) po dráze (.+?) m$",
+"@1 @2 m along the path"
+],
+[
+"^Rozestupy \\(FCI: po dráze 5–9 m, vzdušnou čarou nejvýš 7 m\\): (.+?)$",
+"Distances (FCI: 5–9 m along the path, at most 7 m in a straight line): @1"
+],
+[
+"^Slalom (.+?)× \\(FCI: v každém parkuru, jen jednou\\)$",
+"Weave poles @1× (FCI: in every course, only once)"
+],
+[
+"^Kruh (.+?)× \\(FCI: jen jednou\\)$",
+"Tyre @1× (FCI: only once)"
+],
+[
+"^Zónové překážky (.+?)×, druhů (.+?) \\(FCI: všechny 3 druhy, v (.+?) nejvýš (.+?)\\)$",
+"Contact obstacles @1×, types @2 (FCI: all 3 types, in @3 at most @4)"
+],
+[
+"^Změny strany psovoda (.+?) \\(FCI: aspoň 2\\)$",
+"Handler side changes @1 (FCI: at least 2)"
+],
+[
+"^(.+?)→(.+?) přes (.+?) č\\. (.+?)$",
+"@1→@2 over @3 no. @4"
+],
+[
+"^(.+?)→(.+?) přes (.+?)$",
+"@1→@2 over @3"
+],
+[
+"^Dráha psa nevede přes jinou překážku: (.+?)$",
+"The dog's path doesn't cross another obstacle: @1"
+],
+[
+"^Pravidla FCI: (.+?) problém$",
+"FCI rules: @1 issue"
+],
+[
+"^Pravidla FCI: (.+?) problémy$",
+"FCI rules: @1 issues"
+],
+[
+"^Pravidla FCI: (.+?) problémů$",
+"FCI rules: @1 issues"
+],
+[
+"^Zaběhnuto (.+?) z (.+?)$",
+"Done @1 of @2"
+],
+[
+"^(.+?) m · (.+?) překážek$",
+"@1 m · @2 obstacles"
+],
+[
+"^SČP (.+?) s · MČP (.+?) s$",
+"SCT @1 s · MCT @2 s"
+],
+[
+"^Oblouky (.+?) % · křížení (.+?)$",
+"Curves @1 % · crossings @2"
+],
+[
+"^Otočky (.+?) · zadní strany (.+?)$",
+"Wraps @1 · backsides @2"
+],
+[
+"^Načteno: (.+?)$",
+"Loaded: @1"
+],
+[
+"^Načíst (.+?)$",
+"Load @1"
+],
+[
+"^Smazat (.+?)\\?$",
+"Delete @1?"
+],
+[
+"^V třídě (.+?) už máš zaběhnuté všechno\\.$",
+"You've already run everything in class @1."
+],
+[
+"^Rychlost pro SČP \\((.+?)\\)$",
+"Speed for SCT (@1)"
+],
+[
+"^(.+?) s · (.+?) ch\\. · (.+?) odm\\.$",
+"@1 s · @2 f. · @3 ref."
+],
+[
+"^(.+?) · trestné body (.+?) · (.+?) · mezičasy$",
+"@1 · penalty points @2 · @3 · split times"
+],
+[
+"^(.+?) · trestné body (.+?) · (.+?)$",
+"@1 · penalty points @2 · @3"
+],
+[
+"^(.+?) · trestné body (.+?) · mezičasy$",
+"@1 · penalty points @2 · split times"
+],
+[
+"^(.+?) · trestné body (.+?)$",
+"@1 · penalty points @2"
+],
+[
+"^Běh uložen: (.+?)$",
+"Run saved: @1"
+],
+[
+"^Parkury aktualizovány \\(verze (.+?)\\)$",
+"Courses updated (version @1)"
+],
+[
+"^Server teď nejde \\((.+?)\\)\\. Zkus to později\\.$",
+"The server isn't available right now (@1). Try again later."
+],
+[
+"^(.+?) · najdeš ho v Parkurech$",
+"@1 · you'll find it in Courses"
+],
+[
+"^(.+?) · najdeš je v Parkurech$",
+"@1 · you'll find them in Courses"
+],
+[
+"^Nové parkury: (.+?)$",
+"New courses: @1"
+],
+[
+"^Nových parkurů: (.+?)$",
+"New courses: @1"
+],
+[
+"^, nové: (.+?)$",
+", new: @1"
+],
+[
+"^Katalog verze (.+?) · (.+?) parkurů · ověřeno (.+?)$",
+"Catalogue version @1 · @2 courses · checked @3"
+],
+[
+"^Vestavěný katalog · (.+?) parkurů$",
+"Built-in catalogue · @1 courses"
+],
+[
+"^(.+?) parkurů\\. Nové přibývají s novou verzí stránky, v aplikaci pro Android tlačítkem\\.$",
+"@1 courses. New ones arrive with a new version of the page, in the Android app with the button."
+],
+[
+"^Ukládám do telefonu: (.+?)$",
+"Saving to the phone: @1"
+],
+[
+"^Uložení se nepovedlo \\((.+?)\\)$",
+"Saving failed (@1)"
+],
+[
+"^Uloženo: (.+?)$",
+"Saved: @1"
+],
+[
+"^(.+?) · Stavěl/a: (.+?)$",
+"@1 · Built by: @2"
+],
+[
+"^(.+?) · Generátor podle pravidel FCI$",
+"@1 · Generator following FCI rules"
+],
+[
+"^(.+?) · Autor neuveden$",
+"@1 · Author not given"
+],
+[
+"^Délka (.+?) m · (.+?) překážek · (.+?) · SČP (.+?) s \\((.+?) m/s\\) · MČP (.+?) s$",
+"Length @1 m · @2 obstacles · @3 · SCT @4 s (@5 m/s) · MCT @6 s"
+],
+[
+"^Délka (.+?) m · (.+?) překážek · (.+?) · SČP (.+?) s \\((.+?) m/s\\) · MČP – s$",
+"Length @1 m · @2 obstacles · @3 · SCT @4 s (@5 m/s) · MCT – s"
+],
+[
+"^Délka (.+?) m · (.+?) překážek · (.+?) · SČP – s \\((.+?) m/s\\) · MČP (.+?) s$",
+"Length @1 m · @2 obstacles · @3 · SCT – s (@4 m/s) · MCT @5 s"
+],
+[
+"^Délka (.+?) m · (.+?) překážek · (.+?) · SČP – s \\((.+?) m/s\\) · MČP – s$",
+"Length @1 m · @2 obstacles · @3 · SCT – s (@4 m/s) · MCT – s"
+],
+[
+"^HandlerMap · (.+?) · mřížka 1 m$",
+"HandlerMap · @1 · 1 m grid"
+],
+[
+"^oblouk (.+?)°$",
+"@1° curve"
+],
+[
+"^Stavební plán: (.+?)$",
+"Build plan: @1"
+],
+[
+"^použita (.+?)×$",
+"used @1×"
+],
+[
+"^x = vzdálenost středu překážky od levého okraje plochy, y = od horního okraje\\. Směr běhu: → doprava, ↓ dolů, ← doleva, ↑ nahoru\\. Otočka doleva a doprava je z pohledu psa\\. Zadní strana: pes skok mine, oběhne křídlo a skočí ho z druhé strany\\. HandlerMap, (.+?)$",
+"x = distance of the obstacle centre from the left edge of the field, y = from the top edge. Running direction: → right, ↓ down, ← left, ↑ up. Left and right wraps are from the dog's point of view. Backside: the dog passes the jump, runs around the wing and takes it from the other side. HandlerMap, @1"
+],
+[
+"^Parkur (.+?) \\(HandlerMap\\)$",
+"Course @1 (HandlerMap)"
+],
+[
+"^Export se nepovedl: (.+?)$",
+"Export failed: @1"
+],
+[
+"^Parkur „(.+?)“ \\((.+?), stavěl/a (.+?)\\)\\. V aplikaci HandlerMap otevři Plán → Sdílet a zadej kód (.+?)$",
+"Course “@1” (@2, built by @3). In the HandlerMap app open Plan → Share and enter the code @4"
+],
+[
+"^Parkur „(.+?)“ \\((.+?)\\)\\. V aplikaci HandlerMap otevři Plán → Sdílet a zadej kód (.+?)$",
+"Course “@1” (@2). In the HandlerMap app open Plan → Share and enter the code @3"
+],
+[
+"^Kód se nepodařilo vytvořit: (.+?)$",
+"The code could not be created: @1"
+],
+[
+"^Parkur s kódem (.+?) neexistuje\\.$",
+"A course with code @1 doesn't exist."
+],
+[
+"^Parkur (.+?) uložen do Moje$",
+"Course @1 saved to Mine"
+],
+[
+"^Načtení se nepovedlo: (.+?)$",
+"Loading failed: @1"
+],
+[
+"^(.+?) ostrých obratů přes 90°$",
+"@1 sharp turns over 90°"
+],
+[
+"^(.+?)× otočka kolem křídla$",
+"@1× wrap around the wing"
+],
+[
+"^(.+?)× zadní strana skoku$",
+"@1× jump backside"
+],
+[
+"^(.+?)× křížení dráhy$",
+"@1× path crossing"
+],
+[
+"^(.+?)× nástraha v přímém směru$",
+"@1× trap straight ahead"
+],
+[
+"^(.+?)× vstup vzdálenějším koncem$",
+"@1× entry through the far end"
+],
+[
+"^(.+?)× překážka znovu$",
+"@1× obstacle again"
+],
+[
+"^(.+?) překážek$",
+"@1 obstacles"
+],
+[
+"^Za překážkou (.+?) je obrat o (.+?)°, psovod musí být před psem\\.$",
+"After obstacle @1 there is a @2° turn, the handler must be ahead of the dog."
+],
+[
+"^Pes je po (.+?)u před psovodem, strana se mění za ním\\.$",
+"After the @1 the dog is ahead of the handler, the side changes behind it."
+],
+[
+"^Pes jde na překážku (.+?) první, psovod přejde za ním\\.$",
+"The dog goes to obstacle @1 first, the handler crosses behind it."
+],
+[
+"^Nalezeno: (.+?)\\.$",
+"Found: @1."
+],
+[
+"^Trasa 1–(.+?) přečtená z čísel na plánku$",
+"Route 1–@1 read from the numbers on the course map"
+],
+[
+"^, směry podle nakreslené čáry\\. Zkontroluj: (.+?)\\. Po použití jde cokoli opravit v Plánu\\.$",
+", directions from the drawn line. Check: @1. After applying you can fix anything in Plan."
+],
+[
+"^(.+?)Čísla na plánku se nepodařilo přiřadit, po použití klepej na překážky v pořadí podle čísel na plánku, chybějící doplň v režimu Stavba\\.$",
+"@1The numbers on the course map couldn't be matched; after applying, tap the obstacles in the order of the numbers on the map and add missing ones in Build mode."
+],
+[
+"^(.+?)Čísla v kroužcích jsem nenašel, po použití klepej na překážky v pořadí podle čísel na plánku, chybějící doplň v režimu Stavba\\.$",
+"@1I didn't find numbers in circles; after applying, tap the obstacles in the order of the numbers on the map and add missing ones in Build mode."
+],
+[
+"^(.+?) překážky mimo trasu$",
+"@1 obstacles off the route"
+],
+[
+"^(.+?) překážka mimo trasu$",
+"@1 obstacle off the route"
+],
+[
+"^Trasa načtená z plánku: (.+?) překážek, zkontroluj (.+?) místo s otazníkem\\. Ulož ji tlačítkem Uložit\\.$",
+"Route read from the course map: @1 obstacles, check @2 place with a question mark. Save it with the Save button."
+],
+[
+"^Trasa načtená z plánku: (.+?) překážek, zkontroluj (.+?) místa s otazníkem\\. Ulož ji tlačítkem Uložit\\.$",
+"Route read from the course map: @1 obstacles, check @2 places with a question mark. Save it with the Save button."
+],
+[
+"^Trasa načtená z plánku: (.+?) překážek, zkontroluj (.+?) míst s otazníkem\\. Ulož ji tlačítkem Uložit\\.$",
+"Route read from the course map: @1 obstacles, check @2 places with a question mark. Save it with the Save button."
+],
+[
+"^Trasa načtená z plánku: (.+?) překážek\\. Ulož ji tlačítkem Uložit\\.$",
+"Route read from the course map: @1 obstacles. Save it with the Save button."
+],
+[
+"^Rozpoznáno (.+?) překážek\\. Teď na ně klepej v pořadí podle čísel na plánku\\.$",
+"Recognised @1 obstacles. Now tap them in the order of the numbers on the course map."
+],
+[
+"^o (.+?)° doprava od dlouhé strany$",
+"@1° to the right of the long side"
+],
+[
+"^o (.+?)° doleva od dlouhé strany$",
+"@1° to the left of the long side"
+],
+[
+"^do oblouku (.+?)°$",
+"curved @1°"
+],
+[
+"^v trase č\\. (.+?)$",
+"on the route no. @1"
+],
+[
+"^(.+?) kroků od předchozí překážky$",
+"@1 steps from the previous obstacle"
+],
+[
+"^Směr: (.+?) \\(šipka ukazuje směr na plánku\\)\\.$",
+"Direction: @1 (the arrow shows the direction on the plan)."
+],
+[
+"^(.+?)° doprava od dlouhé strany$",
+"@1° to the right of the long side"
+],
+[
+"^(.+?)° doleva od dlouhé strany$",
+"@1° to the left of the long side"
+],
+[
+"^(.+?) Natoč překážku podle obrázku\\.$",
+"@1 Turn the obstacle as in the picture."
+],
+[
+"^(.+?) Směr překážky: (.+?)\\.$",
+"@1 Obstacle direction: @2."
+],
+[
+"^z (\\d+) · (.+?)$",
+"of $1 · @2"
+],
+[
+"^Pes velikosti (.+?)$",
+"Size $1 dog"
+],
+[
+"^Animace: (.+?)$",
+"Animation: @1"
+],
+[
+"^(.+?) · (\\d+) (min|s)$",
+"@1 · $2 $3"
+]
+]
+}

@@ -1,0 +1,180 @@
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand" id="brandMark" aria-hidden="true"></div>
+    <div class="apptitle" id="appTitle"><b>HandlerMap</b><span id="appSub"></span></div>
+    <button class="ctitle" id="titleBtn" aria-label="Upravit název, třídu a autora parkuru"><b id="cName" translate="no"></b><span id="cSub"></span></button>
+    <button class="iconbtn fav" id="favBtn" aria-pressed="false" aria-label="Oblíbený" data-ic="star"></button>
+    <button class="iconbtn done" id="doneBtn" aria-pressed="false" aria-label="Zaběhnuto" data-ic="check"></button>
+  </div>
+</header>
+
+<main>
+  <!-- DOMŮ -->
+  <section class="view home" id="v-home" hidden></section>
+  <!-- PLÁN -->
+  <section class="view" id="v-plan">
+    <div class="specs" id="specs"></div>
+    <button class="fcibar" id="fciBar" hidden></button>
+    <div class="tools" id="planTools">
+      <button class="tool" data-t="ana" data-ic="gauge">Rozbor</button>
+      <button class="tool" data-t="3d" data-ic="cube">3D průlet</button>
+      <button class="tool" data-t="say" data-ic="speak">Předčítat</button>
+      <button class="tool" data-t="quiz" data-ic="brain">Trénink paměti</button>
+      <button class="tool" data-t="side" data-ic="walk">Dráha psovoda</button>
+      <button class="tool" data-t="imp" data-ic="scan">Plánek z obrázku</button>
+      <button class="tool" data-t="bg" data-ic="photo">Podklad z fotky</button>
+      <button class="tool" data-t="fld" data-ic="compass">Stavba v terénu</button>
+      <button class="tool" data-t="export" data-ic="file">Export</button>
+      <button class="tool" data-t="share" data-ic="share">Sdílet</button>
+    </div>
+    <div class="row" id="modeRow">
+      <div class="seg" role="group" aria-label="Režim"><button id="mBuild" class="on">Stavba</button><button id="mRoute">Trasa</button></div>
+      <button class="btn" id="undoAll" title="Zpět: vrátit poslední změnu plánu" aria-label="Zpět" data-ic="undo" disabled></button>
+      <span class="grow"></span>
+      <div class="zoom"><button class="btn" id="zOut" aria-label="Oddálit">−</button><span id="zLbl" class="num"></span><button class="btn" id="zIn" aria-label="Přiblížit">+</button></div>
+    </div>
+    <p class="hint" id="hint"></p>
+    <div class="modebar" id="quizBar" hidden></div>
+    <div class="modebar" id="sideBar" hidden>
+      <div class="row"><b id="sideInfo" class="grow"></b><button class="btn" id="hpClear">Smazat čáru</button><button class="btn primary" id="sideDone">Hotovo</button></div>
+      <p class="hint">U každé překážky v seznamu níže nastav, na které straně psovoda pes běží (L / P). Tahem prstem po ploše nakreslíš svoji dráhu.</p>
+    </div>
+    <div class="modebar" id="bgBar" hidden>
+      <div class="row"><span>Podklad</span><input type="range" id="bgOp" min="10" max="100" step="5" aria-label="Průhlednost podkladu" class="grow"><button class="btn" id="bgPick">Vybrat fotku</button><button class="btn" id="bgFit">Roztáhnout</button><button class="btn danger" id="bgDel">Odebrat</button><button class="btn primary" id="bgDone">Hotovo</button></div>
+      <p class="hint">Vyfoť nebo vyber plánek parkuru. Zobrazí se pod mřížkou a překážky na něj jen položíš.</p>
+      <input type="file" id="bgFile" accept="image/*" hidden>
+    </div>
+    <div id="buildTools">
+      <div class="palette" id="palette"></div>
+      <div class="selrow" id="selRow" hidden>
+        <span>Otočení</span><input type="range" id="rot" min="0" max="355" step="5" aria-label="Otočení překážky"><span id="rotLbl" class="num"></span>
+        <span class="selacts"><select class="btn" id="bendSel" aria-label="Tvar tunelu" hidden><option value="0">Rovný</option><option value="90">Oblouk 90° ↶</option><option value="-90">Oblouk 90° ↷</option><option value="135">Oblouk 135° ↶</option><option value="-135">Oblouk 135° ↷</option><option value="180">Do U ↶</option><option value="-180">Do U ↷</option></select>
+        <button class="btn danger" id="delBtn">Smazat</button></span>
+      </div>
+    </div>
+    <div class="row" id="routeTools" hidden>
+      <button class="btn" id="undoBtn">↶ Vrátit poslední</button>
+      <button class="btn danger" id="clrRoute">Smazat trasu</button>
+    </div>
+    <div id="wrap" tabindex="0" aria-label="Plocha parkuru, posouvá se šipkami">
+      <svg id="field" class="build" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plocha parkuru">
+        <defs><marker id="arr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth=".8" markerHeight=".8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--zone)"/></marker></defs>
+        <g id="fieldbg"></g><g id="bgimg"></g><g id="grid"></g><g id="hp"></g><g id="obs"></g><g id="pth"></g><g id="bdg"></g><g id="marks"></g>
+      </svg>
+    </div>
+    <div class="row">
+      <button class="btn primary" id="saveBtn" data-ic="save">Uložit</button>
+      <button class="btn" id="newBtn" data-ic="plus">Nový</button>
+      <select class="btn" id="sizeSelect" aria-label="Velikost plochy">
+        <option value="40x20">Plocha 40 × 20 m</option>
+        <option value="40x24">Plocha 40 × 24 m</option>
+        <option value="30x20">Plocha 30 × 20 m</option>
+        <option value="25x15">Zahrada 25 × 15 m</option>
+        <option value="20x15">Zahrada 20 × 15 m</option>
+        <option value="15x10">Zahrada 15 × 10 m</option>
+      </select>
+    </div>
+    <h2>Pořadí překážek</h2>
+    <ol class="order" id="routeList"></ol>
+  </section>
+
+  <!-- PARKURY -->
+  <section class="view" id="v-lib" hidden>
+    <div class="catbar" id="catBar"><span id="catInfo" class="grow"></span><button class="btn" id="catBtn" data-ic="refresh" hidden><span class="lbl">Zkontrolovat nové parkury</span></button></div>
+    <div class="seg wide" id="libTabs" role="group" aria-label="Sbírka">
+      <button data-c="A1" class="on">A1</button><button data-c="A2">A2</button><button data-c="A3">A3</button><button data-c="tr">Trenéři</button><button data-c="my">Moje</button>
+    </div>
+    <div class="filters" id="libFilters">
+      <button class="chip on" data-f="all">Vše</button>
+      <button class="chip chip-new" data-f="new" hidden>Nové</button>
+      <button class="chip" data-f="fav">★ Oblíbené</button>
+      <button class="chip" data-f="todo">Nezaběhnuté</button>
+      <button class="chip" data-f="done">✓ Zaběhnuté</button>
+      <button class="chip" data-f="flow">Plynulé</button>
+      <button class="chip" data-f="tech">Technické</button>
+    </div>
+    <div class="progress"><span id="progTxt" class="num"></span><div class="bar"><i id="progBar"></i></div></div>
+    <div class="row">
+      <button class="btn" id="randBtn" data-ic="dice">Náhodný nezaběhnutý</button>
+      <button class="btn" id="genBtn" data-ic="spark">Generátor sekvencí a zahrady</button>
+    </div>
+    <div class="row sortrow"><label for="libSort">Řadit</label><select class="btn" id="libSort"><option value="ord">Podle čísla</option><option value="easy">Od nejlehčího</option><option value="hard">Od nejtěžšího</option><option value="flow">Nejplynulejší</option><option value="short">Nejkratší</option></select></div>
+    <div class="cards" id="cards"></div>
+    <p class="hint" id="libNote"></p>
+  </section>
+
+  <!-- BĚH -->
+  <section class="view" id="v-run" hidden>
+    <div class="filters" id="runDogs"></div>
+    <div class="specs" id="runSpecs"></div>
+    <div class="speed" id="speedRow"></div>
+    <div class="panel">
+      <div class="clock" id="clock">0,00</div>
+      <div class="clock-sub" id="clockSub"></div>
+      <button class="startbtn" id="startBtn">START</button>
+      <div class="row spbtns"><button class="btn" id="spLive">Mezičasy naživo</button><button class="btn" id="spVideo">Mezičasy z videa</button></div>
+      <div class="row" style="justify-content:center;margin-top:8px"><button class="btn" id="resetClock">Vynulovat</button></div>
+    </div>
+    <div class="counters">
+      <div class="counter"><div><small>Chyby</small><b id="fN">0</b></div><div class="pm"><button data-k="f" data-d="-1" aria-label="Ubrat chybu">−</button><button data-k="f" data-d="1" aria-label="Přidat chybu">+</button></div></div>
+      <div class="counter"><div><small>Odmítnutí</small><b id="rN">0</b></div><div class="pm"><button data-k="r" data-d="-1" aria-label="Ubrat odmítnutí">−</button><button data-k="r" data-d="1" aria-label="Přidat odmítnutí">+</button></div></div>
+    </div>
+    <div class="field-row">
+      <label for="manT">Čas ručně (s)</label><input type="text" id="manT" inputmode="decimal" autocomplete="off" placeholder="např. 41,52">
+      <label class="check"><input type="checkbox" id="disChk"> Diskvalifikace</label>
+    </div>
+    <div class="panel result" id="result"></div>
+    <div class="row"><button class="btn primary" id="saveRun" data-ic="check">Uložit běh</button></div>
+    <h2>Historie běhů</h2>
+    <ul class="hist" id="hist"></ul>
+  </section>
+
+  <!-- VIDEA -->
+  <section class="view" id="v-video" hidden>
+    <div id="vidList"></div>
+    <div id="vidDetail" hidden></div>
+  </section>
+
+  <!-- VÍCE -->
+  <section class="view" id="v-more" hidden>
+    <div class="filters" id="moreTabs">
+      <button class="chip on" data-m="dogs">Psi</button>
+      <button class="chip" data-m="start">Začínáme</button>
+      <button class="chip" data-m="stats">Statistiky</button>
+      <button class="chip" data-m="diary">Deník</button>
+      <button class="chip" data-m="warm">Rozcvička</button>
+      <button class="chip" data-m="coach">Trenéři</button>
+      <button class="chip" data-m="backup">Záloha</button>
+      <button class="chip" data-m="set">Nastavení</button>
+      <button class="chip" data-m="about">O aplikaci</button>
+    </div>
+    <div id="moreBody"></div>
+  </section>
+</main>
+
+<nav class="nav" aria-label="Hlavní navigace">
+  <div class="nav-in">
+    <button data-v="home" class="on"><span class="nic" data-ic="home"></span><span>Domů</span></button>
+    <button data-v="plan"><span class="nic" data-ic="map"></span><span>Plán</span></button>
+    <button data-v="lib"><span class="nic" data-ic="grid"></span><span>Parkury</span><i class="ndot" hidden></i></button>
+    <button data-v="run"><span class="nic" data-ic="timer"></span><span>Běh</span></button>
+    <button data-v="video"><span class="nic" data-ic="play"></span><span>Videa</span></button>
+    <button data-v="more"><span class="nic" data-ic="dots"></span><span>Více</span></button>
+  </div>
+</nav>
+
+<div class="ov3d" id="ov3d" hidden>
+  <canvas id="c3d"></canvas>
+  <div class="ov3d-bar">
+    <button class="btn" id="p3play">Pauza</button>
+    <div class="seg" id="p3view"><button data-v="dog" class="on">Očima psa</button><button data-v="chase">Za psem</button><button data-v="top">Shora</button></div>
+    <div class="seg" id="p3speed"><button data-s=".5">0,5×</button><button data-s="1" class="on">1×</button><button data-s="2">2×</button></div>
+    <span class="grow" id="p3info"></span>
+    <button class="btn primary" id="p3close">Zavřít</button>
+  </div>
+</div>
+
+<div class="scrim" id="scrim" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" hidden></div>
+<input type="file" id="jsonFile" accept="application/json,.json,text/plain" hidden>

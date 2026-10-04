@@ -1,0 +1,370 @@
+{
+"exact": {
+"XS – do 30 cm": "XS – up to 30 cm",
+"15–40 cm (1–2 díly)": "15–40 cm (1–2 units)",
+"S – do 35 cm": "S – up to 35 cm",
+"40–50 cm (2 díly)": "40–50 cm (2 units)",
+"M – 35 až 43 cm": "M – 35 to 43 cm",
+"70–90 cm (3 díly)": "70–90 cm (3 units)",
+"I – 43 až 48 cm": "I – 43 to 48 cm",
+"90–110 cm (3–4 díly)": "90–110 cm (3–4 units)",
+"L – od 48 cm": "L – from 48 cm",
+"120–150 cm (4 díly)": "120–150 cm (4 units)",
+"＋ Přidat psa (běhy se pak zapisují ke psovi)": "＋ Add a dog (runs are then recorded for the dog)",
+"Nový pes": "New dog",
+"Jméno": "Name",
+"Velikost": "Size",
+"Výkonnostní třída": "Performance class",
+"Narozen/a (měsíc a rok, nepovinné)": "Born (month and year, optional)",
+"Zrušit": "Cancel",
+"Přidat": "Add",
+"Uložit": "Save",
+"Upravit psa": "Edit dog",
+"Pes": "Dog",
+"Pes přidán": "Dog added",
+"Uloženo": "Saved",
+"Graf rychlosti se ukáže po dvou uložených bězích bez diskvalifikace.": "The speed chart appears after two saved runs without disqualification.",
+"Rychlost psa (m/s)": "Dog's speed (m/s)",
+"Zatím tu nejsou žádné běhy. Změř a ulož běh v záložce Běh.": "There are no runs yet. Time and save a run in the Run tab.",
+"Běhů": "Runs",
+"Čisté běhy": "Clean runs",
+"Průměr trestných bodů": "Average penalty points",
+"Průměrná rychlost": "Average speed",
+"Nejrychlejší běh": "Fastest run",
+"Zaběhnuté parkury": "Courses done",
+"Hodnocení běhů": "Run grades",
+"Podle soutěžního řádu KAČR (znění může být novější, ověř na": "According to the KAČR competition rules (the wording may be newer, check at",
+"). Počítají se závody zapsané v deníku u vybraného psa.": "). Competitions recorded in the training log for the selected dog count.",
+"＋ Trénink": "＋ Training",
+"＋ Závod": "＋ Competition",
+"Zatím žádné záznamy. Zapiš si trénink nebo výsledek ze závodů.": "No entries yet. Record a training session or a competition result.",
+"Výsledek ze závodů": "Competition result",
+"Datum": "Date",
+"Akce": "Event",
+"Rozhodčí": "Judge",
+"Třída": "Class",
+"Hodnocení": "Grade",
+"Trestné body": "Penalty points",
+"Umístění": "Placing",
+"Poznámka": "Note",
+"Povrch": "Surface",
+"tráva": "grass",
+"umělá tráva": "artificial turf",
+"písek": "sand",
+"jiný": "other",
+"Záznam z tréninku": "Training record",
+"Zapsáno do deníku": "Written to the training log",
+"Volná chůze na vodítku": "Loose walk on the lead",
+"Klidné tempo, pes se může očichat.": "Calm pace, the dog can sniff around.",
+"Klus": "Trot",
+"Plynulý klus vedle tebe, na rovném povrchu.": "A steady trot beside you on a flat surface.",
+"Kolečka a osmičky": "Circles and figures of eight",
+"Oběma směry, ať se pes ohýbá doleva i doprava.": "In both directions, so the dog bends left and right.",
+"Couvání": "Backing up",
+"Pár kroků dozadu, v klidu.": "A few steps backwards, calmly.",
+"Protažení za pamlskem": "Stretching for a treat",
+"Hlava k boku na obě strany, mezi přední nohy a nahoru.": "Head to the side both ways, between the front legs and up.",
+"Krátké sprinty nebo přetahování": "Short sprints or tugging",
+"Pár krátkých zrychlení, ať je pes připravený na rychlost.": "A few short accelerations so the dog is ready for speed.",
+"Pauza": "Pause",
+"Další cvik": "Next exercise",
+"Od začátku": "From the start",
+"Obecná doporučení k zahřátí před tréninkem. Pokud má pes zdravotní potíže, poraď se s veterinářem nebo psím fyzioterapeutem.": "General recommendations for warming up before training. If your dog has health problems, consult a vet or a canine physiotherapist.",
+"Po tréninku dej psovi ještě pár minut volné chůze.": "After training give the dog a few more minutes of loose walking.",
+"Hotovo, můžete trénovat": "Done, you can start training",
+"Tohle není záloha z aplikace HandlerMap.": "This isn't a backup from HandlerMap.",
+"Obnovit zálohu?": "Restore the backup?",
+"Obnovit": "Restore",
+"Záloha jako text": "Backup as text",
+"Tvoje parkury, běhy, psy a deník se ukážou jako text. Zkopíruj si ho a schovej, obnovíš ho přes Vložit text zálohy. Pohodlnější je cloud níž.": "Your courses, runs, dogs and training log are shown as text. Copy it and keep it safe; you restore it via Paste backup text. The cloud below is more convenient.",
+"Zobrazit zálohu": "Show backup",
+"Vložit text zálohy": "Paste backup text",
+"Záloha v cloudu": "Cloud backup",
+"Záloha se uloží na server aplikace pod tvým klíčem. Klíč si opiš, s ním data obnovíš i v jiném telefonu.": "The backup is stored on the app's server under your key. Write the key down; with it you can restore the data on another phone too.",
+"Zálohovat do cloudu": "Back up to the cloud",
+"Obnovit z cloudu": "Restore from the cloud",
+"Cloudová záloha funguje v aplikaci pro Android. Tady použij zálohu do souboru.": "Cloud backup works in the installed app. Here use the backup to a file.",
+"Obnovit ze souboru": "Restore from a file",
+"Uložit zálohu": "Save backup",
+"Uloží tvoje parkury, běhy, psy a deník do jednoho souboru. Hodí se před přeinstalací aplikace.": "Saves your courses, runs, dogs and training log into one file. Useful before reinstalling the app.",
+"Použij Vložit text zálohy nebo cloud.": "Use Paste backup text or the cloud.",
+"Vložit zálohu": "Paste backup",
+"Text zálohy": "Backup text",
+"Text není platná záloha.": "The text isn't a valid backup.",
+"Záloha uložena do cloudu": "Backup saved to the cloud",
+"Klíč zálohy": "Backup key",
+"Načíst": "Load",
+"Pod tímhle klíčem žádná záloha není.": "There's no backup under this key.",
+"Soubor není platná záloha.": "The file isn't a valid backup.",
+"Karina Divišová, Martina Podešťová, Jaroslav Benda, Lucie Dostálová": "Karina Divišová, Martina Podešťová, Jaroslav Benda, Lucie Dostálová",
+"Karina Divišová, Martina Podešťová: 90 tréninkových sekvencí": "Karina Divišová, Martina Podešťová: 90 training sequences",
+"Knihy": "Books",
+"＋ Přidat psa": "＋ Add a dog",
+"Přidej psa. Aplikace pak ukáže výšky překážek pro jeho kategorii a běhy i statistiky povede zvlášť pro každého psa.": "Add a dog. The app will then show obstacle heights for its category and keep runs and statistics separately for each dog.",
+"Překážka": "Obstacle",
+"Podle FCI": "Per FCI",
+"Skok": "Jump",
+"Zeď": "Wall",
+"Kruh (střed od země)": "Tyre (centre above ground)",
+"Skok daleký": "Long jump",
+"Áčko, kladina, houpačka": "A-frame, dog walk, seesaw",
+"stejné pro všechny: 170 / 120–130 / 60 cm": "the same for all: 170 / 120–130 / 60 cm",
+"Výšky překážek (kategorie L)": "Obstacle heights (category L)",
+"Plánky od rozhodčích a trenérů. Parkur podle plánku přeneseš v Plánu přes Plánek z obrázku (překážky se rozpoznají samy) a při ukládání vyplníš, kdo ho stavěl.": "Course maps from judges and trainers. Transfer a course from a map in Plan via Course map from photo (the obstacles are recognised automatically) and fill in who built it when saving.",
+"HandlerMap 1.9": "HandlerMap 1.9",
+"Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do oblouku), parkury trenérů, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, otočky kolem křídla a zadní strany skoků, 3D průlet, trénink paměti, videa s technikou, deník a statistiky.": "Agility course planner: 90 courses following FCI rules and judges' style (curves, crossings, curved tunnels), trainers' courses, rule check, SCT and MCT calculation, stopwatch with grading and split times, wraps around the wing and jump backsides, 3D flythrough, memory training, technique videos, training log and statistics.",
+"Novinky v 1.9: aplikace k instalaci do telefonu (Chrome → Instalovat aplikaci). V ní funguje výběr fotky a videa, ukládání obrázku, PDF a zálohy, plánek jde poslat přes Sdílet z galerie rovnou do čtečky, katalog parkurů i záloha v cloudu. Aktualizuje se sama.": "New in 1.9: an app to install on your phone (Chrome → Install app). Photo and video picking, saving images, PDFs and backups work there, a course map can be sent via Share from the gallery straight to the reader, plus the course catalogue and cloud backup. It updates itself.",
+"Novinky v 1.8: Plánek z obrázku přečte i trasu. Z čísel v kroužcích pozná pořadí, z nakreslené čáry směry skoků, vstupy do tunelů a zón, otočky kolem křídla a zadní strany. Chybějící kruh, skok daleký, dvojité břevno, zeď nebo kladinu dohledá u čísla. Nejistá místa označí otazníkem. V aplikaci pro Android jde plánek vložit i ze schránky.": "New in 1.8: Course map from photo also reads the route. It recognises the order from the numbers in circles, and from the drawn line the jump directions, tunnel and contact entries, wraps around the wing and backsides. It finds a missing tyre, long jump, double bar, wall or dog walk by its number. Uncertain places are marked with a question mark. In the Android app you can also paste the map from the clipboard.",
+"Novinky v 1.7: tlačítko Zkontrolovat nové parkury v záložce Parkury, nové parkury mají štítek Nový a tečku u záložky, přibyl parkur trenéra Euskadi Sextuple 2018 A1.": "New in 1.7: a Check for new courses button in Courses, new courses carry a New label and a dot on the tab, plus the trainer's course Euskadi Sextuple 2018 A1.",
+"Novinky v 1.6: nový generátor parkurů, náročnost a řazení parkurů, rozbor parkuru s vedením psovoda, odhadem času a simulací Stihnu to?, dráha podle velikosti psa, klasická cvičení a klubový parkur v generátoru, mezičasy naživo i z videa, chytrý trénink, předčítání trasy, plánek z obrázku, stavba v terénu s kompasem a sekce Začínáme pro štěňata.": "New in 1.6: a new course generator, course difficulty and sorting, course analysis with handler guidance, time estimate and the Can I make it? simulation, the path by dog size, classic exercises and a club course in the generator, live and video split times, smart training, reading the route aloud, course map from photo, building on the field with a compass and a Getting started section for puppies.",
+"Data se ukládají v tomhle zařízení. Sdílení kódem a cloudová záloha běží přes server Supabase a fungují v aplikaci pro Android. Uložení PDF a obrázku do telefonu a podklad z fotky fungují ve webové verzi.": "Data is stored on this device. Sharing by code and cloud backup run via the Supabase server and work in the installed app. Saving PDFs and images to the phone and the photo underlay work in the web version.",
+"Pravidla:": "Rules:",
+"Řád agility FCI a ČR (od 2023)": "FCI and Czech Agility Regulations (from 2023)",
+"Katalog parkurů: vestavěný. V aplikaci pro Android se nové parkury stáhnou samy při spuštění nebo tlačítkem Zkontrolovat nové parkury v záložce Parkury, bez aktualizace aplikace.": "Course catalogue: built-in. In the installed app new courses download automatically at start-up or with the Check for new courses button in Courses, without updating the app.",
+"Jeho běhy zůstanou uložené u parkurů.": "Its runs stay saved with the courses.",
+"Smazat": "Delete",
+"Smazat záznam?": "Delete this entry?",
+"Záznam zmizí z deníku.": "The entry disappears from the training log.",
+"Nejdřív vyznač trasu v režimu Trasa.": "Mark the route in Route mode first.",
+"Rozbor parkuru": "Course analysis",
+"Plynulost dráhy": "Path flow",
+"Nástraha: překážka, na kterou pes míří v přímém směru, zatímco trasa pokračuje obratem jinam.": "Trap: an obstacle the dog is heading straight at while the route continues with a turn elsewhere.",
+"Dráha v plánu": "Path in the plan",
+"Ideální": "Ideal",
+"Zavřít": "Close",
+"Malý pes zatáčí těsněji a kolem křídla projde blíž, velký v širších obloucích. Délka trati, SČP a kontrola FCI se počítají vždy z ideální čáry.": "A small dog turns tighter and passes closer to the wing, a big dog in wider curves. Course length, SCT and the FCI check are always calculated from the ideal line.",
+"Parkur bez výrazných záludností.": "A course without notable pitfalls.",
+"Vedení psovoda": "Handler guidance",
+"Celý parkur se dá vést z jedné strany.": "The whole course can be handled from one side.",
+"Nastavit stranu psa v Dráze psovoda": "Set the dog's side in Handler's path",
+"Odhad času": "Time estimate",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Až zapíšeš běhy psa, odhad se podle nich upraví.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Once you record the dog's runs, the estimate adjusts to them.",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Přidej psa ve Více › Psi a odhad bude pro něj.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Add a dog in More › Dogs and the estimate will be for it.",
+"SČP – s": "SCT – s",
+"Stihnu to?": "Can I make it?",
+"Přehrát psa a psovoda": "Play dog and handler",
+"Při téhle rychlosti stihneš být všude včas.": "At this speed you'll be everywhere in time.",
+"Strana psa nastavena podle návrhu": "Dog side set according to the suggestion",
+"Hnědý je pes, modrý psovod. Klepnutím na plochu zastavíš.": "Brown is the dog, blue the handler. Tap the field to stop.",
+"Nejdřív načti nebo postav parkur s trasou.": "Load or build a course with a route first.",
+"Video z telefonu otevřeš ve webové verzi aplikace. V aplikaci pro Android použij mezičasy naživo.": "You open a phone video in the web version of the app. In the Android app use live split times.",
+"Mezičasy z videa": "Split times from video",
+"Vyber video běhu z telefonu. Zůstane jen v telefonu, nikam se nenahrává.": "Choose a video of the run from your phone. It stays only on the phone, nothing is uploaded.",
+"Přehrát": "Play",
+"Zpět": "Back",
+"Mezičasy naživo": "Live split times",
+"Nejdřív vyber video.": "Choose a video first.",
+"Tahle značka je dřív než předchozí. Posuň video dopředu.": "This mark is earlier than the previous one. Move the video forward.",
+"Start (skok 1)": "Start (jump 1)",
+"Hotovo": "Done",
+"Klepni, když pes proběhne startem (první skok).": "Tap when the dog passes the start (first jump).",
+"Všechny mezičasy zapsané.": "All split times recorded.",
+"Mezičasy": "Split times",
+"Celkem": "Total",
+"Úsek": "Section",
+"Čas": "Time",
+"Model": "Model",
+"Rozdíl": "Difference",
+"Použít k běhu": "Use for the run",
+"Běh je vyrovnaný, žádný úsek výrazně neztrácí.": "The run is even, no section loses noticeably.",
+". Úseky se porovnávají s modelem psa přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu.": ". Sections are compared with the dog model scaled to the same total time, so you can see where time is lost compared with the rest of the run.",
+"Čas a mezičasy se uloží s během": "Time and split times will be saved with the run",
+"Slalom": "Weave poles",
+"Zóny": "Contacts",
+"Tunely": "Tunnels",
+"Otočky kolem křídla": "Wraps around the wing",
+"Zadní strany": "Backsides",
+"Ostré obraty a hady": "Sharp turns and serpentines",
+"Rychlé linie": "Fast lines",
+"Chytrý trénink": "Smart training",
+"Změř u běhu mezičasy (záložka Běh › Mezičasy naživo nebo z videa) a aplikace ukáže, kde pes ztrácí čas: slalom, zóny, otočky, obraty nebo rovné linie. Pak doporučí cvičení.": "Record split times for a run (Run › Live split times or from video) and the app shows where the dog loses time: weaves, contacts, wraps, turns or straight lines. Then it recommends exercises.",
+"Nejvíc času ztrácíte:": "You lose the most time on:",
+"Žádná část běhu výrazně nezaostává. Zkus těžší parkury nebo rychlejší linie.": "No part of the run lags noticeably. Try harder courses or faster lines.",
+"do U": "U-shape",
+"z druhé strany": "from the other side",
+"vstup vzdálenějším koncem": "entry through the far end",
+"cíl": "finish",
+"změna strany, pes vlevo": "side change, dog on the left",
+"změna strany, pes vpravo": "side change, dog on the right",
+"pes vlevo": "dog on the left",
+"pes vpravo": "dog on the right",
+"Tohle zařízení neumí předčítat. Zkus webovou verzi v Chrome.": "This device can't read aloud. Try the web version in Chrome.",
+"Předčítání trasy": "Reading the route aloud",
+"Aplikace přečte pořadí překážek, otočky a vstupy. Hodí se při prohlídce parkuru: jdi trasu a poslouchej.": "The app reads the obstacle order, wraps and entries. Handy for the course walk: walk the route and listen.",
+"Strana psa a změny strany": "Dog side and side changes",
+"Pomalu": "Slow",
+"Normálně": "Normal",
+"Rychle": "Fast",
+"Přečíst trasu": "Read the route",
+"Čtu trasu…": "Reading the route…",
+"Zastavit": "Stop",
+"Znovu": "Again",
+"Pro 3D průlet potřebuješ trasu aspoň se 2 překážkami.": "For the 3D flythrough you need a route with at least 2 obstacles.",
+"zadní strana": "backside",
+"otočka vnitřkem": "inside wrap",
+"otočka venkem": "outside wrap",
+"otočka doleva": "wrap left",
+"otočka doprava": "wrap right",
+"do oblouku": "curved",
+"start": "start",
+"zadní strana, otočka doleva": "backside, wrap left",
+"zadní strana, otočka doprava": "backside, wrap right"
+},
+"num": {
+"Návrh strany psa: u ostrých obratů je psovod uvnitř, mírné zatáčky se dají vést i zvenku. Změny strany: # (FCI chce aspoň 2).": "Suggested dog side: at sharp turns the handler is on the inside, gentle bends can also be handled from the outside. Side changes: #1 (FCI requires at least 2).",
+"SČP # s": "SCT #1 s",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Upraveno podle # zapsaného běhu psa. Odhad je nad SČP o # s.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from #1 recorded run of the dog. The estimate is #2 s over the SCT.",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Upraveno podle # zapsaného běhu psa.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from #1 recorded run of the dog.",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Upraveno podle # zapsaných běhů psa. Odhad je nad SČP o # s.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from #1 recorded runs of the dog. The estimate is #2 s over the SCT.",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Upraveno podle # zapsaných běhů psa.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from #1 recorded runs of the dog.",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Až zapíšeš běhy psa, odhad se podle nich upraví. Odhad je nad SČP o # s.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Once you record the dog's runs, the estimate adjusts to them. The estimate is #1 s over the SCT.",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Přidej psa ve Více › Psi a odhad bude pro něj. Odhad je nad SČP o # s.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Add a dog in More › Dogs and the estimate will be for it. The estimate is #1 s over the SCT.",
+"Přední křížení u #: doběhneš o # s později, než je potřeba. Zkus zadní křížení, nebo psa pošli dopředu a křížení udělej dřív.": "Front cross at #1: you'll arrive #2 s later than needed. Try a rear cross, or send the dog ahead and cross earlier.",
+"U překážky # jsi o # s za psem. Tady musí pes pracovat na dálku, nebo si zkrať dráhu.": "At obstacle #1 you're #2 s behind the dog. Here the dog has to work at a distance, or shorten your path.",
+"A další místa: #.": "And other places: #1.",
+"Tvoje dráha # m (podle nakreslené Dráhy psovoda), pes uběhne # m. Na startu počítá s odchodem k druhé překážce.": "Your path #1 m (from the drawn Handler's path), the dog runs #2 m. At the start it counts on a lead-out to the second obstacle.",
+"Tvoje dráha # m (odhad: 2 m od psa na straně návrhu), pes uběhne # m. Na startu počítá s odchodem k druhé překážce.": "Your path #1 m (estimate: 2 m from the dog on the suggested side), the dog runs #2 m. At the start it counts on a lead-out to the second obstacle.",
+"Klepni, když pes dokončí překážku # (cíl).": "Tap when the dog completes obstacle #1 (finish).",
+"Klepni, když pes dokončí překážku #.": "Tap when the dog completes obstacle #1.",
+"Průměrně # chyb a odmítnutí na běh: vyplatí se kratší sekvence a přesnost před rychlostí.": "On average #1 faults and refusals per run: shorter sequences and accuracy before speed pay off.",
+"Průměrně # chyb a odmítnutí na běh: vyplatí se přesnost před rychlostí.": "On average #1 faults and refusals per run: accuracy before speed pays off."
+},
+"re": [
+[
+"^Zatím tu nejsou žádné běhy psa (.+?)\\. Změř a ulož běh v záložce Běh\\.$",
+"There are no runs for @1 yet. Time and save a run in the Run tab."
+],
+[
+"^(.+?) z (.+?) zkoušek · rozhodčích: (.+?) \\(potřeba aspoň 2\\) · podmínka splněna$",
+"@1 of @2 trials · judges: @3 (at least 2 needed) · condition met"
+],
+[
+"^(.+?) z (.+?) zkoušek · rozhodčích: (.+?) \\(potřeba aspoň 2\\)$",
+"@1 of @2 trials · judges: @3 (at least 2 needed)"
+],
+[
+"^Současná data v aplikaci se nahradí zálohou z (.+?)\\.$",
+"The current data in the app will be replaced with the backup from @1."
+],
+[
+"^Zálohu se nepodařilo zapsat: (.+?)$",
+"The backup could not be written: @1"
+],
+[
+"^Cloud nejde: (.+?)$",
+"The cloud isn't available: @1"
+],
+[
+"^Cloud nejde: (.+?)$",
+"The cloud isn't available: @1"
+],
+[
+"^Výšky překážek pro (.+?)$",
+"Obstacle heights for @1"
+],
+[
+"^Katalog parkurů: verze (.+?) ze serveru, staženo (.+?)\\. V aplikaci pro Android se nové parkury stáhnou samy při spuštění nebo tlačítkem Zkontrolovat nové parkury v záložce Parkury, bez aktualizace aplikace\\.$",
+"Course catalogue: version @1 from the server, downloaded @2. In the installed app new courses download automatically at start-up or with the Check for new courses button in Courses, without updating the app."
+],
+[
+"^Smazat psa (.+?)\\?$",
+"Delete the dog @1?"
+],
+[
+"^Nejvíc přidává: (.+?)\\.$",
+"Adds the most: @1."
+],
+[
+"^Malý pes zatáčí těsněji a kolem křídla projde blíž, velký v širších obloucích\\. Tvůj pes (.+?) je (.+?)\\. Délka trati, SČP a kontrola FCI se počítají vždy z ideální čáry\\.$",
+"A small dog turns tighter and passes closer to the wing, a big dog in wider curves. Your dog @1 is @2. Course length, SCT and the FCI check are always calculated from the ideal line."
+],
+[
+"^Návrh strany psa: u ostrých obratů je psovod uvnitř, mírné zatáčky se dají vést i zvenku\\. Změny strany: (.+?) \\(FCI chce aspoň 2\\)\\.$",
+"Suggested dog side: at sharp turns the handler is on the inside, gentle bends can also be handled from the outside. Side changes: @1 (FCI requires at least 2)."
+],
+[
+"^SČP (.+?) s$",
+"SCT @1 s"
+],
+[
+"^Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce\\. Upraveno podle (.+?) zapsaného běhu psa\\. Odhad je nad SČP o (.+?) s\\.$",
+"Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from @1 recorded run of the dog. The estimate is @2 s over the SCT."
+],
+[
+"^Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce\\. Upraveno podle (.+?) zapsaného běhu psa\\.$",
+"Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from @1 recorded run of the dog."
+],
+[
+"^Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce\\. Upraveno podle (.+?) zapsaných běhů psa\\. Odhad je nad SČP o (.+?) s\\.$",
+"Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from @1 recorded runs of the dog. The estimate is @2 s over the SCT."
+],
+[
+"^Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce\\. Upraveno podle (.+?) zapsaných běhů psa\\.$",
+"Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from @1 recorded runs of the dog."
+],
+[
+"^Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce\\. Až zapíšeš běhy psa, odhad se podle nich upraví\\. Odhad je nad SČP o (.+?) s\\.$",
+"Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Once you record the dog's runs, the estimate adjusts to them. The estimate is @1 s over the SCT."
+],
+[
+"^Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce\\. Přidej psa ve Více › Psi a odhad bude pro něj\\. Odhad je nad SČP o (.+?) s\\.$",
+"Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Add a dog in More › Dogs and the estimate will be for it. The estimate is @1 s over the SCT."
+],
+[
+"^Přední křížení u (.+?): doběhneš o (.+?) s později, než je potřeba\\. Zkus zadní křížení, nebo psa pošli dopředu a křížení udělej dřív\\.$",
+"Front cross at @1: you'll arrive @2 s later than needed. Try a rear cross, or send the dog ahead and cross earlier."
+],
+[
+"^U překážky (.+?) jsi o (.+?) s za psem\\. Tady musí pes pracovat na dálku, nebo si zkrať dráhu\\.$",
+"At obstacle @1 you're @2 s behind the dog. Here the dog has to work at a distance, or shorten your path."
+],
+[
+"^A další místa: (.+?)\\.$",
+"And other places: @1."
+],
+[
+"^Tvoje dráha (.+?) m \\(podle nakreslené Dráhy psovoda\\), pes uběhne (.+?) m\\. Na startu počítá s odchodem k druhé překážce\\.$",
+"Your path @1 m (from the drawn Handler's path), the dog runs @2 m. At the start it counts on a lead-out to the second obstacle."
+],
+[
+"^Tvoje dráha (.+?) m \\(odhad: 2 m od psa na straně návrhu\\), pes uběhne (.+?) m\\. Na startu počítá s odchodem k druhé překážce\\.$",
+"Your path @1 m (estimate: 2 m from the dog on the suggested side), the dog runs @2 m. At the start it counts on a lead-out to the second obstacle."
+],
+[
+"^Klepni, když pes dokončí překážku (.+?) \\(cíl\\)\\.$",
+"Tap when the dog completes obstacle @1 (finish)."
+],
+[
+"^Klepni, když pes dokončí překážku (.+?)\\.$",
+"Tap when the dog completes obstacle @1."
+],
+[
+"^\\. Úseky se porovnávají s modelem psa (.+?) \\((.+?)\\) přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu\\.$",
+". Sections are compared with the model of a @1 dog (@2) scaled to the same total time, so you can see where time is lost compared with the rest of the run."
+],
+[
+"^Změř u běhu mezičasy \\(záložka Běh › Mezičasy naživo nebo z videa\\) a aplikace ukáže, kde (.+?) ztrácí čas: slalom, zóny, otočky, obraty nebo rovné linie\\. Pak doporučí cvičení\\.$",
+"Record split times for a run (Run › Live split times or from video) and the app shows where @1 loses time: weaves, contacts, wraps, turns or straight lines. Then it recommends exercises."
+],
+[
+"^Průměrně (.+?) chyb a odmítnutí na běh: vyplatí se kratší sekvence a přesnost před rychlostí\\.$",
+"On average @1 faults and refusals per run: shorter sequences and accuracy before speed pay off."
+],
+[
+"^Podle (.+?) běhu s mezičasy\\. Poměr 1,00 znamená stejně rychle jako zbytek běhu, vyšší číslo je pomalejší\\.$",
+"Based on @1 run with split times. A ratio of 1.00 means as fast as the rest of the run, a higher number is slower."
+],
+[
+"^Podle (.+?) běhů s mezičasy\\. Poměr 1,00 znamená stejně rychle jako zbytek běhu, vyšší číslo je pomalejší\\.$",
+"Based on @1 runs with split times. A ratio of 1.00 means as fast as the rest of the run, a higher number is slower."
+],
+[
+"^Průměrně (.+?) chyb a odmítnutí na běh: vyplatí se přesnost před rychlostí\\.$",
+"On average @1 faults and refusals per run: accuracy before speed pays off."
+],
+[
+"^Překážka (.+?) z (.+?) · (.+?) m z (.+?) m$",
+"Obstacle @1 of @2 · @3 m of @4 m"
+]
+]
+}

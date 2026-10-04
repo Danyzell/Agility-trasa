@@ -1,0 +1,2468 @@
+[
+ {
+  "t": "XS – do 30 cm",
+  "file": "i_more.js",
+  "line": 6,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "XS:{l:'XS – do 30 cm',jump:'15–20 cm',wall:'10–20 cm',tire:'45–55 cm',lj:'15–40 cm (1–2 díly)'},",
+  "n": 1
+ },
+ {
+  "t": "15–20 cm",
+  "file": "i_more.js",
+  "line": 6,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "XS:{l:'XS – do 30 cm',jump:'15–20 cm',wall:'10–20 cm',tire:'45–55 cm',lj:'15–40 cm (1–2 díly)'},",
+  "n": 1
+ },
+ {
+  "t": "10–20 cm",
+  "file": "i_more.js",
+  "line": 6,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "XS:{l:'XS – do 30 cm',jump:'15–20 cm',wall:'10–20 cm',tire:'45–55 cm',lj:'15–40 cm (1–2 díly)'},",
+  "n": 1
+ },
+ {
+  "t": "45–55 cm",
+  "file": "i_more.js",
+  "line": 6,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "XS:{l:'XS – do 30 cm',jump:'15–20 cm',wall:'10–20 cm',tire:'45–55 cm',lj:'15–40 cm (1–2 díly)'},",
+  "n": 1
+ },
+ {
+  "t": "15–40 cm (1–2 díly)",
+  "file": "i_more.js",
+  "line": 6,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "XS:{l:'XS – do 30 cm',jump:'15–20 cm',wall:'10–20 cm',tire:'45–55 cm',lj:'15–40 cm (1–2 díly)'},",
+  "n": 1
+ },
+ {
+  "t": "S – do 35 cm",
+  "file": "i_more.js",
+  "line": 7,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "S:{l:'S – do 35 cm',jump:'25–30 cm',wall:'25–30 cm',tire:'55 cm',lj:'40–50 cm (2 díly)'},",
+  "n": 1
+ },
+ {
+  "t": "25–30 cm",
+  "file": "i_more.js",
+  "line": 7,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "S:{l:'S – do 35 cm',jump:'25–30 cm',wall:'25–30 cm',tire:'55 cm',lj:'40–50 cm (2 díly)'},",
+  "n": 2
+ },
+ {
+  "t": "40–50 cm (2 díly)",
+  "file": "i_more.js",
+  "line": 7,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "S:{l:'S – do 35 cm',jump:'25–30 cm',wall:'25–30 cm',tire:'55 cm',lj:'40–50 cm (2 díly)'},",
+  "n": 1
+ },
+ {
+  "t": "M – 35 až 43 cm",
+  "file": "i_more.js",
+  "line": 8,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "M:{l:'M – 35 až 43 cm',jump:'35–40 cm',wall:'35–40 cm',tire:'55 cm',lj:'70–90 cm (3 díly)'},",
+  "n": 1
+ },
+ {
+  "t": "35–40 cm",
+  "file": "i_more.js",
+  "line": 8,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "M:{l:'M – 35 až 43 cm',jump:'35–40 cm',wall:'35–40 cm',tire:'55 cm',lj:'70–90 cm (3 díly)'},",
+  "n": 2
+ },
+ {
+  "t": "70–90 cm (3 díly)",
+  "file": "i_more.js",
+  "line": 8,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "M:{l:'M – 35 až 43 cm',jump:'35–40 cm',wall:'35–40 cm',tire:'55 cm',lj:'70–90 cm (3 díly)'},",
+  "n": 1
+ },
+ {
+  "t": "I – 43 až 48 cm",
+  "file": "i_more.js",
+  "line": 9,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "I:{l:'I – 43 až 48 cm',jump:'45–50 cm',wall:'45–50 cm',tire:'70 cm',lj:'90–110 cm (3–4 díly)'},",
+  "n": 1
+ },
+ {
+  "t": "45–50 cm",
+  "file": "i_more.js",
+  "line": 9,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "I:{l:'I – 43 až 48 cm',jump:'45–50 cm',wall:'45–50 cm',tire:'70 cm',lj:'90–110 cm (3–4 díly)'},",
+  "n": 2
+ },
+ {
+  "t": "90–110 cm (3–4 díly)",
+  "file": "i_more.js",
+  "line": 9,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "I:{l:'I – 43 až 48 cm',jump:'45–50 cm',wall:'45–50 cm',tire:'70 cm',lj:'90–110 cm (3–4 díly)'},",
+  "n": 1
+ },
+ {
+  "t": "L – od 48 cm",
+  "file": "i_more.js",
+  "line": 10,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "L:{l:'L – od 48 cm',jump:'55–60 cm',wall:'55–60 cm',tire:'80 cm',lj:'120–150 cm (4 díly)'}",
+  "n": 1
+ },
+ {
+  "t": "55–60 cm",
+  "file": "i_more.js",
+  "line": 10,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "L:{l:'L – od 48 cm',jump:'55–60 cm',wall:'55–60 cm',tire:'80 cm',lj:'120–150 cm (4 díly)'}",
+  "n": 2
+ },
+ {
+  "t": "120–150 cm (4 díly)",
+  "file": "i_more.js",
+  "line": 10,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "L:{l:'L – od 48 cm',jump:'55–60 cm',wall:'55–60 cm',tire:'80 cm',lj:'120–150 cm (4 díly)'}",
+  "n": 1
+ },
+ {
+  "t": "dogChanged",
+  "file": "i_more.js",
+  "line": 14,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "function saveDogs(){lsSet(DOGK,DOGS); lsSet(DOGCUR,DOGC); HM.emit('dogChanged',{id:DOGC});}",
+  "n": 1
+ },
+ {
+  "t": "＋ Přidat psa (běhy se pak zapisují ke psovi)",
+  "file": "i_more.js",
+  "line": 18,
+  "kind": "lit",
+  "conf": "ui",
+  "src": ":'<button class=\"chip\" data-adddog=\"1\">＋ Přidat psa (běhy se pak zapisují ke psovi)</button>';",
+  "n": 1
+ },
+ {
+  "t": "L",
+  "file": "i_more.js",
+  "line": 26,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var isNew=!d; d=d||{id:'dog-'+Date.now().toString(36),name:'',size:'L',cls:'A1'};",
+  "n": 5
+ },
+ {
+  "t": "A1",
+  "file": "i_more.js",
+  "line": 26,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var isNew=!d; d=d||{id:'dog-'+Date.now().toString(36),name:'',size:'L',cls:'A1'};",
+  "n": 7
+ },
+ {
+  "t": "Nový pes",
+  "file": "i_more.js",
+  "line": 27,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(isNew?'Nový pes':'Upravit psa')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "Jméno",
+  "file": "i_more.js",
+  "line": 27,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(isNew?'Nový pes':'Upravit psa')+'</h3>'+",
+  "n": 4
+ },
+ {
+  "t": "Velikost",
+  "file": "i_more.js",
+  "line": 27,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(isNew?'Nový pes':'Upravit psa')+'</h3>'+",
+  "n": 4
+ },
+ {
+  "t": "Výkonnostní třída",
+  "file": "i_more.js",
+  "line": 27,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(isNew?'Nový pes':'Upravit psa')+'</h3>'+",
+  "n": 4
+ },
+ {
+  "t": "A0",
+  "file": "i_more.js",
+  "line": 27,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(isNew?'Nový pes':'Upravit psa')+'</h3>'+",
+  "n": 7
+ },
+ {
+  "t": "A2",
+  "file": "i_more.js",
+  "line": 27,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(isNew?'Nový pes':'Upravit psa')+'</h3>'+",
+  "n": 6
+ },
+ {
+  "t": "A3",
+  "file": "i_more.js",
+  "line": 27,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(isNew?'Nový pes':'Upravit psa')+'</h3>'+",
+  "n": 6
+ },
+ {
+  "t": "Narozen/a (měsíc a rok, nepovinné)",
+  "file": "i_more.js",
+  "line": 27,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(isNew?'Nový pes':'Upravit psa')+'</h3>'+",
+  "n": 4
+ },
+ {
+  "t": "Zrušit",
+  "file": "i_more.js",
+  "line": 27,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(isNew?'Nový pes':'Upravit psa')+'</h3>'+",
+  "n": 10
+ },
+ {
+  "t": "Přidat",
+  "file": "i_more.js",
+  "line": 27,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(isNew?'Nový pes':'Upravit psa')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "Uložit",
+  "file": "i_more.js",
+  "line": 27,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(isNew?'Nový pes':'Upravit psa')+'</h3>'+",
+  "n": 6
+ },
+ {
+  "t": "Upravit psa",
+  "file": "i_more.js",
+  "line": 27,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(isNew?'Nový pes':'Upravit psa')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "Pes",
+  "file": "i_more.js",
+  "line": 36,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "d.name=$('dName').value.trim()||'Pes'; d.size=$('dSize').value; d.cls=$('dCls').value; var bv=$('dBorn').value; if(/^\\d{4}-\\d{2}$/.test(bv)) d.born=bv; else delete d.born;",
+  "n": 2
+ },
+ {
+  "t": "Pes přidán",
+  "file": "i_more.js",
+  "line": 37,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(isNew) DOGS.push(d); DOGC=d.id; saveDogs(); toast(isNew?'Pes přidán':'Uloženo');",
+  "n": 1
+ },
+ {
+  "t": "Uloženo",
+  "file": "i_more.js",
+  "line": 37,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(isNew) DOGS.push(d); DOGC=d.id; saveDogs(); toast(isNew?'Pes přidán':'Uloženo');",
+  "n": 1
+ },
+ {
+  "t": "Graf rychlosti se ukáže po dvou uložených bězích bez diskvalifikace.",
+  "file": "i_more.js",
+  "line": 52,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(pts.length<2) return '<p class=\"hint\">Graf rychlosti se ukáže po dvou uložených bězích bez diskvalifikace.</p>';",
+  "n": 1
+ },
+ {
+  "t": "L{X(i).toFixed(1)},{Y(p.v).toFixed(1)}",
+  "file": "i_more.js",
+  "line": 58,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var line=pts.map(function(p,i){return (i?'L':'M')+X(i).toFixed(1)+','+Y(p.v).toFixed(1);}).join('');",
+  "n": 1
+ },
+ {
+  "t": "M{X(i).toFixed(1)},{Y(p.v).toFixed(1)}",
+  "file": "i_more.js",
+  "line": 58,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var line=pts.map(function(p,i){return (i?'L':'M')+X(i).toFixed(1)+','+Y(p.v).toFixed(1);}).join('');",
+  "n": 1
+ },
+ {
+  "t": "Rychlost psa (m/s)",
+  "file": "i_more.js",
+  "line": 63,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"chart\"><b>Rychlost psa (m/s)</b><svg viewBox=\"0 0 '+W+' '+H+'\" id=\"spdSvg\" role=\"img\" aria-label=\"Graf rychlosti psa v posledních bězích\">'+g+",
+  "n": 1
+ },
+ {
+  "t": "{fmt(p.v)} m/s · {fmt2(p.x.t)} s · {new Date(p.x.d).toLocaleDa…}",
+  "file": "i_more.js",
+  "line": 74,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var txt=fmt(p.v)+' m/s · '+fmt2(p.x.t)+' s · '+new Date(p.x.d).toLocaleDateString(LOC), w=txt.length*6.2+12, tx=Math.min(Math.max(x-w/2,2),340-w-2);",
+  "n": 1
+ },
+ {
+  "t": "Zatím tu nejsou žádné běhy psa {esc(d.name)}. Změř a ulož běh v záložce Běh.",
+  "file": "i_more.js",
+  "line": 81,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "if(!n) return '<p class=\"hint\">Zatím tu nejsou žádné běhy'+(d?' psa '+esc(d.name):'')+'. Změř a ulož běh v záložce Běh.</p>';",
+  "n": 1
+ },
+ {
+  "t": "Zatím tu nejsou žádné běhy. Změř a ulož běh v záložce Běh.",
+  "file": "i_more.js",
+  "line": 81,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "if(!n) return '<p class=\"hint\">Zatím tu nejsou žádné běhy'+(d?' psa '+esc(d.name):'')+'. Změř a ulož běh v záložce Běh.</p>';",
+  "n": 1
+ },
+ {
+  "t": "Běhů",
+  "file": "i_more.js",
+  "line": 89,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"tiles\"><div><small>Běhů</small><b>'+n+'</b></div><div><small>Čisté běhy</small><b>'+Math.round(clean/n*100)+' %</b></div>'+",
+  "n": 4
+ },
+ {
+  "t": "Čisté běhy",
+  "file": "i_more.js",
+  "line": 89,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"tiles\"><div><small>Běhů</small><b>'+n+'</b></div><div><small>Čisté běhy</small><b>'+Math.round(clean/n*100)+' %</b></div>'+",
+  "n": 4
+ },
+ {
+  "t": "Průměr trestných bodů",
+  "file": "i_more.js",
+  "line": 89,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"tiles\"><div><small>Běhů</small><b>'+n+'</b></div><div><small>Čisté běhy</small><b>'+Math.round(clean/n*100)+' %</b></div>'+",
+  "n": 4
+ },
+ {
+  "t": "Průměrná rychlost",
+  "file": "i_more.js",
+  "line": 89,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"tiles\"><div><small>Běhů</small><b>'+n+'</b></div><div><small>Čisté běhy</small><b>'+Math.round(clean/n*100)+' %</b></div>'+",
+  "n": 4
+ },
+ {
+  "t": "Nejrychlejší běh",
+  "file": "i_more.js",
+  "line": 89,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"tiles\"><div><small>Běhů</small><b>'+n+'</b></div><div><small>Čisté běhy</small><b>'+Math.round(clean/n*100)+' %</b></div>'+",
+  "n": 4
+ },
+ {
+  "t": "Zaběhnuté parkury",
+  "file": "i_more.js",
+  "line": 89,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"tiles\"><div><small>Běhů</small><b>'+n+'</b></div><div><small>Čisté běhy</small><b>'+Math.round(clean/n*100)+' %</b></div>'+",
+  "n": 4
+ },
+ {
+  "t": "Hodnocení běhů",
+  "file": "i_more.js",
+  "line": 89,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"tiles\"><div><small>Běhů</small><b>'+n+'</b></div><div><small>Čisté běhy</small><b>'+Math.round(clean/n*100)+' %</b></div>'+",
+  "n": 4
+ },
+ {
+  "t": "{ok.length} z {need} zkoušek · rozhodčích: {jn} (potřeba aspoň 2) · podmínka splněna",
+  "file": "i_more.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"prog\"><b>'+label+'</b><div class=\"bar\"><i style=\"width:'+Math.round(n/need*100)+'%\"></i></div><span class=\"hint\">'+ok.length+' z '+need+' zkoušek · rozhodčích: '+jn+' (potřeba aspoň 2)'+(ok.length>=need&&jn>=2?' · podmín",
+  "n": 1
+ },
+ {
+  "t": "{ok.length} z {need} zkoušek · rozhodčích: {jn} (potřeba aspoň 2)",
+  "file": "i_more.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"prog\"><b>'+label+'</b><div class=\"bar\"><i style=\"width:'+Math.round(n/need*100)+'%\"></i></div><span class=\"hint\">'+ok.length+' z '+need+' zkoušek · rozhodčích: '+jn+' (potřeba aspoň 2)'+(ok.length>=need&&jn>=2?' · podmín",
+  "n": 1
+ },
+ {
+  "t": "Podle soutěžního řádu KAČR (znění může být novější, ověř na",
+  "file": "i_more.js",
+  "line": 107,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return part('A1',3,function(x){return x.g==='V';},'Postup A1 → A2: 3× hodnocení Výborně')+",
+  "n": 1
+ },
+ {
+  "t": "). Počítají se závody zapsané v deníku u vybraného psa.",
+  "file": "i_more.js",
+  "line": 107,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return part('A1',3,function(x){return x.g==='V';},'Postup A1 → A2: 3× hodnocení Výborně')+",
+  "n": 1
+ },
+ {
+  "t": "＋ Trénink",
+  "file": "i_more.js",
+  "line": 113,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return promoHTML()+'<div class=\"row\"><button class=\"btn primary\" data-dy=\"trenink\">＋ Trénink</button><button class=\"btn\" data-dy=\"zavod\">＋ Závod</button></div>'+",
+  "n": 2
+ },
+ {
+  "t": "＋ Závod",
+  "file": "i_more.js",
+  "line": 113,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return promoHTML()+'<div class=\"row\"><button class=\"btn primary\" data-dy=\"trenink\">＋ Trénink</button><button class=\"btn\" data-dy=\"zavod\">＋ Závod</button></div>'+",
+  "n": 2
+ },
+ {
+  "t": "Zatím žádné záznamy. Zapiš si trénink nebo výsledek ze závodů.",
+  "file": "i_more.js",
+  "line": 113,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return promoHTML()+'<div class=\"row\"><button class=\"btn primary\" data-dy=\"trenink\">＋ Trénink</button><button class=\"btn\" data-dy=\"zavod\">＋ Závod</button></div>'+",
+  "n": 1
+ },
+ {
+  "t": "Výsledek ze závodů",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "Datum",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 4
+ },
+ {
+  "t": "Akce",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "Rozhodčí",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "Třída",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "Jumping",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "Hodnocení",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "V",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "VD",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "D",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "BO",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "DIS",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "Trestné body",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "Umístění",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "Poznámka",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 4
+ },
+ {
+  "t": "Povrch",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "tráva",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "umělá tráva",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "písek",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "jiný",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "Záznam z tréninku",
+  "file": "i_more.js",
+  "line": 123,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>'+(kind==='zavod'?'Výsledek ze závodů':'Záznam z tréninku')+'</h3>'+",
+  "n": 2
+ },
+ {
+  "t": "Zapsáno do deníku",
+  "file": "i_more.js",
+  "line": 140,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "L.push(x); lsSet(DIARYK,L); toast('Zapsáno do deníku');",
+  "n": 1
+ },
+ {
+  "t": "Volná chůze na vodítku",
+  "file": "i_more.js",
+  "line": 150,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Volná chůze na vodítku',120,'Klidné tempo, pes se může očichat.'],",
+  "n": 1
+ },
+ {
+  "t": "Klidné tempo, pes se může očichat.",
+  "file": "i_more.js",
+  "line": 150,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Volná chůze na vodítku',120,'Klidné tempo, pes se může očichat.'],",
+  "n": 1
+ },
+ {
+  "t": "Klus",
+  "file": "i_more.js",
+  "line": 151,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Klus',120,'Plynulý klus vedle tebe, na rovném povrchu.'],",
+  "n": 1
+ },
+ {
+  "t": "Plynulý klus vedle tebe, na rovném povrchu.",
+  "file": "i_more.js",
+  "line": 151,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Klus',120,'Plynulý klus vedle tebe, na rovném povrchu.'],",
+  "n": 1
+ },
+ {
+  "t": "Kolečka a osmičky",
+  "file": "i_more.js",
+  "line": 152,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Kolečka a osmičky',60,'Oběma směry, ať se pes ohýbá doleva i doprava.'],",
+  "n": 1
+ },
+ {
+  "t": "Oběma směry, ať se pes ohýbá doleva i doprava.",
+  "file": "i_more.js",
+  "line": 152,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Kolečka a osmičky',60,'Oběma směry, ať se pes ohýbá doleva i doprava.'],",
+  "n": 1
+ },
+ {
+  "t": "Couvání",
+  "file": "i_more.js",
+  "line": 153,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Couvání',30,'Pár kroků dozadu, v klidu.'],",
+  "n": 1
+ },
+ {
+  "t": "Pár kroků dozadu, v klidu.",
+  "file": "i_more.js",
+  "line": 153,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Couvání',30,'Pár kroků dozadu, v klidu.'],",
+  "n": 1
+ },
+ {
+  "t": "Protažení za pamlskem",
+  "file": "i_more.js",
+  "line": 154,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Protažení za pamlskem',60,'Hlava k boku na obě strany, mezi přední nohy a nahoru.'],",
+  "n": 1
+ },
+ {
+  "t": "Hlava k boku na obě strany, mezi přední nohy a nahoru.",
+  "file": "i_more.js",
+  "line": 154,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Protažení za pamlskem',60,'Hlava k boku na obě strany, mezi přední nohy a nahoru.'],",
+  "n": 1
+ },
+ {
+  "t": "Krátké sprinty nebo přetahování",
+  "file": "i_more.js",
+  "line": 155,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Krátké sprinty nebo přetahování',60,'Pár krátkých zrychlení, ať je pes připravený na rychlost.']",
+  "n": 1
+ },
+ {
+  "t": "Pár krátkých zrychlení, ať je pes připravený na rychlost.",
+  "file": "i_more.js",
+  "line": 155,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Krátké sprinty nebo přetahování',60,'Pár krátkých zrychlení, ať je pes připravený na rychlost.']",
+  "n": 1
+ },
+ {
+  "t": "Pauza",
+  "file": "i_more.js",
+  "line": 160,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel warm\"><div class=\"now\">'+(WU.i<WARM.length?esc(w[0]):'Hotovo, můžete trénovat')+'</div><div class=\"cd\">'+m+':'+(s<10?'0':'')+s+'</div>'+",
+  "n": 9
+ },
+ {
+  "t": "Další cvik",
+  "file": "i_more.js",
+  "line": 160,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel warm\"><div class=\"now\">'+(WU.i<WARM.length?esc(w[0]):'Hotovo, můžete trénovat')+'</div><div class=\"cd\">'+m+':'+(s<10?'0':'')+s+'</div>'+",
+  "n": 12
+ },
+ {
+  "t": "Od začátku",
+  "file": "i_more.js",
+  "line": 160,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel warm\"><div class=\"now\">'+(WU.i<WARM.length?esc(w[0]):'Hotovo, můžete trénovat')+'</div><div class=\"cd\">'+m+':'+(s<10?'0':'')+s+'</div>'+",
+  "n": 12
+ },
+ {
+  "t": "Obecná doporučení k zahřátí před tréninkem. Pokud má pes zdravotní potíže, poraď se s veterinářem nebo psím fyzioterapeutem.",
+  "file": "i_more.js",
+  "line": 160,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel warm\"><div class=\"now\">'+(WU.i<WARM.length?esc(w[0]):'Hotovo, můžete trénovat')+'</div><div class=\"cd\">'+m+':'+(s<10?'0':'')+s+'</div>'+",
+  "n": 12
+ },
+ {
+  "t": "Start",
+  "file": "i_more.js",
+  "line": 160,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel warm\"><div class=\"now\">'+(WU.i<WARM.length?esc(w[0]):'Hotovo, můžete trénovat')+'</div><div class=\"cd\">'+m+':'+(s<10?'0':'')+s+'</div>'+",
+  "n": 10
+ },
+ {
+  "t": "Po tréninku dej psovi ještě pár minut volné chůze.",
+  "file": "i_more.js",
+  "line": 160,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel warm\"><div class=\"now\">'+(WU.i<WARM.length?esc(w[0]):'Hotovo, můžete trénovat')+'</div><div class=\"cd\">'+m+':'+(s<10?'0':'')+s+'</div>'+",
+  "n": 6
+ },
+ {
+  "t": "Hotovo, můžete trénovat",
+  "file": "i_more.js",
+  "line": 160,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel warm\"><div class=\"now\">'+(WU.i<WARM.length?esc(w[0]):'Hotovo, můžete trénovat')+'</div><div class=\"cd\">'+m+':'+(s<10?'0':'')+s+'</div>'+",
+  "n": 4
+ },
+ {
+  "t": "Tohle není záloha z aplikace Agility trasa.",
+  "file": "i_more.js",
+  "line": 186,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(!o||o.app!=='agility-trasa'||!o.data){toast('Tohle není záloha z aplikace Agility trasa.'); return;}",
+  "n": 1
+ },
+ {
+  "t": "Obnovit zálohu?",
+  "file": "i_more.js",
+  "line": 187,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "ask('Obnovit zálohu?','Současná data v aplikaci se nahradí zálohou z '+new Date(o.at).toLocaleString(LOC)+'.','Obnovit',function(){",
+  "n": 1
+ },
+ {
+  "t": "Současná data v aplikaci se nahradí zálohou z {new Date(o.at).toLocaleStr…}.",
+  "file": "i_more.js",
+  "line": 187,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "ask('Obnovit zálohu?','Současná data v aplikaci se nahradí zálohou z '+new Date(o.at).toLocaleString(LOC)+'.','Obnovit',function(){",
+  "n": 1
+ },
+ {
+  "t": "Obnovit",
+  "file": "i_more.js",
+  "line": 187,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "ask('Obnovit zálohu?','Současná data v aplikaci se nahradí zálohou z '+new Date(o.at).toLocaleString(LOC)+'.','Obnovit',function(){",
+  "n": 2
+ },
+ {
+  "t": "Zálohu se nepodařilo zapsat: {e.message}",
+  "file": "i_more.js",
+  "line": 188,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "try{Object.keys(o.data).forEach(function(k){localStorage.setItem(k,o.data[k]);}); location.reload();}catch(e){toast('Zálohu se nepodařilo zapsat: '+e.message);}",
+  "n": 1
+ },
+ {
+  "t": "Záloha jako text",
+  "file": "i_more.js",
+  "line": 193,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel\" style=\"display:flex;flex-direction:column;gap:10px\"><b>'+(APK_LITE?'Záloha jako text':'Záloha do souboru')+'</b>'+",
+  "n": 12
+ },
+ {
+  "t": "Tvoje parkury, běhy, psy a deník se ukážou jako text. Zkopíruj si ho a schovej, obnovíš ho přes Vložit text zálohy. Pohodlnější je cloud níž.",
+  "file": "i_more.js",
+  "line": 193,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel\" style=\"display:flex;flex-direction:column;gap:10px\"><b>'+(APK_LITE?'Záloha jako text':'Záloha do souboru')+'</b>'+",
+  "n": 8
+ },
+ {
+  "t": "Zobrazit zálohu",
+  "file": "i_more.js",
+  "line": 193,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel\" style=\"display:flex;flex-direction:column;gap:10px\"><b>'+(APK_LITE?'Záloha jako text':'Záloha do souboru')+'</b>'+",
+  "n": 8
+ },
+ {
+  "t": "Vložit text zálohy",
+  "file": "i_more.js",
+  "line": 193,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel\" style=\"display:flex;flex-direction:column;gap:10px\"><b>'+(APK_LITE?'Záloha jako text':'Záloha do souboru')+'</b>'+",
+  "n": 12
+ },
+ {
+  "t": "Záloha v cloudu",
+  "file": "i_more.js",
+  "line": 193,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel\" style=\"display:flex;flex-direction:column;gap:10px\"><b>'+(APK_LITE?'Záloha jako text':'Záloha do souboru')+'</b>'+",
+  "n": 12
+ },
+ {
+  "t": "Záloha se uloží na server aplikace pod tvým klíčem. Klíč si opiš, s ním data obnovíš i v jiném telefonu.",
+  "file": "i_more.js",
+  "line": 193,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel\" style=\"display:flex;flex-direction:column;gap:10px\"><b>'+(APK_LITE?'Záloha jako text':'Záloha do souboru')+'</b>'+",
+  "n": 6
+ },
+ {
+  "t": "Zálohovat do cloudu",
+  "file": "i_more.js",
+  "line": 193,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel\" style=\"display:flex;flex-direction:column;gap:10px\"><b>'+(APK_LITE?'Záloha jako text':'Záloha do souboru')+'</b>'+",
+  "n": 6
+ },
+ {
+  "t": "Obnovit z cloudu",
+  "file": "i_more.js",
+  "line": 193,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel\" style=\"display:flex;flex-direction:column;gap:10px\"><b>'+(APK_LITE?'Záloha jako text':'Záloha do souboru')+'</b>'+",
+  "n": 7
+ },
+ {
+  "t": "Cloudová záloha funguje v aplikaci pro Android. Tady použij zálohu do souboru.",
+  "file": "i_more.js",
+  "line": 193,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel\" style=\"display:flex;flex-direction:column;gap:10px\"><b>'+(APK_LITE?'Záloha jako text':'Záloha do souboru')+'</b>'+",
+  "n": 6
+ },
+ {
+  "t": "Obnovit ze souboru",
+  "file": "i_more.js",
+  "line": 193,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel\" style=\"display:flex;flex-direction:column;gap:10px\"><b>'+(APK_LITE?'Záloha jako text':'Záloha do souboru')+'</b>'+",
+  "n": 6
+ },
+ {
+  "t": "Uložit zálohu",
+  "file": "i_more.js",
+  "line": 193,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel\" style=\"display:flex;flex-direction:column;gap:10px\"><b>'+(APK_LITE?'Záloha jako text':'Záloha do souboru')+'</b>'+",
+  "n": 4
+ },
+ {
+  "t": "Uloží tvoje parkury, běhy, psy a deník do jednoho souboru. Hodí se před přeinstalací aplikace.",
+  "file": "i_more.js",
+  "line": 193,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<div class=\"panel\" style=\"display:flex;flex-direction:column;gap:10px\"><b>'+(APK_LITE?'Záloha jako text':'Záloha do souboru')+'</b>'+",
+  "n": 4
+ },
+ {
+  "t": "Použij Vložit text zálohy nebo cloud.",
+  "file": "i_more.js",
+  "line": 204,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "else if(a==='load'){ if(APK_LITE){toast('Použij Vložit text zálohy nebo cloud.'); return;} $('jsonFile').click(); }",
+  "n": 1
+ },
+ {
+  "t": "Vložit zálohu",
+  "file": "i_more.js",
+  "line": 206,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "openSheet('<h3>Vložit zálohu</h3><label for=\"bkTxt\">Text zálohy<textarea id=\"bkTxt\" placeholder=\"{&quot;app&quot;:&quot;agility-trasa&quot;, …}\"></textarea></label><div class=\"acts\"><button class=\"btn\" data-a=\"x\">Zrušit</button><button clas",
+  "n": 1
+ },
+ {
+  "t": "Text zálohy",
+  "file": "i_more.js",
+  "line": 206,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "openSheet('<h3>Vložit zálohu</h3><label for=\"bkTxt\">Text zálohy<textarea id=\"bkTxt\" placeholder=\"{&quot;app&quot;:&quot;agility-trasa&quot;, …}\"></textarea></label><div class=\"acts\"><button class=\"btn\" data-a=\"x\">Zrušit</button><button clas",
+  "n": 1
+ },
+ {
+  "t": "Text není platná záloha.",
+  "file": "i_more.js",
+  "line": 207,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "function(e){var b=e.target.closest('[data-a]'); if(!b) return; var t=$('bkTxt').value; closeSheet(); if(b.getAttribute('data-a')==='ok'){try{restoreData(JSON.parse(t));}catch(x){toast('Text není platná záloha.');}}});",
+  "n": 1
+ },
+ {
+  "t": "Záloha uložena do cloudu",
+  "file": "i_more.js",
+  "line": 209,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "else if(a==='cput'){ sbCall('backup_put',{p_key:cloudKey(),p_data:backupData()}).then(function(){toast('Záloha uložena do cloudu');},function(e){toast('Cloud nejde: '+e.message);}); }",
+  "n": 1
+ },
+ {
+  "t": "Cloud nejde: {e.message}",
+  "file": "i_more.js",
+  "line": 209,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "else if(a==='cput'){ sbCall('backup_put',{p_key:cloudKey(),p_data:backupData()}).then(function(){toast('Záloha uložena do cloudu');},function(e){toast('Cloud nejde: '+e.message);}); }",
+  "n": 1
+ },
+ {
+  "t": "Klíč zálohy",
+  "file": "i_more.js",
+  "line": 211,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>Obnovit z cloudu</h3><label for=\"ckIn\">Klíč zálohy<input id=\"ckIn\" type=\"text\" maxlength=\"12\" autocomplete=\"off\" value=\"'+cloudKey()+'\"></label><div class=\"acts\"><button class=\"btn\" data-a=\"x\">Zrušit</button><button class=\"bt",
+  "n": 1
+ },
+ {
+  "t": "Načíst",
+  "file": "i_more.js",
+  "line": 211,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>Obnovit z cloudu</h3><label for=\"ckIn\">Klíč zálohy<input id=\"ckIn\" type=\"text\" maxlength=\"12\" autocomplete=\"off\" value=\"'+cloudKey()+'\"></label><div class=\"acts\"><button class=\"btn\" data-a=\"x\">Zrušit</button><button class=\"bt",
+  "n": 1
+ },
+ {
+  "t": "Pod tímhle klíčem žádná záloha není.",
+  "file": "i_more.js",
+  "line": 213,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(b.getAttribute('data-a')==='ok') sbCall('backup_get',{p_key:k}).then(function(o){ if(!o){toast('Pod tímhle klíčem žádná záloha není.'); return;} lsSet('agility-cloudkey-v1',k); restoreData(o); },function(e2){toast('Cloud nejde: '+e2.mess",
+  "n": 1
+ },
+ {
+  "t": "Cloud nejde: {e2.message}",
+  "file": "i_more.js",
+  "line": 213,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "if(b.getAttribute('data-a')==='ok') sbCall('backup_get',{p_key:k}).then(function(o){ if(!o){toast('Pod tímhle klíčem žádná záloha není.'); return;} lsSet('agility-cloudkey-v1',k); restoreData(o); },function(e2){toast('Cloud nejde: '+e2.mess",
+  "n": 1
+ },
+ {
+  "t": "Soubor není platná záloha.",
+  "file": "i_more.js",
+  "line": 218,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var rd=new FileReader(); rd.onload=function(){try{restoreData(JSON.parse(rd.result));}catch(e){toast('Soubor není platná záloha.');}}; rd.readAsText(f);",
+  "n": 1
+ },
+ {
+  "t": "Agility – Od startu až k cíli",
+  "file": "i_more.js",
+  "line": 223,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Agility – Od startu až k cíli','Eva Bertilssonová, Emelie Johnson Veghová (Plot)','https://www.plotknihy.cz/cs/agility-od-startu-az-k-cili/586/p/'],",
+  "n": 1
+ },
+ {
+  "t": "Eva Bertilssonová, Emelie Johnson Veghová (Plot)",
+  "file": "i_more.js",
+  "line": 223,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Agility – Od startu až k cíli','Eva Bertilssonová, Emelie Johnson Veghová (Plot)','https://www.plotknihy.cz/cs/agility-od-startu-az-k-cili/586/p/'],",
+  "n": 1
+ },
+ {
+  "t": "Agility, první krůčky",
+  "file": "i_more.js",
+  "line": 224,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Agility, první krůčky','Karina Divišová, Martina Podešťová, Jaroslav Benda, Lucie Dostálová','https://www.knihydobrovsky.cz/kniha/agility-prvni-krucky-32531'],",
+  "n": 1
+ },
+ {
+  "t": "Karina Divišová, Martina Podešťová, Jaroslav Benda, Lucie Dostálová",
+  "file": "i_more.js",
+  "line": 224,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Agility, první krůčky','Karina Divišová, Martina Podešťová, Jaroslav Benda, Lucie Dostálová','https://www.knihydobrovsky.cz/kniha/agility-prvni-krucky-32531'],",
+  "n": 1
+ },
+ {
+  "t": "Agility – Pracovní sešit",
+  "file": "i_more.js",
+  "line": 225,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Agility – Pracovní sešit','Karina Divišová, Martina Podešťová: 90 tréninkových sekvencí','https://www.knihydobrovsky.cz/kniha/agility-pracovni-sesit-22151']",
+  "n": 1
+ },
+ {
+  "t": "Karina Divišová, Martina Podešťová: 90 tréninkových sekvencí",
+  "file": "i_more.js",
+  "line": 225,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "['Agility – Pracovní sešit','Karina Divišová, Martina Podešťová: 90 tréninkových sekvencí','https://www.knihydobrovsky.cz/kniha/agility-pracovni-sesit-22151']",
+  "n": 1
+ },
+ {
+  "t": "Knihy",
+  "file": "i_more.js",
+  "line": 228,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return '<h2>Knihy</h2><div class=\"coach-list\">'+BOOKS.map(function(b){return '<a class=\"coach\" href=\"'+b[2]+'\" target=\"_blank\" rel=\"noopener\"><span class=\"cc\">CZ</span><span><b>'+esc(b[0])+'</b><span>'+esc(b[1])+'</span></span>'+IC.ext+'</a",
+  "n": 1
+ },
+ {
+  "t": "＋ Přidat psa",
+  "file": "i_more.js",
+  "line": 234,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h='<div class=\"list\">'+(DOGS.length?DOGS.map(function(x){return '<div class=\"item'+(d&&d.id===x.id?' cur':'')+'\"><div><b>'+esc(x.name)+'</b><span>'+SIZES[x.size].l+' · '+x.cls+(dogAgeM(x)!=null?' · '+ageTxt(dogAgeM(x)):'')+'</span></div><di",
+  "n": 2
+ },
+ {
+  "t": "Přidej psa. Aplikace pak ukáže výšky překážek pro jeho kategorii a běhy i statistiky povede zvlášť pro každého psa.",
+  "file": "i_more.js",
+  "line": 234,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h='<div class=\"list\">'+(DOGS.length?DOGS.map(function(x){return '<div class=\"item'+(d&&d.id===x.id?' cur':'')+'\"><div><b>'+esc(x.name)+'</b><span>'+SIZES[x.size].l+' · '+x.cls+(dogAgeM(x)!=null?' · '+ageTxt(dogAgeM(x)):'')+'</span></div><di",
+  "n": 1
+ },
+ {
+  "t": "Výšky překážek pro {esc(d.name)}",
+  "file": "i_more.js",
+  "line": 238,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (kategorie L)')+'</h2><table class=\"table\"><tr><th>Překážka</th><th>Podle FCI</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (střed od ",
+  "n": 1
+ },
+ {
+  "t": "Překážka",
+  "file": "i_more.js",
+  "line": 238,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (kategorie L)')+'</h2><table class=\"table\"><tr><th>Překážka</th><th>Podle FCI</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (střed od ",
+  "n": 2
+ },
+ {
+  "t": "Podle FCI",
+  "file": "i_more.js",
+  "line": 238,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (kategorie L)')+'</h2><table class=\"table\"><tr><th>Překážka</th><th>Podle FCI</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (střed od ",
+  "n": 2
+ },
+ {
+  "t": "Skok",
+  "file": "i_more.js",
+  "line": 238,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (kategorie L)')+'</h2><table class=\"table\"><tr><th>Překážka</th><th>Podle FCI</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (střed od ",
+  "n": 2
+ },
+ {
+  "t": "Zeď",
+  "file": "i_more.js",
+  "line": 238,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (kategorie L)')+'</h2><table class=\"table\"><tr><th>Překážka</th><th>Podle FCI</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (střed od ",
+  "n": 2
+ },
+ {
+  "t": "Kruh (střed od země)",
+  "file": "i_more.js",
+  "line": 238,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (kategorie L)')+'</h2><table class=\"table\"><tr><th>Překážka</th><th>Podle FCI</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (střed od ",
+  "n": 2
+ },
+ {
+  "t": "Skok daleký",
+  "file": "i_more.js",
+  "line": 238,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (kategorie L)')+'</h2><table class=\"table\"><tr><th>Překážka</th><th>Podle FCI</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (střed od ",
+  "n": 2
+ },
+ {
+  "t": "Áčko, kladina, houpačka",
+  "file": "i_more.js",
+  "line": 238,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (kategorie L)')+'</h2><table class=\"table\"><tr><th>Překážka</th><th>Podle FCI</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (střed od ",
+  "n": 2
+ },
+ {
+  "t": "stejné pro všechny: 170 / 120–130 / 60 cm",
+  "file": "i_more.js",
+  "line": 238,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (kategorie L)')+'</h2><table class=\"table\"><tr><th>Překážka</th><th>Podle FCI</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (střed od ",
+  "n": 2
+ },
+ {
+  "t": "Výšky překážek (kategorie L)",
+  "file": "i_more.js",
+  "line": 238,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (kategorie L)')+'</h2><table class=\"table\"><tr><th>Překážka</th><th>Podle FCI</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (střed od ",
+  "n": 1
+ },
+ {
+  "t": "Plánky od rozhodčích a trenérů. Parkur podle plánku přeneseš v Plánu přes Plánek z obrázku (překážky se rozpoznají samy) a při ukládání vyplníš, kdo ho stavěl.",
+  "file": "i_more.js",
+  "line": 242,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "else if(moreTab==='coach'){ h='<p class=\"hint\">Plánky od rozhodčích a trenérů. Parkur podle plánku přeneseš v Plánu přes Plánek z obrázku (překážky se rozpoznají samy) a při ukládání vyplníš, kdo ho stavěl.</p>'+coachHTML()+booksHTML(); }",
+  "n": 1
+ },
+ {
+  "t": "Agility trasa 1.9",
+  "file": "i_more.js",
+  "line": 246,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h='<div id=\"pwaInst\"></div><div class=\"panel\" style=\"display:flex;flex-direction:column;gap:8px\"><b>Agility trasa 1.9</b><p class=\"hint\">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do",
+  "n": 2
+ },
+ {
+  "t": "Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do oblouku), parkury trenérů, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, otočky kolem křídla a zadní strany skoků, 3D průlet, trénink paměti, videa s technikou, deník a statistiky.",
+  "file": "i_more.js",
+  "line": 246,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h='<div id=\"pwaInst\"></div><div class=\"panel\" style=\"display:flex;flex-direction:column;gap:8px\"><b>Agility trasa 1.9</b><p class=\"hint\">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do",
+  "n": 2
+ },
+ {
+  "t": "Novinky v 1.9: aplikace k instalaci do telefonu (Chrome → Instalovat aplikaci). V ní funguje výběr fotky a videa, ukládání obrázku, PDF a zálohy, plánek jde poslat přes Sdílet z galerie rovnou do čtečky, katalog parkurů i záloha v cloudu. Aktualizuje se sama.",
+  "file": "i_more.js",
+  "line": 246,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h='<div id=\"pwaInst\"></div><div class=\"panel\" style=\"display:flex;flex-direction:column;gap:8px\"><b>Agility trasa 1.9</b><p class=\"hint\">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do",
+  "n": 2
+ },
+ {
+  "t": "Novinky v 1.8: Plánek z obrázku přečte i trasu. Z čísel v kroužcích pozná pořadí, z nakreslené čáry směry skoků, vstupy do tunelů a zón, otočky kolem křídla a zadní strany. Chybějící kruh, skok daleký, dvojité břevno, zeď nebo kladinu dohledá u čísla. Nejistá místa označí otazníkem. V aplikaci pro Android jde plánek vložit i ze schránky.",
+  "file": "i_more.js",
+  "line": 246,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h='<div id=\"pwaInst\"></div><div class=\"panel\" style=\"display:flex;flex-direction:column;gap:8px\"><b>Agility trasa 1.9</b><p class=\"hint\">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do",
+  "n": 2
+ },
+ {
+  "t": "Novinky v 1.7: tlačítko Zkontrolovat nové parkury v záložce Parkury, nové parkury mají štítek Nový a tečku u záložky, přibyl parkur trenéra Euskadi Sextuple 2018 A1.",
+  "file": "i_more.js",
+  "line": 246,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h='<div id=\"pwaInst\"></div><div class=\"panel\" style=\"display:flex;flex-direction:column;gap:8px\"><b>Agility trasa 1.9</b><p class=\"hint\">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do",
+  "n": 2
+ },
+ {
+  "t": "Novinky v 1.6: nový generátor parkurů, náročnost a řazení parkurů, rozbor parkuru s vedením psovoda, odhadem času a simulací Stihnu to?, dráha podle velikosti psa, klasická cvičení a klubový parkur v generátoru, mezičasy naživo i z videa, chytrý trénink, předčítání trasy, plánek z obrázku, stavba v terénu s kompasem a sekce Začínáme pro štěňata.",
+  "file": "i_more.js",
+  "line": 246,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h='<div id=\"pwaInst\"></div><div class=\"panel\" style=\"display:flex;flex-direction:column;gap:8px\"><b>Agility trasa 1.9</b><p class=\"hint\">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do",
+  "n": 2
+ },
+ {
+  "t": "Katalog parkurů: verze {CAT.version} ze serveru, staženo {new Date(CAT.at).toLocaleD…}. V aplikaci pro Android se nové parkury stáhnou samy při spuštění nebo tlačítkem Zkontrolovat nové parkury v záložce Parkury, bez aktualizace aplikace.",
+  "file": "i_more.js",
+  "line": 246,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h='<div id=\"pwaInst\"></div><div class=\"panel\" style=\"display:flex;flex-direction:column;gap:8px\"><b>Agility trasa 1.9</b><p class=\"hint\">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do",
+  "n": 1
+ },
+ {
+  "t": "Data se ukládají v tomhle zařízení. Sdílení kódem a cloudová záloha běží přes server Supabase a fungují v aplikaci pro Android. Uložení PDF a obrázku do telefonu a podklad z fotky fungují ve webové verzi.",
+  "file": "i_more.js",
+  "line": 246,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h='<div id=\"pwaInst\"></div><div class=\"panel\" style=\"display:flex;flex-direction:column;gap:8px\"><b>Agility trasa 1.9</b><p class=\"hint\">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do",
+  "n": 2
+ },
+ {
+  "t": "Pravidla:",
+  "file": "i_more.js",
+  "line": 246,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h='<div id=\"pwaInst\"></div><div class=\"panel\" style=\"display:flex;flex-direction:column;gap:8px\"><b>Agility trasa 1.9</b><p class=\"hint\">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do",
+  "n": 2
+ },
+ {
+  "t": "Řád agility FCI a ČR (od 2023)",
+  "file": "i_more.js",
+  "line": 246,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h='<div id=\"pwaInst\"></div><div class=\"panel\" style=\"display:flex;flex-direction:column;gap:8px\"><b>Agility trasa 1.9</b><p class=\"hint\">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do",
+  "n": 2
+ },
+ {
+  "t": "Katalog parkurů: vestavěný. V aplikaci pro Android se nové parkury stáhnou samy při spuštění nebo tlačítkem Zkontrolovat nové parkury v záložce Parkury, bez aktualizace aplikace.",
+  "file": "i_more.js",
+  "line": 246,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h='<div id=\"pwaInst\"></div><div class=\"panel\" style=\"display:flex;flex-direction:column;gap:8px\"><b>Agility trasa 1.9</b><p class=\"hint\">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do",
+  "n": 1
+ },
+ {
+  "t": "statDogs",
+  "file": "i_more.js",
+  "line": 256,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "if(moreTab==='stats'){dogChips('statDogs'); bindChart();}",
+  "n": 1
+ },
+ {
+  "t": "diaryDogs",
+  "file": "i_more.js",
+  "line": 257,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "if(moreTab==='diary') dogChips('diaryDogs');",
+  "n": 1
+ },
+ {
+  "t": "Smazat psa {x2.name}?",
+  "file": "i_more.js",
+  "line": 268,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "else if(g('data-ddel')){var id=g('data-ddel'), x2=DOGS.filter(function(q){return q.id===id;})[0]; if(x2) ask('Smazat psa '+x2.name+'?','Jeho běhy zůstanou uložené u parkurů.','Smazat',function(){DOGS=DOGS.filter(function(q){return q.id!==id",
+  "n": 1
+ },
+ {
+  "t": "Jeho běhy zůstanou uložené u parkurů.",
+  "file": "i_more.js",
+  "line": 268,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "else if(g('data-ddel')){var id=g('data-ddel'), x2=DOGS.filter(function(q){return q.id===id;})[0]; if(x2) ask('Smazat psa '+x2.name+'?','Jeho běhy zůstanou uložené u parkurů.','Smazat',function(){DOGS=DOGS.filter(function(q){return q.id!==id",
+  "n": 1
+ },
+ {
+  "t": "Smazat",
+  "file": "i_more.js",
+  "line": 268,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "else if(g('data-ddel')){var id=g('data-ddel'), x2=DOGS.filter(function(q){return q.id===id;})[0]; if(x2) ask('Smazat psa '+x2.name+'?','Jeho běhy zůstanou uložené u parkurů.','Smazat',function(){DOGS=DOGS.filter(function(q){return q.id!==id",
+  "n": 2
+ },
+ {
+  "t": "Smazat záznam?",
+  "file": "i_more.js",
+  "line": 270,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "else if(g('data-dydel')){var did=g('data-dydel'); ask('Smazat záznam?','Záznam zmizí z deníku.','Smazat',function(){lsSet(DIARYK,diary().filter(function(q){return q.id!==did;})); moreRender();},true);}",
+  "n": 1
+ },
+ {
+  "t": "Záznam zmizí z deníku.",
+  "file": "i_more.js",
+  "line": 270,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "else if(g('data-dydel')){var did=g('data-dydel'); ask('Smazat záznam?','Záznam zmizí z deníku.','Smazat',function(){lsSet(DIARYK,diary().filter(function(q){return q.id!==did;})); moreRender();},true);}",
+  "n": 1
+ },
+ {
+  "t": "Nejdřív vyznač trasu v režimu Trasa.",
+  "file": "j_ana.js",
+  "line": 8,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(S.route.length<2){toast('Nejdřív vyznač trasu v režimu Trasa.'); return;}",
+  "n": 2
+ },
+ {
+  "t": "XS",
+  "file": "j_ana.js",
+  "line": 11,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var dg=curDog(), sz=['XS','S','M','I','L'];",
+  "n": 1
+ },
+ {
+  "t": "S",
+  "file": "j_ana.js",
+  "line": 11,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var dg=curDog(), sz=['XS','S','M','I','L'];",
+  "n": 1
+ },
+ {
+  "t": "M",
+  "file": "j_ana.js",
+  "line": 11,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var dg=curDog(), sz=['XS','S','M','I','L'];",
+  "n": 1
+ },
+ {
+  "t": "I",
+  "file": "j_ana.js",
+  "line": 11,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var dg=curDog(), sz=['XS','S','M','I','L'];",
+  "n": 1
+ },
+ {
+  "t": "Rozbor parkuru",
+  "file": "j_ana.js",
+  "line": 12,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Rozbor parkuru</h3>'+",
+  "n": 8
+ },
+ {
+  "t": "z 10 · {diffLabel(d.v)}",
+  "file": "j_ana.js",
+  "line": 12,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Rozbor parkuru</h3>'+",
+  "n": 8
+ },
+ {
+  "t": "Nejvíc přidává: {esc(d.why.join(', '))}.",
+  "file": "j_ana.js",
+  "line": 12,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Rozbor parkuru</h3>'+",
+  "n": 4
+ },
+ {
+  "t": "Plynulost dráhy",
+  "file": "j_ana.js",
+  "line": 12,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Rozbor parkuru</h3>'+",
+  "n": 8
+ },
+ {
+  "t": "Nástraha: překážka, na kterou pes míří v přímém směru, zatímco trasa pokračuje obratem jinam.",
+  "file": "j_ana.js",
+  "line": 12,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Rozbor parkuru</h3>'+",
+  "n": 8
+ },
+ {
+  "t": "Dráha v plánu",
+  "file": "j_ana.js",
+  "line": 12,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Rozbor parkuru</h3>'+",
+  "n": 8
+ },
+ {
+  "t": "Ideální",
+  "file": "j_ana.js",
+  "line": 12,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Rozbor parkuru</h3>'+",
+  "n": 8
+ },
+ {
+  "t": "Malý pes zatáčí těsněji a kolem křídla projde blíž, velký v širších obloucích. Tvůj pes {esc(dg.name)} je {dg.size}. Délka trati, SČP a kontrola FCI se počítají vždy z ideální čáry.",
+  "file": "j_ana.js",
+  "line": 12,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Rozbor parkuru</h3>'+",
+  "n": 4
+ },
+ {
+  "t": "Zavřít",
+  "file": "j_ana.js",
+  "line": 12,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Rozbor parkuru</h3>'+",
+  "n": 28
+ },
+ {
+  "t": "Malý pes zatáčí těsněji a kolem křídla projde blíž, velký v širších obloucích. Délka trati, SČP a kontrola FCI se počítají vždy z ideální čáry.",
+  "file": "j_ana.js",
+  "line": 12,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Rozbor parkuru</h3>'+",
+  "n": 4
+ },
+ {
+  "t": "Parkur bez výrazných záludností.",
+  "file": "j_ana.js",
+  "line": 12,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Rozbor parkuru</h3>'+",
+  "n": 4
+ },
+ {
+  "t": "Vedení psovoda",
+  "file": "j_ana.js",
+  "line": 111,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h4>Vedení psovoda</h4><p class=\"hint\">Návrh strany psa: u ostrých obratů je psovod uvnitř, mírné zatáčky se dají vést i zvenku. Změny strany: '+hsd.cr.length+' (FCI chce aspoň 2).</p>';",
+  "n": 1
+ },
+ {
+  "t": "Návrh strany psa: u ostrých obratů je psovod uvnitř, mírné zatáčky se dají vést i zvenku. Změny strany: {hsd.cr.length} (FCI chce aspoň 2).",
+  "file": "j_ana.js",
+  "line": 111,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h4>Vedení psovoda</h4><p class=\"hint\">Návrh strany psa: u ostrých obratů je psovod uvnitř, mírné zatáčky se dají vést i zvenku. Změny strany: '+hsd.cr.length+' (FCI chce aspoň 2).</p>';",
+  "n": 1
+ },
+ {
+  "t": "Celý parkur se dá vést z jedné strany.",
+  "file": "j_ana.js",
+  "line": 113,
+  "kind": "lit",
+  "conf": "ui",
+  "src": ":'<p class=\"hint\">Celý parkur se dá vést z jedné strany.</p>';",
+  "n": 1
+ },
+ {
+  "t": "Nastavit stranu psa v Dráze psovoda",
+  "file": "j_ana.js",
+  "line": 114,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "return h+'<div class=\"row\"><button class=\"btn\" data-a=\"sides\">Nastavit stranu psa v Dráze psovoda</button></div>';",
+  "n": 1
+ },
+ {
+  "t": "Odhad času",
+  "file": "j_ana.js",
+  "line": 119,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h4>Odhad času</h4><ul class=\"kv\"><li><span>'+(d?esc(d.name)+' ('+sz+')':'Pes velikosti L')+'</span><b>'+fmt(est)+' s</b><small>SČP '+(m.sct||'–')+' s</small></li></ul>'+",
+  "n": 12
+ },
+ {
+  "t": "SČP {m.sct} s",
+  "file": "j_ana.js",
+  "line": 119,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h4>Odhad času</h4><ul class=\"kv\"><li><span>'+(d?esc(d.name)+' ('+sz+')':'Pes velikosti L')+'</span><b>'+fmt(est)+' s</b><small>SČP '+(m.sct||'–')+' s</small></li></ul>'+",
+  "n": 8
+ },
+ {
+  "t": "Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Upraveno podle {cal.n} zapsaného běhu psa. Odhad je nad SČP o {fmt(est-m.sct)} s.",
+  "file": "j_ana.js",
+  "line": 119,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h4>Odhad času</h4><ul class=\"kv\"><li><span>'+(d?esc(d.name)+' ('+sz+')':'Pes velikosti L')+'</span><b>'+fmt(est)+' s</b><small>SČP '+(m.sct||'–')+' s</small></li></ul>'+",
+  "n": 2
+ },
+ {
+  "t": "Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Upraveno podle {cal.n} zapsaného běhu psa.",
+  "file": "j_ana.js",
+  "line": 119,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h4>Odhad času</h4><ul class=\"kv\"><li><span>'+(d?esc(d.name)+' ('+sz+')':'Pes velikosti L')+'</span><b>'+fmt(est)+' s</b><small>SČP '+(m.sct||'–')+' s</small></li></ul>'+",
+  "n": 2
+ },
+ {
+  "t": "Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Upraveno podle {cal.n} zapsaných běhů psa. Odhad je nad SČP o {fmt(est-m.sct)} s.",
+  "file": "j_ana.js",
+  "line": 119,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h4>Odhad času</h4><ul class=\"kv\"><li><span>'+(d?esc(d.name)+' ('+sz+')':'Pes velikosti L')+'</span><b>'+fmt(est)+' s</b><small>SČP '+(m.sct||'–')+' s</small></li></ul>'+",
+  "n": 2
+ },
+ {
+  "t": "Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Upraveno podle {cal.n} zapsaných běhů psa.",
+  "file": "j_ana.js",
+  "line": 119,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h4>Odhad času</h4><ul class=\"kv\"><li><span>'+(d?esc(d.name)+' ('+sz+')':'Pes velikosti L')+'</span><b>'+fmt(est)+' s</b><small>SČP '+(m.sct||'–')+' s</small></li></ul>'+",
+  "n": 2
+ },
+ {
+  "t": "Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Až zapíšeš běhy psa, odhad se podle nich upraví. Odhad je nad SČP o {fmt(est-m.sct)} s.",
+  "file": "j_ana.js",
+  "line": 119,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h4>Odhad času</h4><ul class=\"kv\"><li><span>'+(d?esc(d.name)+' ('+sz+')':'Pes velikosti L')+'</span><b>'+fmt(est)+' s</b><small>SČP '+(m.sct||'–')+' s</small></li></ul>'+",
+  "n": 1
+ },
+ {
+  "t": "Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Až zapíšeš běhy psa, odhad se podle nich upraví.",
+  "file": "j_ana.js",
+  "line": 119,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h4>Odhad času</h4><ul class=\"kv\"><li><span>'+(d?esc(d.name)+' ('+sz+')':'Pes velikosti L')+'</span><b>'+fmt(est)+' s</b><small>SČP '+(m.sct||'–')+' s</small></li></ul>'+",
+  "n": 1
+ },
+ {
+  "t": "Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Přidej psa ve Více › Psi a odhad bude pro něj. Odhad je nad SČP o {fmt(est-m.sct)} s.",
+  "file": "j_ana.js",
+  "line": 119,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h4>Odhad času</h4><ul class=\"kv\"><li><span>'+(d?esc(d.name)+' ('+sz+')':'Pes velikosti L')+'</span><b>'+fmt(est)+' s</b><small>SČP '+(m.sct||'–')+' s</small></li></ul>'+",
+  "n": 1
+ },
+ {
+  "t": "Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Přidej psa ve Více › Psi a odhad bude pro něj.",
+  "file": "j_ana.js",
+  "line": 119,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h4>Odhad času</h4><ul class=\"kv\"><li><span>'+(d?esc(d.name)+' ('+sz+')':'Pes velikosti L')+'</span><b>'+fmt(est)+' s</b><small>SČP '+(m.sct||'–')+' s</small></li></ul>'+",
+  "n": 1
+ },
+ {
+  "t": "SČP – s",
+  "file": "j_ana.js",
+  "line": 119,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h4>Odhad času</h4><ul class=\"kv\"><li><span>'+(d?esc(d.name)+' ('+sz+')':'Pes velikosti L')+'</span><b>'+fmt(est)+' s</b><small>SČP '+(m.sct||'–')+' s</small></li></ul>'+",
+  "n": 4
+ },
+ {
+  "t": "Přední křížení u {i}{1}: doběhneš o {fmt(late)} s později, než je potřeba. Zkus zadní křížení, nebo psa pošli dopředu a křížení udělej dřív.",
+  "file": "j_ana.js",
+  "line": 127,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "hsd.cr.forEach(function(x){ if(x.t!=='front') return; var i=x.i, late=hd.Ta[i]-(simT.T[i]-.5); if(late>0) probs.push({s:late+1,t:'Přední křížení u '+(i+1)+': doběhneš o '+fmt(late)+' s později, než je potřeba. Zkus zadní křížení, nebo psa p",
+  "n": 1
+ },
+ {
+  "t": "U překážky {i}{1} jsi o {fmt(hd.lag[i])} s za psem. Tady musí pes pracovat na dálku, nebo si zkrať dráhu.",
+  "file": "j_ana.js",
+  "line": 128,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "for(var i=2;i<c.route.length;i++) if(hd.lag[i]>1.5) probs.push({s:hd.lag[i],t:'U překážky '+(i+1)+' jsi o '+fmt(hd.lag[i])+' s za psem. Tady musí pes pracovat na dálku, nebo si zkrať dráhu.'});",
+  "n": 1
+ },
+ {
+  "t": "Stihnu to?",
+  "file": "j_ana.js",
+  "line": 130,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h4>Stihnu to?</h4><div class=\"seg wide\" id=\"hsSeg\">'+[[3,'Chůze'],[4.5,'Běh'],[6,'Sprint']].map(function(x){return '<button data-hs=\"'+x[0]+'\" class=\"'+(hs===x[0]?'on':'')+'\">'+x[1]+' '+fmt(x[0]).replace(',0','')+' m/s</button>';}).joi",
+  "n": 6
+ },
+ {
+  "t": "A další místa: {probs.length-4}.",
+  "file": "j_ana.js",
+  "line": 130,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h4>Stihnu to?</h4><div class=\"seg wide\" id=\"hsSeg\">'+[[3,'Chůze'],[4.5,'Běh'],[6,'Sprint']].map(function(x){return '<button data-hs=\"'+x[0]+'\" class=\"'+(hs===x[0]?'on':'')+'\">'+x[1]+' '+fmt(x[0]).replace(',0','')+' m/s</button>';}).joi",
+  "n": 2
+ },
+ {
+  "t": "Tvoje dráha {fmt(hd.dist)} m (podle nakreslené Dráhy psovoda), pes uběhne {fmt(sim.g.total)} m. Na startu počítá s odchodem k druhé překážce.",
+  "file": "j_ana.js",
+  "line": 130,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h4>Stihnu to?</h4><div class=\"seg wide\" id=\"hsSeg\">'+[[3,'Chůze'],[4.5,'Běh'],[6,'Sprint']].map(function(x){return '<button data-hs=\"'+x[0]+'\" class=\"'+(hs===x[0]?'on':'')+'\">'+x[1]+' '+fmt(x[0]).replace(',0','')+' m/s</button>';}).joi",
+  "n": 3
+ },
+ {
+  "t": "Přehrát psa a psovoda",
+  "file": "j_ana.js",
+  "line": 130,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h4>Stihnu to?</h4><div class=\"seg wide\" id=\"hsSeg\">'+[[3,'Chůze'],[4.5,'Běh'],[6,'Sprint']].map(function(x){return '<button data-hs=\"'+x[0]+'\" class=\"'+(hs===x[0]?'on':'')+'\">'+x[1]+' '+fmt(x[0]).replace(',0','')+' m/s</button>';}).joi",
+  "n": 6
+ },
+ {
+  "t": "Tvoje dráha {fmt(hd.dist)} m (odhad: 2 m od psa na straně návrhu), pes uběhne {fmt(sim.g.total)} m. Na startu počítá s odchodem k druhé překážce.",
+  "file": "j_ana.js",
+  "line": 130,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h4>Stihnu to?</h4><div class=\"seg wide\" id=\"hsSeg\">'+[[3,'Chůze'],[4.5,'Běh'],[6,'Sprint']].map(function(x){return '<button data-hs=\"'+x[0]+'\" class=\"'+(hs===x[0]?'on':'')+'\">'+x[1]+' '+fmt(x[0]).replace(',0','')+' m/s</button>';}).joi",
+  "n": 3
+ },
+ {
+  "t": "Při téhle rychlosti stihneš být všude včas.",
+  "file": "j_ana.js",
+  "line": 130,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<h4>Stihnu to?</h4><div class=\"seg wide\" id=\"hsSeg\">'+[[3,'Chůze'],[4.5,'Běh'],[6,'Sprint']].map(function(x){return '<button data-hs=\"'+x[0]+'\" class=\"'+(hs===x[0]?'on':'')+'\">'+x[1]+' '+fmt(x[0]).replace(',0','')+' m/s</button>';}).joi",
+  "n": 2
+ },
+ {
+  "t": "Strana psa nastavena podle návrhu",
+  "file": "j_ana.js",
+  "line": 139,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "ANA_ACT.sides=function(){ if(!ANA.hsd) return; S.sides=ANA.hsd.sd.slice(); touch(); closeSheet(); setPanel('side'); render(); toast('Strana psa nastavena podle návrhu'); };",
+  "n": 1
+ },
+ {
+  "t": "simG",
+  "file": "j_ana.js",
+  "line": 164,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var g=document.createElementNS(NS,'g'); g.setAttribute('id','simG'); $('field').appendChild(g);",
+  "n": 1
+ },
+ {
+  "t": "Hnědý je pes, modrý psovod. Klepnutím na plochu zastavíš.",
+  "file": "j_ana.js",
+  "line": 178,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "toast('Hnědý je pes, modrý psovod. Klepnutím na plochu zastavíš.');",
+  "n": 1
+ },
+ {
+  "t": "Nejdřív načti nebo postav parkur s trasou.",
+  "file": "l_split.js",
+  "line": 5,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(S.route.length<2){toast('Nejdřív načti nebo postav parkur s trasou.'); return;}",
+  "n": 1
+ },
+ {
+  "t": "Video z telefonu otevřeš ve webové verzi aplikace. V aplikaci pro Android použij mezičasy naživo.",
+  "file": "l_split.js",
+  "line": 6,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(kind==='video'&&APK_LITE){toast('Video z telefonu otevřeš ve webové verzi aplikace. V aplikaci pro Android použij mezičasy naživo.'); return;}",
+  "n": 1
+ },
+ {
+  "t": "ovSp",
+  "file": "l_split.js",
+  "line": 9,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var ov=document.createElement('div'); ov.className='ovsp'; ov.id='ovSp';",
+  "n": 1
+ },
+ {
+  "t": "Mezičasy z videa",
+  "file": "l_split.js",
+  "line": 10,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "ov.innerHTML='<div class=\"ovsp-top\"><b>'+(kind==='video'?'Mezičasy z videa':'Mezičasy naživo')+'</b><span class=\"grow\"></span><button class=\"btn\" id=\"spClose\">Zavřít</button></div>'+",
+  "n": 2
+ },
+ {
+  "t": "Vyber video běhu z telefonu. Zůstane jen v telefonu, nikam se nenahrává.",
+  "file": "l_split.js",
+  "line": 10,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "ov.innerHTML='<div class=\"ovsp-top\"><b>'+(kind==='video'?'Mezičasy z videa':'Mezičasy naživo')+'</b><span class=\"grow\"></span><button class=\"btn\" id=\"spClose\">Zavřít</button></div>'+",
+  "n": 2
+ },
+ {
+  "t": "−1 s",
+  "file": "l_split.js",
+  "line": 10,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "ov.innerHTML='<div class=\"ovsp-top\"><b>'+(kind==='video'?'Mezičasy z videa':'Mezičasy naživo')+'</b><span class=\"grow\"></span><button class=\"btn\" id=\"spClose\">Zavřít</button></div>'+",
+  "n": 2
+ },
+ {
+  "t": "Přehrát",
+  "file": "l_split.js",
+  "line": 10,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "ov.innerHTML='<div class=\"ovsp-top\"><b>'+(kind==='video'?'Mezičasy z videa':'Mezičasy naživo')+'</b><span class=\"grow\"></span><button class=\"btn\" id=\"spClose\">Zavřít</button></div>'+",
+  "n": 5
+ },
+ {
+  "t": "Zpět",
+  "file": "l_split.js",
+  "line": 10,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "ov.innerHTML='<div class=\"ovsp-top\"><b>'+(kind==='video'?'Mezičasy z videa':'Mezičasy naživo')+'</b><span class=\"grow\"></span><button class=\"btn\" id=\"spClose\">Zavřít</button></div>'+",
+  "n": 4
+ },
+ {
+  "t": "Mezičasy naživo",
+  "file": "l_split.js",
+  "line": 10,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "ov.innerHTML='<div class=\"ovsp-top\"><b>'+(kind==='video'?'Mezičasy z videa':'Mezičasy naživo')+'</b><span class=\"grow\"></span><button class=\"btn\" id=\"spClose\">Zavřít</button></div>'+",
+  "n": 2
+ },
+ {
+  "t": "Nejdřív vyber video.",
+  "file": "l_split.js",
+  "line": 36,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var t=splitNow(); if(t==null){ toast('Nejdřív vyber video.'); return; }",
+  "n": 1
+ },
+ {
+  "t": "Tahle značka je dřív než předchozí. Posuň video dopředu.",
+  "file": "l_split.js",
+  "line": 37,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(i>0&&t<=SPL.marks[i-1]){ toast('Tahle značka je dřív než předchozí. Posuň video dopředu.'); return; }",
+  "n": 1
+ },
+ {
+  "t": "Start (skok 1)",
+  "file": "l_split.js",
+  "line": 43,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "b.textContent=i===0?'Start (skok 1)':i<SPL.n?SPL.names[i]:'Hotovo'; b.disabled=i>=SPL.n;",
+  "n": 1
+ },
+ {
+  "t": "Hotovo",
+  "file": "l_split.js",
+  "line": 43,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "b.textContent=i===0?'Start (skok 1)':i<SPL.n?SPL.names[i]:'Hotovo'; b.disabled=i>=SPL.n;",
+  "n": 1
+ },
+ {
+  "t": "Klepni, když pes proběhne startem (první skok).",
+  "file": "l_split.js",
+  "line": 44,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "$('spHint').textContent=i===0?'Klepni, když pes proběhne startem (první skok).':i<SPL.n?'Klepni, když pes dokončí překážku '+(i+1)+(i===SPL.n-1?' (cíl)':'')+'.':'Všechny mezičasy zapsané.';",
+  "n": 1
+ },
+ {
+  "t": "Klepni, když pes dokončí překážku {i}{1} (cíl).",
+  "file": "l_split.js",
+  "line": 44,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "$('spHint').textContent=i===0?'Klepni, když pes proběhne startem (první skok).':i<SPL.n?'Klepni, když pes dokončí překážku '+(i+1)+(i===SPL.n-1?' (cíl)':'')+'.':'Všechny mezičasy zapsané.';",
+  "n": 1
+ },
+ {
+  "t": "Klepni, když pes dokončí překážku {i}{1}.",
+  "file": "l_split.js",
+  "line": 44,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "$('spHint').textContent=i===0?'Klepni, když pes proběhne startem (první skok).':i<SPL.n?'Klepni, když pes dokončí překážku '+(i+1)+(i===SPL.n-1?' (cíl)':'')+'.':'Všechny mezičasy zapsané.';",
+  "n": 1
+ },
+ {
+  "t": "Všechny mezičasy zapsané.",
+  "file": "l_split.js",
+  "line": 44,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "$('spHint').textContent=i===0?'Klepni, když pes proběhne startem (první skok).':i<SPL.n?'Klepni, když pes dokončí překážku '+(i+1)+(i===SPL.n-1?' (cíl)':'')+'.':'Všechny mezičasy zapsané.';",
+  "n": 1
+ },
+ {
+  "t": "Mezičasy",
+  "file": "l_split.js",
+  "line": 57,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Mezičasy</h3><p>Celkem <b>'+fmt2(sp[sp.length-1])+' s</b>. Úseky se porovnávají s modelem psa'+(dog?' '+esc(dog.name)+' ('+dog.size+')':'')+' přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu",
+  "n": 4
+ },
+ {
+  "t": "Celkem",
+  "file": "l_split.js",
+  "line": 57,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Mezičasy</h3><p>Celkem <b>'+fmt2(sp[sp.length-1])+' s</b>. Úseky se porovnávají s modelem psa'+(dog?' '+esc(dog.name)+' ('+dog.size+')':'')+' přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu",
+  "n": 4
+ },
+ {
+  "t": ". Úseky se porovnávají s modelem psa {esc(dog.name)} ({dog.size}) přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu.",
+  "file": "l_split.js",
+  "line": 57,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Mezičasy</h3><p>Celkem <b>'+fmt2(sp[sp.length-1])+' s</b>. Úseky se porovnávají s modelem psa'+(dog?' '+esc(dog.name)+' ('+dog.size+')':'')+' přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu",
+  "n": 2
+ },
+ {
+  "t": "Úsek",
+  "file": "l_split.js",
+  "line": 57,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Mezičasy</h3><p>Celkem <b>'+fmt2(sp[sp.length-1])+' s</b>. Úseky se porovnávají s modelem psa'+(dog?' '+esc(dog.name)+' ('+dog.size+')':'')+' přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu",
+  "n": 4
+ },
+ {
+  "t": "Čas",
+  "file": "l_split.js",
+  "line": 57,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Mezičasy</h3><p>Celkem <b>'+fmt2(sp[sp.length-1])+' s</b>. Úseky se porovnávají s modelem psa'+(dog?' '+esc(dog.name)+' ('+dog.size+')':'')+' přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu",
+  "n": 4
+ },
+ {
+  "t": "Model",
+  "file": "l_split.js",
+  "line": 57,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Mezičasy</h3><p>Celkem <b>'+fmt2(sp[sp.length-1])+' s</b>. Úseky se porovnávají s modelem psa'+(dog?' '+esc(dog.name)+' ('+dog.size+')':'')+' přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu",
+  "n": 4
+ },
+ {
+  "t": "Rozdíl",
+  "file": "l_split.js",
+  "line": 57,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Mezičasy</h3><p>Celkem <b>'+fmt2(sp[sp.length-1])+' s</b>. Úseky se porovnávají s modelem psa'+(dog?' '+esc(dog.name)+' ('+dog.size+')':'')+' přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu",
+  "n": 4
+ },
+ {
+  "t": "Použít k běhu",
+  "file": "l_split.js",
+  "line": 57,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Mezičasy</h3><p>Celkem <b>'+fmt2(sp[sp.length-1])+' s</b>. Úseky se porovnávají s modelem psa'+(dog?' '+esc(dog.name)+' ('+dog.size+')':'')+' přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu",
+  "n": 4
+ },
+ {
+  "t": "Běh je vyrovnaný, žádný úsek výrazně neztrácí.",
+  "file": "l_split.js",
+  "line": 57,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Mezičasy</h3><p>Celkem <b>'+fmt2(sp[sp.length-1])+' s</b>. Úseky se porovnávají s modelem psa'+(dog?' '+esc(dog.name)+' ('+dog.size+')':'')+' přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu",
+  "n": 2
+ },
+ {
+  "t": ". Úseky se porovnávají s modelem psa přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu.",
+  "file": "l_split.js",
+  "line": 57,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var h='<h3>Mezičasy</h3><p>Celkem <b>'+fmt2(sp[sp.length-1])+' s</b>. Úseky se porovnávají s modelem psa'+(dog?' '+esc(dog.name)+' ('+dog.size+')':'')+' přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu",
+  "n": 2
+ },
+ {
+  "t": "Čas a mezičasy se uloží s během",
+  "file": "l_split.js",
+  "line": 63,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(a==='use'){ RUN.sp=keep; show('run'); $('manT').value=fmt2(keep[keep.length-1]); resultRender(); toast('Čas a mezičasy se uloží s během'); } });",
+  "n": 1
+ },
+ {
+  "t": "Slalom",
+  "file": "l_split.js",
+  "line": 66,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var WEAK={weave:['Slalom','weave','weave'],contact:['Zóny','contacts',null],tunnel:['Tunely','tunnel','disc'],wrap:['Otočky kolem křídla','wraps','box'],back:['Zadní strany','backs','back'],sharp:['Ostré obraty a hady','side','ser'],flow:['",
+  "n": 1
+ },
+ {
+  "t": "Zóny",
+  "file": "l_split.js",
+  "line": 66,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var WEAK={weave:['Slalom','weave','weave'],contact:['Zóny','contacts',null],tunnel:['Tunely','tunnel','disc'],wrap:['Otočky kolem křídla','wraps','box'],back:['Zadní strany','backs','back'],sharp:['Ostré obraty a hady','side','ser'],flow:['",
+  "n": 1
+ },
+ {
+  "t": "Tunely",
+  "file": "l_split.js",
+  "line": 66,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var WEAK={weave:['Slalom','weave','weave'],contact:['Zóny','contacts',null],tunnel:['Tunely','tunnel','disc'],wrap:['Otočky kolem křídla','wraps','box'],back:['Zadní strany','backs','back'],sharp:['Ostré obraty a hady','side','ser'],flow:['",
+  "n": 1
+ },
+ {
+  "t": "Otočky kolem křídla",
+  "file": "l_split.js",
+  "line": 66,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var WEAK={weave:['Slalom','weave','weave'],contact:['Zóny','contacts',null],tunnel:['Tunely','tunnel','disc'],wrap:['Otočky kolem křídla','wraps','box'],back:['Zadní strany','backs','back'],sharp:['Ostré obraty a hady','side','ser'],flow:['",
+  "n": 1
+ },
+ {
+  "t": "Zadní strany",
+  "file": "l_split.js",
+  "line": 66,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var WEAK={weave:['Slalom','weave','weave'],contact:['Zóny','contacts',null],tunnel:['Tunely','tunnel','disc'],wrap:['Otočky kolem křídla','wraps','box'],back:['Zadní strany','backs','back'],sharp:['Ostré obraty a hady','side','ser'],flow:['",
+  "n": 1
+ },
+ {
+  "t": "Ostré obraty a hady",
+  "file": "l_split.js",
+  "line": 66,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var WEAK={weave:['Slalom','weave','weave'],contact:['Zóny','contacts',null],tunnel:['Tunely','tunnel','disc'],wrap:['Otočky kolem křídla','wraps','box'],back:['Zadní strany','backs','back'],sharp:['Ostré obraty a hady','side','ser'],flow:['",
+  "n": 1
+ },
+ {
+  "t": "Rychlé linie",
+  "file": "l_split.js",
+  "line": 66,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var WEAK={weave:['Slalom','weave','weave'],contact:['Zóny','contacts',null],tunnel:['Tunely','tunnel','disc'],wrap:['Otočky kolem křídla','wraps','box'],back:['Zadní strany','backs','back'],sharp:['Ostré obraty a hady','side','ser'],flow:['",
+  "n": 1
+ },
+ {
+  "t": "Chytrý trénink",
+  "file": "l_split.js",
+  "line": 86,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var d=curDog(), w=weakSpots(d), h='<h2>Chytrý trénink</h2>';",
+  "n": 1
+ },
+ {
+  "t": "Změř u běhu mezičasy (záložka Běh › Mezičasy naživo nebo z videa) a aplikace ukáže, kde {esc(d.name)} ztrácí čas: slalom, zóny, otočky, obraty nebo rovné linie. Pak doporučí cvičení.",
+  "file": "l_split.js",
+  "line": 87,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "if(!w.runs) return h+'<p class=\"hint\">Změř u běhu mezičasy (záložka Běh › Mezičasy naživo nebo z videa) a aplikace ukáže, kde'+(d?' '+esc(d.name):' pes')+' ztrácí čas: slalom, zóny, otočky, obraty nebo rovné linie. Pak doporučí cvičení.</p>",
+  "n": 2
+ },
+ {
+  "t": "Průměrně {fmt(w.fpr)} chyb a odmítnutí na běh: vyplatí se kratší sekvence a přesnost před rychlostí.",
+  "file": "l_split.js",
+  "line": 87,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "if(!w.runs) return h+'<p class=\"hint\">Změř u běhu mezičasy (záložka Běh › Mezičasy naživo nebo z videa) a aplikace ukáže, kde'+(d?' '+esc(d.name):' pes')+' ztrácí čas: slalom, zóny, otočky, obraty nebo rovné linie. Pak doporučí cvičení.</p>",
+  "n": 2
+ },
+ {
+  "t": "Změř u běhu mezičasy (záložka Běh › Mezičasy naživo nebo z videa) a aplikace ukáže, kde pes ztrácí čas: slalom, zóny, otočky, obraty nebo rovné linie. Pak doporučí cvičení.",
+  "file": "l_split.js",
+  "line": 87,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "if(!w.runs) return h+'<p class=\"hint\">Změř u běhu mezičasy (záložka Běh › Mezičasy naživo nebo z videa) a aplikace ukáže, kde'+(d?' '+esc(d.name):' pes')+' ztrácí čas: slalom, zóny, otočky, obraty nebo rovné linie. Pak doporučí cvičení.</p>",
+  "n": 2
+ },
+ {
+  "t": "Podle {w.runs} běhu s mezičasy. Poměr 1,00 znamená stejně rychle jako zbytek běhu, vyšší číslo je pomalejší.",
+  "file": "l_split.js",
+  "line": 90,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<p class=\"hint\">Podle '+w.runs+' '+(w.runs===1?'běhu':'běhů')+' s mezičasy. Poměr 1,00 znamená stejně rychle jako zbytek běhu, vyšší číslo je pomalejší.</p><ul class=\"kv\">'+",
+  "n": 1
+ },
+ {
+  "t": "Podle {w.runs} běhů s mezičasy. Poměr 1,00 znamená stejně rychle jako zbytek běhu, vyšší číslo je pomalejší.",
+  "file": "l_split.js",
+  "line": 90,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+='<p class=\"hint\">Podle '+w.runs+' '+(w.runs===1?'běhu':'běhů')+' s mezičasy. Poměr 1,00 znamená stejně rychle jako zbytek běhu, vyšší číslo je pomalejší.</p><ul class=\"kv\">'+",
+  "n": 1
+ },
+ {
+  "t": "Nejvíc času ztrácíte:",
+  "file": "l_split.js",
+  "line": 92,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "h+=weak.length?'<p>Nejvíc času ztrácíte: <b>'+weak.map(function(x){return WEAK[x.k][0].toLowerCase();}).join(', ')+'</b>.</p><div class=\"row\">'+weak.map(function(x){var m=WEAK[x.k]; return '<button class=\"btn\" data-gpre=\"'+m[1]+'\">Sekvence:",
+  "n": 1
+ },
+ {
+  "t": "Žádná část běhu výrazně nezaostává. Zkus těžší parkury nebo rychlejší linie.",
+  "file": "l_split.js",
+  "line": 93,
+  "kind": "lit",
+  "conf": "ui",
+  "src": ":'<p class=\"hint\">Žádná část běhu výrazně nezaostává. Zkus těžší parkury nebo rychlejší linie.</p>';",
+  "n": 1
+ },
+ {
+  "t": "Průměrně {fmt(w.fpr)} chyb a odmítnutí na běh: vyplatí se přesnost před rychlostí.",
+  "file": "l_split.js",
+  "line": 94,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "if(w.fpr>=1) h+='<p class=\"hint\">Průměrně '+fmt(w.fpr)+' chyb a odmítnutí na běh: vyplatí se přesnost před rychlostí.</p>';",
+  "n": 1
+ },
+ {
+  "t": "do U",
+  "file": "l_split.js",
+  "line": 101,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(o.type==='tunnel'&&o.bend) parts.push(Math.abs(o.bend)>=180?'do U':'do oblouku');",
+  "n": 1
+ },
+ {
+  "t": "z druhé strany",
+  "file": "l_split.js",
+  "line": 102,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(t==='f') parts.push(o.type==='jump'?'z druhé strany':'vstup vzdálenějším koncem');",
+  "n": 1
+ },
+ {
+  "t": "vstup vzdálenějším koncem",
+  "file": "l_split.js",
+  "line": 102,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(t==='f') parts.push(o.type==='jump'?'z druhé strany':'vstup vzdálenějším koncem');",
+  "n": 1
+ },
+ {
+  "t": "cíl",
+  "file": "l_split.js",
+  "line": 104,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(i===0) parts.push('start'); if(i===S.route.length-1) parts.push('cíl');",
+  "n": 1
+ },
+ {
+  "t": "změna strany, pes vlevo",
+  "file": "l_split.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "if(hs){ var sd=S.sides[i]||(ANA.hsd&&ANA.hsd.sd[i]); if(sd&&(i===0||sd!==(S.sides[i-1]||(ANA.hsd&&ANA.hsd.sd[i-1])))) parts.push((i?'změna strany, ':'')+'pes '+(sd==='L'?'vlevo':'vpravo')); }",
+  "n": 1
+ },
+ {
+  "t": "změna strany, pes vpravo",
+  "file": "l_split.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "if(hs){ var sd=S.sides[i]||(ANA.hsd&&ANA.hsd.sd[i]); if(sd&&(i===0||sd!==(S.sides[i-1]||(ANA.hsd&&ANA.hsd.sd[i-1])))) parts.push((i?'změna strany, ':'')+'pes '+(sd==='L'?'vlevo':'vpravo')); }",
+  "n": 1
+ },
+ {
+  "t": "pes vlevo",
+  "file": "l_split.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "maybe",
+  "src": "if(hs){ var sd=S.sides[i]||(ANA.hsd&&ANA.hsd.sd[i]); if(sd&&(i===0||sd!==(S.sides[i-1]||(ANA.hsd&&ANA.hsd.sd[i-1])))) parts.push((i?'změna strany, ':'')+'pes '+(sd==='L'?'vlevo':'vpravo')); }",
+  "n": 1
+ },
+ {
+  "t": "pes vpravo",
+  "file": "l_split.js",
+  "line": 105,
+  "kind": "concat",
+  "conf": "maybe",
+  "src": "if(hs){ var sd=S.sides[i]||(ANA.hsd&&ANA.hsd.sd[i]); if(sd&&(i===0||sd!==(S.sides[i-1]||(ANA.hsd&&ANA.hsd.sd[i-1])))) parts.push((i?'změna strany, ':'')+'pes '+(sd==='L'?'vlevo':'vpravo')); }",
+  "n": 1
+ },
+ {
+  "t": "speechSynthesis",
+  "file": "l_split.js",
+  "line": 110,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance!=='function'){toast('Tohle zařízení neumí předčítat. Zkus webovou verzi v Chrome.'); return;}",
+  "n": 1
+ },
+ {
+  "t": "Tohle zařízení neumí předčítat. Zkus webovou verzi v Chrome.",
+  "file": "l_split.js",
+  "line": 110,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance!=='function'){toast('Tohle zařízení neumí předčítat. Zkus webovou verzi v Chrome.'); return;}",
+  "n": 1
+ },
+ {
+  "t": "Předčítání trasy",
+  "file": "l_split.js",
+  "line": 112,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>Předčítání trasy</h3><p>Aplikace přečte pořadí překážek, otočky a vstupy. Hodí se při prohlídce parkuru: jdi trasu a poslouchej.</p>'+",
+  "n": 12
+ },
+ {
+  "t": "Aplikace přečte pořadí překážek, otočky a vstupy. Hodí se při prohlídce parkuru: jdi trasu a poslouchej.",
+  "file": "l_split.js",
+  "line": 112,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>Předčítání trasy</h3><p>Aplikace přečte pořadí překážek, otočky a vstupy. Hodí se při prohlídce parkuru: jdi trasu a poslouchej.</p>'+",
+  "n": 12
+ },
+ {
+  "t": "Strana psa a změny strany",
+  "file": "l_split.js",
+  "line": 112,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>Předčítání trasy</h3><p>Aplikace přečte pořadí překážek, otočky a vstupy. Hodí se při prohlídce parkuru: jdi trasu a poslouchej.</p>'+",
+  "n": 12
+ },
+ {
+  "t": "Pomalu",
+  "file": "l_split.js",
+  "line": 112,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>Předčítání trasy</h3><p>Aplikace přečte pořadí překážek, otočky a vstupy. Hodí se při prohlídce parkuru: jdi trasu a poslouchej.</p>'+",
+  "n": 12
+ },
+ {
+  "t": "Normálně",
+  "file": "l_split.js",
+  "line": 112,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>Předčítání trasy</h3><p>Aplikace přečte pořadí překážek, otočky a vstupy. Hodí se při prohlídce parkuru: jdi trasu a poslouchej.</p>'+",
+  "n": 12
+ },
+ {
+  "t": "Rychle",
+  "file": "l_split.js",
+  "line": 112,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>Předčítání trasy</h3><p>Aplikace přečte pořadí překážek, otočky a vstupy. Hodí se při prohlídce parkuru: jdi trasu a poslouchej.</p>'+",
+  "n": 12
+ },
+ {
+  "t": "Přečíst trasu",
+  "file": "l_split.js",
+  "line": 112,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "openSheet('<h3>Předčítání trasy</h3><p>Aplikace přečte pořadí překážek, otočky a vstupy. Hodí se při prohlídce parkuru: jdi trasu a poslouchej.</p>'+",
+  "n": 12
+ },
+ {
+  "t": "sayBar",
+  "file": "l_split.js",
+  "line": 128,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var bar=document.createElement('div'); bar.className='saybar'; bar.id='sayBar'; bar.innerHTML='<span id=\"sayTxt\">Čtu trasu…</span><button class=\"btn\" id=\"sayStop\">Zastavit</button>'; document.body.appendChild(bar);",
+  "n": 1
+ },
+ {
+  "t": "Čtu trasu…",
+  "file": "l_split.js",
+  "line": 128,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var bar=document.createElement('div'); bar.className='saybar'; bar.id='sayBar'; bar.innerHTML='<span id=\"sayTxt\">Čtu trasu…</span><button class=\"btn\" id=\"sayStop\">Zastavit</button>'; document.body.appendChild(bar);",
+  "n": 1
+ },
+ {
+  "t": "Zastavit",
+  "file": "l_split.js",
+  "line": 128,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "var bar=document.createElement('div'); bar.className='saybar'; bar.id='sayBar'; bar.innerHTML='<span id=\"sayTxt\">Čtu trasu…</span><button class=\"btn\" id=\"sayStop\">Zastavit</button>'; document.body.appendChild(bar);",
+  "n": 1
+ },
+ {
+  "t": "sayG",
+  "file": "l_split.js",
+  "line": 130,
+  "kind": "lit",
+  "conf": "maybe",
+  "src": "var g=document.createElementNS(NS,'g'); g.setAttribute('id','sayG'); $('field').appendChild(g);",
+  "n": 1
+ },
+ {
+  "t": "Překážka {cur} z {ob} · {fmt(V3.d)} m z {fmt(V3.path.len)} m",
+  "file": "g_3d.js",
+  "line": 125,
+  "kind": "concat",
+  "conf": "ui",
+  "src": "var ob=S.route.length, cur=Math.min(ob,Math.max(0,dp.idx+1)), txt='Překážka '+cur+' z '+ob+' · '+fmt(V3.d)+' m z '+fmt(V3.path.len)+' m';",
+  "n": 1
+ },
+ {
+  "t": "Znovu",
+  "file": "g_3d.js",
+  "line": 135,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(V3.last&&V3.on){ V3.d+=(ts-V3.last)/1000*4.5*V3.spd; if(V3.d>V3.path.len){V3.d=V3.path.len; V3.on=false; $('p3play').textContent='Znovu';} }",
+  "n": 1
+ },
+ {
+  "t": "Pro 3D průlet potřebuješ trasu aspoň se 2 překážkami.",
+  "file": "g_3d.js",
+  "line": 140,
+  "kind": "lit",
+  "conf": "ui",
+  "src": "if(S.route.length<2){toast('Pro 3D průlet potřebuješ trasu aspoň se 2 překážkami.'); return;}",
+  "n": 1
+ }
+]

@@ -1,0 +1,26 @@
+/* l=popisek, c=barva, hl=poloviční délka ve směru běhu (m), w=poloviční šířka pro dotyk, g=obrázek na ploše (v metrech), p=ikona v paletě */
+var DEF={
+  jump:{l:'Skok',c:'#b8493c',hl:0,w:.9,
+    g:'<line y1="-.6" y2=".6" stroke="currentColor" stroke-width=".14"/><rect x="-.15" y="-.8" width=".3" height=".3" fill="currentColor"/><rect x="-.15" y=".5" width=".3" height=".3" fill="currentColor"/>',
+    p:'<line x1="-5" y1="5" x2="-5" y2="-3" stroke="currentColor" stroke-width="1.4"/><line x1="5" y1="5" x2="5" y2="-3" stroke="currentColor" stroke-width="1.4"/><line x1="-5" y1="-3" x2="5" y2="-3" stroke="currentColor" stroke-width="2"/>'},
+  tunnel:{l:'Tunel',c:'#3f7fc1',hl:2.25,w:.5,
+    g:'<rect x="-2.25" y="-.35" width="4.5" height=".7" rx=".35" fill="currentColor" fill-opacity=".25" stroke="currentColor" stroke-width=".1"/>',
+    p:'<ellipse cx="0" cy="0" rx="6" ry="3.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M-6,0 A6,3.2 0 0 0 6,0" fill="currentColor" opacity="0.25"/>'},
+  weave:{l:'Slalom',c:'#8a5fc9',hl:3.3,w:.4,g:WV,
+    p:'<circle cx="-6" cy="1" r="1.1" fill="currentColor"/><circle cx="-3" cy="-1.5" r="1.1" fill="currentColor"/><circle cx="0" cy="1" r="1.1" fill="currentColor"/><circle cx="3" cy="-1.5" r="1.1" fill="currentColor"/><circle cx="6" cy="1" r="1.1" fill="currentColor"/>'},
+  aframe:{l:'A-rampa',c:'#b8703a',hl:2.1,w:.6,
+    g:plank(2.1,.5,.9)+'<line y1="-.5" y2=".5" stroke="#fff" stroke-width=".08"/>',
+    p:'<path d="M-6,5 L0,-5 L6,5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><line x1="-3" y1="1.5" x2="3" y2="1.5" stroke="currentColor" stroke-width="1"/>'},
+  dogwalk:{l:'Kladina',c:'#4fa8ae',hl:5.4,w:.4,
+    g:plank(5.4,.15,.9)+'<path d="M-1.8,-.15V.15M1.8,-.15V.15" stroke="#fff" stroke-width=".06"/>',
+    p:'<rect x="-6.5" y="-1.2" width="13" height="2.4" rx="0.5" fill="currentColor"/><line x1="-3" y1="1.2" x2="-4" y2="4.5" stroke="currentColor" stroke-width="1"/><line x1="3" y1="1.2" x2="4" y2="4.5" stroke="currentColor" stroke-width="1"/>'},
+  seesaw:{l:'Houpačka',c:'#c9527e',hl:1.85,w:.5,
+    g:plank(1.85,.15,.9)+'<path d="M-.3,.5L.3,.5L0,0z" fill="currentColor"/>',
+    p:'<rect x="-6.5" y="-0.9" width="13" height="1.8" fill="currentColor" transform="rotate(-14)"/><path d="M-1.6,1.6 L1.6,1.6 L0,-1.2 Z" fill="currentColor"/>'},
+  tire:{l:'Kruh',c:'#52606b',hl:0,w:.9,
+    g:'<circle r=".34" fill="none" stroke="currentColor" stroke-width=".12"/><path d="M0,-.8V-.34M0,.34V.8" stroke="currentColor" stroke-width=".12"/>',
+    p:'<circle cx="0" cy="0" r="5" fill="none" stroke="currentColor" stroke-width="2"/>'},
+  longjump:{l:'Skok daleký',c:'#7a7a4f',hl:0,w:.9,
+    g:'<rect x="-.35" y="-.65" width=".7" height="1.3" fill="currentColor" fill-opacity=".3" stroke="currentColor" stroke-width=".08"/><path d="M-.12,-.65V.65M.12,-.65V.65" stroke="currentColor" stroke-width=".06"/>',
+    p:'<rect x="-3" y="-5" width="6" height="10" fill="none" stroke="currentColor" stroke-width="1.4"/><line x1="-1" y1="-5" x2="-1" y2="5" stroke="currentColor" stroke-width="1"/><line x1="1" y1="-5" x2="1" y2="5" stroke="currentColor" stroke-width="1"/>'}
+};
