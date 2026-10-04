@@ -1016,6 +1016,14 @@ var I18N_EXTRA={exact:{
 "rovně": "straight",
 "Úsek zvládnutý bez chyby. Přidáme další.": "Chunk done without a mistake. Let's add the next one.",
 "Pasti": "Traps",
+"Sdílet výsledek": "Share result",
+"Sdílet pořadí": "Share standing",
+"čas": "time",
+"trestné body": "penalty points",
+"bodů": "points",
+"týdnů": "weeks",
+"výher": "wins",
+"Obrázek se nepodařilo vytvořit": "The image couldn't be created",
 "Pasti: kde může pes vběhnout jinam": "Traps: where the dog may take the wrong obstacle",
 "mimo trasu": "not on the course",
 "Pes za překážkou běží dál rovně. Ukaž mu obrat dřív, než doskočí: zpomal, otoč ramena nebo zavolej jméno.": "After the obstacle the dog keeps running straight. Show the turn before it lands: slow down, turn your shoulders or call its name.",
@@ -1083,6 +1091,10 @@ var I18N_EXTRA={exact:{
 "Úsek zvládnutý, chyby #. Přidáme další.": "Chunk done, # mistakes. Let's add the next one.",
 "Nejvíc chyb v úseku #–#. Projdi si ho ještě jednou.": "Most mistakes in chunk #1–#2. Go through it once more.",
 "Po č. #": "After no. #",
+"#. místo": "place #",
+"velikost #": "size #",
+"Zahradní liga #: #. místo · # b": "Garden league #1: place #2 · #3 pts",
+"# m · # překážek · # × # m": "#1 m · #2 obstacles · #3 × #4 m",
 "trasa zatáčí doleva o #°": "the course turns left #°",
 "trasa zatáčí doprava o #°": "the course turns right #°",
 "rovně # m": "straight ahead # m",
@@ -1107,6 +1119,8 @@ var I18N_EXTRA={exact:{
 "o # s nad SČP · # m/s": "# s over SCT · # m/s",
 "# tb · # m/s ·": "# pp · # m/s ·",
 },re:[
+["^Parkur týdne · (A\\d)$","Course of the week · $1"],
+["^Zahrada týdne (\\d+): (.+?) s, (.+?) tb(?:, (\\d+)\\. místo z (\\d+) \\((.+?)\\))?$","Garden of the week $1: $2 s, $3 pp"],
 ["^(obrat do U|had|oblouk doleva|oblouk doprava|rovně) · (.+?)$","@1 · @2"],
 ["^(\\d+) × (\\d+) m · zbývá poslední den$","$1 × $2 m · last day left"],
 ["^Ligu se nepodařilo načíst: (.+?)$","The league couldn't be loaded: @1"]
@@ -4721,7 +4735,7 @@ function wkBoard(size,cls){
     '<p class="hint">Týden '+weekKey().split('-W')[1]+' · '+wkLeft()+' · pořadí podle trestných bodů, pak času</p>'+
     '<div class="wk-list" id="wkList"></div>'+
     (cls==='Z'?'<button class="lg-line" data-a="league">'+lgLineHTML()+'</button>':'')+
-    '<div class="acts"><button class="btn" data-a="x">Zavřít</button><button class="btn primary" data-a="open">Zaběhnout parkur</button></div></div>',
+    '<div class="acts">'+(wkShareData(cls)?'<button class="btn" data-a="share">Sdílet výsledek</button>':'<button class="btn" data-a="x">Zavřít</button>')+'<button class="btn primary" data-a="open">Zaběhnout parkur</button></div></div>',
     function(e){
       var z=e.target.closest('[data-wsz]'), b=e.target.closest('[data-a]');
       if(z){ WKB.size=z.getAttribute('data-wsz');
@@ -4730,6 +4744,7 @@ function wkBoard(size,cls){
       if(a==='retry') wkLoad();
       else if(a==='open'){ closeSheet(); loadCourse(WKB.c); }
       else if(a==='league') lgBoard(WKB.size);
+      else if(a==='share'){ var sd=wkShareData(WKB.cls); if(sd) shareImage(sd); }
       else if(a==='x') closeSheet();
     });
   wkLoad();
@@ -4785,7 +4800,7 @@ function lgBoard(size){
     '<div class="filters wk-sz">'+ch.map(function(x){return '<button class="chip'+(x[0]===size?' on':'')+'" data-lsz="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>'+
     '<p class="hint">'+LG_PTS+'</p>'+
     '<div class="wk-list" id="lgList"></div>'+
-    '<div class="acts"><button class="btn" data-a="x">Zavřít</button><button class="btn primary" data-a="open">Zahrada týdne</button></div></div>',
+    '<div class="acts"><button class="btn" data-a="share" id="lgShare" hidden>Sdílet pořadí</button><button class="btn" data-a="x">Zavřít</button><button class="btn primary" data-a="open">Zahrada týdne</button></div></div>',
     function(e){
       var z=e.target.closest('[data-lsz]'), b=e.target.closest('[data-a]');
       if(z){ LGB.size=z.getAttribute('data-lsz');
@@ -4793,6 +4808,7 @@ function lgBoard(size){
       if(!b) return; var a=b.getAttribute('data-a');
       if(a==='retry') lgLoad();
       else if(a==='open'){ closeSheet(); var gc=gardenCourse(); if(gc) loadCourse(gc); }
+      else if(a==='share'){ var sd=lgShareData(); if(sd) shareImage(sd); }
       else if(a==='x') closeSheet();
     });
   lgLoad();
@@ -4805,6 +4821,7 @@ function lgLoad(){
   p.then(function(r){
     if(!live()) return;
     var rows=(r&&Array.isArray(r.rows))?r.rows:[], me=(r&&Array.isArray(r.me))?r.me:[];
+    LGB.me=me[0]||null; var shb=$('lgShare'); if(shb) shb.hidden=!LGB.me;
     if(!rows.length&&!me.length){ el.innerHTML='<p class="wk-st">Liga zatím nemá body. Zaběhni Zahradu týdne a odešli výsledek!</p>'; return; }
     var h=rows.map(function(x){return lgRowHTML(x,!!x.mine);}).join('');
     if(me.length&&!rows.some(function(x){return x.mine;})) h+='<div class="wk-sep">…</div>'+me.map(function(x){return lgRowHTML(x,true);}).join('');
@@ -4813,6 +4830,82 @@ function lgLoad(){
     if(!live()) return;
     el.innerHTML='<p class="wk-st">Ligu se nepodařilo načíst: '+esc(err&&err.message||err)+'</p><div class="acts"><button class="btn" data-a="retry">Zkusit znovu</button></div>';
   });
+}
+/* ---------- obrázek výsledku ke sdílení (Facebook, Instagram): 1080 × 1350, parkur, čas, umístění ---------- */
+var SHARE_URL='https://danyzell.github.io/Agility-trasa/';
+function shareCanvas(o){
+  var W=1080, H=1350, cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+  var x=cv.getContext('2d'), disp=(getComputedStyle(document.documentElement).getPropertyValue('--display')||'').trim()||'sans-serif', body='system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+  var gr=x.createRadialGradient(W,0,60,W*.6,H*.3,H*1.1); gr.addColorStop(0,o.garden?'#7fae3a':'#2f9e62'); gr.addColorStop(.5,o.garden?'#3d6b25':'#14553a'); gr.addColorStop(1,o.garden?'#1d3a12':'#0a2a1c');
+  x.fillStyle=gr; x.fillRect(0,0,W,H);
+  x.strokeStyle='rgba(198,244,50,.12)'; x.lineWidth=60; x.beginPath(); x.arc(W-60,170,260,0,Math.PI*2); x.stroke();
+  /* značka */
+  x.fillStyle='#c6f432'; x.beginPath(); x.roundRect?x.roundRect(72,72,88,88,22):x.rect(72,72,88,88); x.fill();
+  x.fillStyle='#0a2a1c'; x.font='800 60px '+disp; x.textAlign='center'; x.textBaseline='middle'; x.fillText('H',116,119);
+  x.textAlign='left'; x.fillStyle='#fff'; x.font='700 44px '+disp; x.fillText('HandlerMap',184,118);
+  x.fillStyle='#c6f432'; x.font='700 34px '+body; x.fillText(T(o.kicker).toUpperCase(),72,236);
+  x.fillStyle='#fff'; x.font='800 92px '+disp; x.fillText(T(o.title),72,320);
+  var y=380;
+  if(o.course&&o.course.route&&o.course.route.length>1){
+    var c=o.course, bw0=W-144, bh=Math.min(490,bw0*c.H/c.W), k=Math.min(bw0/c.W,bh/c.H), bw=c.W*k, ox=72+(bw0-bw)/2, oy=y;
+    x.fillStyle='#e4eddb'; x.beginPath(); x.roundRect?x.roundRect(ox-16,y-16,bw+32,bh+32,28):x.rect(ox-16,y-16,bw+32,bh+32); x.fill();
+    var g=calc(c.obs,c.route,c.turns||null);
+    x.save(); x.translate(ox,oy); x.scale(k,k);
+    x.strokeStyle='#e5a23a'; x.lineWidth=.32; x.lineCap='round'; x.setLineDash([.7,.45]);
+    g.segs.forEach(function(sg){ try{ x.stroke(new Path2D(sg.d)); }catch(e){} });
+    x.setLineDash([]);
+    var by={}; c.obs.forEach(function(ob){by[ob.id]=ob;});
+    /* překážky podle obrysu (skok napříč dráhou, tunel, slalom…), pak čísla v pořadí */
+    c.obs.forEach(function(ob){ var P=opoly(ob); x.strokeStyle=DEF[ob.type].c; x.lineWidth=ob.type==='tunnel'?.7:ob.type==='weave'?.3:.28; x.lineCap='round';
+      x.beginPath(); P.forEach(function(q,j){ j?x.lineTo(q.x,q.y):x.moveTo(q.x,q.y); }); x.stroke(); });
+    var seen={};
+    g.P.forEach(function(pt,i){ var kk=Math.round(pt.en.x*2)+','+Math.round(pt.en.y*2); if(seen[kk]) return; seen[kk]=1;
+      x.fillStyle='#e5a23a'; x.beginPath(); x.arc(pt.en.x+.75,pt.en.y-.75,.62,0,Math.PI*2); x.fill();
+      x.fillStyle='#1d1d1d'; x.font='700 .72px '+body; x.textAlign='center'; x.textBaseline='middle'; x.fillText(String(i+1),pt.en.x+.75,pt.en.y-.72); });
+    x.textAlign='left'; x.textBaseline='alphabetic';
+    var st=by[c.route[0]], fi=by[c.route[c.route.length-1]];
+    x.strokeStyle='#14553a'; x.lineWidth=.35;
+    if(st){ x.beginPath(); x.arc(st.x,st.y,1.4,0,Math.PI*2); x.stroke(); }
+    if(fi) x.strokeRect(fi.x-1.2,fi.y-1.2,2.4,2.4);
+    x.restore();
+    x.fillStyle='rgba(255,255,255,.75)'; x.font='500 30px '+body; x.fillText(T(o.sub||''),72,y+bh+62);
+    y+=bh+104;
+  } else y+=40;
+  /* velká čísla */
+  var cols=o.stats||[], cw=(W-144)/Math.max(1,cols.length);
+  cols.forEach(function(st,i){ var cx=72+i*cw, fsz=cols.length>2?96:116;
+    x.font='800 '+fsz+'px '+disp; while(fsz>40&&x.measureText(st[0]).width>cw-24){ fsz-=4; x.font='800 '+fsz+'px '+disp; }
+    x.fillStyle=i===0?'#c6f432':'#fff'; x.fillText(st[0],cx,y+80);
+    x.fillStyle='rgba(255,255,255,.7)'; x.font='500 30px '+body; x.fillText(T(st[1]),cx,y+130); });
+  y+=190;
+  if(o.who){ x.fillStyle='#fff'; x.font='700 46px '+body; x.fillText(o.who,72,y); y+=56; }
+  if(o.line){ x.fillStyle='rgba(255,255,255,.8)'; x.font='500 34px '+body; x.fillText(T(o.line),72,y); }
+  x.fillStyle='rgba(255,255,255,.55)'; x.font='500 28px '+body; x.fillText(SHARE_URL.replace(/^https:\/\//,''),72,H-48);
+  return cv;
+}
+function shareImage(o){
+  var cv=shareCanvas(o), name=(o.file||'handlermap')+'.png';
+  var go=function(b){ if(!b){ toast('Obrázek se nepodařilo vytvořit'); return; } return deliverFile(b,'image/png',name,true,(o.text?T(o.text)+' ':'')+SHARE_URL); };
+  if(cv.toBlob) cv.toBlob(go,'image/png'); else { var u=cv.toDataURL('image/png'), bs=atob(u.split(',')[1]), a=new Uint8Array(bs.length); for(var i=0;i<bs.length;i++) a[i]=bs.charCodeAt(i); go(new Blob([a],{type:'image/png'})); }
+  return cv;
+}
+/* můj výsledek v parkuru týdne nebo zahradě týdne */
+function wkShareData(cls){
+  var me=wkStore(WKME)[weekKey()+'|'+cls], c=weekCourse(cls); if(!me||!c) return null;
+  var Z=cls==='Z', s=cStats(c), wn=+weekKey().split('-W')[1], lc=lsGet(LGK,{})||{}, lg=Z&&lc.year===lgYear()&&lc.me?lc.me:null;
+  return {garden:Z, kicker:Z?'Zahrada týdne':'Parkur týdne · '+cls, title:Z?'Týden '+wn:c.name, course:c,
+    sub:fmt(s.geo.total)+' m · '+c.route.length+' překážek'+(Z?' · '+ZG.W+' × '+ZG.H+' m':''),
+    stats:[[fmt2(+me.t||0)+' s','čas'],[wkPen(me.pen),'trestné body']].concat(me.rank_size?[[(+me.rank_size)+'. / '+(+me.total_size||0),'velikost '+me.size]]:[]),
+    who:(me.dog||'')+(lsStr(NICKK)?' · '+lsStr(NICKK):''),
+    line:lg?'Zahradní liga '+lgYear()+': '+(+lg.rank||0)+'. místo · '+(+lg.pts||0)+' b':'',
+    text:(Z?'Zahrada týdne '+wn:'Parkur týdne '+c.name)+': '+fmt2(+me.t||0)+' s, '+wkPen(me.pen)+(me.rank_size?', '+(+me.rank_size)+'. místo z '+(+me.total_size||0)+' ('+me.size+')':''),
+    file:(Z?'zahrada-':'parkur-tydne-')+weekKey()};
+}
+function lgShareData(){
+  var me=LGB.me; if(!me) return null;
+  return {garden:true, kicker:'Zahradní liga '+lgYear(), title:(+me.rank||0)+'. místo', course:gardenCourse(), sub:'Zahrada týdne '+(+weekKey().split('-W')[1]),
+    stats:[[String(+me.pts||0),'bodů'],[String(+me.weeks||0),'týdnů'],[String(+me.wins||0),'výher']], who:(me.dog||'')+' · '+(me.handler||''),
+    line:me.size?'velikost '+me.size:'', text:'Zahradní liga '+lgYear()+': '+(+me.rank||0)+'. místo, '+(+me.pts||0)+' b', file:'zahradni-liga-'+lgYear()};
 }
 /* po uloženém běhu na parkuru týdne: odeslat výsledek do žebříčku */
 function wkSend(rec,cls){
