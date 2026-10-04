@@ -58,6 +58,12 @@ h2{font-family:var(--display); font-size:20px; font-weight:600; margin:4px 0 0; 
 .hint{color:var(--muted); font-size:13.5px; margin:0;}
 
 /* údaje o trati */
+.spec.est{grid-column:1/-1;}
+.spec.est.late b{color:var(--bad,#b8493c);}
+.kc-tiles{display:grid; grid-template-columns:repeat(2,1fr); gap:8px;}
+.kc-tiles div{background:var(--sunk); border-radius:12px; padding:8px 10px;} .kc-tiles b{display:block; font-size:20px;} .kc-tiles span{font-size:12px; color:var(--muted);}
+.kc-chart{width:100%; height:auto; display:block;}
+.kc-runs li{display:flex; justify-content:space-between; gap:8px; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px;} .kc-runs li span{color:var(--muted);} .kc-runs{list-style:none; padding:0; margin:0;}
 .specs{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
 .spec{background:var(--surface); padding:8px 10px;}
 .spec small{display:block; font-size:11.5px; color:var(--muted); letter-spacing:.02em;}
@@ -949,6 +955,26 @@ var I18N_EXTRA={exact:{
 "Vejdou se na tvou zahradu a postavíš je z toho, co máš": "They fit your garden and you build them from what you have",
 "Vybrat": "Choose",
 "Skoky": "Jumps",
+"Pes na kacr.info (odkaz, nepovinné)": "Dog on kacr.info (link, optional)",
+"Výsledky ze závodů se pak načtou do aplikace: rychlost, čisté běhy a odhad času na parkuru.": "Competition results are then loaded into the app: speed, clean runs and a time estimate for the course.",
+"Odkaz na kacr.info má tvar https://kacr.info/dogs/12345": "A kacr.info link looks like https://kacr.info/dogs/12345",
+"Závody": "Competitions",
+"Výsledky se ještě nenačetly.": "The results have not loaded yet.",
+"startů": "starts",
+"čistě z dokončených": "clean of finished runs",
+"m/s agility": "m/s agility",
+"m/s jumping": "m/s jumping",
+"na stupních vítězů": "on the podium",
+"diskvalifikací": "disqualifications",
+"Poslední běhy": "Latest runs",
+"Načíst znovu": "Reload",
+"Odhad pro psa": "Estimate for",
+"Závody ·": "Competitions ·",
+"Rychlost v čase": "Speed over time",
+"agility": "agility",
+"jumping": "jumping",
+"m/s v čase ·": "m/s over time ·",
+"(kacr.info)": "(kacr.info)",
 "Kruh a skok daleký nahradit skokem": "Replace the tyre and long jump with a jump",
 "Náhrada skokem": "Jump instead",
 "Zrcadlově": "Mirrored",
@@ -967,6 +993,12 @@ var I18N_EXTRA={exact:{
 "Zadní strany #": "Backsides #",
 "Překážky #–#": "Obstacles #–#",
 "Plocha # × # m a tvoje vybavení": "Space # × # m and your equipment",
+"Načteno z kacr.info: # běhů": "Loaded from kacr.info: # runs",
+"Výsledky načteny: # běhů": "Results loaded: # runs",
+"Načteno #. #. # z": "Loaded #. #. # from",
+"# s pod SČP · # m/s": "# s under SCT · # m/s",
+"o # s nad SČP · # m/s": "# s over SCT · # m/s",
+"# tb · # m/s ·": "# pp · # m/s ·",
 },re:[
 ]};
 function i18nStart(){
@@ -3579,7 +3611,7 @@ function specsHTML(m){
   return '<div class="spec"><small>Délka trati</small><b>'+(m.len?fmt(m.len)+' m':dash)+'</b><i>'+m.n+' překážek</i></div>'+
     '<div class="spec"><small>Disciplína</small><b>'+m.disc+'</b><i>třída '+m.cls+'</i></div>'+
     '<div class="spec"><small>SČP</small><b>'+(m.sct?m.sct+' s':dash)+'</b><i>'+fmt(m.spd)+' m/s</i></div>'+
-    '<div class="spec mct"><small>MČP (max.)</small><b>'+(m.mct?m.mct+' s':dash)+'</b><i>'+fmt(m.mcs)+' m/s dle FCI</i></div>';
+    '<div class="spec mct"><small>MČP (max.)</small><b>'+(m.mct?m.mct+' s':dash)+'</b><i>'+fmt(m.mcs)+' m/s dle FCI</i></div>'+kacrEstHTML(m);
 }
 
 /* ---------- horní lišta ---------- */
@@ -5777,16 +5809,103 @@ function dogSheet(d){
     '<div class="grid2"><label for="dSize">Velikost<select id="dSize">'+Object.keys(SIZES).map(function(k){return '<option value="'+k+'">'+SIZES[k].l+'</option>';}).join('')+'</select></label>'+
     '<label for="dCls">Výkonnostní třída<select id="dCls"><option>A0</option><option>A1</option><option>A2</option><option>A3</option></select></label></div>'+
     '<label for="dBorn">Narozen/a (měsíc a rok, nepovinné)<input id="dBorn" type="month" value="'+esc(d.born||'')+'" max="'+localDate().slice(0,7)+'"></label>'+
+    '<label for="dKacr">Pes na kacr.info (odkaz, nepovinné)<input id="dKacr" type="url" inputmode="url" placeholder="https://kacr.info/dogs/12345" value="'+(d.kacr?'https://kacr.info/dogs/'+esc(d.kacr):'')+'"></label>'+
+    '<p class="hint">Výsledky ze závodů se pak načtou do aplikace: rychlost, čisté běhy a odhad času na parkuru.</p>'+
     '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="ok">'+(isNew?'Přidat':'Uložit')+'</button></div>',
     function(e){
       var b=e.target.closest('[data-a]'); if(!b) return;
       if(b.getAttribute('data-a')==='ok'){
+        var kv=$('dKacr').value.trim(), kid=kacrId(kv);
+        if(kv&&!kid){ toast('Odkaz na kacr.info má tvar https://kacr.info/dogs/12345'); return; }
         d.name=$('dName').value.trim()||'Pes'; d.size=$('dSize').value; d.cls=$('dCls').value; var bv=$('dBorn').value; if(/^\d{4}-\d{2}$/.test(bv)) d.born=bv; else delete d.born;
+        var kNew=kid&&kid!==d.kacr; if(kid) d.kacr=kid; else delete d.kacr;
         if(isNew) DOGS.push(d); DOGC=d.id; saveDogs(); toast(isNew?'Pes přidán':'Uloženo');
+        if(kNew) kacrLoad(d,true);
       }
       closeSheet(); if(view==='more') moreRender(); if(view==='run') runRender();
     });
   $('dSize').value=d.size; $('dCls').value=d.cls;
+}
+
+/* ---------- výsledky ze závodů (kacr.info) ----------
+   Veřejná stránka psa na kacr.info (robots.txt nic nezakazuje); kvůli CORS ji stahuje serverová funkce Supabase „kacr“
+   (supabase/functions/kacr), jeden požadavek na psa. Výsledky se ukládají u sebe (agility-kacr-v1, i v záloze). */
+var KACRK='agility-kacr-v1', KACR=lsGet(KACRK,{})||{}, KACR_BUSY={};
+function kacrId(v){ var m=String(v||'').trim().match(/^(?:https?:\/\/(?:www\.)?kacr\.info\/dogs\/)?(\d{1,7})\/?(?:[?#].*)?$/); return m?m[1]:null; }
+function kacrFetch(id){
+  var ac=typeof AbortController==='function'?new AbortController():null, tm=ac?setTimeout(function(){ac.abort();},25000):0;
+  return fetch(SB_URL+'/functions/v1/kacr',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({dog:id}),signal:ac?ac.signal:undefined})
+    .then(function(r){ return r.json().catch(function(){return {};}).then(function(j){ clearTimeout(tm); if(!r.ok||!j||j.error) throw new Error((j&&j.error)||'server '+r.status); return j; }); },
+          function(e){ clearTimeout(tm); throw new Error(e&&e.name==='AbortError'?'server neodpovídá':'bez připojení k internetu'); });
+}
+/* stáhne a uloží výsledky psa; quiet = jen krátké oznámení */
+function kacrLoad(dog,quiet){
+  if(!dog||!dog.kacr||KACR_BUSY[dog.id]) return Promise.resolve(null);
+  KACR_BUSY[dog.id]=1;
+  return kacrFetch(dog.kacr).then(function(d){
+    KACR[dog.id]=d; lsSet(KACRK,KACR); delete KACR_BUSY[dog.id];
+    var n=kacrRuns(d).length; toast(quiet?'Načteno z kacr.info: '+n+' běhů':'Výsledky načteny: '+n+' běhů');
+    if($('specs')) $('specs').innerHTML=specsHTML(metrics(S.obs,S.route,S.meta.cls,S.turns));
+    return d;
+  },function(e){ delete KACR_BUSY[dog.id]; toast('kacr.info: '+e.message); throw e; });
+}
+/* agility nebo jumping podle názvu běhu (Jumping, IJ1, J0…) */
+function kacrDisc(name){ return /jump|(^|[^a-z])i?j\s*\d|\bj\b/i.test(name||'')?'J':'A'; }
+function kacrRuns(d){
+  var out=[]; ((d&&d.comps)||[]).forEach(function(c){ (c.runs||[]).forEach(function(r){ out.push({id:r.id,name:r.name,comp:c.name,date:c.date,disc:kacrDisc(r.name),dis:!!r.dis,place:r.place,of:r.of,t:r.t,pen:r.pen,v:r.v}); }); });
+  return out.sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
+}
+function kacrMed(a){ if(!a.length) return 0; var s=a.slice().sort(function(x,y){return x-y;}), k=s.length>>1; return s.length%2?s[k]:(s[k-1]+s[k])/2; }
+/* typická rychlost psa: medián posledních 10 dokončených běhů v dané disciplíně (bez DIS); málo dat → obě disciplíny */
+function kacrSpeed(d,disc){
+  var R=kacrRuns(d).filter(function(r){return !r.dis&&r.v>0;}), D=R.filter(function(r){return r.disc===disc;});
+  var L=(D.length>=3?D:R).slice(0,10).map(function(r){return r.v;});
+  return L.length>=3?{v:kacrMed(L),n:L.length,all:D.length<3}:null;
+}
+function kacrStats(d){
+  var R=kacrRuns(d), done=R.filter(function(r){return !r.dis;});
+  return {n:R.length,dis:R.length-done.length,clean:done.filter(function(r){return r.pen===0;}).length,
+    vA:kacrMed(done.filter(function(r){return r.disc==='A'&&r.v>0;}).slice(0,10).map(function(r){return r.v;})),
+    vJ:kacrMed(done.filter(function(r){return r.disc==='J'&&r.v>0;}).slice(0,10).map(function(r){return r.v;})),
+    wins:done.filter(function(r){return r.place===1;}).length, podium:done.filter(function(r){return r.place>0&&r.place<=3;}).length};
+}
+/* odhad času na otevřeném parkuru pro vybraného psa (do údajů v Plánu a na Běhu) */
+function kacrEstHTML(m){
+  if(typeof KACR==='undefined'||!KACR||typeof DOGS==='undefined') return '';   /* údaje parkuru se kreslí i dřív, než se načtou psi */
+  var dog=curDog(), d=dog&&KACR[dog.id]; if(!d||!m.len) return '';
+  var sp=kacrSpeed(d,m.disc==='Jumping'?'J':'A'); if(!sp) return '';
+  var t=m.len/sp.v, res=m.sct?m.sct-t:null, late=res!=null&&res<0;
+  return '<div class="spec est'+(late?' late':'')+'"><small>Odhad pro psa <span translate="no">'+esc(dog.name)+'</span> (kacr.info)</small><b>'+fmt(Math.round(t*10)/10)+' s</b><i>'+
+    (res==null?fmt(sp.v)+' m/s':late?'o '+fmt(Math.round(-res*10)/10)+' s nad SČP':fmt(Math.round(res*10)/10)+' s pod SČP')+' · '+fmt(sp.v)+' m/s</i></div>';
+}
+/* rychlost v čase: agility zeleně, jumping oranžově */
+function kacrChart(d){
+  var R=kacrRuns(d).filter(function(r){return !r.dis&&r.v>0&&r.date;}).reverse(); if(R.length<2) return '';
+  var W=320, H=130, p=24, t0=+new Date(R[0].date), t1=+new Date(R[R.length-1].date)||t0+1, vs=R.map(function(r){return r.v;}), v0=Math.floor((Math.min.apply(null,vs)-.2)*2)/2, v1=Math.ceil((Math.max.apply(null,vs)+.2)*2)/2;
+  var X=function(t){return p+(t-t0)/((t1-t0)||1)*(W-p-8);}, Y=function(v){return H-18-(v-v0)/((v1-v0)||1)*(H-28);};
+  var g='<line x1="'+p+'" y1="'+Y(v0)+'" x2="'+(W-8)+'" y2="'+Y(v0)+'" stroke="var(--border)"/><text x="2" y="'+(Y(v1)+4)+'" font-size="10" fill="var(--muted)">'+fmt(v1)+'</text><text x="2" y="'+(Y(v0)+4)+'" font-size="10" fill="var(--muted)">'+fmt(v0)+'</text>'+
+    '<text x="'+p+'" y="'+(H-2)+'" font-size="10" fill="var(--muted)">'+esc(R[0].date.slice(0,7))+'</text><text x="'+(W-8)+'" y="'+(H-2)+'" font-size="10" fill="var(--muted)" text-anchor="end">'+esc(R[R.length-1].date.slice(0,7))+'</text>';
+  R.forEach(function(r){ g+='<circle cx="'+X(+new Date(r.date)).toFixed(1)+'" cy="'+Y(r.v).toFixed(1)+'" r="3.5" fill="'+(r.disc==='J'?'var(--zone)':'var(--accent)')+'" opacity=".85"/>'; });
+  return '<svg class="kc-chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Rychlost v čase">'+g+'</svg><p class="hint">m/s v čase · <span style="color:var(--accent)">●</span> agility · <span style="color:var(--zone)">●</span> jumping</p>';
+}
+function kacrSheet(dog){
+  var d=KACR[dog.id];
+  var body=function(){
+    d=KACR[dog.id]; if(!d) return '<p class="hint">Výsledky se ještě nenačetly.</p>';
+    var st=kacrStats(d), R=kacrRuns(d), pct=st.n-st.dis?Math.round(st.clean/(st.n-st.dis)*100):0;
+    return '<div class="kc-tiles"><div><b>'+st.n+'</b><span>startů</span></div><div><b>'+(st.n?pct+' %':'–')+'</b><span>čistě z dokončených</span></div>'+
+      '<div><b>'+(st.vA?fmt(st.vA):'–')+'</b><span>m/s agility</span></div><div><b>'+(st.vJ?fmt(st.vJ):'–')+'</b><span>m/s jumping</span></div>'+
+      '<div><b>'+st.podium+'</b><span>na stupních vítězů</span></div><div><b>'+st.dis+'</b><span>diskvalifikací</span></div></div>'+
+      kacrChart(d)+'<h4>Poslední běhy</h4><ul class="kc-runs">'+R.slice(0,15).map(function(r){
+        return '<li><div><b translate="no">'+esc(r.name)+'</b><br><span translate="no">'+esc(r.comp)+'</span></div><div style="text-align:right;white-space:nowrap">'+
+          (r.dis?'DIS':(r.place?r.place+'/'+r.of+' · ':'')+fmt(r.t)+' s')+'<br><span>'+(r.dis?'':fmt(r.pen)+' tb · '+fmt(r.v)+' m/s · ')+esc(r.date||'')+'</span></div></li>';}).join('')+'</ul>'+
+      '<p class="hint">Načteno '+new Date(d.at).toLocaleDateString('cs-CZ')+' z <a href="https://kacr.info/dogs/'+esc(dog.kacr)+'" target="_blank" rel="noopener">kacr.info</a></p>';
+  };
+  openSheet('<h3>Závody · <span translate="no">'+esc(dog.name)+'</span></h3><div id="kcBody">'+body()+'</div><div class="acts"><button class="btn" data-a="x">Zavřít</button><button class="btn primary" data-a="re">Načíst znovu</button></div>',
+    function(e){ var b=e.target.closest('[data-a]'); if(!b) return; var a=b.getAttribute('data-a');
+      if(a==='x'){ closeSheet(); return; }
+      if(a==='re'){ b.disabled=true; kacrLoad(dog).then(function(){ var el=$('kcBody'); if(el){ el.innerHTML=body(); trTree(el); } b.disabled=false; },function(){ b.disabled=false; }); } });
+  if(!d) kacrLoad(dog,true).then(function(){ var el=$('kcBody'); if(el){ el.innerHTML=body(); trTree(el); } },function(){});
 }
 
 /* ---------- statistiky ---------- */
@@ -6001,7 +6120,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   if(moreTab.indexOf('mod:')===0){ var sc=HM.screens[moreTab.slice(4)], el=$('moreBody'); el.innerHTML=''; if(sc){ try{ sc.render(el,MORE_ARG); }catch(e){ if(window.console) console.error(e); } } MORE_ARG=null; return; }
   if(moreTab==='set'){ $('moreBody').innerHTML=settingsHTML(); return; }
   if(moreTab==='dogs'){
-    h='<div class="list">'+(DOGS.length?DOGS.map(function(x){return '<div class="item'+(d&&d.id===x.id?' cur':'')+'"><div><b>'+esc(x.name)+'</b><span>'+SIZES[x.size].l+' · '+x.cls+(dogAgeM(x)!=null?' · '+ageTxt(dogAgeM(x)):'')+'</span></div><div class="acts">'+(d&&d.id===x.id?'':'<button class="btn" data-dsel="'+esc(x.id)+'">Vybrat</button>')+'<button class="btn" data-dedit="'+esc(x.id)+'">Upravit</button><button class="btn danger" data-ddel="'+esc(x.id)+'" aria-label="Smazat psa">×</button></div></div>';}).join('')
+    h='<div class="list">'+(DOGS.length?DOGS.map(function(x){return '<div class="item'+(d&&d.id===x.id?' cur':'')+'"><div><b>'+esc(x.name)+'</b><span>'+SIZES[x.size].l+' · '+x.cls+(dogAgeM(x)!=null?' · '+ageTxt(dogAgeM(x)):'')+'</span></div><div class="acts">'+(d&&d.id===x.id?'':'<button class="btn" data-dsel="'+esc(x.id)+'">Vybrat</button>')+(x.kacr?'<button class="btn" data-dkacr="'+esc(x.id)+'">Závody</button>':'')+'<button class="btn" data-dedit="'+esc(x.id)+'">Upravit</button><button class="btn danger" data-ddel="'+esc(x.id)+'" aria-label="Smazat psa">×</button></div></div>';}).join('')
       :'<p class="hint">Přidej psa. Aplikace pak ukáže výšky překážek pro jeho kategorii a běhy i statistiky povede zvlášť pro každého psa.</p>')+'</div>'+
       '<div class="row"><button class="btn primary" data-dadd="1">＋ Přidat psa</button></div>';
     var z=SIZES[d?d.size:'L'];
@@ -6045,6 +6164,7 @@ $('moreBody').onclick=function(e){
   if(g('data-dadd')) dogSheet(null);
   else if(g('data-dsel')){DOGC=g('data-dsel'); saveDogs(); moreRender();}
   else if(g('data-dedit')){var x=DOGS.filter(function(q){return q.id===g('data-dedit');})[0]; if(x) dogSheet(x);}
+  else if(g('data-dkacr')){var xk=DOGS.filter(function(q){return q.id===g('data-dkacr');})[0]; if(xk) kacrSheet(xk);}
   else if(g('data-ddel')){var id=g('data-ddel'), x2=DOGS.filter(function(q){return q.id===id;})[0]; if(x2) ask('Smazat psa '+x2.name+'?','Jeho běhy zůstanou uložené u parkurů.','Smazat',function(){DOGS=DOGS.filter(function(q){return q.id!==id;}); if(DOGC===id) DOGC=DOGS[0]?DOGS[0].id:null; saveDogs(); moreRender();},true);}
   else if(g('data-dy')) diarySheet(g('data-dy'));
   else if(g('data-dydel')){var did=g('data-dydel'); ask('Smazat záznam?','Záznam zmizí z deníku.','Smazat',function(){lsSet(DIARYK,diary().filter(function(q){return q.id!==did;})); moreRender();},true);}
