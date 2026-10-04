@@ -63,6 +63,11 @@ h2{font-family:var(--display); font-size:20px; font-weight:600; margin:4px 0 0; 
 .kc-tiles{display:grid; grid-template-columns:repeat(2,1fr); gap:8px;}
 .kc-tiles div{background:var(--sunk); border-radius:12px; padding:8px 10px;} .kc-tiles b{display:block; font-size:20px;} .kc-tiles span{font-size:12px; color:var(--muted);}
 .kc-chart{width:100%; height:auto; display:block;}
+.kc-find{display:flex; gap:8px; align-items:center; margin-top:4px;} .kc-find input{flex:1; min-width:0;}
+.kc-res{display:flex; flex-direction:column; gap:6px; margin:8px 0; max-height:260px; overflow-y:auto;} .kc-res:empty{display:none;}
+.kc-hit{display:flex; justify-content:space-between; align-items:baseline; gap:10px; text-align:left; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--sunk); color:inherit; font:inherit; cursor:pointer;}
+.kc-hit span{font-size:12px; color:var(--muted); text-align:right;} .kc-hit.h b{font-weight:600;}
+.kc-cap{margin:4px 0 0; font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em;} .kc-ok{margin:0;}
 .kc-runs li{display:flex; justify-content:space-between; gap:8px; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px;} .kc-runs li span{color:var(--muted);} .kc-runs{list-style:none; padding:0; margin:0;}
 .specs{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
 .spec{background:var(--surface); padding:8px 10px;}
@@ -956,6 +961,20 @@ var I18N_EXTRA={exact:{
 "Vybrat": "Choose",
 "Skoky": "Jumps",
 "Pes na kacr.info (odkaz, nepovinné)": "Dog on kacr.info (link, optional)",
+"Pes na kacr.info (nepovinné)": "Dog on kacr.info (optional)",
+"jméno psa, psovoda nebo odkaz": "dog or handler name, or a link",
+"Hledat": "Search",
+"Napiš jméno psa nebo své jméno a vyber psa ze seznamu. Výsledky ze závodů se pak načtou do aplikace: rychlost, čisté běhy a odhad času na parkuru.": "Type the dog's name or your own name and pick the dog from the list. Competition results are then loaded into the app: speed, clean runs and a time estimate for the course.",
+"Vyber psa ze seznamu": "Pick the dog from the list",
+"Napiš aspoň 2 písmena jména psa nebo psovoda.": "Type at least 2 letters of the dog's or handler's name.",
+"Hledám na kacr.info…": "Searching kacr.info…",
+"Psovodi": "Handlers",
+"· psi": "· dogs",
+"ukázat psy ›": "show dogs ›",
+"Psovod nemá žádného psa s průkazem.": "This handler has no dog with a record book.",
+"Nic nenalezeno. Zkus jen část jména.": "Nothing found. Try just part of the name.",
+"Ukazuje se jen prvních 10 psů. Napiš celé jméno, nebo hledej podle psovoda.": "Only the first 10 dogs are shown. Type the full name or search by handler.",
+"✓ Vybráno:": "✓ Selected:",
 "Výsledky ze závodů se pak načtou do aplikace: rychlost, čisté běhy a odhad času na parkuru.": "Competition results are then loaded into the app: speed, clean runs and a time estimate for the course.",
 "Odkaz na kacr.info má tvar https://kacr.info/dogs/12345": "A kacr.info link looks like https://kacr.info/dogs/12345",
 "Závody": "Competitions",
@@ -5809,14 +5828,17 @@ function dogSheet(d){
     '<div class="grid2"><label for="dSize">Velikost<select id="dSize">'+Object.keys(SIZES).map(function(k){return '<option value="'+k+'">'+SIZES[k].l+'</option>';}).join('')+'</select></label>'+
     '<label for="dCls">Výkonnostní třída<select id="dCls"><option>A0</option><option>A1</option><option>A2</option><option>A3</option></select></label></div>'+
     '<label for="dBorn">Narozen/a (měsíc a rok, nepovinné)<input id="dBorn" type="month" value="'+esc(d.born||'')+'" max="'+localDate().slice(0,7)+'"></label>'+
-    '<label for="dKacr">Pes na kacr.info (odkaz, nepovinné)<input id="dKacr" type="url" inputmode="url" placeholder="https://kacr.info/dogs/12345" value="'+(d.kacr?'https://kacr.info/dogs/'+esc(d.kacr):'')+'"></label>'+
-    '<p class="hint">Výsledky ze závodů se pak načtou do aplikace: rychlost, čisté běhy a odhad času na parkuru.</p>'+
+    '<label for="dKacr">Pes na kacr.info (nepovinné)</label><div class="kc-find"><input id="dKacr" type="text" autocomplete="off" placeholder="jméno psa, psovoda nebo odkaz" value="'+(d.kacr?'https://kacr.info/dogs/'+esc(d.kacr):'')+'"><button class="btn" data-a="ks">Hledat</button></div>'+
+    '<div id="dKres" class="kc-res" aria-live="polite"></div>'+
+    '<p class="hint">Napiš jméno psa nebo své jméno a vyber psa ze seznamu. Výsledky ze závodů se pak načtou do aplikace: rychlost, čisté běhy a odhad času na parkuru.</p>'+
     '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="ok">'+(isNew?'Přidat':'Uložit')+'</button></div>',
     function(e){
       var b=e.target.closest('[data-a]'); if(!b) return;
+      if(b.getAttribute('data-a')==='ks'){ kacrFind(); return; }
       if(b.getAttribute('data-a')==='ok'){
         var kv=$('dKacr').value.trim(), kid=kacrId(kv);
-        if(kv&&!kid){ toast('Odkaz na kacr.info má tvar https://kacr.info/dogs/12345'); return; }
+        if(kv&&!kid&&/[\/:]/.test(kv)){ toast('Odkaz na kacr.info má tvar https://kacr.info/dogs/12345'); return; }
+        if(kv&&!kid){ kacrFind(); toast('Vyber psa ze seznamu'); return; }
         d.name=$('dName').value.trim()||'Pes'; d.size=$('dSize').value; d.cls=$('dCls').value; var bv=$('dBorn').value; if(/^\d{4}-\d{2}$/.test(bv)) d.born=bv; else delete d.born;
         var kNew=kid&&kid!==d.kacr; if(kid) d.kacr=kid; else delete d.kacr;
         if(isNew) DOGS.push(d); DOGC=d.id; saveDogs(); toast(isNew?'Pes přidán':'Uloženo');
@@ -5825,6 +5847,17 @@ function dogSheet(d){
       closeSheet(); if(view==='more') moreRender(); if(view==='run') runRender();
     });
   $('dSize').value=d.size; $('dCls').value=d.cls;
+  $('dKacr').onkeydown=function(e){ if(e.key==='Enter'){ e.preventDefault(); if(!kacrId(this.value)) kacrFind(); } };
+  $('dKres').onclick=function(e){
+    var k=e.target.closest('[data-kd]'), h=e.target.closest('[data-kh]');
+    if(h){ kacrFind({handler:h.getAttribute('data-kh')}); return; }
+    if(!k) return;
+    var nm=k.getAttribute('data-kn')||'', sz=k.getAttribute('data-ksz');
+    $('dKacr').value='https://kacr.info/dogs/'+k.getAttribute('data-kd');
+    if(!$('dName').value.trim()) $('dName').value=nm.split(' ')[0];
+    if(sz&&SIZES[sz]) $('dSize').value=sz;
+    $('dKres').innerHTML='<p class="kc-ok">✓ Vybráno: <b translate="no">'+esc(nm)+'</b></p>';
+  };
 }
 
 /* ---------- výsledky ze závodů (kacr.info) ----------
@@ -5832,11 +5865,35 @@ function dogSheet(d){
    (supabase/functions/kacr), jeden požadavek na psa. Výsledky se ukládají u sebe (agility-kacr-v1, i v záloze). */
 var KACRK='agility-kacr-v1', KACR=lsGet(KACRK,{})||{}, KACR_BUSY={};
 function kacrId(v){ var m=String(v||'').trim().match(/^(?:https?:\/\/(?:www\.)?kacr\.info\/dogs\/)?(\d{1,7})\/?(?:[?#].*)?$/); return m?m[1]:null; }
-function kacrFetch(id){
+function kacrFetch(id){ return kacrAsk({dog:id}); }
+/* dotaz na serverovou funkci: {dog} výsledky psa, {q} hledání psů a psovodů, {handler} psi psovoda */
+function kacrAsk(body){
   var ac=typeof AbortController==='function'?new AbortController():null, tm=ac?setTimeout(function(){ac.abort();},25000):0;
-  return fetch(SB_URL+'/functions/v1/kacr',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({dog:id}),signal:ac?ac.signal:undefined})
+  return fetch(SB_URL+'/functions/v1/kacr',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(body),signal:ac?ac.signal:undefined})
     .then(function(r){ return r.json().catch(function(){return {};}).then(function(j){ clearTimeout(tm); if(!r.ok||!j||j.error) throw new Error((j&&j.error)||'server '+r.status); return j; }); },
           function(e){ clearTimeout(tm); throw new Error(e&&e.name==='AbortError'?'server neodpovídá':'bez připojení k internetu'); });
+}
+/* hledání psa v okně psa: podle textu v poli #dKacr, nebo psi jednoho psovoda ({handler}) */
+var KACR_Q=0;
+function kacrFind(by){
+  var box=$('dKres'), inp=$('dKacr'); if(!box||!inp) return;
+  var q=inp.value.trim(), n=++KACR_Q;
+  if(!by){ if(q.replace(/\s/g,'').length<2){ box.innerHTML='<p class="hint">Napiš aspoň 2 písmena jména psa nebo psovoda.</p>'; return; } by={q:q}; }
+  box.innerHTML='<p class="hint">Hledám na kacr.info…</p>';
+  var dogBtn=function(x,sub){ return '<button class="kc-hit" data-kd="'+(+x.id)+'" data-kn="'+esc(x.name)+'"'+(x.size?' data-ksz="'+esc(x.size)+'"':'')+'><b translate="no">'+esc(x.name)+'</b><span>'+esc(sub||'')+'</span></button>'; };
+  kacrAsk(by).then(function(r){
+    if(n!==KACR_Q||!$('dKres')) return;
+    if(by.handler){
+      var ds=r.dogs||[];
+      box.innerHTML='<p class="kc-cap"><span translate="no">'+esc(r.name||'')+'</span> · psi</p>'+(ds.length?ds.map(function(x){return dogBtn(x,x.size&&SIZES[x.size]?SIZES[x.size].l:(x.size||''));}).join(''):'<p class="hint">Psovod nemá žádného psa s průkazem.</p>');
+      return;
+    }
+    var D=r.dogs||[], H=r.handlers||[];
+    if(!D.length&&!H.length){ box.innerHTML='<p class="hint">Nic nenalezeno. Zkus jen část jména.</p>'; return; }
+    box.innerHTML=(D.length?'<p class="kc-cap">Psi</p>'+D.map(function(x){return dogBtn(x,x.breed);}).join(''):'')+
+      (H.length?'<p class="kc-cap">Psovodi</p>'+H.map(function(x){return '<button class="kc-hit h" data-kh="'+(+x.id)+'"><b translate="no">'+esc(x.name)+'</b><span>'+(x.osa?'<span translate="no">'+esc(x.osa)+'</span> · ':'')+'ukázat psy ›</span></button>';}).join(''):'')+
+      (D.length>=10?'<p class="hint">Ukazuje se jen prvních 10 psů. Napiš celé jméno, nebo hledej podle psovoda.</p>':'');
+  },function(e){ if(n===KACR_Q&&$('dKres')) box.innerHTML='<p class="hint">kacr.info: '+esc(e.message)+'</p>'; });
 }
 /* stáhne a uloží výsledky psa; quiet = jen krátké oznámení */
 function kacrLoad(dog,quiet){

@@ -17,7 +17,11 @@ module.exports = async function ({ browser, base }) {
     { id: 1, name: 'Plzeň', date: '2025-04-13', runs: [
       { id: 11, name: 'Zkouška I IA1', handler: 'H', handlerId: 1, place: 1, of: 3, t: 38, pen: 0, v: 3.8 }] }] };
   await page.route('**/functions/v1/kacr', async r => {
-    const body = JSON.parse(r.request().postData() || '{}'); calls.push(body.dog);
+    const body = JSON.parse(r.request().postData() || '{}'); calls.push(body.dog || body);
+    if (body.q != null) return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(/^nic/.test(body.q) ? { dogs: [], handlers: [] } : {
+      dogs: [{ id: 14756, name: 'Wampi Deabei', breed: 'Border kolie' }, { id: 99, name: 'Wampi <i>X</i>', breed: null }],
+      handlers: [{ id: 6625, name: 'Hana Uhrová', osa: 'AGILITY Karlovy Vary' }] }) });
+    if (body.handler != null) return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ id: 6625, name: 'Hana Uhrová', dogs: [{ id: 9679, name: 'Janie', size: 'M' }, { id: 14756, name: 'Wampi Deabei', size: 'I' }] }) });
     if (mode === 'err') return r.fulfill({ status: 404, contentType: 'application/json', body: JSON.stringify({ error: 'Pes s tímhle číslem na kacr.info není.' }) });
     return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(DATA) });
   });
@@ -42,6 +46,28 @@ module.exports = async function ({ browser, base }) {
     ok(calls[calls.length - 1] === '14756', 'serverová funkce dostala ' + calls[calls.length - 1]);
     ok(await ev(() => /6 běhů/.test($('toast').textContent)), 'chybí oznámení o načtení');
     ok(await ev(() => !!backupData().data['agility-kacr-v1']), 'výsledky nejsou v záloze');
+  });
+
+  await step('hledání psa podle jména a podle psovoda', async () => {
+    await fresh();
+    await ev(() => { DOGS = []; DOGC = null; saveDogs(); KACR = {}; lsSet(KACRK, KACR); moreTab = 'dogs'; moreRender(); dogSheet(null); });
+    await page.fill('#dKacr', 'Wampi'); await page.click('#sheet [data-a="ks"]');
+    await page.waitForSelector('#dKres [data-kd]', { timeout: 5000 });
+    ok(await page.locator('#dKres [data-kd]').count() === 2 && await page.locator('#dKres [data-kh]').count() === 1, 'seznam psů a psovodů z hledání');
+    ok(JSON.stringify(calls[calls.length - 1]) === '{"q":"Wampi"}', 'hledání poslalo ' + JSON.stringify(calls[calls.length - 1]));
+    ok(await ev(() => !document.querySelector('#dKres i') && /Wampi <i>X<\/i>/.test($('dKres').textContent)), 'jméno psa se nezobrazilo jako text');
+    /* psovod → jeho psi s velikostí */
+    await page.click('#dKres [data-kh="6625"]'); await page.waitForSelector('#dKres [data-kd="9679"]', { timeout: 5000 });
+    await page.click('#dKres [data-kd="9679"]');
+    ok(await ev(() => $('dKacr').value === 'https://kacr.info/dogs/9679' && $('dName').value === 'Janie' && $('dSize').value === 'M' && /Vybráno/.test($('dKres').textContent)), 'výběr psa nevyplnil odkaz, jméno nebo velikost');
+    /* jméno místo odkazu při uložení: hledá, neuloží */
+    await page.fill('#dKacr', 'nic takového'); await page.click('#sheet [data-a="ok"]'); await page.waitForTimeout(300);
+    ok(await ev(() => !DOGS.length && /Nic nenalezeno/.test($('dKres').textContent)), 'jméno místo odkazu se uložilo nebo chybí „nic nenalezeno“');
+    await page.fill('#dKacr', 'Wampi'); await page.press('#dKacr', 'Enter'); await page.waitForSelector('#dKres [data-kd="14756"]', { timeout: 5000 });
+    await page.click('#dKres [data-kd="14756"]'); await page.click('#sheet [data-a="ok"]');
+    await page.waitForFunction(() => DOGS.length === 1 && KACR[DOGS[0].id], null, { timeout: 5000 });
+    ok(await ev(() => DOGS[0].kacr === '14756' && DOGS[0].name === 'Janie'), 'vybraný pes se neuložil (vyplněné jméno zůstává): ' + JSON.stringify(await ev(() => DOGS[0])));
+    await ev(() => { DOGS = [{ id: 'dog-w', name: 'Wiky', size: 'I', cls: 'A1', kacr: '14756' }]; DOGC = 'dog-w'; saveDogs(); KACR = { 'dog-w': KACR[Object.keys(KACR)[0]] }; lsSet(KACRK, KACR); });
   });
 
   await step('statistiky a rychlost', async () => {
@@ -79,7 +105,7 @@ module.exports = async function ({ browser, base }) {
   });
 
   await step('angličtina', async () => {
-    ok(await ev(() => trLookup('Závody') === 'Competitions' && trLookup('Načteno z kacr.info: 45 běhů') === 'Loaded from kacr.info: 45 runs' && /^12[.,]9 s under SCT · 4[.,]1 m\/s$/.test(trLookup('12,9 s pod SČP · 4,1 m/s')) && trLookup('Obnovit') === 'Restore'), 'chybí překlad nebo se přepsal překlad Obnovit');
+    ok(await ev(() => trLookup('Závody') === 'Competitions' && trLookup('Načteno z kacr.info: 45 běhů') === 'Loaded from kacr.info: 45 runs' && /^12[.,]9 s under SCT · 4[.,]1 m\/s$/.test(trLookup('12,9 s pod SČP · 4,1 m/s')) && trLookup('Obnovit') === 'Restore' && trLookup('Hledat') === 'Search' && trLookup('ukázat psy ›') === 'show dogs ›'), 'chybí překlad nebo se přepsal překlad Obnovit');
   });
 
   await T.ctx.close();
