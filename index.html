@@ -1,5 +1,6 @@
 <!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1f6b45"><meta name="mobile-web-app-capable" content="yes"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>window.AGILITY_PWA=1;</script></head><body>
-<title>Agility trasa</title>
+<title>HandlerMap</title>
+<script>try{var t0=JSON.parse(localStorage.getItem('agility-theme-v1'));if(t0==='light'||t0==='dark')document.documentElement.setAttribute('data-theme',t0);}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
@@ -483,11 +484,147 @@ body:has(input:not([type=checkbox]):not([type=range]):not([type=file]):focus,tex
 
 @media (prefers-reduced-motion: reduce){ *{transition:none!important; animation:none!important;} }
 </style>
+<style>
+/* ===== HandlerMap 2.0: nový vzhled ===== */
+[hidden]{display:none!important;}
+:root{
+  --bg:#f3f5f1; --surface:#ffffff; --sunk:#edf0eb; --border:#dce3d7; --muted:#58675c;
+  --radius:16px; --radius-s:12px; --tap:44px; --nav-h:68px;
+  --shadow:0 1px 2px rgba(20,32,24,.05),0 4px 18px rgba(20,32,24,.06);
+  --shadow-l:0 18px 50px rgba(8,14,10,.22);
+  --grad:linear-gradient(150deg,#2a8558,#1a5c3b);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1210; --surface:#161d19; --sunk:#111815; --field:#17211b; --grid:#29382d; --border:#253029;
+    --text:#e8eee6; --muted:#9dab9f; --accent:#64bb8c; --on-accent:#08170f;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 22px rgba(0,0,0,.28); --shadow-l:0 18px 50px rgba(0,0,0,.55);
+    --grad:linear-gradient(150deg,#3f9b6b,#1f6b45);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d1210; --surface:#161d19; --sunk:#111815; --field:#17211b; --grid:#29382d; --border:#253029;
+  --text:#e8eee6; --muted:#9dab9f; --accent:#64bb8c; --on-accent:#08170f;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 22px rgba(0,0,0,.28); --shadow-l:0 18px 50px rgba(0,0,0,.55);
+  --grad:linear-gradient(150deg,#3f9b6b,#1f6b45);
+}
+body{-webkit-tap-highlight-color:transparent; text-rendering:optimizeLegibility;}
+main{padding-top:14px;}
+h2{font-size:21px;}
+
+/* horní lišta */
+.top{background:color-mix(in srgb,var(--surface) 86%,transparent); -webkit-backdrop-filter:saturate(1.5) blur(14px); backdrop-filter:saturate(1.5) blur(14px); border-bottom:1px solid color-mix(in srgb,var(--border) 75%,transparent);}
+.top-in{min-height:60px; padding:9px 16px;}
+.brand{width:38px; height:38px; border-radius:12px; background:var(--grad); color:#fff; box-shadow:0 3px 10px color-mix(in srgb,var(--accent) 35%,transparent);}
+.brand svg{width:26px; height:26px;}
+.apptitle{flex:1; min-width:0; display:none; flex-direction:column; justify-content:center;}
+.apptitle b{font-family:var(--display); font-size:23px; font-weight:700; line-height:1.05; letter-spacing:.005em;}
+.apptitle span{font-size:12.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.apptitle span:empty{display:none;}
+body:not([data-view="plan"]):not([data-view="run"]) .apptitle{display:flex;}
+body:not([data-view="plan"]):not([data-view="run"]) #titleBtn,
+body:not([data-view="plan"]):not([data-view="run"]) #favBtn,
+body:not([data-view="plan"]):not([data-view="run"]) #doneBtn{display:none;}
+.iconbtn{width:var(--tap); height:var(--tap); border-radius:13px; transition:transform .12s,background .15s;}
+.iconbtn:active{transform:scale(.94);}
+
+/* přechody pohledů */
+.view.enter{animation:hmIn .2s ease-out;}
+@keyframes hmIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+@keyframes hmFade{from{opacity:0;} to{opacity:1;}}
+
+/* tlačítka, čipy, přepínače */
+.btn{min-height:var(--tap); padding:9px 16px; border-radius:var(--radius-s); font-weight:600; transition:transform .12s,background .15s,border-color .15s,box-shadow .15s;}
+.btn:active{transform:scale(.97);}
+.btn.primary{box-shadow:0 3px 12px color-mix(in srgb,var(--accent) 28%,transparent);}
+.btn.danger{border-color:color-mix(in srgb,var(--bad) 30%,var(--border));}
+.btn.ghost{border-color:transparent; background:transparent; color:var(--muted); box-shadow:none;}
+select.btn{padding-right:10px;}
+.chip{min-height:38px; padding:8px 15px; font-weight:500; transition:background .15s,color .15s,border-color .15s;}
+.seg{border-radius:13px; padding:3px; gap:3px; background:var(--sunk); border:1px solid transparent;}
+.seg button{border-radius:10px; min-height:38px; transition:background .15s,color .15s;}
+.seg button.on{box-shadow:0 1px 5px rgba(0,0,0,.14);}
+.tool{min-height:42px; padding:8px 14px; border-radius:var(--radius-s); font-weight:600;}
+.ob-btn{min-width:70px; padding:8px; border-radius:var(--radius-s);}
+.zoom .btn{width:var(--tap); padding:0; justify-content:center; font-size:20px;}
+.counter .pm button{width:48px; height:48px; border-radius:13px;}
+.speed button{width:40px; height:40px; border-radius:11px;}
+.startbtn{border-radius:18px; padding:18px; box-shadow:0 6px 20px color-mix(in srgb,var(--accent) 30%,transparent); transition:transform .12s;}
+.startbtn:active{transform:scale(.98);}
+.startbtn.stop{box-shadow:0 6px 20px color-mix(in srgb,var(--bad) 30%,transparent);}
+
+/* karty a panely */
+.panel,.card,.item,.chart,.prog,.coach,.vlink,.topic,.opt,.counter,.fcibar,.modebar,.acc details,.newitem,.empty-state{border-radius:var(--radius);}
+.panel,.card,.chart,.item,.topic,.coach,.vlink,.counter,.prog,.acc details{box-shadow:var(--shadow); border-color:color-mix(in srgb,var(--border) 75%,transparent);}
+.specs,.tiles{border-radius:var(--radius); box-shadow:var(--shadow);}
+#wrap{border-radius:var(--radius); box-shadow:var(--shadow);}
+.card{transition:transform .12s;}
+.card:active{transform:scale(.985);}
+.topic{transition:transform .12s;} .topic:active{transform:scale(.98);}
+
+/* spodní navigace */
+.nav{background:color-mix(in srgb,var(--surface) 90%,transparent); -webkit-backdrop-filter:saturate(1.5) blur(14px); backdrop-filter:saturate(1.5) blur(14px); border-top:1px solid color-mix(in srgb,var(--border) 75%,transparent);}
+.nav-in{height:var(--nav-h);}
+.nav button{gap:3px; font-size:12px; font-weight:500;}
+.nav .nic{display:grid; place-items:center; width:50px; height:30px; border-radius:16px; transition:background .2s,transform .2s;}
+.nav .nic svg{width:23px; height:23px;}
+.nav button.on{color:var(--accent);}
+.nav button.on .nic{background:color-mix(in srgb,var(--accent) 17%,transparent);}
+.nav button:active .nic{transform:scale(.92);}
+.nav .ndot{top:9px; left:calc(50% + 12px);}
+
+/* dialog */
+.scrim{background:rgba(6,10,8,.5); animation:hmFade .18s ease-out;}
+.sheet{border-radius:24px 24px 20px 20px; padding:8px 18px 18px; box-shadow:var(--shadow-l); animation:hmSheet .26s cubic-bezier(.2,.8,.2,1);}
+.sheet::before{content:''; display:block; flex-shrink:0; width:40px; height:4px; border-radius:2px; background:var(--border); margin:2px auto 4px;}
+@keyframes hmSheet{from{transform:translateY(48px); opacity:.3;} to{transform:none; opacity:1;}}
+.sheet input,.sheet select{min-height:46px; border-radius:var(--radius-s);}
+.toast{border-radius:14px; padding:11px 16px; max-width:calc(100% - 32px); animation:hmToast .2s ease-out; font-weight:500;}
+@keyframes hmToast{from{opacity:0; transform:translate(-50%,10px);} to{opacity:1; transform:translate(-50%,0);}}
+
+/* značka na úvodní obrazovce (limetkové pozadí) */
+.hm-logo{color:#0a2a1c; --mark-accent:#1f6b45;}
+.hm-logo svg{width:26px; height:26px;}
+/* Více: nastavení a O aplikaci */
+.panel.set,.panel.about{display:flex; flex-direction:column; gap:10px;}
+.about-h{display:flex; align-items:center; gap:12px;}
+.about-ic{width:54px; height:54px; flex:0 0 auto; border-radius:16px; background:var(--grad); color:#fff; display:grid; place-items:center;}
+.about-ic svg{width:36px; height:36px;}
+.about-h b{display:block; font-family:var(--display); font-size:24px; line-height:1.1;}
+.about-h span{color:var(--muted); font-size:13.5px;}
+.news{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:4px; font-size:14px;}
+.older summary{cursor:pointer; color:var(--accent); font-weight:600; font-size:14px; padding:4px 0;}
+
+/* průvodce */
+html.onb-open,html.onb-open body{overflow:hidden;}
+.onb{position:fixed; inset:0; z-index:95; background:var(--bg); display:flex; flex-direction:column; gap:10px; padding:calc(14px + env(safe-area-inset-top,0px)) 20px calc(18px + env(safe-area-inset-bottom,0px)); overflow:auto; animation:hmFade .25s;}
+.onb-top{display:flex; align-items:center; justify-content:space-between; max-width:480px; width:100%; margin:0 auto;}
+.dots{display:flex; gap:6px;}
+.dots i{width:8px; height:8px; border-radius:4px; background:var(--border); transition:width .25s,background .25s;}
+.dots i.on{width:24px; background:var(--accent);}
+.onb-body{flex:1; display:flex; flex-direction:column; justify-content:center; gap:16px; max-width:480px; width:100%; margin:0 auto; animation:hmIn .25s ease-out;}
+.onb-logo{width:88px; height:88px; border-radius:26px; background:var(--grad); color:#fff; display:grid; place-items:center; box-shadow:0 10px 30px color-mix(in srgb,var(--accent) 35%,transparent);}
+.onb-logo svg{width:60px; height:60px;}
+.onb h1{margin:0; font-family:var(--display); font-size:36px; font-weight:700; line-height:1.05;}
+.onb .lead{margin:0; color:var(--muted); font-size:16px;}
+.onb label{display:flex; flex-direction:column; gap:6px; font-size:14px; color:var(--muted);}
+.onb input,.onb select{min-height:50px; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius-s); background:var(--surface); color:var(--text); font-size:16px;}
+.onb .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.onb .opt{min-height:70px; padding:12px 14px;}
+.onb .opt b{display:flex; align-items:center; gap:8px;}
+.onb .opt b svg{width:22px; height:22px; color:var(--accent);}
+.onb-foot{display:flex; gap:10px; max-width:480px; width:100%; margin:0 auto;}
+.onb-foot .btn{flex:1; min-height:54px; font-size:16px; justify-content:center;}
+
+@media (prefers-reduced-motion: reduce){ .view.enter,.sheet,.scrim,.toast,.onb,.onb-body{animation:none!important;} }
+
+</style>
 
 <header class="top">
   <div class="top-in">
-    <div class="brand" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="var(--on-accent)" stroke-width="2.2" stroke-linecap="round"><path d="M4 19V8M20 19V8M4 9h16"/><path d="M4 14h16" stroke="var(--zone)"/></svg></div>
-    <button class="ctitle" id="titleBtn" aria-label="Upravit název, třídu a autora parkuru"><b id="cName"></b><span id="cSub"></span></button>
+    <div class="brand" id="brandMark" aria-hidden="true"></div>
+    <div class="apptitle" id="appTitle"><b>HandlerMap</b><span id="appSub"></span></div>
+    <button class="ctitle" id="titleBtn" aria-label="Upravit název, třídu a autora parkuru"><b id="cName" translate="no"></b><span id="cSub"></span></button>
     <button class="iconbtn fav" id="favBtn" aria-pressed="false" aria-label="Oblíbený" data-ic="star"></button>
     <button class="iconbtn done" id="doneBtn" aria-pressed="false" aria-label="Zaběhnuto" data-ic="check"></button>
   </div>
@@ -630,6 +767,7 @@ body:has(input:not([type=checkbox]):not([type=range]):not([type=file]):focus,tex
       <button class="chip" data-m="warm">Rozcvička</button>
       <button class="chip" data-m="coach">Trenéři</button>
       <button class="chip" data-m="backup">Záloha</button>
+      <button class="chip" data-m="set">Nastavení</button>
       <button class="chip" data-m="about">O aplikaci</button>
     </div>
     <div id="moreBody"></div>
@@ -638,12 +776,12 @@ body:has(input:not([type=checkbox]):not([type=range]):not([type=file]):focus,tex
 
 <nav class="nav" aria-label="Hlavní navigace">
   <div class="nav-in">
-    <button data-v="home" class="on"><span data-ic="home"></span><span>Domů</span></button>
-    <button data-v="plan"><span data-ic="map"></span><span>Plán</span></button>
-    <button data-v="lib"><span data-ic="grid"></span><span>Parkury</span><i class="ndot" hidden></i></button>
-    <button data-v="run"><span data-ic="timer"></span><span>Běh</span></button>
-    <button data-v="video"><span data-ic="play"></span><span>Videa</span></button>
-    <button data-v="more"><span data-ic="dots"></span><span>Více</span></button>
+    <button data-v="home" class="on"><span class="nic" data-ic="home"></span><span>Domů</span></button>
+    <button data-v="plan"><span class="nic" data-ic="map"></span><span>Plán</span></button>
+    <button data-v="lib"><span class="nic" data-ic="grid"></span><span>Parkury</span><i class="ndot" hidden></i></button>
+    <button data-v="run"><span class="nic" data-ic="timer"></span><span>Běh</span></button>
+    <button data-v="video"><span class="nic" data-ic="play"></span><span>Videa</span></button>
+    <button data-v="more"><span class="nic" data-ic="dots"></span><span>Více</span></button>
   </div>
 </nav>
 
@@ -665,20 +803,32 @@ body:has(input:not([type=checkbox]):not([type=range]):not([type=file]):focus,tex
 var $=function(i){return document.getElementById(i);};
 var NS='http://www.w3.org/2000/svg', ZC='#e8a838', KEY='agility-plan-v2', MYK='agility-my-v1', MKK='agility-marks-v1', SETK='agility-set-v1';
 function lsGet(k,d){try{var v=localStorage.getItem(k); return v?JSON.parse(v):d;}catch(e){return d;}}
-function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v)); return true;}catch(e){lsFull(e); return false;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v)); return true;}catch(e){lsFull(e); return false;}finally{ if(window.HM) HM.emit('store',{key:k}); }}
 /* plná paměť: změna se neuloží, tak to aspoň řekni (nejvýš jednou za 15 s, hláška přebije případné „Uloženo“) */
 function lsFull(e){
   if(!e||!(e.name==='QuotaExceededError'||e.name==='NS_ERROR_DOM_QUOTA_REACHED'||e.code===22||e.code===1014)) return;
   if(lsFull.t&&Date.now()-lsFull.t<15000) return; lsFull.t=Date.now();
   setTimeout(function(){toast('Paměť aplikace je plná, poslední změna se neuložila. Odeber podklad z fotky nebo smaž staré parkury v Moje.',6000);},0);
 }
+/* ---------- HandlerMap: události a registr obrazovek (moduly se sem zapisují, UI je vykreslí) ---------- */
+var HM={_h:{},screens:{},cards:{},
+  on:function(e,f){(this._h[e]=this._h[e]||[]).push(f);},
+  off:function(e,f){this._h[e]=(this._h[e]||[]).filter(function(x){return x!==f;});},
+  emit:function(e,d){(this._h[e]||[]).slice().forEach(function(f){try{f(d);}catch(x){if(window.console) console.error('HM '+e,x);}});},
+  /* obrazovka modulu: {title, ic, group:'train'|'more'|'home', order, render(el,arg), hide()} */
+  screen:function(id,o){o.id=id; this.screens[id]=o;},
+  /* karta na úvodní obrazovce: {order, render(el) -> false = skrýt} */
+  card:function(id,o){o.id=id; this.cards[id]=o;},
+  /* otevření obrazovky modulu; UI ho může přepsat vlastní navigací */
+  open:function(id,arg){var s=this.screens[id]; if(!s) return; show('more'); var el=document.getElementById('moreBody'); el.innerHTML=''; s.render(el,arg);}
+};
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
 function r(v){return Math.round(v*100)/100;}
 function r1(v){return Math.round(v*10)/10;}
 function cl(v,a,b){return Math.min(b,Math.max(a,v));}
 function dst(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
-function fmt(v){return v.toFixed(1).replace('.',',');}
+function fmt(v){var s=v.toFixed(1); return LANG==='en'?s:s.replace('.',',');}
 function bz(a,b,c,d,t){var m=1-t;return {x:m*m*m*a.x+3*m*m*t*b.x+3*m*t*t*c.x+t*t*t*d.x, y:m*m*m*a.y+3*m*m*t*b.y+3*m*t*t*c.y+t*t*t*d.y};}
 function plank(hl,w,zl){
   var f=' y="'+(-w)+'" height="'+(2*w)+'"';
@@ -689,6 +839,2015 @@ function plank(hl,w,zl){
 var WV='<line x1="-3.3" x2="3.3" stroke="currentColor" stroke-width=".04" opacity=".5"/>';
 for(var q=0;q<12;q++) WV+='<circle cx="'+r(-3.3+q*.6)+'" r=".1" fill="currentColor"/>';
 
+/* ---------- jazyk (čeština / angličtina) a vzhled (světlý / tmavý) ----------
+   Zdrojové texty jsou česky. V angličtině se překládají přes slovník:
+   - exact: celý text uzlu (mezery sjednocené) → překlad
+   - num:   text, kde čísla nahradí # (např. "Uloženo # parkurů") → překlad s # (nebo #1, #2… pro jiné pořadí)
+   - re:    [regulární výraz, náhrada] pro texty se jmény; $1 = beze změny, @1 = přeložit i zachycenou část
+   Texty v DOM se překládají samy (MutationObserver), T() je pro plátno, řeč, PDF a nativní dialogy.
+   Uživatelská data se nepřekládají: prvek s atributem translate="no" (nebo data-nt). */
+var LANGK='agility-lang-v1', THEMEK='agility-theme-v1';
+/* výchozí jazyk podle telefonu; automatické testy (navigator.webdriver) běží česky */
+var LANG=(function(){ var v=lsGet(LANGK,null); if(v==='cs'||v==='en') return v; if(navigator.webdriver) return 'cs'; var n=((navigator.languages&&navigator.languages[0])||navigator.language||'cs').toLowerCase(); return /^(cs|sk)/.test(n)?'cs':'en'; })();
+var LOC=LANG==='en'?'en-GB':'cs-CZ';
+var I18N={exact:{},num:{},re:[]};
+function i18nNorm(s){ return String(s).replace(/ /g,' ').replace(/\s+/g,' ').trim(); }
+var I18N_NUM=/\d+(?:[.,]\d+)?/g;
+function i18nAdd(d){
+  if(!d) return;
+  var k;
+  if(d.exact) for(k in d.exact) if(d.exact[k]!=null&&d.exact[k]!=='') I18N.exact[i18nNorm(k)]=d.exact[k];
+  if(d.num) for(k in d.num) if(d.num[k]!=null&&d.num[k]!=='') I18N.num[i18nNorm(k)]=d.num[k];
+  /* u regulárního výrazu si pamatujeme nejdelší pevný kus textu – rychlé předběžné vyřazení */
+  if(d.re) d.re.forEach(function(x){ try{ var lit=x[0].split(/\\.|\([^)]*\)[?*+]?|[\^$|]/).sort(function(a,b){return b.length-a.length;})[0]||''; I18N.re.push([new RegExp(x[0]),x[1],lit]); }catch(e){} });
+}
+function i18nNumOut(n){ return LANG==='en'?String(n).replace(',','.'):n; }
+function trLookup(s,depth){
+  var k=i18nNorm(s); if(!k) return null;
+  var v=I18N.exact[k]; if(v!=null) return v;
+  if(/\d/.test(k)){
+    var nums=k.match(I18N_NUM), nk=k.replace(I18N_NUM,'#'); v=I18N.num[nk];
+    if(v!=null){ var i=0; return v.replace(/#([1-9])?/g,function(m,d){ var n=d?nums[+d-1]:nums[i++]; return n==null?'':i18nNumOut(n); }); }
+  }
+  for(var j=0;j<I18N.re.length;j++){
+    var R=I18N.re[j]; if(R[2]&&k.indexOf(R[2])<0) continue;
+    var m=k.match(R[0]);
+    if(m){ return R[1].replace(/([$@])([1-9])/g,function(x,t,d){ var g=m[+d]; if(g==null) return '';
+        if(/^\d+(?:[.,]\d+)?$/.test(g)) return i18nNumOut(g);
+        if(t==='@'&&(depth||0)<2){ var tg=trLookup(g,(depth||0)+1); return tg==null?g:tg; } return g; }); }
+  }
+  return null;
+}
+/* T('česky') → text v aktuálním jazyce (pro plátno, řeč, PDF, nativní dialogy) */
+function T(s){ if(LANG==='cs'||s==null||s==='') return s; var r=trLookup(String(s)); return r==null?s:r; }
+var TR_MISS={};
+function trMiss(v){ var k=i18nNorm(v); if(k&&/[a-zA-ZÀ-ž]/.test(k)) TR_MISS[k]=(TR_MISS[k]||0)+1; }
+var TR_ATTRS=['aria-label','placeholder','title','alt'], TR_SKIP={SCRIPT:1,STYLE:1,TEXTAREA:1,CODE:1,NOSCRIPT:1};
+function trSkipEl(el){ return !el||TR_SKIP[el.nodeName]||el.isContentEditable||(el.closest&&el.closest('[translate="no"],[data-nt]')); }
+function trText(n){
+  var v=n.nodeValue; if(!v||n.__tr===v||!/[A-Za-zÀ-ž]/.test(v)) return;
+  var p=n.parentNode; if(!p||trSkipEl(p)) return;
+  var t=trLookup(v); if(t==null){ trMiss(v); n.__tr=v; return; }
+  if(p.nodeName==='OPTION'&&!p.hasAttribute('value')) p.setAttribute('value',p.value);
+  var nv=v.match(/^\s*/)[0]+t+v.match(/\s*$/)[0]; n.__tr=nv; if(nv!==v) n.nodeValue=nv;
+}
+function trAttr(el,a){
+  var v=el.getAttribute(a); if(!v) return; el.__tra=el.__tra||{}; if(el.__tra[a]===v) return;
+  if(trSkipEl(el)&&a!=='aria-label'&&a!=='title') return;
+  var t=trLookup(v); if(t==null){ trMiss(v); el.__tra[a]=v; return; }
+  el.__tra[a]=t; if(t!==v) el.setAttribute(a,t);
+}
+function trTree(root){
+  if(!root) return;
+  if(root.nodeType===3){ trText(root); return; }
+  if(root.nodeType!==1||TR_SKIP[root.nodeName]) return;
+  for(var i=0;i<TR_ATTRS.length;i++) if(root.hasAttribute(TR_ATTRS[i])) trAttr(root,TR_ATTRS[i]);
+  var w=document.createTreeWalker(root,5,null), n;   /* 1|4 = prvky a texty */
+  while((n=w.nextNode())){
+    if(n.nodeType===3) trText(n);
+    else for(var j=0;j<TR_ATTRS.length;j++) if(n.hasAttribute(TR_ATTRS[j])) trAttr(n,TR_ATTRS[j]);
+  }
+}
+/* Překlady nových textů: když přidáš do aplikace český text, sem dopiš jeho anglickou verzi (stejný formát jako i18nAdd). */
+var I18N_EXTRA={exact:{
+},num:{
+},re:[
+]};
+function i18nStart(){
+  i18nAdd(I18N_EXTRA);
+  document.documentElement.lang=LANG==='en'?'en':'cs';
+  if(LANG!=='en'||!window.MutationObserver) return;
+  trTree(document.body);
+  new MutationObserver(function(ms){
+    for(var i=0;i<ms.length;i++){ var m=ms[i];
+      if(m.type==='characterData') trText(m.target);
+      else if(m.type==='attributes') trAttr(m.target,m.attributeName);
+      else for(var j=0;j<m.addedNodes.length;j++) trTree(m.addedNodes[j]);
+    }
+  }).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:TR_ATTRS});
+}
+function setLang(l){ if(l!=='cs'&&l!=='en') return; lsSet(LANGK,l); if(l!==LANG){ try{ location.reload(); }catch(e){} } }
+
+/* vzhled: 'system' | 'light' | 'dark' */
+var THEME=lsGet(THEMEK,'system');
+function themeApply(){
+  var r=document.documentElement;
+  if(THEME==='light'||THEME==='dark') r.setAttribute('data-theme',THEME); else r.removeAttribute('data-theme');
+  var dark=THEME==='dark'||(THEME!=='light'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);
+  var mt=document.querySelector('meta[name="theme-color"]'); if(mt) mt.setAttribute('content',dark?'#0f1411':'#1f6b45');
+  HM.emit('theme',{theme:THEME,dark:dark});
+}
+function setTheme(t){ THEME=(t==='light'||t==='dark')?t:'system'; lsSet(THEMEK,THEME); themeApply(); }
+function isDark(){ return THEME==='dark'||(THEME!=='light'&&!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)); }
+try{ matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){ if(THEME==='system') themeApply(); }); }catch(e){}
+themeApply();
+
+i18nAdd({
+"exact": {
+"Překážky": "Obstacles",
+"Skok": "Jump",
+"Náběh, odraz, doskok": "Approach, take-off, landing",
+"Rovný náběh na střed laťky": "Straight approach to the middle of the bar",
+"Odraz: pes si sám změří vzdálenost": "Take-off: the dog judges the distance itself",
+"Nad laťkou už psovod ukazuje, kam se jde dál": "Over the bar the handler already shows where to go next",
+"Doskok a plynulý odběh": "Landing and smooth departure",
+"Začni s laťkou na zemi nebo úplně nízko a odměňuj rovný přechod středem.": "Start with the bar on the ground or very low and reward a straight crossing through the middle.",
+"Přidej křídla a trénuj obíhání křídla z obou stran (cviky na jednom skoku).": "Add wings and practise going round the wing from both sides (one-jump drills).",
+"Výšku zvedej postupně až na výšku kategorie psa.": "Raise the height gradually up to the dog's size category.",
+"Na techniku skoku používej skokové řady, kde si pes sám hledá odraz.": "For jumping technique use jump grids, where the dog finds its own take-off.",
+"Plné výšky až u dospělého psa. Na závody smí pes od 18 měsíců.": "Full heights only for an adult dog. Dogs may compete from 18 months.",
+"Laťka často padá, když psovod dá povel pozdě nebo psa „táhne“ tělem.": "The bar often falls when the handler cues late or \"pulls\" the dog with the body.",
+"Pes čte, kam míří tvoje ramena a kam se díváš.": "The dog reads where your shoulders point and where you look.",
+"Jumping Basics 1 (cvik Susan Salo)": "Jumping Basics 1 (Susan Salo exercise)",
+"Cviky na jednom skoku (webinář)": "One-jump drills (webinar)",
+"Agility 6. díl: Učíme psa skákat": "Agility part 6: Teaching the dog to jump",
+"SpokojenyPes.cz, článek": "SpokojenyPes.cz, article",
+"AgilityNerd, článek": "AgilityNerd, article",
+"Tunel": "Tunnel",
+"Vstup, oblouk, výběh": "Entry, curve, exit",
+"Pes vbíhá do tunelu rovně": "The dog runs straight into the tunnel",
+"Psovod mezitím přebíhá k výstupu": "Meanwhile the handler runs to the exit",
+"Po výběhu pes hned vidí psovoda": "After the exit the dog sees the handler straight away",
+"Pokračují společně dál": "They carry on together",
+"Začni s krátkým rovným tunelem: pomocník drží psa, ty voláš z druhé strany.": "Start with a short straight tunnel: a helper holds the dog, you call from the other end.",
+"Tunel postupně prodlužuj a ohýbej do oblouku.": "Gradually lengthen the tunnel and bend it into a curve.",
+"Posílej psa do tunelu z dálky a z různých úhlů.": "Send the dog into the tunnel from a distance and from different angles.",
+"Nacvič, aby pes po výběhu hned hledal psovoda.": "Practise the dog looking for the handler right after the exit.",
+"Vběhnutí do špatného otvoru znamená diskvalifikaci.": "Entering the wrong end means disqualification.",
+"Tunel pod kladinou nebo áčkem je častá past, pes potřebuje jasný směr.": "A tunnel under the dog walk or A-frame is a common trap; the dog needs a clear direction.",
+"Štěně a první tunely (TunelMaayniac)": "Puppy and first tunnels (TunelMaayniac)",
+"Slalom": "Weave poles",
+"Vstup a proplétání": "Entry and weaving",
+"Vstup: první tyčka je vždy po levé straně psa": "Entry: the first pole is always on the dog's left",
+"Pes proplétá tyčky v rytmu": "The dog weaves the poles in rhythm",
+"Slalom musí být celý, teprve pak další překážka": "The weaves must be complete before the next obstacle",
+"Metoda 2×2: začni se dvěma páry tyček, pes jimi projde a dostane odměnu.": "2×2 method: start with two pairs of poles, the dog goes through and gets a reward.",
+"Přidávej další páry a postupně je natáčej do přímé řady.": "Add more pairs and gradually turn them into a straight line.",
+"Až pes zvládá 12 tyček, trénuj vstupy z různých úhlů a z obou stran.": "Once the dog manages 12 poles, practise entries from different angles and both sides.",
+"Nakonec přidej rychlost a vzdálenost psovoda.": "Finally add speed and handler distance.",
+"Jiná možnost je metoda ulička: tyčky rozevřené do dvou řad, které se postupně stahují.": "Another option is the channel method: poles opened into two rows that gradually close.",
+"Chybný vstup se trestá jako odmítnutí.": "A wrong entry is penalised as a refusal.",
+"Proběhnutí slalomu opačným směrem přes víc než dvě branky znamená diskvalifikaci.": "Running the weaves in the wrong direction through more than two gates means disqualification.",
+"Doma se psem: slalom 2×2": "At home with the dog: 2×2 weaves",
+"Weave Poles – metoda 2×2": "Weave Poles – 2×2 method",
+"Agility 5. díl: Metody učení slalomu": "Agility part 5: Methods of teaching the weaves",
+"5 kroků k samostatnému slalomu": "5 steps to independent weaves",
+"OneMind Dogs, článek": "OneMind Dogs, article",
+"A-rampa (áčko)": "A-frame",
+"Nahoru, přes vrchol, zóna": "Up, over the apex, contact",
+"Pes vybíhá rovně nahoru": "The dog runs straight up",
+"Přes vrchol bez skoku": "Over the apex without jumping",
+"Sestupná zóna: aspoň jedna tlapka do žluté": "Down contact: at least one paw in the yellow",
+"Zastavená zóna (2on2off), nebo sbíhaná zóna": "Stopped contact (2on2off) or running contact",
+"Vyber metodu zón: zastavovanou (2on2off) nebo sbíhanou.": "Choose a contact method: stopped (2on2off) or running.",
+"Pro 2on2off nejdřív nauč pozici na nízké desce: přední tlapky na zemi, zadní na desce.": "For 2on2off first teach the position on a low board: front paws on the ground, back paws on the board.",
+"Pozici přenes na sníženou A-rampu a výšku zvedej postupně.": "Transfer the position to a lowered A-frame and raise the height gradually.",
+"Odměňuj v pozici, uvolňuj až povelem.": "Reward in position, release only on cue.",
+"Na áčku se pes musí dotknout sestupné zóny aspoň jednou tlapkou.": "On the A-frame the dog must touch the down contact with at least one paw.",
+"Na nástupnou rampu musí pes vstoupit všemi čtyřmi, jinak diskvalifikace.": "The dog must step onto the up ramp with all four paws, otherwise disqualification.",
+"Vrchol je pro všechny kategorie ve výšce 170 cm.": "The apex is 170 cm high for all categories.",
+"Agility bez parkuru II: zastavované zóny": "Agility without a course II: stopped contacts",
+"3 kroky ke spolehlivým zónám": "3 steps to reliable contacts",
+"Kladina": "Dog walk",
+"Nástup, přechod, zastavení": "Mount, crossing, stop",
+"Nástup na rampu všemi čtyřmi": "Mounting the ramp with all four paws",
+"Klidný přechod po horním dílu": "Calm crossing along the top plank",
+"Sestup do žluté zóny": "Descent into the yellow contact",
+"Zastavení 2on2off: přední tlapky na zemi, zadní v zóně": "2on2off stop: front paws on the ground, back paws in the contact",
+"Uvolnění povelem a pokračování": "Release on cue and carry on",
+"Začni s prknem na zemi: pes po něm chodí klidně a na konci zaujme pozici.": "Start with a plank on the ground: the dog walks along it calmly and takes the position at the end.",
+"Nacvič zastavenou nebo sbíhanou zónu stejně jako u áčka.": "Practise a stopped or running contact the same way as on the A-frame.",
+"Kladinu zvedej postupně, pomocník jistí psa z boku.": "Raise the dog walk gradually, with a helper securing the dog from the side.",
+"Trénuj náběhy z různých úhlů.": "Practise approaches from different angles.",
+"Sestupnou zónu musí pes trefit aspoň jednou tlapkou, jinak 5 trestných bodů.": "The dog must hit the down contact with at least one paw, otherwise 5 penalty points.",
+"Seskočení ze sestupného dílu dřív, než na něj pes stoupne všemi čtyřmi, je odmítnutí.": "Jumping off the down plank before the dog has all four paws on it is a refusal.",
+"Kladina je vysoká 120–130 cm.": "The dog walk is 120–130 cm high.",
+"Doma se psem: sbíhané zóny II": "At home with the dog: running contacts II",
+"Zastavované zóny: první nácvik": "Stopped contacts: first training",
+"Running contacts v 6 krocích (Shorts)": "Running contacts in 6 steps (Shorts)",
+"Houpačka": "Seesaw",
+"Překlopení a čekání": "Tipping and waiting",
+"Pes nastoupí na spodní konec": "The dog steps onto the lower end",
+"Za osou se houpačka překlopí": "Past the pivot the seesaw tips",
+"Čeká, až se konec dotkne země": "It waits until the end touches the ground",
+"Teprve pak seskočí, jinak 5 trestných bodů": "Only then does it jump off, otherwise 5 penalty points",
+"Začni hrou s pohybem desky (bang game): pes sám sklápí nízko položený konec.": "Start with a board-movement game (bang game): the dog tips a low end itself.",
+"Postupně zvětšuj výšku, ze které se deska sklápí.": "Gradually increase the height the board tips from.",
+"Nauč cílovou pozici na konci desky (2on2off nebo všechny 4 tlapky na desce).": "Teach the target position at the end of the board (2on2off or all 4 paws on the board).",
+"Celou houpačku zkoušej, až pes bere pohyb i zvuk s klidem.": "Try the full seesaw only when the dog takes the movement and the noise calmly.",
+"Houpačka se musí dotknout země dřív, než z ní pes seskočí.": "The seesaw must touch the ground before the dog jumps off.",
+"Pes musí trefit nástupní i sestupnou zónu.": "The dog must hit both the up and the down contact.",
+"Seskok dřív, než pes přejde osu, je odmítnutí.": "Jumping off before the dog passes the pivot is a refusal.",
+"Doma se psem: houpačka, jak začít": "At home with the dog: the seesaw, how to start",
+"Kruh": "Tyre",
+"Proskok středem": "Jumping through the middle",
+"Rovný náběh na kruh": "Straight approach to the tyre",
+"Pes proskočí středem otvoru": "The dog jumps through the middle of the opening",
+"Rozpadne-li se kruh při skoku, je to 5 trestných bodů": "If the tyre breaks apart as the dog jumps, it's 5 penalty points",
+"Začni s kruhem nízko, pes jím prochází za odměnou.": "Start with the tyre low, the dog walks through it for a reward.",
+"Postupně zvedej do výšky kategorie (střed kruhu u L je 80 cm).": "Gradually raise it to the category height (tyre centre for L is 80 cm).",
+"Trénuj rovný náběh i náběh pod úhlem.": "Practise a straight approach as well as an angled one.",
+"V parkuru smí být kruh jen jednou.": "The tyre may appear only once in a course.",
+"Rozpadne-li se kruh při odmítnutí, je to diskvalifikace.": "If the tyre breaks apart at a refusal, it's disqualification.",
+"Skok daleký": "Long jump",
+"Dlouhý plochý skok": "A long flat jump",
+"Náběh rovně na začátek": "Straight approach to the start",
+"Dlouhý plochý skok přes všechny díly": "A long flat jump over all the units",
+"Proběhnutí nebo vyskočení do strany je odmítnutí": "Running through or jumping out to the side is a refusal",
+"Začni se dvěma díly blízko sebe.": "Start with two units close together.",
+"Někteří trenéři zpočátku dávají nad díly laťku, aby pes skákal obloukem.": "Some trainers initially put a bar over the units so the dog jumps in an arc.",
+"Postupně přidávej díly a délku podle kategorie (L 120–150 cm).": "Gradually add units and length according to the category (L 120–150 cm).",
+"Trénuj hlavně rovný náběh.": "Mainly practise a straight approach.",
+"Převrácení dílu je 5 trestných bodů.": "Knocking over a unit is 5 penalty points.",
+"Rohové tyče nejsou součást překážky, jejich shození se netrestá.": "The corner poles are not part of the obstacle; knocking them down is not penalised.",
+"Vedení psa": "Handling",
+"Čelo (front cross)": "Front cross",
+"Změna strany čelem k psovi": "Changing sides facing the dog",
+"Pes běží po levé straně psovoda": "The dog runs on the handler's left",
+"Psovod předběhne psa a dostane se před jeho dráhu": "The handler gets ahead of the dog and into its path",
+"Otočí se čelem k psovi a přejde na druhou stranu": "Turns to face the dog and crosses to the other side",
+"Pes je teď vpravo a točí se k překážce 3": "The dog is now on the right and turns towards obstacle 3",
+"Pokračují společně k další překážce": "They carry on together to the next obstacle",
+"Nejdřív si dráhu projdi bez psa: kudy půjdeš a kde se otočíš.": "First walk the path without the dog: where you'll go and where you'll turn.",
+"Otoč se čelem k psovi v místě, kde má pes změnit stranu.": "Turn to face the dog at the point where the dog should change sides.",
+"Po otočce psa hned veď k další překážce.": "After the turn lead the dog straight on to the next obstacle.",
+"Začni pomalu na dvou skocích a postupně zrychluj.": "Start slowly on two jumps and gradually speed up.",
+"Na čelo musíš psa předběhnout, jinak otočku nestihneš.": "For a front cross you must get ahead of the dog, otherwise you won't make the turn in time.",
+"Pes musí vidět tvůj obličej a ramena.": "The dog must see your face and shoulders.",
+"Doma se psem: handling, čelo": "At home with the dog: handling, front cross",
+"Front and Rear Cross – základy": "Front and Rear Cross – the basics",
+"Front, blind a rear cross: jaký je rozdíl?": "Front, blind and rear cross: what's the difference?",
+"Záda (rear cross)": "Rear cross",
+"Přeběhnutí za psem": "Crossing behind the dog",
+"Pes běží před psovodem po jeho levé straně": "The dog runs ahead of the handler on their left",
+"Psovod pošle psa dopředu na překážku 2": "The handler sends the dog ahead to obstacle 2",
+"Přeběhne za psem na druhou stranu": "Crosses behind the dog to the other side",
+"Pes se po skoku stočí na novou stranu psovoda": "After the jump the dog turns to the handler's new side",
+"Pokračují k překážce 3": "They carry on to obstacle 3",
+"Pes musí umět jít na překážku sám dopředu.": "The dog must be able to go ahead to an obstacle on its own.",
+"Zůstaň za psem a přejdi za ním na druhou stranu, když už míří na překážku.": "Stay behind the dog and cross behind it to the other side once it's committed to the obstacle.",
+"Pes se po překážce otočí na tvou novou stranu.": "After the obstacle the dog turns to your new side.",
+"Nacvič na jednom skoku s odměnou za správné otočení.": "Practise on one jump, rewarding the correct turn.",
+"Příliš brzký přechod pes chápe jako změnu směru ještě před překážkou.": "The dog reads a cross that's too early as a change of direction before the obstacle.",
+"Záda se hodí, když psa nestíháš předběhnout.": "A rear cross helps when you can't get ahead of the dog.",
+"Doma se psem: outy (práce na dálku)": "At home with the dog: outs (distance work)",
+"Blind (blind cross)": "Blind cross",
+"Změna strany zády k psovi": "Changing sides with your back to the dog",
+"Psovod je před psem a běží dál": "The handler is ahead of the dog and keeps running",
+"Na okamžik se k psovi otočí zády a přejde na druhou stranu": "For a moment turns their back to the dog and crosses to the other side",
+"Hned se ohlédne přes druhé rameno, pes je vpravo": "Immediately looks back over the other shoulder, the dog is on the right",
+"Pokračují k další překážce": "They carry on to the next obstacle",
+"Jsi před psem a běžíš od něj.": "You're ahead of the dog and running away from it.",
+"Na okamžik se k psovi otoč zády a přejdi na jeho druhou stranu.": "For a moment turn your back to the dog and cross to its other side.",
+"Hned se po něm ohlédni přes druhé rameno.": "Immediately look back at it over the other shoulder.",
+"Hodí se tam, kde potřebuješ zůstat v pohybu dopředu.": "Useful where you need to keep moving forward.",
+"Blind je rychlý, ale potřebuješ náskok před psem.": "A blind cross is fast, but you need a lead over the dog.",
+"Psa při něm krátce nevidíš, trasu musíš mít jistou.": "You briefly can't see the dog, so you must be sure of the route.",
+"Otočka vnitřkem (vlásenka)": "Inside wrap (hairpin)",
+"Kolem křídla k psovodovi": "Around the wing towards the handler",
+"Psovod je vpravo od psa, pes skáče rovně přes laťku": "The handler is to the right of the dog, the dog jumps straight over the bar",
+"Hned za laťkou se otočí o 180° kolem křídla": "Right after the bar it turns 180° around the wing",
+"Otočka vnitřkem: pes se točí směrem k psovodovi": "Inside wrap: the dog turns towards the handler",
+"Psovod mu pomáhá pozicí těla a přivoláním": "The handler helps with body position and a recall",
+"Na jednom skoku nauč psa obtočit křídlo zpět k tobě.": "On one jump teach the dog to wrap the wing back towards you.",
+"Odměňuj hned za křídlem u tvé nohy.": "Reward right behind the wing at your leg.",
+"Nacvič otočku z obou stran, doleva i doprava.": "Practise the wrap from both sides, left and right.",
+"Pro otočku vnitřkem a venkem používej dva různé povely.": "Use two different cues for the inside and outside wrap.",
+"Čím dřív pes otočku pozná, tím kratší bude jeho dráha.": "The earlier the dog recognises the wrap, the shorter its path.",
+"V Plánu se otočka ukáže jako smyčka dráhy kolem křídla. Nastavíš ji u skoku v seznamu Pořadí překážek.": "In Plan the wrap appears as a loop of the path around the wing. Set it on the jump in the Obstacle order list.",
+"Doma se psem: vlásenkovka": "At home with the dog: the hairpin",
+"Doma se psem: vlásenkovka II": "At home with the dog: the hairpin II",
+"Otočka venkem (topspin)": "Outside wrap (topspin)",
+"Kolem křídla od psovoda": "Around the wing away from the handler",
+"Za laťkou se pes otočí kolem druhého křídla": "After the bar the dog turns around the other wing",
+"Otočka venkem: pes se točí pryč od psovoda": "Outside wrap: the dog turns away from the handler",
+"Pak se vrací k psovodovi a pokračují dál": "Then comes back to the handler and they carry on",
+"Na jednom skoku nauč psa otočit se kolem křídla směrem od tebe.": "On one jump teach the dog to turn around the wing away from you.",
+"Začni s odměnou hozenou za křídlo na tu stranu, kam se má pes točit.": "Start with a reward thrown behind the wing on the side the dog should turn to.",
+"Přidej vlastní povel, jiný než pro otočku vnitřkem.": "Add a cue of its own, different from the inside wrap.",
+"Trénuj z obou stran a pak v krátkých sekvencích z generátoru (Otočky kolem křídla).": "Practise from both sides and then in short sequences from the generator (Wraps around the wing).",
+"Otočka venkem se hodí, když psovod nestihne být na vnitřní straně otočky.": "An outside wrap helps when the handler can't be on the inside of the turn.",
+"Pes musí rozlišit povel pro otočku k tobě a od tebe, jinak se otočí na špatnou stranu.": "The dog must tell the cue for a wrap towards you from one away from you, otherwise it turns the wrong way.",
+"Doma se psem: topspin": "At home with the dog: topspin",
+"Zadní strana skoku": "Jump backside",
+"Oběhnutí křídla a skok zezadu": "Running round the wing and jumping from behind",
+"Pes běží podél skoku, laťku zatím mine": "The dog runs along the jump, passing the bar for now",
+"Za skokem oběhne křídlo": "Behind the jump it runs round the wing",
+"Skočí laťku ze zadní strany, zpátky směrem k psovodovi": "Jumps the bar from the back side, back towards the handler",
+"Pokračuje k další překážce": "Carries on to the next obstacle",
+"Začni u jednoho skoku: pes oběhne křídlo a skočí laťku směrem k tobě.": "Start at one jump: the dog runs round the wing and jumps the bar towards you.",
+"Odměnu dávej za laťkou, ať pes zadní stranu hledá sám.": "Reward behind the bar so the dog looks for the backside itself.",
+"Postupně stůj dál a posílej psa na zadní stranu z různých úhlů.": "Gradually stand further away and send the dog to the backside from different angles.",
+"V parkuru psovi zadní stranu ukaž včas, dřív než skočí přední stranu.": "In a course show the dog the backside in time, before it takes the front side.",
+"Když pes skočí laťku z přední strany, bere překážku v opačném směru. Podle pravidel FCI je to diskvalifikace.": "If the dog jumps the bar from the front side, it takes the obstacle in the wrong direction. Under FCI rules that's disqualification.",
+"Generátor staví zadní strany v A2 a A3. Na trénink je najdeš v Generátoru sekvencí.": "The generator builds backsides in A2 and A3. For training you'll find them in the Sequence generator.",
+"Teaching the Backside Jump (trénink na zahradě)": "Teaching the Backside Jump (garden training)",
+"OneMind Dogs, video zdarma": "OneMind Dogs, free video",
+"Start a náskok": "Start and lead-out",
+"Čekání a uvolnění": "Waiting and release",
+"Pes čeká v sedu nebo lehu za první překážkou": "The dog waits sitting or lying behind the first obstacle",
+"Psovod odchází dopředu (náskok)": "The handler walks ahead (lead-out)",
+"Uvolnění povelem: pes vybíhá až na něj": "Release on cue: the dog only goes on the cue",
+"Psovod už běží dál, pes ho dobíhá": "The handler is already running on, the dog catches up",
+"Nauč psa spolehlivě čekat za první překážkou.": "Teach the dog to wait reliably behind the first obstacle.",
+"Odcházej postupně dál a vracej se odměnit na místo.": "Gradually go further and come back to reward on the spot.",
+"Uvolňuj jen povelem, ne pohybem.": "Release only with a cue, not with movement.",
+"Náskok ti dá čas dostat se na dobré místo pro první změnu směru.": "A lead-out gives you time to get to a good place for the first change of direction.",
+"Pes, kterému projde vyběhnutí před povelem, bude vybíhat dál.": "A dog that gets away with breaking the start will keep doing it.",
+"Odměnu občas dones na místo, kde pes čeká.": "Sometimes bring the reward to the spot where the dog waits.",
+"Doma se psem: velký náskok na startu": "At home with the dog: a big lead-out at the start",
+"Závody": "Competitions",
+"První závody": "First competitions",
+"Co připravit": "What to prepare",
+"Vyřiď si výkonnostní průkaz (VP) s předstihem, doručení může trvat až 30 dní.": "Get the performance book (VP) well in advance; delivery can take up to 30 days.",
+"Pes musí být starší 18 měsíců a čipovaný nebo tetovaný.": "The dog must be older than 18 months and microchipped or tattooed.",
+"Přihlášky na závody v ČR jsou na kacr.info, začíná se v A0 (bez zón, slalomu a kruhu) nebo A1.": "Entries for competitions in the Czech Republic are at kacr.info; you start in A0 (no contacts, weaves or tyre) or A1.",
+"Nacvič s psem měření u rozhodčího, na prvních závodech se pes měří.": "Practise being measured by the judge with your dog; at first competitions the dog is measured.",
+"Před během máš čas na prohlídku parkuru bez psa: zapamatuj si pořadí (pomůže Trénink paměti v Plánu).": "Before the run you have a course walk without the dog: memorise the order (Memory training in Plan helps).",
+"Při běhu nesmí mít pes obojek a psovod nic v ruce.": "During the run the dog may not wear a collar and the handler may not hold anything.",
+"Hodnocení: 0–5,99 trestných bodů Výborně, 6–15,99 Velmi dobře, 16–25,99 Dobře, víc Bez ohodnocení.": "Grading: 0–5.99 penalty points Excellent, 6–15.99 Very good, 16–25.99 Good, more Not classified.",
+"Doma se psem: měření psa na prvních závodech": "At home with the dog: measuring the dog at first competitions",
+"Přes překážky – agility (reportáž)": "Over the obstacles – agility (report)",
+"Kalendář a přihlášky na závody": "Competition calendar and entries",
+"Animace ukazují správnou techniku. U každého tématu je postup nácviku a vybraná videa trenérů, česká i zahraniční.": "The animations show the correct technique. Each topic has a training progression and selected trainers' videos, Czech and international.",
+"Knihy": "Books",
+"Pauza": "Pause",
+"Od začátku": "From the start",
+"Jak na to": "How to do it",
+"Na co si dát pozor": "What to watch out for",
+"Videa a články": "Videos and articles",
+"Videa se otevřou v aplikaci YouTube nebo v prohlížeči.": "Videos open in the YouTube app or in the browser.",
+"Přehrát": "Play",
+"laťka": "bar",
+"✓ zóna": "✓ contact",
+"čeká": "waits",
+"Hop!": "Go!",
+"8–16 týdnů: hra a vztah": "8–16 weeks: play and relationship",
+"Jméno a přivolání, hra s pamlskem i přetahovadlem, cíl rukou, chůze u psovoda z obou stran. Různé povrchy, krátký rovný tunel stažený na metr, prkno těsně nad zemí, které se trochu hýbe. Lekce 3–5 minut několikrát denně.": "Name and recall, play with treats and tug toys, hand target, walking by the handler on both sides. Different surfaces, a short straight tunnel squashed to a metre, a board just above the ground that moves a little. Lessons of 3–5 minutes several times a day.",
+"4–6 měsíců: vedení bez překážek": "4–6 months: handling without obstacles",
+"Pes běží k odměně u levé i pravé nohy, obíhá kužel nebo tyč na obě strany (základ otoček kolem křídla), přední a zadní křížení na place. Tyčka ležící na zemi místo skoku, delší tunel i do oblouku. Cíl na podložce na konci prkna jako příprava na zóny. Lekce 5–10 minut.": "The dog runs to the reward at the left and right leg, circles a cone or pole both ways (the basis of wraps around the wing), front and rear crosses on the flat. A pole lying on the ground instead of a jump, a longer tunnel, also curved. A target on a mat at the end of a board as preparation for contacts. Lessons of 5–10 minutes.",
+"6–12 měsíců: první krátké sekvence": "6–12 months: first short sequences",
+"Skoky nízko (tyčka na zemi nebo pár centimetrů), skokové řady bez výšky na správné odrazy, sekvence 3–5 překážek s tunelem. Otočky kolem křídla v nízké výšce. Slalom jen kanálem nebo metodou 2×2 s otevřenými tyčemi, zóny na nízkém prkně, houpačka jen nízko a pomalu. K tomu posilování a pohyb v terénu.": "Low jumps (a pole on the ground or a few centimetres), jump grids without height for correct take-offs, sequences of 3–5 obstacles with a tunnel. Wraps around the wing at a low height. Weaves only with channels or the 2×2 method with open poles, contacts on a low board, the seesaw only low and slow. Plus strengthening and exercise in the terrain.",
+"12–18 měsíců: postupně k plné výšce": "12–18 months: gradually to full height",
+"Výšku skoků zvyšuj pomalu a až po uzavření růstových plotének: u malých plemen bývají uzavřené kolem 12 měsíců, u velkých a pomalu dospívajících později, jistotu dá veterinář. Celý slalom, plnou kladinu a A-rampu doporučují zkušení trenéři až kolem 14–16 měsíců. Kratší parkury, hodně odměn.": "Raise jump heights slowly and only after the growth plates have closed: in small breeds usually around 12 months, in large and slowly maturing ones later; a vet can confirm. Experienced trainers recommend full weaves, the full dog walk and A-frame only at around 14–16 months. Shorter courses, lots of rewards.",
+"Od 18 měsíců: závody": "From 18 months: competitions",
+"V Česku smí na závody pes starší 18 měsíců. Začíná se v třídě A1, výkonnostní průkaz je potřeba vyřídit aspoň měsíc předem, pes musí mít platné očkování a na prvních závodech ho rozhodčí změří do kategorie.": "In the Czech Republic dogs older than 18 months may compete. You start in class A1, the performance book must be arranged at least a month in advance, the dog needs valid vaccinations and at the first competition the judge measures it into a category.",
+"Cíl rukou": "Hand target",
+"Pes se dotkne nosem dlaně. Z toho pak vzniká přivolání k noze a vedení rukou.": "The dog touches your palm with its nose. This later becomes a recall to heel and handling with the hand.",
+"Zóna odměny": "Reward zone",
+"Odměna vždy u nohy psovoda, zleva i zprava. Pes se učí, kde má běžet.": "The reward always at the handler's leg, left and right. The dog learns where to run.",
+"Obíhání kužele": "Circling a cone",
+"Pes oběhne kužel nebo tyč a vrátí se k tobě, na obě strany. Základ otoček kolem křídla.": "The dog circles a cone or pole and comes back to you, both ways. The basis of wraps around the wing.",
+"Tyčka na zemi a skoková řada": "Pole on the ground and a jump grid",
+"Tyčky na zemi nebo úplně nízko v řadě. Pes se učí odraz a dopad bez zátěže kloubů.": "Poles on the ground or very low in a row. The dog learns take-off and landing without stressing its joints.",
+"Tunel s pomocníkem": "Tunnel with a helper",
+"Krátký rovný tunel, pomocník drží psa, ty ho voláš z druhé strany. Pak delší a do oblouku.": "A short straight tunnel, a helper holds the dog, you call it from the other end. Then longer and curved.",
+"Houpající se prkno": "Wobbly board",
+"Prkno na nízké podložce, které se trochu hýbe. Příprava na houpačku bez strachu z pohybu.": "A board on a low base that moves a little. Preparation for the seesaw without fear of movement.",
+"Cíl na konci prkna": "Target at the end of a board",
+"Pes zůstane stát zadníma nohama na prkně a předníma na podložce. Příprava na zóny.": "The dog stays with its back feet on the board and front feet on the mat. Preparation for contacts.",
+"Křížení bez překážek": "Crosses without obstacles",
+"Přední a zadní křížení při chůzi a klusu na place. Pes se učí číst tvoje tělo.": "Front and rear crosses at a walk and trot on the flat. The dog learns to read your body.",
+"Slalom 2×2": "2×2 weaves",
+"Dvě dvojice tyček, které se postupně přidávají a natáčejí. Až od zhruba půl roku a jen krátce.": "Two pairs of poles, gradually added and turned. Only from about six months and only briefly.",
+"Do uzavření růstových plotének žádné skoky v plné výšce a žádné opakované ostré obraty ve velké rychlosti.": "Until the growth plates close, no jumps at full height and no repeated sharp turns at high speed.",
+"Před tréninkem rozcvička, po něm vychladnutí (záložka Rozcvička).": "Warm up before training and cool down after (Warm-up tab).",
+"Povrch s dobrou přilnavostí: tráva nebo umělý trávník, ne kluzká podlaha ani beton.": "A surface with good grip: grass or artificial turf, not a slippery floor or concrete.",
+"Krátké lekce, 2–3 opakování. Konči, dokud pes ještě chce.": "Short lessons, 2–3 repetitions. Stop while the dog still wants more.",
+"U štěněte omez skákání z auta, z gauče a přes zábrany.": "With a puppy limit jumping out of the car, off the sofa and over barriers.",
+"Před závodním tréninkem prohlídka u veterináře, u velkých plemen rentgen kyčlí a loktů.": "Before competition training get a vet check; for large breeds hip and elbow X-rays.",
+"Klub agility ČR: Jak na závod": "Czech Agility Club: How to enter a competition",
+"Věk nejméně 18 měsíců, výkonnostní průkaz, očkování.": "Age at least 18 months, performance book, vaccinations.",
+"Klub agility ČR: Nejčastější otázky": "Czech Agility Club: Frequently asked questions",
+"Začíná se v třídě A1, měření psa, postup do A2.": "You start in class A1, measuring the dog, promotion to A2.",
+"Růstové ploténky, skoky v plné výšce až od 12–15 měsíců, skokové řady.": "Growth plates, full-height jumps only from 12–15 months, jump grids.",
+"Co trénovat se štěnětem a co odložit na 14–16 měsíců.": "What to train with a puppy and what to leave until 14–16 months.",
+"Proč přetěžování škodí rostoucím kostem.": "Why overloading harms growing bones.",
+"Přidej psa s datem narození a zvýrazní se fáze podle jeho věku.": "Add a dog with a date of birth and the phase for its age will be highlighted.",
+"Program podle věku": "Programme by age",
+"Cvičení pro začátek": "Exercises to start with",
+"Sekvence pro štěně": "Sequences for a puppy",
+"První sekvence": "First sequence",
+"Skoková řada": "Jump grid",
+"Bezpečnost": "Safety",
+"Zdroje": "Sources",
+"Otočky kolem křídla (vnitřkem, venkem)": "Wraps around the wing (inside, outside)",
+"Zadní strany skoků": "Jump backsides",
+"Vstupy do slalomu": "Weave entries",
+"Změny strany (ostré obraty, hady)": "Side changes (sharp turns, serpentines)",
+"Zóny v rytmu parkuru": "Contacts in course rhythm",
+"Tunely do oblouku a odbočky": "Curved tunnels and turn-offs",
+"Rychlá skoková linie": "Fast jumping line",
+"Štěně: tunel a nízké skoky": "Puppy: tunnel and low jumps",
+"Začátečník: první sekvence": "Beginner: first sequences",
+"Čtverec (box)": "Box",
+"Čtyři skoky do čtverce. Pes vbíhá dovnitř a ven, kolem rohů čtverce se točí o 270°. Změny směru a vedení na malém prostoru.": "Four jumps in a square. The dog runs in and out, turning 270° around the corners of the square. Changes of direction and handling in a small space.",
+"Mlýnek": "Pinwheel",
+"Skoky do kruhu kolem středu. Plynulé oblouky, držení linie, otočka a změna směru.": "Jumps in a circle around the centre. Smooth curves, holding the line, a turn and a change of direction.",
+"Had (serpentina)": "Serpentine",
+"Skoky vedle sebe, pes je bere střídavě tam a zpět. Vedení na dálku a změny strany.": "Jumps side by side, the dog takes them alternately there and back. Distance handling and side changes.",
+"Skoky v řadě po 4,5 m. Rozběh, dlouhý skok a otočka na konci řady.": "Jumps in a row 4.5 m apart. Run-up, a long jump and a turn at the end of the row.",
+"Slalom a skoky pod různými úhly ke vstupu: rovně, z oblouku i z ostrého úhlu.": "Weaves and jumps at different angles to the entry: straight, from a curve and from a sharp angle.",
+"Tunel, nebo skok": "Tunnel or jump",
+"Vstup do tunelu hned vedle skoku. Pes se učí poslouchat, kam ho posíláš.": "A tunnel entry right next to a jump. The dog learns to listen to where you send it.",
+"Pes proběhne mezerou mezi dvěma skoky a druhý skočí z opačné strany. Učí poslouchat vedení a ne jen běžet vpřed.": "The dog runs through the gap between two jumps and takes the second one from the opposite side. Teaches listening to handling, not just running forward.",
+"Osmička kolem křídel": "Figure of eight around the wings",
+"Jeden skok, pes ho bere střídavě tam a zpět s otočkou kolem levého a pravého křídla. Klasika na otočky na obě strany.": "One jump, taken alternately there and back with a wrap around the left and right wing. A classic for wraps on both sides.",
+"Zadní strana": "Backside",
+"Skok zezadu: pes oběhne křídlo a skočí proti směru, odkud přiběhl.": "Jump from behind: the dog runs round the wing and jumps against the direction it came from.",
+"Plocha": "Field",
+"40 × 20 m (závodní)": "40 × 20 m (competition)",
+"Dovednost": "Skill",
+"Cvičení": "Exercise",
+"Co složit": "What to compose",
+"Trénink (5–18 překážek v trase)": "Training (5–18 obstacles in the route)",
+"Celý parkur ve stylu A1": "Full course in A1 style",
+"Celý parkur ve stylu A2": "Full course in A2 style",
+"Celý parkur ve stylu A3": "Full course in A3 style",
+"Krátký úsek na jednu dovednost, na trénink se hodí víc než celý parkur.": "A short section for one skill; for training it's more useful than a full course.",
+"Klasická cvičení na pevném rozestavení. Překážky postavíš jednou a generátor k nim skládá různá pořadí.": "Classic exercises on a fixed set-up. You set the obstacles up once and the generator composes different orders for them.",
+"Zadej, co máte doma nebo v klubu. Generátor složí trasy, které se vejdou, a překážky v nich opakuje. Vybavení si aplikace pamatuje.": "Enter what you have at home or at the club. The generator composes routes that fit and reuses the obstacles. The app remembers the equipment.",
+"Generátor": "Generator",
+"Sekvence": "Sequences",
+"Zahrada a klub": "Garden and club",
+"Zavřít": "Close",
+"Vygenerovat": "Generate",
+"Celý parkur má 15–22 překážek a staví se podle cílů třídy (oblouky, obraty, tunely do oblouku, křížení). Potřebuje plochu aspoň 30 × 20 m, nejlépe 40 × 20 m.": "A full course has 15–22 obstacles and is built to the class goals (curves, turns, curved tunnels, crossings). It needs a field of at least 30 × 20 m, ideally 40 × 20 m.",
+"Hledám další…": "Looking for more…",
+"Skládám trasy…": "Composing routes…",
+"Na téhle ploše se trasu nepodařilo složit. Zkus větší plochu, méně překážek v trase nebo víc skoků.": "A route couldn't be composed on this field. Try a larger field, fewer obstacles in the route or more jumps."
+},
+"num": {},
+"re": [
+[
+"^(.+?)Všechna témata$",
+"@1All topics"
+],
+[
+"^(.+?) měsíc$",
+"@1 month"
+],
+[
+"^(.+?) měsíce$",
+"@1 months"
+],
+[
+"^(.+?) měsíců$",
+"@1 months"
+],
+[
+"^(.+?) má (.+?)\\. Aktuální fáze je zvýrazněná\\.$",
+"@1 is @2 old. The current phase is highlighted."
+],
+[
+"^(.+?) má (.+?)\\. Je to ještě malé štěně, začni hrou\\.$",
+"@1 is @2 old. Still a small puppy, start with play."
+],
+[
+"^(.+?)\\. Aktuální fáze je zvýrazněná\\.$",
+"@1. The current phase is highlighted."
+],
+[
+"^(.+?)\\. Je to ještě malé štěně, začni hrou\\.$",
+"@1. Still a small puppy, start with play."
+],
+[
+"^U psa (.+?) doplň v záložce Psi datum narození a zvýrazní se fáze podle věku\\.$",
+"Add a date of birth for @1 in the Dogs tab and the phase for its age will be highlighted."
+],
+[
+"^Agility se dá začít už se štěnětem, jen ne na překážkách v plné výšce\\. Nejdřív vztah, hra a vedení, překážky postupně podle věku a růstu\\. (.+?)$",
+"You can start agility with a puppy, just not on full-height obstacles. First the relationship, play and handling, obstacles gradually according to age and growth. @1"
+],
+[
+"^Klub (.+?)$",
+"Club @1"
+],
+[
+"^Zahrada (.+?)×(.+?)$",
+"Garden @1×@2"
+]
+]
+});
+i18nAdd({
+"exact": {
+"Upravit název, třídu a autora parkuru": "Edit the course name, class and author",
+"Oblíbený": "Favourite",
+"Zaběhnuto": "Done",
+"Rozbor": "Analysis",
+"3D průlet": "3D flythrough",
+"Předčítat": "Read aloud",
+"Trénink paměti": "Memory training",
+"Dráha psovoda": "Handler's path",
+"Plánek z obrázku": "Course map from photo",
+"Podklad z fotky": "Photo underlay",
+"Stavba v terénu": "Build on the field",
+"Sdílet": "Share",
+"Režim": "Mode",
+"Stavba": "Build",
+"Trasa": "Route",
+"Oddálit": "Zoom out",
+"Přiblížit": "Zoom in",
+"Smazat čáru": "Clear line",
+"Hotovo": "Done",
+"U každé překážky v seznamu níže nastav, na které straně psovoda pes běží (L / P). Tahem prstem po ploše nakreslíš svoji dráhu.": "For each obstacle in the list below, set which side of the handler the dog runs on (L / R). Drag a finger across the field to draw your own path.",
+"Podklad": "Underlay",
+"Průhlednost podkladu": "Underlay opacity",
+"Vybrat fotku": "Choose photo",
+"Roztáhnout": "Stretch",
+"Odebrat": "Remove",
+"Vyfoť nebo vyber plánek parkuru. Zobrazí se pod mřížkou a překážky na něj jen položíš.": "Take or pick a photo of the course map. It appears under the grid and you just place the obstacles on top of it.",
+"Otočení": "Rotation",
+"Otočení překážky": "Obstacle rotation",
+"Tvar tunelu": "Tunnel shape",
+"Rovný": "Straight",
+"Oblouk 90° ↶": "90° curve ↶",
+"Oblouk 90° ↷": "90° curve ↷",
+"Oblouk 135° ↶": "135° curve ↶",
+"Oblouk 135° ↷": "135° curve ↷",
+"Do U ↶": "U-shape ↶",
+"Do U ↷": "U-shape ↷",
+"Smazat": "Delete",
+"↶ Vrátit poslední": "↶ Undo last",
+"Smazat trasu": "Clear route",
+"Plocha parkuru": "Course field",
+"Uložit": "Save",
+"Nový": "New",
+"Velikost plochy": "Field size",
+"Plocha 40 × 20 m": "Field 40 × 20 m",
+"Plocha 40 × 24 m": "Field 40 × 24 m",
+"Plocha 30 × 20 m": "Field 30 × 20 m",
+"Zahrada 25 × 15 m": "Garden 25 × 15 m",
+"Zahrada 20 × 15 m": "Garden 20 × 15 m",
+"Zahrada 15 × 10 m": "Garden 15 × 10 m",
+"Pořadí překážek": "Obstacle order",
+"Zkontrolovat nové parkury": "Check for new courses",
+"Sbírka": "Collection",
+"Trenéři": "Trainers",
+"Moje": "Mine",
+"Vše": "All",
+"Nové": "New",
+"★ Oblíbené": "★ Favourites",
+"Nezaběhnuté": "Not run yet",
+"✓ Zaběhnuté": "✓ Done",
+"Plynulé": "Flowing",
+"Technické": "Technical",
+"Náhodný nezaběhnutý": "Random course not run yet",
+"Generátor sekvencí a zahrady": "Sequence and garden generator",
+"Řadit": "Sort",
+"Podle čísla": "By number",
+"Od nejlehčího": "Easiest first",
+"Od nejtěžšího": "Hardest first",
+"Nejplynulejší": "Most flowing",
+"Nejkratší": "Shortest",
+"Mezičasy naživo": "Live split times",
+"Mezičasy z videa": "Split times from video",
+"Vynulovat": "Reset",
+"Chyby": "Faults",
+"Ubrat chybu": "Remove a fault",
+"Přidat chybu": "Add a fault",
+"Odmítnutí": "Refusals",
+"Ubrat odmítnutí": "Remove a refusal",
+"Přidat odmítnutí": "Add a refusal",
+"Čas ručně (s)": "Time manually (s)",
+"např. 41,52": "e.g. 41.52",
+"Diskvalifikace": "Disqualification",
+"Uložit běh": "Save run",
+"Historie běhů": "Run history",
+"Psi": "Dogs",
+"Začínáme": "Getting started",
+"Statistiky": "Statistics",
+"Deník": "Training log",
+"Rozcvička": "Warm-up",
+"Záloha": "Backup",
+"O aplikaci": "About",
+"Hlavní navigace": "Main navigation",
+"Plán": "Plan",
+"Parkury": "Courses",
+"Běh": "Run",
+"Videa": "Videos",
+"Více": "More",
+"Pauza": "Pause",
+"Očima psa": "Dog's view",
+"Za psem": "Behind the dog",
+"Shora": "From above",
+"0,5×": "0.5×",
+"Zavřít": "Close",
+"Rozpracovaný plán": "Work in progress",
+"Nový parkur": "New course",
+"Délka trati": "Course length",
+"Disciplína": "Discipline",
+"SČP": "SCT",
+"MČP (max.)": "MCT (max.)",
+"Generátor podle pravidel FCI": "Generator following FCI rules",
+"Vygenerováno v aplikaci": "Generated in the app",
+"Autor neuveden": "Author not given",
+"⇄ z druhé strany": "⇄ from the other side",
+"Bližším koncem": "Near end",
+"Pes vběhne do překážky koncem, který je blíž předchozí překážce.": "The dog enters the obstacle through the end closer to the previous obstacle.",
+"Vzdálenějším koncem": "Far end",
+"Pes překážku oběhne a vběhne do ní z druhé strany, třeba do odvráceného konce tunelu.": "The dog runs around the obstacle and enters it from the other side, e.g. the far end of a tunnel.",
+"Aplikace sama volí konec, který je blíž předchozí překážce. Když trenér posílá psa do vzdálenějšího konce, přepni to tady.": "The app picks the end closer to the previous obstacle. If the trainer sends the dog to the far end, switch it here.",
+"Bez otočky": "No wrap",
+"Pes skok skočí a běží rovnou k další překážce.": "The dog takes the jump and runs straight on to the next obstacle.",
+"Skok z druhé strany": "Jump from the other side",
+"Aplikace volí směr skoku podle toho, odkud pes přibíhá. Když ho trenér posílá na skok z opačné strany, přepni to tady.": "The app picks the jumping direction from where the dog approaches. If the trainer sends it over the jump from the opposite side, switch it here.",
+"Otočka doleva": "Wrap left",
+"Po skoku se pes otočí o 180° kolem levého křídla.": "After the jump the dog turns 180° around the left wing.",
+"Otočka doprava": "Wrap right",
+"Po skoku se pes otočí o 180° kolem pravého křídla.": "After the jump the dog turns 180° around the right wing.",
+"Zadní strana, otočka doleva": "Backside, wrap left",
+"Pes skok mine, oběhne křídlo doleva a skočí ho z druhé strany.": "The dog passes the jump, runs around the wing to the left and takes it from the other side.",
+"Zadní strana, otočka doprava": "Backside, wrap right",
+"Pes skok mine, oběhne křídlo doprava a skočí ho z druhé strany.": "The dog passes the jump, runs around the wing to the right and takes it from the other side.",
+"Pes běží u psovoda vlevo, takže otočka doprava je vnitřkem (k psovodovi) a otočka doleva venkem (od psovoda).": "The dog runs on the handler's left, so a right wrap is an inside wrap (towards the handler) and a left wrap is an outside wrap (away from the handler).",
+"Pes běží u psovoda vlevo, takže otočka doprava je vnitřkem (k psovodovi) a otočka doprava venkem (od psovoda).": "The dog runs on the handler's left, so a right wrap is an inside wrap (towards the handler) and a right wrap is an outside wrap (away from the handler).",
+"Pes běží u psovoda vlevo, takže otočka doleva je vnitřkem (k psovodovi) a otočka doleva venkem (od psovoda).": "The dog runs on the handler's left, so a left wrap is an inside wrap (towards the handler) and a left wrap is an outside wrap (away from the handler).",
+"Pes běží u psovoda vlevo, takže otočka doleva je vnitřkem (k psovodovi) a otočka doprava venkem (od psovoda).": "The dog runs on the handler's left, so a left wrap is an inside wrap (towards the handler) and a right wrap is an outside wrap (away from the handler).",
+"Pes běží u psovoda vpravo, takže otočka doprava je vnitřkem (k psovodovi) a otočka doleva venkem (od psovoda).": "The dog runs on the handler's right, so a right wrap is an inside wrap (towards the handler) and a left wrap is an outside wrap (away from the handler).",
+"Pes běží u psovoda vpravo, takže otočka doprava je vnitřkem (k psovodovi) a otočka doprava venkem (od psovoda).": "The dog runs on the handler's right, so a right wrap is an inside wrap (towards the handler) and a right wrap is an outside wrap (away from the handler).",
+"Pes běží u psovoda vpravo, takže otočka doleva je vnitřkem (k psovodovi) a otočka doleva venkem (od psovoda).": "The dog runs on the handler's right, so a left wrap is an inside wrap (towards the handler) and a left wrap is an outside wrap (away from the handler).",
+"Pes běží u psovoda vpravo, takže otočka doleva je vnitřkem (k psovodovi) a otočka doprava venkem (od psovoda).": "The dog runs on the handler's right, so a left wrap is an inside wrap (towards the handler) and a right wrap is an outside wrap (away from the handler).",
+"Doleva a doprava je z pohledu psa. Když v Dráze psovoda nastavíš, na které straně psovoda pes běží, aplikace ukáže, jestli je otočka vnitřkem (k psovodovi), nebo venkem (od psovoda).": "Left and right are from the dog's point of view. When you set in Handler's path which side of the handler the dog runs on, the app shows whether a wrap is inside (towards the handler) or outside (away from the handler).",
+"+ otočka": "+ wrap",
+"P": "R",
+"Zatím žádná trasa. Přepni na Trasa a klepej na překážky v pořadí.": "No route yet. Switch to Route and tap the obstacles in order.",
+"Zachovat poměr": "Keep aspect ratio",
+"Vyber překážku a klepnutím ji polož na plochu. Tažením ji přesuneš, posuvníkem otočíš.": "Choose an obstacle and tap to place it on the field. Drag to move it, use the slider to rotate it.",
+"Klepej na překážky v pořadí, v jakém je pes poběží. Stejnou překážku můžeš použít víckrát. Otočku kolem křídla nebo zadní stranu nastavíš u skoku v seznamu pod plochou.": "Tap the obstacles in the order the dog will run them. You can use the same obstacle more than once. Set a wrap around the wing or a backside on the jump in the list below the field.",
+"Smazat trasu?": "Clear the route?",
+"Překážky zůstanou na ploše, smaže se jen pořadí.": "The obstacles stay on the field, only the order is removed.",
+"Rozestupy (FCI: po dráze 5–9 m, vzdušnou čarou nejvýš 7 m)": "Distances (FCI: 5–9 m along the path, at most 7 m in a straight line)",
+"Slalom chybí (FCI: v každém parkuru, jen jednou)": "Weave poles missing (FCI: in every course, only once)",
+"Změny strany psovoda: v Dráze psovoda nastav stranu psa u všech překážek (FCI chce aspoň 2)": "Handler side changes: set the dog's side at every obstacle in Handler's path (FCI requires at least 2)",
+"Dráha psa nevede přes jinou překážku": "The dog's path doesn't cross another obstacle",
+"Podrobnosti": "Details",
+"Pravidla FCI v pořádku": "FCI rules OK",
+"Kontrola podle pravidel FCI": "Check against FCI rules",
+"Rozestupy se měří po dráze psa, jak ji ukazuje plán, i se smyčkami otoček. Pravidla platí pro závody, na trénink si můžeš postavit cokoli.": "Distances are measured along the dog's path as shown in the plan, including wrap loops. The rules apply to competitions; for training you can build anything.",
+"Fotku jako podklad vložíš ve webové verzi aplikace.": "You can add a photo underlay in the web version of the app.",
+"Podklad odebrán": "Underlay removed",
+"Podklad vložen": "Underlay added",
+"Tenhle soubor se nepodařilo načíst jako obrázek.": "This file could not be loaded as an image.",
+"Trénink paměti potřebuje trasu aspoň se 3 překážkami.": "Memory training needs a route with at least 3 obstacles.",
+"Prohlídka: zapamatuj si pořadí překážek.": "Course walk: memorise the order of the obstacles.",
+"Začít test": "Start the test",
+"Ukončit": "Finish",
+"Klepni na překážku č.": "Tap obstacle no.",
+"Chyby:": "Faults:",
+"Hotovo! Čas": "Done! Time",
+"Znovu": "Again",
+"Zrušit": "Cancel",
+"Náročnost": "Difficulty",
+"Původní plánek": "Original course map",
+"✓ zaběhnuto": "✓ done",
+"V téhle záložce nic nového není. Nové parkury mají štítek Nový a tečku u názvu záložky.": "Nothing new in this tab. New courses have a New label and a dot next to the tab name.",
+"Zatím tu nejsou žádné parkury trenérů. Pošli do chatu s Claudem screenshoty plánků a přepíše je sem i se jménem autora. Nebo v Plánu zvol Plánek z obrázku: aplikace překážky rozpozná, pořadí naklepeš a při ukládání vyplníš, kdo parkur stavěl.": "There are no trainers' courses yet. In Plan choose Course map from photo: the app recognises the obstacles, you tap in the order and fill in who built the course when saving.",
+"Zatím tu nemáš žádný vlastní parkur. Postav ho v Plánu nebo si otevři některý z A1–A3, uprav ho a ulož.": "You don't have any course of your own yet. Build one in Plan, or open one of A1–A3, edit it and save it.",
+"V tomhle filtru nic není. Zkus jiný filtr nebo třídu.": "Nothing in this filter. Try another filter or class.",
+"Přepsané plánky trenérů a rozhodčích pro vlastní trénink. Rozmístění překážek je přibližné, zdroj je uvedený u parkuru.": "Trainers' and judges' course maps transcribed for your own training. Obstacle positions are approximate; the source is given with each course.",
+"Parkury A1–A3 složil generátor v aplikaci podle Řádu agility FCI a podle toho, jak stavějí rozhodčí: dráha vede v obloucích a hadech, skoky stojí šikmo, tunely jsou i do oblouku a do U a dráha se kříží (A1 nejvýš jednou, A2 jednou až dvakrát, A3 dvakrát až třikrát). 15–22 překážek, start i cíl skokem, v A1 právě 3 zónové překážky, v A2 a A3 nejvýš 4. Otočky kolem křídla (v A3 aspoň dvě), v A3 vždy i zadní strana skoku.": "Courses A1–A3 were composed by the app's generator according to the FCI Agility Regulations and the way judges build: the path runs in curves and serpentines, jumps stand at angles, tunnels are also curved and U-shaped, and the path crosses itself (A1 at most once, A2 once or twice, A3 two or three times). 15–22 obstacles, start and finish over a jump, exactly 3 contact obstacles in A1, at most 4 in A2 and A3. Wraps around the wing (at least two in A3), and always a backside in A3.",
+"Nahradit rozpracovaný plán?": "Replace the course you're working on?",
+"Neuložené změny se ztratí. Chceš je zachovat, zruš to a nejdřív plán ulož.": "Unsaved changes will be lost. To keep them, cancel and save the plan first.",
+"Parkur zmizí ze záložky Moje. Zapsané běhy se smažou s ním.": "The course disappears from Mine. Its recorded runs are deleted with it.",
+"V záložce Moje už máš zaběhnuté všechno.": "You've already run everything in Mine.",
+"Nejdřív vyznač trasu v režimu Trasa.": "Mark the route in Route mode first.",
+"Uložit parkur": "Save course",
+"Název": "Name",
+"Třída (podle ní se počítá SČP)": "Class (used to calculate the SCT)",
+"Stavěl/a (trenér, rozhodčí)": "Built by (trainer, judge)",
+"Uložit jako nový": "Save as new",
+"Uložit změny": "Save changes",
+"Uložit do Moje": "Save to Mine",
+"Můj parkur": "My course",
+"Změny uloženy": "Changes saved",
+"Uloženo do Moje": "Saved to Mine",
+"Začít nový parkur?": "Start a new course?",
+"Plocha se vyčistí a neuložené změny se ztratí.": "The field will be cleared and unsaved changes will be lost.",
+"Začít nový": "Start new",
+"Nejdřív parkur ulož, pak si ho můžeš označit.": "Save the course first, then you can mark it.",
+"Přidáno do oblíbených": "Added to favourites",
+"Odebráno z oblíbených": "Removed from favourites",
+"Označeno jako zaběhnuté": "Marked as done",
+"Označení zaběhnutí zrušeno": "Done mark removed",
+"3 odmítnutí": "3 refusals",
+"překročen MČP": "MCT exceeded",
+"Výborně": "Excellent",
+"Velmi dobře": "Very good",
+"Dobře": "Good",
+"Bez ohodnocení": "Not classified",
+"Změř čas stopkami nebo ho zadej ručně. Výsledek se spočítá podle Řádu agility.": "Time the run with the stopwatch or enter it manually. The result is calculated according to the Agility Regulations.",
+"Čas": "Time",
+"· chyby a odmítnutí": "· faults and refusals",
+"· za čas": "· time faults",
+"Trestné body celkem": "Total penalty points",
+"· čistý běh": "· clean run",
+"volí ji rozhodčí podle obtížnosti": "chosen by the judge according to difficulty",
+"MČP": "MCT",
+"Běhy se zapisují k uloženému parkuru. Ulož ho nebo načti z Parkurů.": "Runs are recorded for a saved course. Save it or load one from Courses.",
+"Zatím žádný běh. Po uložení se tu objeví s hodnocením.": "No runs yet. Once saved they appear here with their grade.",
+"Nejdřív parkur ulož.": "Save the course first.",
+"Nejdřív zastav stopky.": "Stop the stopwatch first.",
+"Chybí čas běhu.": "The run time is missing.",
+"Smazat záznam běhu?": "Delete this run?",
+"Záznam zmizí z historie tohoto parkuru.": "The record disappears from this course's history.",
+"Česko a Slovensko": "Czechia and Slovakia",
+"Rozhodčí FCI, soudil MS 2017. Plánky z Moravia Open, Hranických hrátek a Norwegian Open.": "FCI judge, judged the 2017 World Championship. Course maps from Moravia Open, Hranické hrátky and Norwegian Open.",
+"Rozhodčí FCI. Sbírka jeho plánků parkurů.": "FCI judge. A collection of his course maps.",
+"Slovenský rozhodčí FCI. Plánky parkurů.": "Slovak FCI judge. Course maps.",
+"Kniha Agility – Pracovní sešit s 90 tréninkovými sekvencemi.": "The book Agility – Pracovní sešit (workbook) with 90 training sequences.",
+"Klub agility ČR": "Czech Agility Club (KAČR)",
+"Řád agility FCI a ČR (platný od 2023): pravidla pro SČP, MČP a hodnocení.": "FCI and Czech Agility Regulations (valid from 2023): rules for SCT, MCT and grading.",
+"Zahraničí": "Abroad",
+"MS 2025 Kalmar": "World Championship 2025 Kalmar",
+"Plánky všech běhů mistrovství světa. Stavěli Joakim Tangfelt, Fanny Gott, Stefanie Semkat a Vittorio Papavero.": "Course maps of all runs of the World Championship. Built by Joakim Tangfelt, Fanny Gott, Stefanie Semkat and Vittorio Papavero.",
+"Rozhodčí MS 2025. Jeho plánky parkurů.": "Judge of the 2025 World Championship. His course maps.",
+"Rozhodčí MS 2025 a EO 2023. Její plánky parkurů.": "Judge of the 2025 World Championship and EO 2023. Her course maps.",
+"Maďarská rozhodčí FCI. Plánky parkurů.": "Hungarian FCI judge. Course maps.",
+"Rozhodčí MS 2019. Plánky parkurů.": "Judge of the 2019 World Championship. Course maps.",
+"Mistryně světa 2024. Její parkur je v týdenních plánech Corral Creek.": "2024 World Champion. Her course is in the Corral Creek weekly plans.",
+"Trenéři OneMind Dogs: e-book se 7 parkury na zahradu zdarma.": "OneMind Dogs trainers: free e-book with 7 garden courses.",
+"Všichni rozhodčí na agilitynow.eu": "All judges on agilitynow.eu",
+"Plánky od 39 rozhodčích z 18 zemí, řazené podle jmen.": "Course maps from 39 judges from 18 countries, sorted by name.",
+"bez připojení k internetu": "no internet connection",
+"ve webové verzi server nejde": "the server isn't available in the web version",
+"prázdná odpověď serveru": "empty server response",
+"katalog na serveru je prázdný": "the catalogue on the server is empty",
+"chyba spojení": "connection error",
+"Kontroluji…": "Checking…",
+"Máš všechny parkury, nic nového zatím není.": "You have all courses, nothing new yet.",
+"Parkury aktualizovány, nové žádné nepřibyly.": "Courses updated, no new ones added.",
+"Nový parkur: 1": "New course: 1",
+"Parkury aktualizovány.": "Courses updated.",
+"Mají v Parkurech štítek Nový, dokud je neotevřeš.": "They carry a New label in Courses until you open them.",
+"Ukázat v Parkurech": "Show in Courses",
+"Sdílení se nepovedlo": "Sharing failed",
+"Otevírám sdílení": "Opening share",
+"Uloženo do telefonu, složka Obrázky/Agility": "Saved to the phone, folder Pictures/Agility",
+"Uloženo do telefonu, složka Stažené soubory/Agility": "Saved to the phone, folder Downloads/Agility",
+"Uložení zrušeno": "Saving cancelled",
+"Chvilku počkej a zkus to znovu.": "Wait a moment and try again.",
+"Soubor tady nejde uložit přímo. Zkopíruj si text a ulož ho jinam.": "The file can't be saved directly here. Copy the text and save it elsewhere.",
+"Kopírovat": "Copy",
+"V aplikaci se obrázek do telefonu uložit nedá. Udělej snímek obrazovky, nebo ho ulož ve webové verzi.": "The image can't be saved to the phone in the app. Take a screenshot, or save it in the web version.",
+"V aplikaci se PDF do telefonu uložit nedá. Ulož ho ve webové verzi HandlerMap.": "The PDF can't be saved to the phone in the app. Save it in the HandlerMap web version.",
+"Podrž prst na obrázku a ulož ho, nebo si udělej snímek obrazovky.": "Press and hold the image to save it, or take a screenshot.",
+"PDF tady nejde uložit přímo. Ulož si obrázek.": "The PDF can't be saved directly here. Save the image instead.",
+"Označeno, zkopíruj ručně": "Selected, copy it manually",
+"Zkopírováno": "Copied",
+"obrázek plochy": "field image",
+"do U": "U-shape",
+"Čísla": "Numbers",
+"Překážka": "Obstacle",
+"Směr běhu": "Running direction",
+"Poznámka": "Note",
+"mimo trasu": "off route",
+"Obrázek parkuru si v aplikaci ulož snímkem obrazovky. PDF se stavebním plánem a ukládání souborů fungují ve webové verzi HandlerMap.": "Save the course image in the app with a screenshot. The PDF with the build plan and saving files work in the HandlerMap web version.",
+"Obrázek se hodí na sdílení, PDF se stavebním plánem na tisk: u každé překážky jsou metry od okraje plochy a směr běhu.": "The image is good for sharing, the PDF with the build plan for printing: each obstacle has its distances from the field edges and the running direction.",
+"Sdílet obrázek": "Share image",
+"Sdílet PDF": "Share PDF",
+"Uložit PDF": "Save PDF",
+"Uložit obrázek": "Save image",
+"Export parkuru": "Export course",
+"Připravuji náhled…": "Preparing preview…",
+"Náhled se nepodařilo vytvořit.": "The preview could not be created.",
+"Sdílet parkur": "Share course",
+"Vytvoř kód, pošli ho kamarádovi a on si parkur načte ve své aplikaci.": "Create a code, send it to a friend and they load the course in their app.",
+"Vytvořit kód parkuru": "Create course code",
+"Načíst parkur z kódu": "Load course from code",
+"Načíst": "Load",
+"Sdílení kódem funguje v aplikaci pro Android. Tady můžeš parkur uložit jako obrázek nebo PDF v Exportu a poslat ho dál.": "Sharing by code works in the installed app. Here you can save the course as an image or PDF in Export and send it on.",
+"Otevřít Export": "Open Export",
+"Sdílet jinam": "Share elsewhere",
+"Kód má 6 znaků.": "The code has 6 characters.",
+"Aplikace je nainstalovaná, najdeš ji na ploše.": "The app is installed, you'll find it on your home screen.",
+"Nainstalovat do telefonu": "Install on the phone",
+"Aplikace pak poběží z ikony na ploše přes celou obrazovku, i bez internetu.": "The app will then run full screen from its home-screen icon, even without internet.",
+"Nainstalovat": "Install",
+"Obrázek se nepodařilo převzít, vyber ho v Plánu → Plánek z obrázku.": "The image couldn't be received, pick it in Plan → Course map from photo.",
+"Skok": "Jump",
+"Tunel": "Tunnel",
+"Slalom": "Weave poles",
+"Kladina": "Dog walk",
+"Houpačka": "Seesaw",
+"Kruh": "Tyre",
+"Skok daleký": "Long jump",
+"časté střídání směru zatáček": "frequent change of turn direction",
+"lehký": "easy",
+"střední": "medium",
+"těžký": "hard",
+"velmi těžký": "very hard",
+"přední křížení": "front cross",
+"zadní křížení": "rear cross",
+"slepé křížení": "blind cross",
+"Dlouhá rovná linka, psovod přeběhne na druhou stranu bez zpomalení.": "A long straight line, the handler crosses to the other side without slowing down.",
+"mřížka nenalezena": "grid not found",
+"Zkopíruj obrázek plánku (v galerii nebo prohlížeči Kopírovat) a vlož ho do pole níž: podrž na něm prst a zvol Vložit. Nic se nenahrává, obrázek zůstane v telefonu.": "Copy the course map image (Copy in the gallery or browser) and paste it into the box below: press and hold it and choose Paste. Nothing is uploaded, the image stays on your phone.",
+"Sem vlož obrázek plánku": "Paste the course map image here",
+"Šířka plochy (m)": "Field width (m)",
+"Hloubka plochy (m)": "Field depth (m)",
+"Vybrat obrázek": "Choose image",
+"Rozpoznat": "Recognise",
+"Sem můžeš vložit obrázek ze schránky": "You can paste an image from the clipboard here",
+"Vyber snímek obrazovky nebo fotku plánku, nebo obrázek vlož ze schránky (Ctrl+V). Nic se nenahrává, obrázek zůstane v zařízení.": "Choose a screenshot or a photo of the course map, or paste an image from the clipboard (Ctrl+V). Nothing is uploaded, the image stays on your device.",
+"Ve schránce není obrázek. V galerii zvol u plánku Kopírovat a vlož ho sem.": "There's no image in the clipboard. In the gallery choose Copy on the course map and paste it here.",
+"Ve schránce není obrázek.": "There's no image in the clipboard.",
+"Tenhle obrázek nejde přečíst. Ulož ho do zařízení a vlož znovu.": "This image can't be read. Save it to the device and paste it again.",
+"Jiný obrázek": "Another image",
+"Mřížka plochy nalezena. Zkontroluj rohy a rozměr plochy a klepni na Rozpoznat.": "Field grid found. Check the corners and the field size and tap Recognise.",
+"Posuň čtyři body na rohy plochy (vnější okraj mřížky) a vyplň rozměr plochy v metrech.": "Move the four points to the corners of the field (outer edge of the grid) and fill in the field size in metres.",
+"Rozměr plochy: šířka 10–60 m, hloubka 10–40 m.": "Field size: width 10–60 m, depth 10–40 m.",
+"Rohy netvoří čtyřúhelník, posuň je.": "The corners don't form a quadrilateral, move them.",
+"Překážky se nepodařilo rozpoznat. Zkus ostřejší obrázek nebo přesnější rohy.": "The obstacles couldn't be recognised. Try a sharper image or more precise corners.",
+", směry podle nakreslené čáry. Vše vypadá jistě. Po použití jde cokoli opravit v Plánu.": ", directions from the drawn line. Everything looks certain. After applying you can fix anything in Plan.",
+"Na obrázku se nenašly žádné překážky. Zkus jiný obrázek nebo je polož ručně na podklad.": "No obstacles were found in the image. Try another image or place them by hand on the underlay.",
+"Použít": "Apply",
+"Zpět k rohům": "Back to corners",
+"Čtu čísla v kroužcích…": "Reading the numbers in circles…",
+"Hledám překážky…": "Looking for obstacles…",
+"Čtu trasu a směry podle nakreslené čáry…": "Reading the route and directions from the drawn line…",
+"překážka jen odhadem": "obstacle only estimated",
+"ověř překážku": "check the obstacle",
+"číslo": "number",
+"směr": "direction",
+"Plocha se nahradí překážkami z obrázku.": "The field will be replaced with the obstacles from the image.",
+"Nahradit": "Replace",
+"Na ploše zatím nejsou žádné překážky.": "There are no obstacles on the field yet.",
+"Postav se do rohu plochy, který je na plánu": "Stand in the corner of the field that is on the plan",
+"vlevo nahoře": "top left",
+", a otoč se čelem": ", and face",
+"podél dlouhé strany": "along the long side",
+"(na plánu doprava). Telefon drž naplocho před sebou.": "(to the right on the plan). Hold the phone flat in front of you.",
+"Délka tvého kroku (m)": "Your step length (m)",
+"Krok si změříš tak, že ujdeš 10 m a spočítáš kroky: délka = 10 / počet kroků. Kompas:": "Measure your step by walking 10 m and counting steps: length = 10 / number of steps. Compass:",
+"čekám na signál…": "waiting for signal…",
+"Bez kompasu": "Without compass",
+"Stojím v rohu": "I'm in the corner",
+"nedostupný, aplikace popíše směr slovy": "unavailable, the app describes the direction in words",
+"rovně podél dlouhé strany": "straight along the long side",
+"zpátky podél dlouhé strany": "back along the long side",
+"Jdi ve směru šipky.": "Walk in the direction of the arrow.",
+"Zpět": "Back",
+"Postaveno, další": "Built, next",
+"Parkur postavený. Zkontroluj ho podle plánu a hurá na trénink!": "The course is built. Check it against the plan and off you go to train!",
+"napříč plochou": "across the field",
+"Pes skáče ve směru šipky, laťka je napříč.": "The dog jumps in the direction of the arrow, the bar is across.",
+"Slalom vede ve směru šipky.": "The weave poles run in the direction of the arrow.",
+"Tunel vede ve směru šipky.": "The tunnel runs in the direction of the arrow.",
+"Zóna vede ve směru šipky.": "The contact runs in the direction of the arrow.",
+"A-rampa": "A-frame",
+"skok": "jump",
+"tunel": "tunnel",
+"slalom": "weave poles",
+"a-rampa": "A-frame",
+"kladina": "dog walk",
+"houpačka": "seesaw",
+"kruh": "tyre",
+"skok daleký": "long jump",
+"Zeď": "Wall",
+"zeď": "wall",
+"Stůl": "Table",
+"pes": "dog",
+"· lehký": "· easy",
+"· střední": "· medium",
+"· těžký": "· hard",
+"· velmi těžký": "· very hard",
+"Snížit rychlost": "Decrease speed",
+"Zvýšit rychlost": "Increase speed",
+"Všechna témata": "All topics",
+"např. Petr Pupík": "e.g. Petr Pupík",
+"Náhled exportu parkuru": "Course export preview",
+"např. K7P2QX": "e.g. K7P2QX",
+"Oblouky (poloměr 2–10 m)": "Curves (radius 2–10 m)",
+"Rovné úseky": "Straight sections",
+"Ostré obraty přes 90°": "Sharp turns over 90°",
+"Křížení dráhy": "Path crossings",
+"Nástrahy v přímém směru": "Traps straight ahead",
+"Otočky · zadní strany": "Wraps · backsides",
+"Postup A1 → A2: 3× hodnocení Výborně": "Promotion A1 → A2: 3× Excellent",
+"Postup A2 → A3: 5× bez trestných bodů do 3. místa": "Promotion A2 → A3: 5× clean runs placed in the top 3",
+"+ vstup": "+ entry",
+"Tunely do oblouku": "Curved tunnels",
+"Start": "Start",
+"START": "START",
+"STOP": "STOP"
+},
+"num": {
+"# překážek": "#1 obstacles",
+"# m/s dle FCI": "#1 m/s per FCI",
+"Skok č. #: otočka": "Jump no. #1: wrap",
+"Skok č. #: #": "Jump no. #1: #2",
+"Změny strany: # (FCI chce aspoň 2)": "Side changes: #1 (FCI requires at least 2)",
+"Změny strany: #": "Side changes: #1",
+"Oblouk #° ↶": "#1° curve ↶",
+"Oblouk #° ↷": "#1° curve ↷",
+"Počet překážek # (FCI: 15–22)": "Number of obstacles #1 (FCI: 15–22)",
+"Skoků # (FCI: aspoň 7)": "Jumps #1 (FCI: at least 7)",
+"Délka trati # m (FCI: 100–220 m)": "Course length #1 m (FCI: 100–220 m)",
+"Slalom #× (FCI: v každém parkuru, jen jednou)": "Weave poles #1× (FCI: in every course, only once)",
+"Kruh #× (FCI: jen jednou)": "Tyre #1× (FCI: only once)",
+"Zaběhnuto # z #": "Done #1 of #2",
+"# m · # překážek": "#1 m · #2 obstacles",
+"SČP # s · MČP # s": "SCT #1 s · MCT #2 s",
+"Otočky # · zadní strany #": "Wraps #1 · backsides #2",
+"# · najdeš ho v Parkurech": "#1 · you'll find it in Courses",
+"# · najdeš je v Parkurech": "#1 · you'll find them in Courses",
+"Nové parkury: #": "New courses: #1",
+"Nových parkurů: #": "New courses: #1",
+", nové: #": ", new: #1",
+"oblouk #°": "#1° curve",
+"použita #×": "used #1×",
+"Za překážkou # je obrat o #°, psovod musí být před psem.": "After obstacle #1 there is a #2° turn, the handler must be ahead of the dog.",
+"Pes jde na překážku # první, psovod přejde za ním.": "The dog goes to obstacle #1 first, the handler crosses behind it.",
+"Nalezeno: #.": "Found: #1.",
+"Trasa 1–# přečtená z čísel na plánku": "Route 1–#1 read from the numbers on the course map",
+"č. #": "no. #1",
+"Trasa načtená z plánku: # překážek. Ulož ji tlačítkem Uložit.": "Route read from the course map: #1 obstacles. Save it with the Save button.",
+"Rozpoznáno # překážek. Teď na ně klepej v pořadí podle čísel na plánku.": "Recognised #1 obstacles. Now tap them in the order of the numbers on the course map.",
+"o #° doprava od dlouhé strany": "#1° to the right of the long side",
+"o #° doleva od dlouhé strany": "#1° to the left of the long side",
+"do oblouku #°": "curved #1°",
+"# kroků od předchozí překážky": "#1 steps from the previous obstacle",
+"#° doprava od dlouhé strany": "#1° to the right of the long side",
+"#° doleva od dlouhé strany": "#1° to the left of the long side",
+"Otočky #": "Wraps #",
+"Nové: #": "New: #",
+"Otočka u skoku č. #": "Wrap at jump no. #",
+"Vstup do překážky č. #": "Entry into obstacle no. #",
+"v A# #–# %": "in A#1 #2–#3 %",
+"# → # · přední křížení": "# → # · front cross",
+"# → # · zadní křížení": "# → # · rear cross",
+"# → # · slepé křížení": "# → # · blind cross",
+"Chůze # m/s": "Walk # m/s",
+"Běh # m/s": "Run # m/s",
+"Oblouky # %": "Curves # %",
+"z # · lehký": "of # · easy",
+"z # · střední": "of # · medium",
+"z # · těžký": "of # · hard",
+"z # · velmi těžký": "of # · very hard"
+},
+"re": [
+[
+"^(.+?) překážek$",
+"@1 obstacles"
+],
+[
+"^třída (.+?)$",
+"class @1"
+],
+[
+"^(.+?) m/s dle FCI$",
+"@1 m/s per FCI"
+],
+[
+"^Stavěl/a: (.+?)$",
+"Built by: @1"
+],
+[
+"^(.+?) · (.+?) · upraveno$",
+"@1 · @2 · edited"
+],
+[
+"^(.+?) zadní strana$",
+"@1 backside"
+],
+[
+"^(.+?) otočka vnitřkem$",
+"@1 inside wrap"
+],
+[
+"^(.+?) otočka venkem$",
+"@1 outside wrap"
+],
+[
+"^(.+?) otočka doleva$",
+"@1 wrap left"
+],
+[
+"^(.+?) otočka doprava$",
+"@1 wrap right"
+],
+[
+"^(.+?) č\\. (.+?): vstup$",
+"@1 no. @2: entry"
+],
+[
+"^(.+?) č\\. (.+?): vstup vzdálenějším koncem$",
+"@1 no. @2: entry through the far end"
+],
+[
+"^(.+?) č\\. (.+?): vstup bližším koncem$",
+"@1 no. @2: entry through the near end"
+],
+[
+"^Skok č\\. (.+?): otočka$",
+"Jump no. @1: wrap"
+],
+[
+"^Skok č\\. (.+?): (.+?)$",
+"Jump no. @1: @2"
+],
+[
+"^Dráha psa velikosti (.+?)$",
+"Path of a size @1 dog"
+],
+[
+"^Změny strany: (.+?) \\(FCI chce aspoň 2\\)$",
+"Side changes: @1 (FCI requires at least 2)"
+],
+[
+"^Změny strany: (.+?)$",
+"Side changes: @1"
+],
+[
+"^Oblouk (.+?)° ↶$",
+"@1° curve ↶"
+],
+[
+"^Oblouk (.+?)° ↷$",
+"@1° curve ↷"
+],
+[
+"^Plocha (.+?) × (.+?) m$",
+"Field @1 × @2 m"
+],
+[
+"^Počet překážek (.+?) \\(FCI: 15–22\\)$",
+"Number of obstacles @1 (FCI: 15–22)"
+],
+[
+"^Skoků (.+?) \\(FCI: aspoň 7\\)$",
+"Jumps @1 (FCI: at least 7)"
+],
+[
+"^Délka trati (.+?) m \\(FCI: 100–220 m\\)$",
+"Course length @1 m (FCI: 100–220 m)"
+],
+[
+"^(.+?) po dráze jen (.+?) m$",
+"@1 only @2 m along the path"
+],
+[
+"^(.+?) vzdušnou čarou (.+?) m$",
+"@1 @2 m in a straight line"
+],
+[
+"^(.+?) po dráze (.+?) m$",
+"@1 @2 m along the path"
+],
+[
+"^Rozestupy \\(FCI: po dráze 5–9 m, vzdušnou čarou nejvýš 7 m\\): (.+?)$",
+"Distances (FCI: 5–9 m along the path, at most 7 m in a straight line): @1"
+],
+[
+"^Slalom (.+?)× \\(FCI: v každém parkuru, jen jednou\\)$",
+"Weave poles @1× (FCI: in every course, only once)"
+],
+[
+"^Kruh (.+?)× \\(FCI: jen jednou\\)$",
+"Tyre @1× (FCI: only once)"
+],
+[
+"^Zónové překážky (.+?)×, druhů (.+?) \\(FCI: všechny 3 druhy, v (.+?) nejvýš (.+?)\\)$",
+"Contact obstacles @1×, types @2 (FCI: all 3 types, in @3 at most @4)"
+],
+[
+"^Změny strany psovoda (.+?) \\(FCI: aspoň 2\\)$",
+"Handler side changes @1 (FCI: at least 2)"
+],
+[
+"^(.+?)→(.+?) přes (.+?) č\\. (.+?)$",
+"@1→@2 over @3 no. @4"
+],
+[
+"^(.+?)→(.+?) přes (.+?)$",
+"@1→@2 over @3"
+],
+[
+"^Dráha psa nevede přes jinou překážku: (.+?)$",
+"The dog's path doesn't cross another obstacle: @1"
+],
+[
+"^Pravidla FCI: (.+?) problém$",
+"FCI rules: @1 issue"
+],
+[
+"^Pravidla FCI: (.+?) problémy$",
+"FCI rules: @1 issues"
+],
+[
+"^Pravidla FCI: (.+?) problémů$",
+"FCI rules: @1 issues"
+],
+[
+"^Zaběhnuto (.+?) z (.+?)$",
+"Done @1 of @2"
+],
+[
+"^(.+?) m · (.+?) překážek$",
+"@1 m · @2 obstacles"
+],
+[
+"^SČP (.+?) s · MČP (.+?) s$",
+"SCT @1 s · MCT @2 s"
+],
+[
+"^Oblouky (.+?) % · křížení (.+?)$",
+"Curves @1 % · crossings @2"
+],
+[
+"^Otočky (.+?) · zadní strany (.+?)$",
+"Wraps @1 · backsides @2"
+],
+[
+"^Načteno: (.+?)$",
+"Loaded: @1"
+],
+[
+"^Načíst (.+?)$",
+"Load @1"
+],
+[
+"^Smazat (.+?)\\?$",
+"Delete @1?"
+],
+[
+"^V třídě (.+?) už máš zaběhnuté všechno\\.$",
+"You've already run everything in class @1."
+],
+[
+"^Rychlost pro SČP \\((.+?)\\)$",
+"Speed for SCT (@1)"
+],
+[
+"^(.+?) s · (.+?) ch\\. · (.+?) odm\\.$",
+"@1 s · @2 f. · @3 ref."
+],
+[
+"^(.+?) · trestné body (.+?) · (.+?) · mezičasy$",
+"@1 · penalty points @2 · @3 · split times"
+],
+[
+"^(.+?) · trestné body (.+?) · (.+?)$",
+"@1 · penalty points @2 · @3"
+],
+[
+"^(.+?) · trestné body (.+?) · mezičasy$",
+"@1 · penalty points @2 · split times"
+],
+[
+"^(.+?) · trestné body (.+?)$",
+"@1 · penalty points @2"
+],
+[
+"^Běh uložen: (.+?)$",
+"Run saved: @1"
+],
+[
+"^Parkury aktualizovány \\(verze (.+?)\\)$",
+"Courses updated (version @1)"
+],
+[
+"^Server teď nejde \\((.+?)\\)\\. Zkus to později\\.$",
+"The server isn't available right now (@1). Try again later."
+],
+[
+"^(.+?) · najdeš ho v Parkurech$",
+"@1 · you'll find it in Courses"
+],
+[
+"^(.+?) · najdeš je v Parkurech$",
+"@1 · you'll find them in Courses"
+],
+[
+"^Nové parkury: (.+?)$",
+"New courses: @1"
+],
+[
+"^Nových parkurů: (.+?)$",
+"New courses: @1"
+],
+[
+"^, nové: (.+?)$",
+", new: @1"
+],
+[
+"^Katalog verze (.+?) · (.+?) parkurů · ověřeno (.+?)$",
+"Catalogue version @1 · @2 courses · checked @3"
+],
+[
+"^Vestavěný katalog · (.+?) parkurů$",
+"Built-in catalogue · @1 courses"
+],
+[
+"^(.+?) parkurů\\. Nové přibývají s novou verzí stránky, v aplikaci pro Android tlačítkem\\.$",
+"@1 courses. New ones arrive with a new version of the page, in the Android app with the button."
+],
+[
+"^Ukládám do telefonu: (.+?)$",
+"Saving to the phone: @1"
+],
+[
+"^Uložení se nepovedlo \\((.+?)\\)$",
+"Saving failed (@1)"
+],
+[
+"^Uloženo: (.+?)$",
+"Saved: @1"
+],
+[
+"^(.+?) · Stavěl/a: (.+?)$",
+"@1 · Built by: @2"
+],
+[
+"^(.+?) · Generátor podle pravidel FCI$",
+"@1 · Generator following FCI rules"
+],
+[
+"^(.+?) · Autor neuveden$",
+"@1 · Author not given"
+],
+[
+"^Délka (.+?) m · (.+?) překážek · (.+?) · SČP (.+?) s \\((.+?) m/s\\) · MČP (.+?) s$",
+"Length @1 m · @2 obstacles · @3 · SCT @4 s (@5 m/s) · MCT @6 s"
+],
+[
+"^Délka (.+?) m · (.+?) překážek · (.+?) · SČP (.+?) s \\((.+?) m/s\\) · MČP – s$",
+"Length @1 m · @2 obstacles · @3 · SCT @4 s (@5 m/s) · MCT – s"
+],
+[
+"^Délka (.+?) m · (.+?) překážek · (.+?) · SČP – s \\((.+?) m/s\\) · MČP (.+?) s$",
+"Length @1 m · @2 obstacles · @3 · SCT – s (@4 m/s) · MCT @5 s"
+],
+[
+"^Délka (.+?) m · (.+?) překážek · (.+?) · SČP – s \\((.+?) m/s\\) · MČP – s$",
+"Length @1 m · @2 obstacles · @3 · SCT – s (@4 m/s) · MCT – s"
+],
+[
+"^HandlerMap · (.+?) · mřížka 1 m$",
+"HandlerMap · @1 · 1 m grid"
+],
+[
+"^oblouk (.+?)°$",
+"@1° curve"
+],
+[
+"^Stavební plán: (.+?)$",
+"Build plan: @1"
+],
+[
+"^použita (.+?)×$",
+"used @1×"
+],
+[
+"^x = vzdálenost středu překážky od levého okraje plochy, y = od horního okraje\\. Směr běhu: → doprava, ↓ dolů, ← doleva, ↑ nahoru\\. Otočka doleva a doprava je z pohledu psa\\. Zadní strana: pes skok mine, oběhne křídlo a skočí ho z druhé strany\\. HandlerMap, (.+?)$",
+"x = distance of the obstacle centre from the left edge of the field, y = from the top edge. Running direction: → right, ↓ down, ← left, ↑ up. Left and right wraps are from the dog's point of view. Backside: the dog passes the jump, runs around the wing and takes it from the other side. HandlerMap, @1"
+],
+[
+"^Parkur (.+?) \\(HandlerMap\\)$",
+"Course @1 (HandlerMap)"
+],
+[
+"^Export se nepovedl: (.+?)$",
+"Export failed: @1"
+],
+[
+"^Parkur „(.+?)“ \\((.+?), stavěl/a (.+?)\\)\\. V aplikaci HandlerMap otevři Plán → Sdílet a zadej kód (.+?)$",
+"Course “@1” (@2, built by @3). In the HandlerMap app open Plan → Share and enter the code @4"
+],
+[
+"^Parkur „(.+?)“ \\((.+?)\\)\\. V aplikaci HandlerMap otevři Plán → Sdílet a zadej kód (.+?)$",
+"Course “@1” (@2). In the HandlerMap app open Plan → Share and enter the code @3"
+],
+[
+"^Kód se nepodařilo vytvořit: (.+?)$",
+"The code could not be created: @1"
+],
+[
+"^Parkur s kódem (.+?) neexistuje\\.$",
+"A course with code @1 doesn't exist."
+],
+[
+"^Parkur (.+?) uložen do Moje$",
+"Course @1 saved to Mine"
+],
+[
+"^Načtení se nepovedlo: (.+?)$",
+"Loading failed: @1"
+],
+[
+"^(.+?) ostrých obratů přes 90°$",
+"@1 sharp turns over 90°"
+],
+[
+"^(.+?)× otočka kolem křídla$",
+"@1× wrap around the wing"
+],
+[
+"^(.+?)× zadní strana skoku$",
+"@1× jump backside"
+],
+[
+"^(.+?)× křížení dráhy$",
+"@1× path crossing"
+],
+[
+"^(.+?)× nástraha v přímém směru$",
+"@1× trap straight ahead"
+],
+[
+"^(.+?)× vstup vzdálenějším koncem$",
+"@1× entry through the far end"
+],
+[
+"^(.+?)× překážka znovu$",
+"@1× obstacle again"
+],
+[
+"^(.+?) překážek$",
+"@1 obstacles"
+],
+[
+"^Za překážkou (.+?) je obrat o (.+?)°, psovod musí být před psem\\.$",
+"After obstacle @1 there is a @2° turn, the handler must be ahead of the dog."
+],
+[
+"^Pes je po (.+?)u před psovodem, strana se mění za ním\\.$",
+"After the @1 the dog is ahead of the handler, the side changes behind it."
+],
+[
+"^Pes jde na překážku (.+?) první, psovod přejde za ním\\.$",
+"The dog goes to obstacle @1 first, the handler crosses behind it."
+],
+[
+"^Nalezeno: (.+?)\\.$",
+"Found: @1."
+],
+[
+"^Trasa 1–(.+?) přečtená z čísel na plánku$",
+"Route 1–@1 read from the numbers on the course map"
+],
+[
+"^, směry podle nakreslené čáry\\. Zkontroluj: (.+?)\\. Po použití jde cokoli opravit v Plánu\\.$",
+", directions from the drawn line. Check: @1. After applying you can fix anything in Plan."
+],
+[
+"^(.+?)Čísla na plánku se nepodařilo přiřadit, po použití klepej na překážky v pořadí podle čísel na plánku, chybějící doplň v režimu Stavba\\.$",
+"@1The numbers on the course map couldn't be matched; after applying, tap the obstacles in the order of the numbers on the map and add missing ones in Build mode."
+],
+[
+"^(.+?)Čísla v kroužcích jsem nenašel, po použití klepej na překážky v pořadí podle čísel na plánku, chybějící doplň v režimu Stavba\\.$",
+"@1I didn't find numbers in circles; after applying, tap the obstacles in the order of the numbers on the map and add missing ones in Build mode."
+],
+[
+"^(.+?) překážky mimo trasu$",
+"@1 obstacles off the route"
+],
+[
+"^(.+?) překážka mimo trasu$",
+"@1 obstacle off the route"
+],
+[
+"^Trasa načtená z plánku: (.+?) překážek, zkontroluj (.+?) místo s otazníkem\\. Ulož ji tlačítkem Uložit\\.$",
+"Route read from the course map: @1 obstacles, check @2 place with a question mark. Save it with the Save button."
+],
+[
+"^Trasa načtená z plánku: (.+?) překážek, zkontroluj (.+?) místa s otazníkem\\. Ulož ji tlačítkem Uložit\\.$",
+"Route read from the course map: @1 obstacles, check @2 places with a question mark. Save it with the Save button."
+],
+[
+"^Trasa načtená z plánku: (.+?) překážek, zkontroluj (.+?) míst s otazníkem\\. Ulož ji tlačítkem Uložit\\.$",
+"Route read from the course map: @1 obstacles, check @2 places with a question mark. Save it with the Save button."
+],
+[
+"^Trasa načtená z plánku: (.+?) překážek\\. Ulož ji tlačítkem Uložit\\.$",
+"Route read from the course map: @1 obstacles. Save it with the Save button."
+],
+[
+"^Rozpoznáno (.+?) překážek\\. Teď na ně klepej v pořadí podle čísel na plánku\\.$",
+"Recognised @1 obstacles. Now tap them in the order of the numbers on the course map."
+],
+[
+"^o (.+?)° doprava od dlouhé strany$",
+"@1° to the right of the long side"
+],
+[
+"^o (.+?)° doleva od dlouhé strany$",
+"@1° to the left of the long side"
+],
+[
+"^do oblouku (.+?)°$",
+"curved @1°"
+],
+[
+"^v trase č\\. (.+?)$",
+"on the route no. @1"
+],
+[
+"^(.+?) kroků od předchozí překážky$",
+"@1 steps from the previous obstacle"
+],
+[
+"^Směr: (.+?) \\(šipka ukazuje směr na plánku\\)\\.$",
+"Direction: @1 (the arrow shows the direction on the plan)."
+],
+[
+"^(.+?)° doprava od dlouhé strany$",
+"@1° to the right of the long side"
+],
+[
+"^(.+?)° doleva od dlouhé strany$",
+"@1° to the left of the long side"
+],
+[
+"^(.+?) Natoč překážku podle obrázku\\.$",
+"@1 Turn the obstacle as in the picture."
+],
+[
+"^(.+?) Směr překážky: (.+?)\\.$",
+"@1 Obstacle direction: @2."
+],
+[
+"^z (\\d+) · (.+?)$",
+"of $1 · @2"
+],
+[
+"^Pes velikosti (.+?)$",
+"Size $1 dog"
+],
+[
+"^Animace: (.+?)$",
+"Animation: @1"
+],
+[
+"^(.+?) · (\\d+) (min|s)$",
+"@1 · $2 $3"
+]
+]
+});
+i18nAdd({
+"exact": {
+"XS – do 30 cm": "XS – up to 30 cm",
+"15–40 cm (1–2 díly)": "15–40 cm (1–2 units)",
+"S – do 35 cm": "S – up to 35 cm",
+"40–50 cm (2 díly)": "40–50 cm (2 units)",
+"M – 35 až 43 cm": "M – 35 to 43 cm",
+"70–90 cm (3 díly)": "70–90 cm (3 units)",
+"I – 43 až 48 cm": "I – 43 to 48 cm",
+"90–110 cm (3–4 díly)": "90–110 cm (3–4 units)",
+"L – od 48 cm": "L – from 48 cm",
+"120–150 cm (4 díly)": "120–150 cm (4 units)",
+"＋ Přidat psa (běhy se pak zapisují ke psovi)": "＋ Add a dog (runs are then recorded for the dog)",
+"Nový pes": "New dog",
+"Jméno": "Name",
+"Velikost": "Size",
+"Výkonnostní třída": "Performance class",
+"Narozen/a (měsíc a rok, nepovinné)": "Born (month and year, optional)",
+"Zrušit": "Cancel",
+"Přidat": "Add",
+"Uložit": "Save",
+"Upravit psa": "Edit dog",
+"Pes": "Dog",
+"Pes přidán": "Dog added",
+"Uloženo": "Saved",
+"Graf rychlosti se ukáže po dvou uložených bězích bez diskvalifikace.": "The speed chart appears after two saved runs without disqualification.",
+"Rychlost psa (m/s)": "Dog's speed (m/s)",
+"Zatím tu nejsou žádné běhy. Změř a ulož běh v záložce Běh.": "There are no runs yet. Time and save a run in the Run tab.",
+"Běhů": "Runs",
+"Čisté běhy": "Clean runs",
+"Průměr trestných bodů": "Average penalty points",
+"Průměrná rychlost": "Average speed",
+"Nejrychlejší běh": "Fastest run",
+"Zaběhnuté parkury": "Courses done",
+"Hodnocení běhů": "Run grades",
+"Podle soutěžního řádu KAČR (znění může být novější, ověř na": "According to the KAČR competition rules (the wording may be newer, check at",
+"). Počítají se závody zapsané v deníku u vybraného psa.": "). Competitions recorded in the training log for the selected dog count.",
+"＋ Trénink": "＋ Training",
+"＋ Závod": "＋ Competition",
+"Zatím žádné záznamy. Zapiš si trénink nebo výsledek ze závodů.": "No entries yet. Record a training session or a competition result.",
+"Výsledek ze závodů": "Competition result",
+"Datum": "Date",
+"Akce": "Event",
+"Rozhodčí": "Judge",
+"Třída": "Class",
+"Hodnocení": "Grade",
+"Trestné body": "Penalty points",
+"Umístění": "Placing",
+"Poznámka": "Note",
+"Povrch": "Surface",
+"tráva": "grass",
+"umělá tráva": "artificial turf",
+"písek": "sand",
+"jiný": "other",
+"Záznam z tréninku": "Training record",
+"Zapsáno do deníku": "Written to the training log",
+"Volná chůze na vodítku": "Loose walk on the lead",
+"Klidné tempo, pes se může očichat.": "Calm pace, the dog can sniff around.",
+"Klus": "Trot",
+"Plynulý klus vedle tebe, na rovném povrchu.": "A steady trot beside you on a flat surface.",
+"Kolečka a osmičky": "Circles and figures of eight",
+"Oběma směry, ať se pes ohýbá doleva i doprava.": "In both directions, so the dog bends left and right.",
+"Couvání": "Backing up",
+"Pár kroků dozadu, v klidu.": "A few steps backwards, calmly.",
+"Protažení za pamlskem": "Stretching for a treat",
+"Hlava k boku na obě strany, mezi přední nohy a nahoru.": "Head to the side both ways, between the front legs and up.",
+"Krátké sprinty nebo přetahování": "Short sprints or tugging",
+"Pár krátkých zrychlení, ať je pes připravený na rychlost.": "A few short accelerations so the dog is ready for speed.",
+"Pauza": "Pause",
+"Další cvik": "Next exercise",
+"Od začátku": "From the start",
+"Obecná doporučení k zahřátí před tréninkem. Pokud má pes zdravotní potíže, poraď se s veterinářem nebo psím fyzioterapeutem.": "General recommendations for warming up before training. If your dog has health problems, consult a vet or a canine physiotherapist.",
+"Po tréninku dej psovi ještě pár minut volné chůze.": "After training give the dog a few more minutes of loose walking.",
+"Hotovo, můžete trénovat": "Done, you can start training",
+"Tohle není záloha z aplikace HandlerMap.": "This isn't a backup from HandlerMap.",
+"Obnovit zálohu?": "Restore the backup?",
+"Obnovit": "Restore",
+"Záloha jako text": "Backup as text",
+"Tvoje parkury, běhy, psy a deník se ukážou jako text. Zkopíruj si ho a schovej, obnovíš ho přes Vložit text zálohy. Pohodlnější je cloud níž.": "Your courses, runs, dogs and training log are shown as text. Copy it and keep it safe; you restore it via Paste backup text. The cloud below is more convenient.",
+"Zobrazit zálohu": "Show backup",
+"Vložit text zálohy": "Paste backup text",
+"Záloha v cloudu": "Cloud backup",
+"Záloha se uloží na server aplikace pod tvým klíčem. Klíč si opiš, s ním data obnovíš i v jiném telefonu.": "The backup is stored on the app's server under your key. Write the key down; with it you can restore the data on another phone too.",
+"Zálohovat do cloudu": "Back up to the cloud",
+"Obnovit z cloudu": "Restore from the cloud",
+"Cloudová záloha funguje v aplikaci pro Android. Tady použij zálohu do souboru.": "Cloud backup works in the installed app. Here use the backup to a file.",
+"Obnovit ze souboru": "Restore from a file",
+"Uložit zálohu": "Save backup",
+"Uloží tvoje parkury, běhy, psy a deník do jednoho souboru. Hodí se před přeinstalací aplikace.": "Saves your courses, runs, dogs and training log into one file. Useful before reinstalling the app.",
+"Použij Vložit text zálohy nebo cloud.": "Use Paste backup text or the cloud.",
+"Vložit zálohu": "Paste backup",
+"Text zálohy": "Backup text",
+"Text není platná záloha.": "The text isn't a valid backup.",
+"Záloha uložena do cloudu": "Backup saved to the cloud",
+"Klíč zálohy": "Backup key",
+"Načíst": "Load",
+"Pod tímhle klíčem žádná záloha není.": "There's no backup under this key.",
+"Soubor není platná záloha.": "The file isn't a valid backup.",
+"Karina Divišová, Martina Podešťová, Jaroslav Benda, Lucie Dostálová": "Karina Divišová, Martina Podešťová, Jaroslav Benda, Lucie Dostálová",
+"Karina Divišová, Martina Podešťová: 90 tréninkových sekvencí": "Karina Divišová, Martina Podešťová: 90 training sequences",
+"Knihy": "Books",
+"＋ Přidat psa": "＋ Add a dog",
+"Přidej psa. Aplikace pak ukáže výšky překážek pro jeho kategorii a běhy i statistiky povede zvlášť pro každého psa.": "Add a dog. The app will then show obstacle heights for its category and keep runs and statistics separately for each dog.",
+"Překážka": "Obstacle",
+"Podle FCI": "Per FCI",
+"Skok": "Jump",
+"Zeď": "Wall",
+"Kruh (střed od země)": "Tyre (centre above ground)",
+"Skok daleký": "Long jump",
+"Áčko, kladina, houpačka": "A-frame, dog walk, seesaw",
+"stejné pro všechny: 170 / 120–130 / 60 cm": "the same for all: 170 / 120–130 / 60 cm",
+"Výšky překážek (kategorie L)": "Obstacle heights (category L)",
+"Plánky od rozhodčích a trenérů. Parkur podle plánku přeneseš v Plánu přes Plánek z obrázku (překážky se rozpoznají samy) a při ukládání vyplníš, kdo ho stavěl.": "Course maps from judges and trainers. Transfer a course from a map in Plan via Course map from photo (the obstacles are recognised automatically) and fill in who built it when saving.",
+"HandlerMap 1.9": "HandlerMap 1.9",
+"Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do oblouku), parkury trenérů, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, otočky kolem křídla a zadní strany skoků, 3D průlet, trénink paměti, videa s technikou, deník a statistiky.": "Agility course planner: 90 courses following FCI rules and judges' style (curves, crossings, curved tunnels), trainers' courses, rule check, SCT and MCT calculation, stopwatch with grading and split times, wraps around the wing and jump backsides, 3D flythrough, memory training, technique videos, training log and statistics.",
+"Novinky v 1.9: aplikace k instalaci do telefonu (Chrome → Instalovat aplikaci). V ní funguje výběr fotky a videa, ukládání obrázku, PDF a zálohy, plánek jde poslat přes Sdílet z galerie rovnou do čtečky, katalog parkurů i záloha v cloudu. Aktualizuje se sama.": "New in 1.9: an app to install on your phone (Chrome → Install app). Photo and video picking, saving images, PDFs and backups work there, a course map can be sent via Share from the gallery straight to the reader, plus the course catalogue and cloud backup. It updates itself.",
+"Novinky v 1.8: Plánek z obrázku přečte i trasu. Z čísel v kroužcích pozná pořadí, z nakreslené čáry směry skoků, vstupy do tunelů a zón, otočky kolem křídla a zadní strany. Chybějící kruh, skok daleký, dvojité břevno, zeď nebo kladinu dohledá u čísla. Nejistá místa označí otazníkem. V aplikaci pro Android jde plánek vložit i ze schránky.": "New in 1.8: Course map from photo also reads the route. It recognises the order from the numbers in circles, and from the drawn line the jump directions, tunnel and contact entries, wraps around the wing and backsides. It finds a missing tyre, long jump, double bar, wall or dog walk by its number. Uncertain places are marked with a question mark. In the Android app you can also paste the map from the clipboard.",
+"Novinky v 1.7: tlačítko Zkontrolovat nové parkury v záložce Parkury, nové parkury mají štítek Nový a tečku u záložky, přibyl parkur trenéra Euskadi Sextuple 2018 A1.": "New in 1.7: a Check for new courses button in Courses, new courses carry a New label and a dot on the tab, plus the trainer's course Euskadi Sextuple 2018 A1.",
+"Novinky v 1.6: nový generátor parkurů, náročnost a řazení parkurů, rozbor parkuru s vedením psovoda, odhadem času a simulací Stihnu to?, dráha podle velikosti psa, klasická cvičení a klubový parkur v generátoru, mezičasy naživo i z videa, chytrý trénink, předčítání trasy, plánek z obrázku, stavba v terénu s kompasem a sekce Začínáme pro štěňata.": "New in 1.6: a new course generator, course difficulty and sorting, course analysis with handler guidance, time estimate and the Can I make it? simulation, the path by dog size, classic exercises and a club course in the generator, live and video split times, smart training, reading the route aloud, course map from photo, building on the field with a compass and a Getting started section for puppies.",
+"Data se ukládají v tomhle zařízení. Sdílení kódem a cloudová záloha běží přes server Supabase a fungují v aplikaci pro Android. Uložení PDF a obrázku do telefonu a podklad z fotky fungují ve webové verzi.": "Data is stored on this device. Sharing by code and cloud backup run via the Supabase server and work in the installed app. Saving PDFs and images to the phone and the photo underlay work in the web version.",
+"Pravidla:": "Rules:",
+"Řád agility FCI a ČR (od 2023)": "FCI and Czech Agility Regulations (from 2023)",
+"Katalog parkurů: vestavěný. V aplikaci pro Android se nové parkury stáhnou samy při spuštění nebo tlačítkem Zkontrolovat nové parkury v záložce Parkury, bez aktualizace aplikace.": "Course catalogue: built-in. In the installed app new courses download automatically at start-up or with the Check for new courses button in Courses, without updating the app.",
+"Jeho běhy zůstanou uložené u parkurů.": "Its runs stay saved with the courses.",
+"Smazat": "Delete",
+"Smazat záznam?": "Delete this entry?",
+"Záznam zmizí z deníku.": "The entry disappears from the training log.",
+"Nejdřív vyznač trasu v režimu Trasa.": "Mark the route in Route mode first.",
+"Rozbor parkuru": "Course analysis",
+"Plynulost dráhy": "Path flow",
+"Nástraha: překážka, na kterou pes míří v přímém směru, zatímco trasa pokračuje obratem jinam.": "Trap: an obstacle the dog is heading straight at while the route continues with a turn elsewhere.",
+"Dráha v plánu": "Path in the plan",
+"Ideální": "Ideal",
+"Zavřít": "Close",
+"Malý pes zatáčí těsněji a kolem křídla projde blíž, velký v širších obloucích. Délka trati, SČP a kontrola FCI se počítají vždy z ideální čáry.": "A small dog turns tighter and passes closer to the wing, a big dog in wider curves. Course length, SCT and the FCI check are always calculated from the ideal line.",
+"Parkur bez výrazných záludností.": "A course without notable pitfalls.",
+"Vedení psovoda": "Handler guidance",
+"Celý parkur se dá vést z jedné strany.": "The whole course can be handled from one side.",
+"Nastavit stranu psa v Dráze psovoda": "Set the dog's side in Handler's path",
+"Odhad času": "Time estimate",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Až zapíšeš běhy psa, odhad se podle nich upraví.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Once you record the dog's runs, the estimate adjusts to them.",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Přidej psa ve Více › Psi a odhad bude pro něj.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Add a dog in More › Dogs and the estimate will be for it.",
+"SČP – s": "SCT – s",
+"Stihnu to?": "Can I make it?",
+"Přehrát psa a psovoda": "Play dog and handler",
+"Při téhle rychlosti stihneš být všude včas.": "At this speed you'll be everywhere in time.",
+"Strana psa nastavena podle návrhu": "Dog side set according to the suggestion",
+"Hnědý je pes, modrý psovod. Klepnutím na plochu zastavíš.": "Brown is the dog, blue the handler. Tap the field to stop.",
+"Nejdřív načti nebo postav parkur s trasou.": "Load or build a course with a route first.",
+"Video z telefonu otevřeš ve webové verzi aplikace. V aplikaci pro Android použij mezičasy naživo.": "You open a phone video in the web version of the app. In the Android app use live split times.",
+"Mezičasy z videa": "Split times from video",
+"Vyber video běhu z telefonu. Zůstane jen v telefonu, nikam se nenahrává.": "Choose a video of the run from your phone. It stays only on the phone, nothing is uploaded.",
+"Přehrát": "Play",
+"Zpět": "Back",
+"Mezičasy naživo": "Live split times",
+"Nejdřív vyber video.": "Choose a video first.",
+"Tahle značka je dřív než předchozí. Posuň video dopředu.": "This mark is earlier than the previous one. Move the video forward.",
+"Start (skok 1)": "Start (jump 1)",
+"Hotovo": "Done",
+"Klepni, když pes proběhne startem (první skok).": "Tap when the dog passes the start (first jump).",
+"Všechny mezičasy zapsané.": "All split times recorded.",
+"Mezičasy": "Split times",
+"Celkem": "Total",
+"Úsek": "Section",
+"Čas": "Time",
+"Model": "Model",
+"Rozdíl": "Difference",
+"Použít k běhu": "Use for the run",
+"Běh je vyrovnaný, žádný úsek výrazně neztrácí.": "The run is even, no section loses noticeably.",
+". Úseky se porovnávají s modelem psa přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu.": ". Sections are compared with the dog model scaled to the same total time, so you can see where time is lost compared with the rest of the run.",
+"Čas a mezičasy se uloží s během": "Time and split times will be saved with the run",
+"Slalom": "Weave poles",
+"Zóny": "Contacts",
+"Tunely": "Tunnels",
+"Otočky kolem křídla": "Wraps around the wing",
+"Zadní strany": "Backsides",
+"Ostré obraty a hady": "Sharp turns and serpentines",
+"Rychlé linie": "Fast lines",
+"Chytrý trénink": "Smart training",
+"Změř u běhu mezičasy (záložka Běh › Mezičasy naživo nebo z videa) a aplikace ukáže, kde pes ztrácí čas: slalom, zóny, otočky, obraty nebo rovné linie. Pak doporučí cvičení.": "Record split times for a run (Run › Live split times or from video) and the app shows where the dog loses time: weaves, contacts, wraps, turns or straight lines. Then it recommends exercises.",
+"Nejvíc času ztrácíte:": "You lose the most time on:",
+"Žádná část běhu výrazně nezaostává. Zkus těžší parkury nebo rychlejší linie.": "No part of the run lags noticeably. Try harder courses or faster lines.",
+"do U": "U-shape",
+"z druhé strany": "from the other side",
+"vstup vzdálenějším koncem": "entry through the far end",
+"cíl": "finish",
+"změna strany, pes vlevo": "side change, dog on the left",
+"změna strany, pes vpravo": "side change, dog on the right",
+"pes vlevo": "dog on the left",
+"pes vpravo": "dog on the right",
+"Tohle zařízení neumí předčítat. Zkus webovou verzi v Chrome.": "This device can't read aloud. Try the web version in Chrome.",
+"Předčítání trasy": "Reading the route aloud",
+"Aplikace přečte pořadí překážek, otočky a vstupy. Hodí se při prohlídce parkuru: jdi trasu a poslouchej.": "The app reads the obstacle order, wraps and entries. Handy for the course walk: walk the route and listen.",
+"Strana psa a změny strany": "Dog side and side changes",
+"Pomalu": "Slow",
+"Normálně": "Normal",
+"Rychle": "Fast",
+"Přečíst trasu": "Read the route",
+"Čtu trasu…": "Reading the route…",
+"Zastavit": "Stop",
+"Znovu": "Again",
+"Pro 3D průlet potřebuješ trasu aspoň se 2 překážkami.": "For the 3D flythrough you need a route with at least 2 obstacles.",
+"zadní strana": "backside",
+"otočka vnitřkem": "inside wrap",
+"otočka venkem": "outside wrap",
+"otočka doleva": "wrap left",
+"otočka doprava": "wrap right",
+"do oblouku": "curved",
+"start": "start",
+"zadní strana, otočka doleva": "backside, wrap left",
+"zadní strana, otočka doprava": "backside, wrap right"
+},
+"num": {
+"Návrh strany psa: u ostrých obratů je psovod uvnitř, mírné zatáčky se dají vést i zvenku. Změny strany: # (FCI chce aspoň 2).": "Suggested dog side: at sharp turns the handler is on the inside, gentle bends can also be handled from the outside. Side changes: #1 (FCI requires at least 2).",
+"SČP # s": "SCT #1 s",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Upraveno podle # zapsaného běhu psa. Odhad je nad SČP o # s.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from #1 recorded run of the dog. The estimate is #2 s over the SCT.",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Upraveno podle # zapsaného běhu psa.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from #1 recorded run of the dog.",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Upraveno podle # zapsaných běhů psa. Odhad je nad SČP o # s.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from #1 recorded runs of the dog. The estimate is #2 s over the SCT.",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Upraveno podle # zapsaných běhů psa.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from #1 recorded runs of the dog.",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Až zapíšeš běhy psa, odhad se podle nich upraví. Odhad je nad SČP o # s.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Once you record the dog's runs, the estimate adjusts to them. The estimate is #1 s over the SCT.",
+"Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce. Přidej psa ve Více › Psi a odhad bude pro něj. Odhad je nad SČP o # s.": "Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Add a dog in More › Dogs and the estimate will be for it. The estimate is #1 s over the SCT.",
+"Přední křížení u #: doběhneš o # s později, než je potřeba. Zkus zadní křížení, nebo psa pošli dopředu a křížení udělej dřív.": "Front cross at #1: you'll arrive #2 s later than needed. Try a rear cross, or send the dog ahead and cross earlier.",
+"U překážky # jsi o # s za psem. Tady musí pes pracovat na dálku, nebo si zkrať dráhu.": "At obstacle #1 you're #2 s behind the dog. Here the dog has to work at a distance, or shorten your path.",
+"A další místa: #.": "And other places: #1.",
+"Tvoje dráha # m (podle nakreslené Dráhy psovoda), pes uběhne # m. Na startu počítá s odchodem k druhé překážce.": "Your path #1 m (from the drawn Handler's path), the dog runs #2 m. At the start it counts on a lead-out to the second obstacle.",
+"Tvoje dráha # m (odhad: 2 m od psa na straně návrhu), pes uběhne # m. Na startu počítá s odchodem k druhé překážce.": "Your path #1 m (estimate: 2 m from the dog on the suggested side), the dog runs #2 m. At the start it counts on a lead-out to the second obstacle.",
+"Klepni, když pes dokončí překážku # (cíl).": "Tap when the dog completes obstacle #1 (finish).",
+"Klepni, když pes dokončí překážku #.": "Tap when the dog completes obstacle #1.",
+"Průměrně # chyb a odmítnutí na běh: vyplatí se kratší sekvence a přesnost před rychlostí.": "On average #1 faults and refusals per run: shorter sequences and accuracy before speed pay off.",
+"Průměrně # chyb a odmítnutí na běh: vyplatí se přesnost před rychlostí.": "On average #1 faults and refusals per run: accuracy before speed pays off."
+},
+"re": [
+[
+"^Zatím tu nejsou žádné běhy psa (.+?)\\. Změř a ulož běh v záložce Běh\\.$",
+"There are no runs for @1 yet. Time and save a run in the Run tab."
+],
+[
+"^(.+?) z (.+?) zkoušek · rozhodčích: (.+?) \\(potřeba aspoň 2\\) · podmínka splněna$",
+"@1 of @2 trials · judges: @3 (at least 2 needed) · condition met"
+],
+[
+"^(.+?) z (.+?) zkoušek · rozhodčích: (.+?) \\(potřeba aspoň 2\\)$",
+"@1 of @2 trials · judges: @3 (at least 2 needed)"
+],
+[
+"^Současná data v aplikaci se nahradí zálohou z (.+?)\\.$",
+"The current data in the app will be replaced with the backup from @1."
+],
+[
+"^Zálohu se nepodařilo zapsat: (.+?)$",
+"The backup could not be written: @1"
+],
+[
+"^Cloud nejde: (.+?)$",
+"The cloud isn't available: @1"
+],
+[
+"^Cloud nejde: (.+?)$",
+"The cloud isn't available: @1"
+],
+[
+"^Výšky překážek pro (.+?)$",
+"Obstacle heights for @1"
+],
+[
+"^Katalog parkurů: verze (.+?) ze serveru, staženo (.+?)\\. V aplikaci pro Android se nové parkury stáhnou samy při spuštění nebo tlačítkem Zkontrolovat nové parkury v záložce Parkury, bez aktualizace aplikace\\.$",
+"Course catalogue: version @1 from the server, downloaded @2. In the installed app new courses download automatically at start-up or with the Check for new courses button in Courses, without updating the app."
+],
+[
+"^Smazat psa (.+?)\\?$",
+"Delete the dog @1?"
+],
+[
+"^Nejvíc přidává: (.+?)\\.$",
+"Adds the most: @1."
+],
+[
+"^Malý pes zatáčí těsněji a kolem křídla projde blíž, velký v širších obloucích\\. Tvůj pes (.+?) je (.+?)\\. Délka trati, SČP a kontrola FCI se počítají vždy z ideální čáry\\.$",
+"A small dog turns tighter and passes closer to the wing, a big dog in wider curves. Your dog @1 is @2. Course length, SCT and the FCI check are always calculated from the ideal line."
+],
+[
+"^Návrh strany psa: u ostrých obratů je psovod uvnitř, mírné zatáčky se dají vést i zvenku\\. Změny strany: (.+?) \\(FCI chce aspoň 2\\)\\.$",
+"Suggested dog side: at sharp turns the handler is on the inside, gentle bends can also be handled from the outside. Side changes: @1 (FCI requires at least 2)."
+],
+[
+"^SČP (.+?) s$",
+"SCT @1 s"
+],
+[
+"^Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce\\. Upraveno podle (.+?) zapsaného běhu psa\\. Odhad je nad SČP o (.+?) s\\.$",
+"Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from @1 recorded run of the dog. The estimate is @2 s over the SCT."
+],
+[
+"^Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce\\. Upraveno podle (.+?) zapsaného běhu psa\\.$",
+"Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from @1 recorded run of the dog."
+],
+[
+"^Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce\\. Upraveno podle (.+?) zapsaných běhů psa\\. Odhad je nad SČP o (.+?) s\\.$",
+"Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from @1 recorded runs of the dog. The estimate is @2 s over the SCT."
+],
+[
+"^Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce\\. Upraveno podle (.+?) zapsaných běhů psa\\.$",
+"Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Adjusted from @1 recorded runs of the dog."
+],
+[
+"^Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce\\. Až zapíšeš běhy psa, odhad se podle nich upraví\\. Odhad je nad SČP o (.+?) s\\.$",
+"Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Once you record the dog's runs, the estimate adjusts to them. The estimate is @1 s over the SCT."
+],
+[
+"^Model psa podle velikosti: rychlost v zatáčkách podle poloměru, rozběh, zpomalení na zónách, ve slalomu a na houpačce\\. Přidej psa ve Více › Psi a odhad bude pro něj\\. Odhad je nad SČP o (.+?) s\\.$",
+"Dog model by size: speed in turns by radius, acceleration, slowing on contacts, in the weaves and on the seesaw. Add a dog in More › Dogs and the estimate will be for it. The estimate is @1 s over the SCT."
+],
+[
+"^Přední křížení u (.+?): doběhneš o (.+?) s později, než je potřeba\\. Zkus zadní křížení, nebo psa pošli dopředu a křížení udělej dřív\\.$",
+"Front cross at @1: you'll arrive @2 s later than needed. Try a rear cross, or send the dog ahead and cross earlier."
+],
+[
+"^U překážky (.+?) jsi o (.+?) s za psem\\. Tady musí pes pracovat na dálku, nebo si zkrať dráhu\\.$",
+"At obstacle @1 you're @2 s behind the dog. Here the dog has to work at a distance, or shorten your path."
+],
+[
+"^A další místa: (.+?)\\.$",
+"And other places: @1."
+],
+[
+"^Tvoje dráha (.+?) m \\(podle nakreslené Dráhy psovoda\\), pes uběhne (.+?) m\\. Na startu počítá s odchodem k druhé překážce\\.$",
+"Your path @1 m (from the drawn Handler's path), the dog runs @2 m. At the start it counts on a lead-out to the second obstacle."
+],
+[
+"^Tvoje dráha (.+?) m \\(odhad: 2 m od psa na straně návrhu\\), pes uběhne (.+?) m\\. Na startu počítá s odchodem k druhé překážce\\.$",
+"Your path @1 m (estimate: 2 m from the dog on the suggested side), the dog runs @2 m. At the start it counts on a lead-out to the second obstacle."
+],
+[
+"^Klepni, když pes dokončí překážku (.+?) \\(cíl\\)\\.$",
+"Tap when the dog completes obstacle @1 (finish)."
+],
+[
+"^Klepni, když pes dokončí překážku (.+?)\\.$",
+"Tap when the dog completes obstacle @1."
+],
+[
+"^\\. Úseky se porovnávají s modelem psa (.+?) \\((.+?)\\) přepočteným na stejný celkový čas, takže je vidět, kde se ztrácí čas oproti zbytku běhu\\.$",
+". Sections are compared with the model of a @1 dog (@2) scaled to the same total time, so you can see where time is lost compared with the rest of the run."
+],
+[
+"^Změř u běhu mezičasy \\(záložka Běh › Mezičasy naživo nebo z videa\\) a aplikace ukáže, kde (.+?) ztrácí čas: slalom, zóny, otočky, obraty nebo rovné linie\\. Pak doporučí cvičení\\.$",
+"Record split times for a run (Run › Live split times or from video) and the app shows where @1 loses time: weaves, contacts, wraps, turns or straight lines. Then it recommends exercises."
+],
+[
+"^Průměrně (.+?) chyb a odmítnutí na běh: vyplatí se kratší sekvence a přesnost před rychlostí\\.$",
+"On average @1 faults and refusals per run: shorter sequences and accuracy before speed pay off."
+],
+[
+"^Podle (.+?) běhu s mezičasy\\. Poměr 1,00 znamená stejně rychle jako zbytek běhu, vyšší číslo je pomalejší\\.$",
+"Based on @1 run with split times. A ratio of 1.00 means as fast as the rest of the run, a higher number is slower."
+],
+[
+"^Podle (.+?) běhů s mezičasy\\. Poměr 1,00 znamená stejně rychle jako zbytek běhu, vyšší číslo je pomalejší\\.$",
+"Based on @1 runs with split times. A ratio of 1.00 means as fast as the rest of the run, a higher number is slower."
+],
+[
+"^Průměrně (.+?) chyb a odmítnutí na běh: vyplatí se přesnost před rychlostí\\.$",
+"On average @1 faults and refusals per run: accuracy before speed pays off."
+],
+[
+"^Překážka (.+?) z (.+?) · (.+?) m z (.+?) m$",
+"Obstacle @1 of @2 · @3 m of @4 m"
+]
+]
+});
+i18nAdd({
+"exact": {
+"Zpět: vrátit poslední změnu plánu": "Back: undo the last change to the plan",
+"Plocha parkuru, posouvá se šipkami": "Course field, moves with the arrow keys",
+"Pravidla FCI: vyznač trasu": "FCI rules: mark the route",
+"Kontrola pravidel potřebuje trasu aspoň se 2 překážkami.": "The rule check needs a route with at least 2 obstacles.",
+"Parkur zatím nemá trasu. Vyznač ji v Plánu v režimu Trasa, pak se běh ohodnotí.": "The course has no route yet. Mark it in Plan in Route mode, then the run will be graded.",
+"neděle": "Sunday",
+"pondělí": "Monday",
+"úterý": "Tuesday",
+"středa": "Wednesday",
+"čtvrtek": "Thursday",
+"pátek": "Friday",
+"sobota": "Saturday",
+"Připraveni": "Ready",
+"na": "for",
+"trénink?": "training?",
+"zaběhnuto": "courses run",
+"m/s průměr": "m/s average",
+"čisté běhy": "clean runs",
+"Začni": "Start",
+"Vyber si parkur": "Choose a course",
+"90 parkurů podle pravidel FCI, nebo si postav vlastní": "90 courses following FCI rules, or build your own",
+"Parkury pro tebe": "Courses for you",
+"Vše ›": "All ›",
+"Výzva dne": "Daily challenge",
+"Zaběhni čistě pod SČP": "Run it clean under the SCT",
+"Splněno ✓": "Done ✓",
+"Po": "Mo",
+"Út": "Tu",
+"St": "We",
+"Čt": "Th",
+"Pá": "Fr",
+"So": "Sa",
+"Ne": "Su",
+"Tento týden": "This week",
+"Deník ›": "Training log ›",
+"zbývá poslední den": "last day left",
+"Porovnej se s ostatními v žebříčku podle velikosti psa.": "Compare yourself with others on the leaderboard by dog size.",
+"Zatím nikdo nezaběhl. Buď první!": "Nobody has run it yet. Be the first!",
+"Tvůj výsledek:": "Your result:",
+"Tvůj nejlepší běh:": "Your best run:",
+"· neodesláno": "· not submitted",
+"Tento týden jsi ho ještě nezaběhl/a": "You haven't run it this week yet",
+"Parkur týdne": "Course of the week",
+"Žebříček ›": "Leaderboard ›",
+"Zaběhnout": "Run it",
+"Zaběhnout parkur": "Run the course",
+"Načítám žebříček…": "Loading the leaderboard…",
+"Zkusit znovu": "Try again",
+"čas": "time",
+"trestné body": "penalty points",
+"Psovod (přezdívka v žebříčku)": "Handler (nickname on the leaderboard)",
+"Pes:": "Dog:",
+"Do žebříčku se pošle přezdívka, jméno a velikost psa a výsledek. Počítá se tvůj nejlepší běh v týdnu.": "The leaderboard gets your nickname, the dog's name and size, and the result. Your best run of the week counts.",
+"Teď ne": "Not now",
+"Odeslat do žebříčku": "Submit to leaderboard",
+"Napiš přezdívku psovoda.": "Enter the handler's nickname.",
+"Napiš jméno psa.": "Enter the dog's name.",
+"Odesílám…": "Sending…",
+"server neodpovídá": "server not responding",
+"Server vrátil neplatný kód, zkus to znovu.": "The server returned an invalid code, try again.",
+"Načítám…": "Loading…",
+"Současná data v aplikaci se nahradí zálohou.": "The current data in the app will be replaced with the backup.",
+"Nový název HandlerMap": "New name HandlerMap",
+"Angličtina (přepneš ve Více → Nastavení)": "English (switch in More → Settings)",
+"Větší tlačítka a plynulejší přechody": "Bigger buttons and smoother transitions",
+"Novinky v 1.13: 3D animace techniky ve Videích – pes a psovod na skutečných překážkách (skok, tunel, slalom, áčko, kladina, houpačka, kruh, skok daleký) i při vedení psa (čelo, záda, blind, otočky, zadní strana, start). Animace se stáhne až při otevření tématu, na slabším telefonu se sama zjednoduší a bez podpory 3D zůstane dosavadní 2D animace.": "New in 1.13: 3D technique animations in Videos – dog and handler on real obstacles (jump, tunnel, weave poles, A-frame, dog walk, seesaw, tyre, long jump) and in handling (front cross, rear cross, blind, wraps, backside, start). The animation downloads only when you open a topic, simplifies itself on slower phones, and without 3D support the 2D animation stays.",
+"Novinky v 1.12: nová úvodní obrazovka Domů – série tréninkových dní, zaběhnuté parkury, průměrná rychlost a podíl čistých běhů, tlačítko Pokračovat na rozdělaný parkur, Parkury pro tebe podle třídy psa, Výzva dne a přehled tréninků v tomto týdnu. Parkur týdne: každý týden jeden parkur pro třídu, výsledek pošleš do žebříčku a porovnáš se s ostatními podle velikosti psa.": "New in 1.12: a new Home screen – training-day streak, courses run, average speed and share of clean runs, a Continue button for the course in progress, Courses for you by the dog's class, a Daily challenge and an overview of this week's training. Course of the week: one course per class every week; submit your result to the leaderboard and compare with others by dog size.",
+"Novinky v 1.11: aplikace se aktualizuje hned a nabídne Obnovit, když je připravená nová verze. STOP na stopkách je dál od Mezičasů, větší tlačítka pro palec (počítadla chyb, překážky na ploše, strana psa L/P), parkury po dvou vedle sebe i na malém telefonu, plocha při klepání trasy neposkakuje, klávesnice nepřekrývá tlačítka. Kontrola FCI počítá mezi skoky i kruh a skok daleký, hlídá nejvýš 5 průběhů tunelem a SČP i MČP vychází z ukázané délky trati.": "New in 1.11: the app updates right away and offers Reload when a new version is ready. STOP on the stopwatch is further from Split times, bigger buttons for the thumb (fault counters, obstacles on the field, dog side L/R), courses two side by side even on a small phone, the field doesn't jump when tapping the route, the keyboard doesn't cover buttons. The FCI check counts the tyre and long jump as jumps, allows at most 5 tunnel passes, and SCT and MCT come from the shown course length.",
+"Novinky v 1.10: tlačítko Zpět (↶ vedle Stavba / Trasa, na počítači Ctrl+Z) vrátí posunutí, otočení i smazání překážky a změny trasy. Když běží stopky, obrazovka nezhasne. Tažení překážky je plynulejší. Čas ručně jde zadat i jako 1:05,30. Plánek z obrázku při čtení nezamrzne telefon a kompas ve Stavbě v terénu funguje i na iPhonu. PDF se stavebním plánem se vejde i u čtvercové plochy. Parkur z kódu se před uložením zkontroluje, poškozená data už aplikaci neshodí. Obnova zálohy nahradí všechna data, a když se nepovede, nic se nezmění. Při plné paměti aplikace upozorní, že se změna neuložila. Při slabém signálu na cvičišti se aplikace otevře do 3 sekund z uložené verze a písmo funguje i offline.": "New in 1.10: an Undo button (↶ next to Build / Route, Ctrl+Z on a computer) undoes moving, rotating and deleting obstacles and route changes. The screen stays on while the stopwatch runs. Dragging obstacles is smoother. Manual time can also be entered as 1:05.30. Reading a course map from a photo no longer freezes the phone and the compass in Build on the field also works on iPhone. The PDF build plan fits a square field too. A course from a code is checked before saving, so damaged data no longer crashes the app. Restoring a backup replaces all data, and if it fails nothing changes. When storage is full the app warns that a change wasn't saved. With a weak signal at the training ground the app opens within 3 seconds from the saved version and the font works offline.",
+"zapne se po klepnutí na Stojím v rohu": "turns on after tapping I'm in the corner",
+"Je připravená nová verze aplikace.": "A new version of the app is ready.",
+"Paměť aplikace je plná, poslední změna se neuložila. Odeber podklad z fotky nebo smaž staré parkury v Moje.": "The app's storage is full, the last change wasn't saved. Remove the photo underlay or delete old courses in Mine.",
+"Aplikace Agility trasa se teď jmenuje HandlerMap.": "The app Agility trasa is now called HandlerMap.",
+"Angličtina: Více → Nastavení → English": "English: More → Settings → English",
+"Jazyk": "Language",
+"Vzhled": "Appearance",
+"Tmavý vzhled je šetrnější k očím večer a k baterii telefonu.": "Dark mode is easier on the eyes in the evening and on the phone's battery.",
+"Průvodce": "Guide",
+"Krátké představení aplikace a nastavení psa.": "A short introduction to the app and setting up your dog.",
+"Spustit průvodce": "Start the guide",
+"Novinky v HandlerMap 2.0": "What's new in HandlerMap 2.0",
+"Tmavý vzhled podle systému, nebo natrvalo": "Dark mode following the system, or permanently",
+"Pokračovat": "Continue",
+"Přeskočit": "Skip",
+"Vítej v HandlerMap": "Welcome to HandlerMap",
+"Plánuj parkury, čti plánky z fotky, trénuj se stopkami a sleduj, jak se tvůj pes zlepšuje.": "Plan courses, read course maps from photos, train with the stopwatch and watch your dog improve.",
+"Jazyk / Language": "Language",
+"Podle systému": "System",
+"Světlý": "Light",
+"Tmavý": "Dark",
+"Tvůj pes": "Your dog",
+"Podle velikosti a třídy aplikace nastaví výšky překážek, čas SČP a povede statistiky zvlášť pro každého psa.": "The app sets obstacle heights and the SCT by size and class, and keeps statistics separately for each dog.",
+"Jméno": "Name",
+"Velikost": "Size",
+"Třída": "Class",
+"Zpět": "Back",
+"Čím začneš?": "Where do you want to start?",
+"Všechno najdeš i později na úvodní obrazovce.": "You'll find everything later on the Home screen too.",
+"Načíst plánek z fotky": "Load a course map from a photo",
+"Vyfoť plánek ze závodů, aplikace přečte překážky i trasu.": "Take a photo of a competition course map; the app reads the obstacles and the route.",
+"Projít parkury": "Browse courses",
+"Desítky parkurů A1–A3 a plánky trenérů.": "Dozens of A1–A3 courses and trainers' course maps.",
+"Postavit vlastní": "Build your own",
+"Rozmísti překážky a naklikej trasu.": "Place the obstacles and tap in the route.",
+"Hotovo": "Done",
+"např. Aris": "e.g. Aris",
+"Nastavení": "Settings",
+"Plánovač agility parkurů pro psovody": "Agility course planner for handlers",
+"Novinky ve verzi 2.0": "New in version 2.0",
+"Průvodce prvním spuštěním": "First-run guide",
+"Spustit průvodce znovu": "Run the guide again",
+"Starší novinky": "Earlier updates",
+"Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.": "Courses following FCI rules and judges' style, reading course maps from photos, rule check, SCT and MCT calculation, a stopwatch with grading and split times, course analysis, 3D flythrough, memory training, technique in animations and videos, training log and dog statistics.",
+"LEHKÝ": "EASY",
+"STŘEDNÍ": "MEDIUM",
+"TĚŽKÝ": "HARD",
+"VELMI TĚŽKÝ": "VERY HARD",
+"NOVÝ": "NEW",
+"PLYNULÝ": "FLOWING",
+"Přidat psa": "Add a dog",
+"Domů": "Home"
+},
+"num": {
+"Skoků # (FCI: aspoň #, počítá se i kruh a skok daleký)": "Jumps #1 (FCI: at least #2, the tyre and long jump also count)",
+"Tunel #× (FCI: nejvýš # průběhů)": "Tunnel #1× (FCI: at most #2 passes)",
+"# · série # den 🔥": "#1 · streak #2 day 🔥",
+"# · série # dny 🔥": "#1 · streak #2 days 🔥",
+"# · série # dní 🔥": "#1 · streak #2 days 🔥",
+"# m · # překážek · SČP # s": "# m · # obstacles · SCT # s",
+"# m · # překážek": "# m · # obstacles",
+"zbývá # dny": "# days left",
+"zbývá # dní": "# days left",
+"a dalších # v žebříčku": "and # more on the leaderboard",
+"Zaběhlo celkem # týmů": "# teams have run it in total"
+},
+"re": [
+[
+"^(.+?) · série (\\d+) (?:den|dny|dní) 🔥$",
+"@1 · streak $2 days 🔥"
+],
+[
+"^· (\\d+)\\. z (\\d+) v (.+?)$",
+"· place $1 of $2 in $3"
+],
+[
+"^Parkur týdne · (.+?) · (.+?)$",
+"Course of the week · @1 · @2"
+],
+[
+"^Týden (.+?) · (.+?) · pořadí podle trestných bodů, pak času$",
+"Week $1 · @2 · ranked by penalty points, then time"
+],
+[
+"^Žebříček se nepodařilo načíst: (.+?)$",
+"The leaderboard couldn't be loaded: @1"
+],
+[
+"^· velikost (.+?)$",
+"· size $1"
+],
+[
+"^Jsi (\\d+)\\. z (\\d+) ve velikosti (.+?)$",
+"You're no. $1 of $2 in size $3"
+],
+[
+"^Odeslání se nepodařilo: (.+?)$",
+"Sending failed: @1"
+],
+[
+"^Parkur s kódem (.+?) je poškozený, načíst nejde\\.$",
+"The course with code $1 is damaged and can't be loaded."
+],
+[
+"^Současná data v aplikaci se nahradí zálohou z (.+?)\\.$",
+"The current data in the app will be replaced with the backup from $1."
+],
+[
+"^Zálohu se nepodařilo zapsat \\((.+?)\\)\\. Data zůstala, jak byla\\.$",
+"The backup couldn't be written (@1). The data stayed as it was."
+],
+[
+"^(A[0-3]) · (.+?)$",
+"$1 · @2"
+],
+[
+"^(.+?) m · náročnost (.+?) · (.+?)$",
+"$1 m · difficulty $2 · @3"
+]
+]
+});
+i18nStart();
 /* l=popisek, c=barva, hl=poloviční délka ve směru běhu (m), w=poloviční šířka pro dotyk, g=obrázek na ploše (v metrech), p=ikona v paletě */
 var DEF={
   jump:{l:'Skok',c:'#b8493c',hl:0,w:.9,
@@ -1214,7 +3373,6 @@ var IC={
   refresh:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 20v-4h-4"/></svg>',
   dice:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.3" fill="currentColor"/><circle cx="15" cy="15" r="1.3" fill="currentColor"/><circle cx="15" cy="9" r="1.3" fill="currentColor"/><circle cx="9" cy="15" r="1.3" fill="currentColor"/></svg>',
   home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-6.5 8 6.5"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/></svg>',
-  brand:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 4h11l-2.5 4L17 12H6" fill="currentColor"/></svg>',
   playF:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>',
   map:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15c2-5 4 1 6-3s3-2 4-2" stroke-dasharray="2 2.5"/></svg>',
   grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>',
@@ -1236,7 +3394,22 @@ var IC={
   scan:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M8 15l3-4 2 2.5 3-4"/></svg>',
   compass:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>',
   back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
-  undo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>'
+  undo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>',
+  sliders:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>',
+  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.6v.2"/></svg>',
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h9a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/></svg>',
+  heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
+  paw:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="9.5" r="1.7"/><circle cx="12" cy="6.5" r="1.7"/><circle cx="17" cy="9.5" r="1.7"/><path d="M8.2 17.2c0-2.7 1.7-4.7 3.8-4.7s3.8 2 3.8 4.7c0 1.3-1.1 2-2.1 1.6-.6-.2-1.1-.4-1.7-.4s-1.1.2-1.7.4c-1 .4-2.1-.3-2.1-1.6z"/></svg>',
+  log:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>',
+  cloud:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18.5h10a4 4 0 0 0 .6-8A5.5 5.5 0 0 0 7 12a3.3 3.3 0 0 0 0 6.5z"/></svg>',
+  flag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 21V4"/><path d="M5.5 4.5h11l-2.2 4 2.2 4h-11"/></svg>',
+  chart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4M4 20h16"/><path d="M8.5 16v-4M13 16V8M17.5 16v-6"/></svg>',
+  calendar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8.5 3v4M15.5 3v4"/></svg>',
+  trophy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5.5a2.5 2.5 0 0 0 2.8 4M16 6h2.5a2.5 2.5 0 0 1-2.8 4M12 13v4M8.5 20h7"/></svg>',
+  chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6l6 6-6 6"/></svg>',
+  moon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>',
+  globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.7 3.5 5.7 3.5 9s-1.1 6.3-3.5 9c-2.4-2.7-3.5-5.7-3.5-9s1.1-6.3 3.5-9z"/></svg>',
+  brand:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.4" y="3.6" width="3" height="16.8" rx="1.5" fill="currentColor"/><rect x="16.6" y="3.6" width="3" height="16.8" rx="1.5" fill="currentColor"/><rect x="6.4" y="10.5" width="11.2" height="3" rx="1.2" fill="currentColor"/><path d="M2.6 21.2c4.6-.2 6.8-4.4 9.4-9.1s4.8-8.6 9.4-9" fill="none" stroke="var(--mark-accent,var(--zone))" stroke-width="2.3" stroke-linecap="round"/><circle cx="2.9" cy="21.1" r="1.5" fill="var(--mark-accent,var(--zone))"/></svg>'
 };
 Array.prototype.forEach.call(document.querySelectorAll('[data-ic]'),function(el){el.insertAdjacentHTML('afterbegin',IC[el.getAttribute('data-ic')]);});
 DEF.tire.c='#6f7f8c';
@@ -1332,8 +3505,8 @@ function setMark(id,patch){
 }
 
 /* ---------- časy podle FCI ---------- */
-function fmt(v){return v.toFixed(1).replace('.',',');}
-function fmt2(v){return v.toFixed(2).replace('.',',');}
+function fmt(v){var s=v.toFixed(1); return LANG==='en'?s:s.replace('.',',');}
+function fmt2(v){var s=v.toFixed(2); return LANG==='en'?s:s.replace('.',',');}
 function spdOf(cls){return (SET.spd&&SET.spd[cls])||3.5;}
 function metrics(obs,route,cls,turns,geo){
   var by={}; obs.forEach(function(o){by[o.id]=o;});
@@ -1366,6 +3539,7 @@ function topbar(){
   var fb=$('favBtn'), db=$('doneBtn');
   fb.setAttribute('aria-pressed',mk.fav?'true':'false'); fb.innerHTML=mk.fav?IC.starF:IC.star;
   db.setAttribute('aria-pressed',mk.done?'true':'false');
+  var as=$('appSub'); if(as){ as.textContent={lib:'Parkury',video:'Videa',more:'Více'}[view]||''; }
 }
 
 
@@ -1873,6 +4047,7 @@ function loadCourse(c,quiet){
     save(); drawGrid(); render(); ui(); topbar(); resetRun(); undoReset();
     if(!quiet) toast('Načteno: '+c.name);
     show('plan');
+    HM.emit('courseLoaded',{id:c.id});
   }
   if(S.meta.dirty&&S.obs.length) ask('Nahradit rozpracovaný plán?','Neuložené změny se ztratí. Chceš je zachovat, zruš to a nejdřív plán ulož.','Načíst '+c.name,go);
   else go();
@@ -1919,7 +4094,7 @@ function saveSheet(){
       if(a==='upd'){rec.id=m.id; L=L.map(function(c){return c.id===m.id?rec:c;});}
       else {rec.id='my-'+Date.now().toString(36); L.push(rec);}
       if(!mySave(L)) return; /* plná paměť: plán zůstane neuložený (hlášku ukáže lsFull) */
-      S.meta={id:rec.id,name:name,cls:cls,author:auth,gen:false,dirty:false}; save(); UNDO_SV=planSnap();
+      S.meta={id:rec.id,name:name,cls:cls,author:auth,gen:false,dirty:false}; save(); UNDO_SV=planSnap(); HM.emit('courseSaved',{id:rec.id});
       closeSheet(); topbar(); render(); toast(a==='upd'?'Změny uloženy':'Uloženo do Moje');
     });
   $('fCls').value=m.cls;
@@ -1974,7 +4149,7 @@ function histRender(){
   $('hist').innerHTML=runs.length?runs.map(function(x,i){return {x:x,i:i};}).reverse().map(function(o){
     var x=o.x, d=new Date(x.d);
     var dn=dogName(x.dog);
-    return '<li><span class="g '+x.g+'">'+x.g+'</span><span>'+fmt2(x.t)+' s · '+x.f+' ch. · '+x.r+' odm.<br><small>'+d.toLocaleDateString('cs-CZ')+' · trestné body '+fmt2(x.tot)+(dn?' · '+esc(dn):'')+(x.sp?' · mezičasy':'')+'</small></span><span></span><button data-rm="'+o.i+'" aria-label="Smazat běh">×</button></li>';
+    return '<li><span class="g '+x.g+'">'+x.g+'</span><span>'+fmt2(x.t)+' s · '+x.f+' ch. · '+x.r+' odm.<br><small>'+d.toLocaleDateString(LOC)+' · trestné body '+fmt2(x.tot)+(dn?' · '+esc(dn):'')+(x.sp?' · mezičasy':'')+'</small></span><span></span><button data-rm="'+o.i+'" aria-label="Smazat běh">×</button></li>';
   }).join(''):'<li><span></span><small>Zatím žádný běh. Po uložení se tu objeví s hodnocením.</small></li>';
 }
 /* dokud běží stopky nebo rozcvička, obrazovka nezhasne (telefon zhasíná po 30 s a STOP by se nedal zmáčknout včas) */
@@ -2021,6 +4196,7 @@ $('saveRun').onclick=function(){
   setMark(S.meta.id,{runs:runs,done:true}); topbar(); resetRun(); runRender(); toast('Běh uložen: '+GNAME[e.g]);
   /* běh na Parkuru týdne (neupraveném): nabídnout odeslání do žebříčku; tot už obsahuje i trestné body za čas */
   if(e.g!=='DIS'&&['A1','A2','A3'].indexOf(S.meta.cls)>=0&&!S.meta.dirty){ var wc=weekCourse(S.meta.cls); if(wc&&wc.id===S.meta.id) wkSend(rec); }
+  HM.emit('runSaved',{cid:S.meta.id,idx:runs.length-1,run:rec});
 };
 $('hist').onclick=function(e){
   var b=e.target.closest('[data-rm]'); if(!b) return; var i=+b.getAttribute('data-rm');
@@ -2088,7 +4264,7 @@ function homeRender(){
   var clean=runs.length?Math.round(runs.filter(function(x){return x.tot===0&&x.g!=='DIS';}).length/runs.length*100):0;
   var doneN=Object.keys(MK).filter(function(k){return MK[k].done;}).length, days=activeDays(), st=streak(days);
   var wd=['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota'][new Date().getDay()];
-  var h='<div class="hm-head"><div class="hm-tb"><div class="hm-logo">'+IC.brand+'</div><span>AGILITY TRASA</span>'+
+  var h='<div class="hm-head"><div class="hm-tb"><div class="hm-logo">'+IC.brand+'</div><span>HANDLERMAP</span>'+
     '<button class="hm-dog" data-h="dog"><i>🐕</i><span style="overflow:hidden;text-overflow:ellipsis;min-width:0">'+(d?esc(d.name)+' · '+esc(d.cls):'Přidat psa')+'</span></button></div>'+
     '<div class="hm-big"><small>'+wd+(st?' · série '+st+(st===1?' den':st<5?' dny':' dní')+' 🔥':'')+'</small><h1>Připraveni<br>na <em>trénink?</em></h1></div>'+
     '<div class="hm-stats"><div><b>'+doneN+'</b><span>zaběhnuto</span></div><div><b>'+(avg?fmt(avg):'–')+'</b><span>m/s průměr</span></div><div><b>'+(runs.length?clean+' %':'–')+'</b><span>čisté běhy</span></div></div></div>';
@@ -2286,11 +4462,15 @@ function show(v){
   view=v;
   ['home','plan','lib','run','video','more'].forEach(function(k){$('v-'+k).hidden=k!==v;});
   document.body.classList.toggle('at-home',v==='home');
+  document.body.setAttribute('data-view',v); topbar();
   Array.prototype.forEach.call(document.querySelectorAll('.nav button'),function(b){b.classList.toggle('on',b.getAttribute('data-v')===v);});
   if(v==='home') homeRender(); if(v==='lib') libRender(); if(v==='run') runRender(); if(v==='video') videoRender(); if(v==='more') moreRender();
   try{window.scrollTo(0,0);}catch(e){}
+  HM.emit('view',{v:v});
 }
 document.querySelector('.nav').onclick=function(e){var b=e.target.closest('button[data-v]'); if(b) show(b.getAttribute('data-v'));};
+/* obrazovka modulu (HM.screen): otevře se jako podstránka ve Více */
+HM.open=function(id,arg){ if(!HM.screens[id]) return; moreOpen('mod:'+id,arg); };
 
 
 
@@ -2397,7 +4577,7 @@ function newIn(tab){ return Object.keys(NEWC).filter(function(id){return catTabO
 function newToast(n){ toast(newCountTxt(n)+(n===1?' · najdeš ho v Parkurech':' · najdeš je v Parkurech')); }
 function newCountTxt(n){ return n===1?'Nový parkur: 1':n>=2&&n<=4?'Nové parkury: '+n:'Nových parkurů: '+n; }
 function whenTxt(t){ if(!t) return ''; var d=new Date(t), n=new Date(), hm=d.getHours()+':'+('0'+d.getMinutes()).slice(-2);
-  return d.toDateString()===n.toDateString()?'dnes '+hm:d.toLocaleDateString('cs-CZ')+' '+hm; }
+  return d.toDateString()===n.toDateString()?'dnes '+hm:d.toLocaleDateString(LOC)+' '+hm; }
 function catUI(){
   var any=Object.keys(NEWC).length, dot=document.querySelector('.nav [data-v=lib] .ndot'); if(dot) dot.hidden=!any;
   Array.prototype.forEach.call(document.querySelectorAll('#libTabs button'),function(b){ var t=b.getAttribute('data-c'), n=t==='my'?0:newIn(t);
@@ -2457,7 +4637,7 @@ function fallbackView(data,mime,name){
     return;
   }
   var img=mime.indexOf('image/')===0, url=img?sheetUrl(data):'';
-  var tip=APK_LITE?(img?'V aplikaci se obrázek do telefonu uložit nedá. Udělej snímek obrazovky, nebo ho ulož ve webové verzi.':'V aplikaci se PDF do telefonu uložit nedá. Ulož ho ve webové verzi Agility trasa.')
+  var tip=APK_LITE?(img?'V aplikaci se obrázek do telefonu uložit nedá. Udělej snímek obrazovky, nebo ho ulož ve webové verzi.':'V aplikaci se PDF do telefonu uložit nedá. Ulož ho ve webové verzi HandlerMap.')
     :(img?'Podrž prst na obrázku a ulož ho, nebo si udělej snímek obrazovky.':'PDF tady nejde uložit přímo. Ulož si obrázek.');
   openSheet('<h3>'+esc(name)+'</h3><p>'+tip+'</p>'+
     (mime.indexOf('image/')===0?'<div class="preview"><img src="'+url+'" alt="Náhled parkuru"></div>':'')+'<div class="acts"><button class="btn primary" data-a="x">Zavřít</button></div>',
@@ -2490,7 +4670,7 @@ function svgImage(){
   });
 }
 function wrapText(ctx,t,x,y,maxW,lh){
-  var words=String(t).split(' '), line='';
+  var words=String(T(t)).split(' '), line='';
   words.forEach(function(w){ var tt=line?line+' '+w:w; if(ctx.measureText(tt).width>maxW&&line){ctx.fillText(line,x,y); y+=lh; line=w;} else line=tt; });
   if(line){ctx.fillText(line,x,y); y+=lh;} return y;
 }
@@ -2509,9 +4689,9 @@ function courseJPG(){
     var x=cv.getContext('2d'), h=headerLines();
     x.fillStyle='#ffffff'; x.fillRect(0,0,cv.width,cv.height);
     x.fillStyle='#17201a'; fitFont(x,h.title,'bold ',64,36,W-80); x.fillText(fitText(x,h.title,W-80),40,80);
-    x.fillStyle='#55625a'; x.font='34px sans-serif'; x.fillText(h.sub,40,128); x.fillText(h.spec,40,170);
+    x.fillStyle='#55625a'; x.font='34px sans-serif'; x.fillText(T(h.sub),40,128); x.fillText(T(h.spec),40,170);
     x.drawImage(im,0,top,W,fh);
-    x.fillStyle='#55625a'; x.font='26px sans-serif'; x.fillText('Agility trasa · '+new Date().toLocaleDateString('cs-CZ')+' · mřížka 1 m',40,top+fh+45);
+    x.fillStyle='#55625a'; x.font='26px sans-serif'; x.fillText(T('HandlerMap · '+new Date().toLocaleDateString(LOC)+' · mřížka 1 m'),40,top+fh+45);
     return new Promise(function(res){cv.toBlob(function(b){res(b);},'image/jpeg',.9);});
   });
 }
@@ -2533,7 +4713,7 @@ function planPDF(){
     var x=cv.getContext('2d'), h=headerLines(), y=M+40;
     x.fillStyle='#ffffff'; x.fillRect(0,0,W,H);
     x.fillStyle='#17201a'; x.font='bold 46px sans-serif'; y=wrapText(x,'Stavební plán: '+h.title,M,y,W-2*M,50)-6;
-    x.fillStyle='#55625a'; x.font='24px sans-serif'; x.fillText(fitText(x,h.sub,W-2*M),M,y); y+=32; y=wrapText(x,h.spec,M,y,W-2*M,30); y+=10;
+    x.fillStyle='#55625a'; x.font='24px sans-serif'; x.fillText(fitText(x,T(h.sub),W-2*M),M,y); y+=32; y=wrapText(x,h.spec,M,y,W-2*M,30); y+=10;
     /* plocha na celou šířku; u čtvercové plochy nebo plochy na výšku se zmenší, aby se pod ni vešla tabulka (řádek aspoň 28 px) */
     var rows=buildRows(), fw=W-2*M, fh=Math.round(fw*S.H/S.W), maxFh=H-M-60-(y+60+42)-rows.length*28;
     if(fh>maxFh){ fh=Math.max(250,maxFh); fw=Math.round(fh*S.W/S.H); }
@@ -2545,17 +4725,17 @@ function planPDF(){
     y+=fh+60;
     x.fillStyle='#17201a'; x.font='bold 24px sans-serif';
     var cols=[M,M+170,M+400,M+510,M+620,M+790];
-    ['Čísla','Překážka','x (m)','y (m)','Směr běhu','Poznámka'].forEach(function(t,i){x.fillText(t,cols[i],y);});
+    ['Čísla','Překážka','x (m)','y (m)','Směr běhu','Poznámka'].forEach(function(t,i){x.fillText(T(t),cols[i],y);});
     y+=12; x.strokeStyle='#c3d1b6'; x.beginPath(); x.moveTo(M,y); x.lineTo(W-M,y); x.stroke(); y+=30;
     x.font='22px sans-serif';
     var lh=Math.min(34,Math.floor((H-M-60-y)/Math.max(1,rows.length)));
     rows.forEach(function(rw){
       var o=rw.o, deg=rw.dir?Math.round((Math.atan2(rw.dir.y,rw.dir.x)*180/Math.PI+360)%360):((o.rot%360)+360)%360, d=DIRS[Math.round(deg/45)%8];
       x.fillStyle='#17201a'; x.font='22px sans-serif';
-      x.fillText(rw.nums.length?rw.nums.join(', '):'–',cols[0],y); x.fillText(DEF[o.type].l,cols[1],y);
-      x.fillText(String(o.x).replace('.',','),cols[2],y); x.fillText(String(o.y).replace('.',','),cols[3],y);
+      x.fillText(rw.nums.length?rw.nums.join(', '):'–',cols[0],y); x.fillText(T(DEF[o.type].l),cols[1],y);
+      x.fillText((LANG==='en'?String(o.x):String(o.x).replace('.',',')),cols[2],y); x.fillText((LANG==='en'?String(o.y):String(o.y).replace('.',',')),cols[3],y);
       x.fillText(d+' '+deg+'°',cols[4],y);
-      var nt=[]; if(rw.nums.length>1) nt.push('použita '+rw.nums.length+'×'); if(!rw.nums.length) nt.push('mimo trasu'); nt=nt.concat(rw.notes||[]);
+      var nt=[]; if(rw.nums.length>1) nt.push('použita '+rw.nums.length+'×'); if(!rw.nums.length) nt.push('mimo trasu'); nt=nt.concat(rw.notes||[]).map(function(q){return T(q);});
       x.fillStyle='#55625a'; x.font='20px sans-serif'; var txt=nt.join('; ');
       if(x.measureText(txt).width>W-M-cols[5]) x.font='16px sans-serif';
       x.fillText(fitText(x,txt,W-M-cols[5]),cols[5],y);
@@ -2563,7 +4743,7 @@ function planPDF(){
     });
     x.font='22px sans-serif';
     x.fillStyle='#55625a'; x.font='18px sans-serif';
-    wrapText(x,'x = vzdálenost středu překážky od levého okraje plochy, y = od horního okraje. Směr běhu: → doprava, ↓ dolů, ← doleva, ↑ nahoru. Otočka doleva a doprava je z pohledu psa. Zadní strana: pes skok mine, oběhne křídlo a skočí ho z druhé strany. Agility trasa, '+new Date().toLocaleDateString('cs-CZ'),M,H-M+10,W-2*M,24);
+    wrapText(x,'x = vzdálenost středu překážky od levého okraje plochy, y = od horního okraje. Směr běhu: → doprava, ↓ dolů, ← doleva, ↑ nahoru. Otočka doleva a doprava je z pohledu psa. Zadní strana: pes skok mine, oběhne křídlo a skočí ho z druhé strany. HandlerMap, '+new Date().toLocaleDateString(LOC),M,H-M+10,W-2*M,24);
     var jpg=atob(cv.toDataURL('image/jpeg',.88).split(',')[1]);
     return makePdf(jpg,W,H);
   });
@@ -2589,7 +4769,7 @@ function makePdf(jpgBin,w,h){
 function fileBase(){return (S.meta.name||'parkur').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'').toLowerCase()||'parkur';}
 function exportSheet(){
   if(S.route.length<2){toast('Nejdřív vyznač trasu v režimu Trasa.'); return;}
-  var intro=APK_LITE?'<p>Obrázek parkuru si v aplikaci ulož snímkem obrazovky. PDF se stavebním plánem a ukládání souborů fungují ve webové verzi Agility trasa.</p>'
+  var intro=APK_LITE?'<p>Obrázek parkuru si v aplikaci ulož snímkem obrazovky. PDF se stavebním plánem a ukládání souborů fungují ve webové verzi HandlerMap.</p>'
     :'<p>Obrázek se hodí na sdílení, PDF se stavebním plánem na tisk: u každé překážky jsou metry od okraje plochy a směr běhu.</p>';
   var btns=APK_LITE?'<button class="btn primary" data-a="x">Zavřít</button>'
     :'<button class="btn" data-a="x">Zavřít</button>'+(NATIVE||IS_PWA&&navigator.canShare?'<button class="btn" data-a="shimg">Sdílet obrázek</button><button class="btn" data-a="shpdf">Sdílet PDF</button>':'')+
@@ -2597,7 +4777,7 @@ function exportSheet(){
   openSheet('<h3>Export parkuru</h3>'+intro+'<div class="preview" id="expPrev"><p class="hint" style="padding:12px">Připravuji náhled…</p></div>'+
     '<div class="acts">'+btns+'</div>',
     function(e){
-      var b=e.target.closest('[data-a]'); if(!b) return; var a=b.getAttribute('data-a'), nm=fileBase().slice(0,60), tx='Parkur '+S.meta.name+' (Agility trasa)';
+      var b=e.target.closest('[data-a]'); if(!b) return; var a=b.getAttribute('data-a'), nm=fileBase().slice(0,60), tx=T('Parkur '+S.meta.name+' (HandlerMap)');
       if(a==='x'){closeSheet(); return;}
       b.disabled=true;
       var job=(a==='img'||a==='shimg')?courseJPG().then(function(bl){return deliverFile(bl,'image/jpeg',nm+'.jpg',a==='shimg',tx);})
@@ -2627,7 +4807,7 @@ function shareSheet(){
         sbCall('share_course',{p_name:S.meta.name,p_cls:S.meta.cls,p_author:S.meta.author||'',p_data:data}).then(function(code){
           code=String(code==null?'':code).trim(); if(!/^[A-Za-z0-9]{4,12}$/.test(code)){ toast('Server vrátil neplatný kód, zkus to znovu.'); b.disabled=false; return; }
           var out=$('shOut'); if(!out) return;
-          var msg='Parkur „'+S.meta.name+'“ ('+S.meta.cls+(S.meta.author?', stavěl/a '+S.meta.author:'')+'). V aplikaci Agility trasa otevři Plán → Sdílet a zadej kód '+code;
+          var msg='Parkur „'+S.meta.name+'“ ('+S.meta.cls+(S.meta.author?', stavěl/a '+S.meta.author:'')+'). V aplikaci HandlerMap otevři Plán → Sdílet a zadej kód '+code; msg=T(msg);
           out.innerHTML='<div class="code">'+esc(code)+'</div><div class="acts" style="justify-content:flex-start">'+
             '<a class="btn" href="https://wa.me/?text='+encodeURIComponent(msg)+'" target="_blank" rel="noopener">WhatsApp</a>'+
             '<a class="btn" href="sms:?body='+encodeURIComponent(msg)+'">SMS</a>'+
@@ -2901,7 +5081,7 @@ function frameVid(){
   var now=performance.now(), p=VID.on?(VID.pos+(now-VID.t0)/1000*VID.spd/t.D)%1:VID.pos;
   var st=$('vStage'); if(!st){stopVid(); return;}
   if(V3D.api){ try{ V3D.api.render(p); }catch(e){ v3dFallback(); } } else st.innerHTML=SC[VID.id](p);
-  var c=''; t.cap.forEach(function(k){if(p>=k[0]) c=k[1];}); var ce=$('vCap'); if(ce&&ce.textContent!==c) ce.textContent=c;
+  var c=''; t.cap.forEach(function(k){if(p>=k[0]) c=k[1];}); var ce=$('vCap'); if(ce&&ce.getAttribute('data-c')!==c){ ce.setAttribute('data-c',c); ce.textContent=c; }
   if(VID.on) VID.raf=requestAnimationFrame(frameVid);
 }
 function playVid(){ VID.on=true; VID.t0=performance.now(); cancelAnimationFrame(VID.raf); VID.raf=requestAnimationFrame(frameVid); var b=$('vPlay'); if(b) b.textContent='Pauza'; }
@@ -3078,7 +5258,7 @@ function render3d(){
     x.fillStyle='#17201a'; x.textAlign='center'; x.fillText(t,p[0],p[1]+fs*.35); x.textAlign='start';
   });
   var ob=S.route.length, cur=Math.min(ob,Math.max(0,dp.idx+1)), txt='Překážka '+cur+' z '+ob+' · '+fmt(V3.d)+' m z '+fmt(V3.path.len)+' m';
-  if($('p3info').textContent!==txt) $('p3info').textContent=txt;
+  var pi=$('p3info'); if(pi.getAttribute('data-c')!==txt){ pi.setAttribute('data-c',txt); pi.textContent=txt; }
 }
 function shade(hex,k){
   if(hex.indexOf('#')!==0) return hex;
@@ -3312,7 +5492,7 @@ $('genBtn').onclick=genSheet;
 
 /* ---------- psi ---------- */
 var DOGK='agility-dogs-v1', DOGCUR='agility-dogcur-v1', DIARYK='agility-diary-v1';
-var DOGS=lsGet(DOGK,[]), DOGC=lsGet(DOGCUR,null), moreTab='dogs';
+var DOGS=lsGet(DOGK,[]), DOGC=lsGet(DOGCUR,null), moreTab='dogs', MORE_ARG=null;
 var SIZES={
   XS:{l:'XS – do 30 cm',jump:'15–20 cm',wall:'10–20 cm',tire:'45–55 cm',lj:'15–40 cm (1–2 díly)'},
   S:{l:'S – do 35 cm',jump:'25–30 cm',wall:'25–30 cm',tire:'55 cm',lj:'40–50 cm (2 díly)'},
@@ -3324,14 +5504,14 @@ DOGS=(Array.isArray(DOGS)?DOGS:[]).filter(function(d){return d&&typeof d==='obje
 DOGS.forEach(function(d){ if(!SIZES.hasOwnProperty(d.size)) d.size='L'; if(['A0','A1','A2','A3'].indexOf(d.cls)<0) d.cls='A1'; d.name=String(d.name||'Pes'); });
 function curDog(){for(var i=0;i<DOGS.length;i++) if(DOGS[i].id===DOGC) return DOGS[i]; return DOGS[0]||null;}
 function dogName(id){for(var i=0;i<DOGS.length;i++) if(DOGS[i].id===id) return DOGS[i].name; return '';}
-function saveDogs(){lsSet(DOGK,DOGS); lsSet(DOGCUR,DOGC);}
+function saveDogs(){lsSet(DOGK,DOGS); lsSet(DOGCUR,DOGC); HM.emit('dogChanged',{id:DOGC});}
 function dogChips(el){
   var box=$(el); if(!box) return; var c=curDog();
   box.innerHTML=DOGS.length?DOGS.map(function(d){return '<button class="chip'+(c&&c.id===d.id?' on':'')+'" data-dog="'+esc(d.id)+'">'+esc(d.name)+' · '+d.size+'</button>';}).join('')
     :'<button class="chip" data-adddog="1">＋ Přidat psa (běhy se pak zapisují ke psovi)</button>';
   box.onclick=function(e){
     var b=e.target.closest('[data-dog]'), a=e.target.closest('[data-adddog]');
-    if(b){DOGC=b.getAttribute('data-dog'); saveDogs(); dogChips(el); if(view==='more') moreRender(); else if(view==='run') histRender();}
+    if(b){DOGC=b.getAttribute('data-dog'); saveDogs(); dogChips(el); if(view==='more') moreRender(); else if(view==='run') histRender(); else if(view==='home') homeRender();}
     if(a){dogSheet(null);}
   };
 }
@@ -3371,7 +5551,7 @@ function speedChart(runs){
   var line=pts.map(function(p,i){return (i?'L':'M')+X(i).toFixed(1)+','+Y(p.v).toFixed(1);}).join('');
   var dots=pts.map(function(p,i){return '<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>';}).join('');
   var hits=pts.map(function(p,i){var w=(W-L-R)/Math.max(1,pts.length-1), x0=Math.max(L,X(i)-w/2), x1=Math.min(W-R,X(i)+w/2); return '<rect x="'+x0.toFixed(1)+'" y="'+T+'" width="'+(x1-x0).toFixed(1)+'" height="'+(H-T-B)+'" fill="transparent" data-tip="'+i+'" data-cx="'+X(i).toFixed(1)+'"/>';}).join('');
-  var first=new Date(pts[0].x.d).toLocaleDateString('cs-CZ'), last=new Date(pts[pts.length-1].x.d).toLocaleDateString('cs-CZ');
+  var first=new Date(pts[0].x.d).toLocaleDateString(LOC), last=new Date(pts[pts.length-1].x.d).toLocaleDateString(LOC);
   CHART_PTS=pts;
   return '<div class="chart"><b>Rychlost psa (m/s)</b><svg viewBox="0 0 '+W+' '+H+'" id="spdSvg" role="img" aria-label="Graf rychlosti psa v posledních bězích">'+g+
     '<path d="'+line+'" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>'+dots+
@@ -3384,7 +5564,7 @@ function bindChart(){
   s.onpointermove=s.onclick=function(e){
     var t=e.target.getAttribute&&e.target.getAttribute('data-tip'); if(t==null) return;
     var p=CHART_PTS[+t], x=+e.target.getAttribute('data-cx');
-    var txt=fmt(p.v)+' m/s · '+fmt2(p.x.t)+' s · '+new Date(p.x.d).toLocaleDateString('cs-CZ'), w=txt.length*6.2+12, tx=Math.min(Math.max(x-w/2,2),340-w-2);
+    var txt=fmt(p.v)+' m/s · '+fmt2(p.x.t)+' s · '+new Date(p.x.d).toLocaleDateString(LOC), w=txt.length*6.2+12, tx=Math.min(Math.max(x-w/2,2),340-w-2);
     $('spdTip').innerHTML='<line x1="'+x+'" x2="'+x+'" y1="12" y2="146" stroke="var(--muted)" stroke-dasharray="3 3"/><rect x="'+tx+'" y="0" width="'+w+'" height="18" rx="5" fill="var(--text)"/><text x="'+(tx+6)+'" y="13" font-size="11" fill="var(--bg)">'+txt+'</text>';
   };
   s.onpointerleave=function(){$('spdTip').innerHTML='';};
@@ -3427,7 +5607,7 @@ function diaryHTML(){
     '<div class="list">'+(L.length?L.map(function(x){
       var t=x.kind==='zavod'?'<b>Závod'+(x.event?': '+esc(x.event):'')+'</b><span>'+esc(x.cls||'')+' · '+esc(x.g||'')+(x.place?' · '+esc(x.place)+'. místo':'')+(x.tot!==''&&x.tot!=null?' · '+esc(x.tot)+' tr. b.':'')+(x.judge?' · rozhodčí '+esc(x.judge):'')+'</span>'
         :'<b>Trénink'+(x.surface?' · '+esc(x.surface):'')+'</b>';
-      return '<div class="item"><div>'+t+'<span>'+dateOf(x.date).toLocaleDateString('cs-CZ')+(dogName(x.dog)?' · '+esc(dogName(x.dog)):'')+'</span>'+(x.note?'<span>'+esc(x.note)+'</span>':'')+'</div><div class="acts"><button class="btn" data-dydel="'+esc(x.id)+'" aria-label="Smazat záznam">×</button></div></div>';
+      return '<div class="item"><div>'+t+'<span>'+dateOf(x.date).toLocaleDateString(LOC)+(dogName(x.dog)?' · '+esc(dogName(x.dog)):'')+'</span>'+(x.note?'<span>'+esc(x.note)+'</span>':'')+'</div><div class="acts"><button class="btn" data-dydel="'+esc(x.id)+'" aria-label="Smazat záznam">×</button></div></div>';
     }).join(''):'<p class="hint">Zatím žádné záznamy. Zapiš si trénink nebo výsledek ze závodů.</p>')+'</div>';
 }
 function diarySheet(kind){
@@ -3506,9 +5686,9 @@ function backupData(){
 }
 /* obnova nahradí všechna data aplikace zálohou; když zápis selže (plná paměť), vrátí se data, jak byla */
 function restoreData(o){
-  if(!o||o.app!=='agility-trasa'||!o.data||typeof o.data!=='object'){toast('Tohle není záloha z aplikace Agility trasa.'); return;}
+  if(!o||o.app!=='agility-trasa'||!o.data||typeof o.data!=='object'){toast('Tohle není záloha z aplikace HandlerMap.'); return;}
   var at=new Date(o.at), keys=Object.keys(o.data).filter(function(k){return k.indexOf('agility-')===0&&k.indexOf('agility-db-')!==0&&typeof o.data[k]==='string';});
-  ask('Obnovit zálohu?','Současná data v aplikaci se nahradí zálohou'+(isNaN(at)?'':' z '+at.toLocaleString('cs-CZ'))+'.','Obnovit',function(){
+  ask('Obnovit zálohu?','Současná data v aplikaci se nahradí zálohou'+(isNaN(at)?'':' z '+at.toLocaleString(LOC))+'.','Obnovit',function(){
     var old={};
     try{
       for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i); if(k.indexOf('agility-')===0&&k.indexOf('agility-db-')!==0) old[k]=localStorage.getItem(k);}
@@ -3563,6 +5743,8 @@ function booksHTML(){
 function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); },0);
   Array.prototype.forEach.call(document.querySelectorAll('#moreTabs .chip'),function(b){b.classList.toggle('on',b.getAttribute('data-m')===moreTab);});
   var h='', d=curDog();
+  if(moreTab.indexOf('mod:')===0){ var sc=HM.screens[moreTab.slice(4)], el=$('moreBody'); el.innerHTML=''; if(sc){ try{ sc.render(el,MORE_ARG); }catch(e){ if(window.console) console.error(e); } } MORE_ARG=null; return; }
+  if(moreTab==='set'){ $('moreBody').innerHTML=settingsHTML(); return; }
   if(moreTab==='dogs'){
     h='<div class="list">'+(DOGS.length?DOGS.map(function(x){return '<div class="item'+(d&&d.id===x.id?' cur':'')+'"><div><b>'+esc(x.name)+'</b><span>'+SIZES[x.size].l+' · '+x.cls+(dogAgeM(x)!=null?' · '+ageTxt(dogAgeM(x)):'')+'</span></div><div class="acts">'+(d&&d.id===x.id?'':'<button class="btn" data-dsel="'+esc(x.id)+'">Vybrat</button>')+'<button class="btn" data-dedit="'+esc(x.id)+'">Upravit</button><button class="btn danger" data-ddel="'+esc(x.id)+'" aria-label="Smazat psa">×</button></div></div>';}).join('')
       :'<p class="hint">Přidej psa. Aplikace pak ukáže výšky překážek pro jeho kategorii a běhy i statistiky povede zvlášť pro každého psa.</p>')+'</div>'+
@@ -3576,18 +5758,21 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='backup'){ h=backupHTML(); }
   else if(moreTab==='start'){ h=startHTML(); }
   else {
-    h='<div id="pwaInst"></div><div class="panel" style="display:flex;flex-direction:column;gap:8px"><b>Agility trasa 1.13</b><p class="hint">Plánovač agility parkurů: 90 parkurů podle pravidel FCI a stylu rozhodčích (oblouky, křížení, tunely do oblouku), parkury trenérů, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, otočky kolem křídla a zadní strany skoků, 3D průlet, trénink paměti, videa s technikou, deník a statistiky.</p>'+
+    h='<div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>HandlerMap 2.0</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
+      '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
+      '<h4>Novinky ve verzi 2.0</h4><ul class="news"><li>Nový název HandlerMap</li><li>Angličtina (přepneš ve Více → Nastavení)</li><li>Tmavý vzhled podle systému, nebo natrvalo</li><li>Průvodce prvním spuštěním</li><li>Větší tlačítka a plynulejší přechody</li></ul>'+
+      '<details class="older"><summary>Starší novinky</summary>'+
       '<p class="hint">Novinky v 1.13: 3D animace techniky ve Videích – pes a psovod na skutečných překážkách (skok, tunel, slalom, áčko, kladina, houpačka, kruh, skok daleký) i při vedení psa (čelo, záda, blind, otočky, zadní strana, start). Animace se stáhne až při otevření tématu, na slabším telefonu se sama zjednoduší a bez podpory 3D zůstane dosavadní 2D animace.</p>'+
       '<p class="hint">Novinky v 1.12: nová úvodní obrazovka Domů – série tréninkových dní, zaběhnuté parkury, průměrná rychlost a podíl čistých běhů, tlačítko Pokračovat na rozdělaný parkur, Parkury pro tebe podle třídy psa, Výzva dne a přehled tréninků v tomto týdnu. Parkur týdne: každý týden jeden parkur pro třídu, výsledek pošleš do žebříčku a porovnáš se s ostatními podle velikosti psa.</p>'+
       '<p class="hint">Novinky v 1.11: aplikace se aktualizuje hned a nabídne Obnovit, když je připravená nová verze. STOP na stopkách je dál od Mezičasů, větší tlačítka pro palec (počítadla chyb, překážky na ploše, strana psa L/P), parkury po dvou vedle sebe i na malém telefonu, plocha při klepání trasy neposkakuje, klávesnice nepřekrývá tlačítka. Kontrola FCI počítá mezi skoky i kruh a skok daleký, hlídá nejvýš 5 průběhů tunelem a SČP i MČP vychází z ukázané délky trati.</p>'+
       '<p class="hint">Novinky v 1.10: tlačítko Zpět (↶ vedle Stavba / Trasa, na počítači Ctrl+Z) vrátí posunutí, otočení i smazání překážky a změny trasy. Když běží stopky, obrazovka nezhasne. Tažení překážky je plynulejší. Čas ručně jde zadat i jako 1:05,30. Plánek z obrázku při čtení nezamrzne telefon a kompas ve Stavbě v terénu funguje i na iPhonu. PDF se stavebním plánem se vejde i u čtvercové plochy. Parkur z kódu se před uložením zkontroluje, poškozená data už aplikaci neshodí. Obnova zálohy nahradí všechna data, a když se nepovede, nic se nezmění. Při plné paměti aplikace upozorní, že se změna neuložila. Při slabém signálu na cvičišti se aplikace otevře do 3 sekund z uložené verze a písmo funguje i offline.</p>'+
       '<p class="hint">Novinky v 1.9: aplikace k instalaci do telefonu (Chrome → Instalovat aplikaci). V ní funguje výběr fotky a videa, ukládání obrázku, PDF a zálohy, plánek jde poslat přes Sdílet z galerie rovnou do čtečky, katalog parkurů i záloha v cloudu. Aktualizuje se sama.</p>'+
       '<p class="hint">Novinky v 1.8: Plánek z obrázku přečte i trasu. Z čísel v kroužcích pozná pořadí, z nakreslené čáry směry skoků, vstupy do tunelů a zón, otočky kolem křídla a zadní strany. Chybějící kruh, skok daleký, dvojité břevno, zeď nebo kladinu dohledá u čísla. Nejistá místa označí otazníkem. V aplikaci pro Android jde plánek vložit i ze schránky.</p>'+
-      '<p class="hint">Novinky v 1.7: tlačítko Zkontrolovat nové parkury v záložce Parkury, nové parkury mají štítek Nový a tečku u záložky, přibyl parkur trenéra Euskadi Sextuple 2018 A1.</p>'+
-      '<p class="hint">Novinky v 1.6: nový generátor parkurů, náročnost a řazení parkurů, rozbor parkuru s vedením psovoda, odhadem času a simulací Stihnu to?, dráha podle velikosti psa, klasická cvičení a klubový parkur v generátoru, mezičasy naživo i z videa, chytrý trénink, předčítání trasy, plánek z obrázku, stavba v terénu s kompasem a sekce Začínáme pro štěňata.</p>'+
-      '<p class="hint">Katalog parkurů: '+(CAT&&CAT.version?'verze '+CAT.version+' ze serveru, staženo '+new Date(CAT.at).toLocaleDateString('cs-CZ'):'vestavěný')+'. V aplikaci pro Android se nové parkury stáhnou samy při spuštění nebo tlačítkem Zkontrolovat nové parkury v záložce Parkury, bez aktualizace aplikace.</p>'+
+      '<p class="hint">Novinky v 1.7: tlačítko Zkontrolovat nové parkury v záložce Parkury, nové parkury mají štítek Nový a tečku u záložky, přibyl parkur trenéra Euskadi Sextuple 2018 A1.</p></details>'+
+      '<p class="hint">Katalog parkurů: '+(CAT&&CAT.version?'verze '+CAT.version+' ze serveru, staženo '+new Date(CAT.at).toLocaleDateString(LOC):'vestavěný')+'. V aplikaci pro Android se nové parkury stáhnou samy při spuštění nebo tlačítkem Zkontrolovat nové parkury v záložce Parkury, bez aktualizace aplikace.</p>'+
       '<p class="hint">Data se ukládají v tomhle zařízení. Sdílení kódem a cloudová záloha běží přes server Supabase a fungují v aplikaci pro Android. Uložení PDF a obrázku do telefonu a podklad z fotky fungují ve webové verzi.</p>'+
-      '<p class="hint">Pravidla: <a href="https://klubagility.cz/site/assets/files/1076/rad_agility_2023-1.pdf" target="_blank" rel="noopener">Řád agility FCI a ČR (od 2023)</a>.</p></div>';
+      '<p class="hint">Pravidla: <a href="https://klubagility.cz/site/assets/files/1076/rad_agility_2023-1.pdf" target="_blank" rel="noopener">Řád agility FCI a ČR (od 2023)</a>.</p>'+
+      '<div class="row"><button class="btn" data-onb="1">Spustit průvodce znovu</button></div></div>';
   }
   $('moreBody').innerHTML=h;
   if(moreTab==='stats'){dogChips('statDogs'); bindChart();}
@@ -3598,6 +5783,9 @@ $('moreBody').onclick=function(e){
   var t=e.target.closest('button'); if(!t) return;
   var g=function(a){return t.getAttribute(a);};
   if(g('data-gpre')){ startGen(g('data-gpre')); return; }
+  if(g('data-onb')){ onbOpen(); return; }
+  if(g('data-lang')){ setLang(g('data-lang')); return; }
+  if(g('data-theme')){ setTheme(g('data-theme')); moreRender(); return; }
   if(g('data-gdrill')){ GEN.tab='drill'; GEN.drill=g('data-gdrill'); show('lib'); genSheet(); return; }
   if(g('data-dadd')) dogSheet(null);
   else if(g('data-dsel')){DOGC=g('data-dsel'); saveDogs(); moreRender();}
@@ -3942,12 +6130,12 @@ function weakHTML(){
 /* ---------- předčítání trasy ---------- */
 var SAY=null;
 function sayText(i,hs){
-  var id=S.route[i], o=getO(id), t=S.turns[i], parts=[(i+1)+'. '+DEF[o.type].l];
-  if(o.type==='tunnel'&&o.bend) parts.push(Math.abs(o.bend)>=180?'do U':'do oblouku');
-  if(t==='f') parts.push(o.type==='jump'?'z druhé strany':'vstup vzdálenějším koncem');
-  else if(t) parts.push(tuLabel(t,S.sides[i]).slice(2));
-  if(i===0) parts.push('start'); if(i===S.route.length-1) parts.push('cíl');
-  if(hs){ var sd=S.sides[i]||(ANA.hsd&&ANA.hsd.sd[i]); if(sd&&(i===0||sd!==(S.sides[i-1]||(ANA.hsd&&ANA.hsd.sd[i-1])))) parts.push((i?'změna strany, ':'')+'pes '+(sd==='L'?'vlevo':'vpravo')); }
+  var id=S.route[i], o=getO(id), t=S.turns[i], parts=[(i+1)+'. '+T(DEF[o.type].l)];
+  if(o.type==='tunnel'&&o.bend) parts.push(T(Math.abs(o.bend)>=180?'do U':'do oblouku'));
+  if(t==='f') parts.push(T(o.type==='jump'?'z druhé strany':'vstup vzdálenějším koncem'));
+  else if(t) parts.push(T(tuLabel(t,S.sides[i]).slice(2)));
+  if(i===0) parts.push(T('start')); if(i===S.route.length-1) parts.push(T('cíl'));
+  if(hs){ var sd=S.sides[i]||(ANA.hsd&&ANA.hsd.sd[i]); if(sd&&(i===0||sd!==(S.sides[i-1]||(ANA.hsd&&ANA.hsd.sd[i-1])))) parts.push(T((i?'změna strany, ':'')+'pes '+(sd==='L'?'vlevo':'vpravo'))); }
   return parts.join(', ')+'.';
 }
 function saySheet(){
@@ -3968,14 +6156,14 @@ function sayStop(){ try{speechSynthesis.cancel();}catch(e){} SAY=null; var g=$('
 function sayRoute(){
   sayStop(); show('plan');
   if(SET.sayHs!==false&&(S.sides||[]).filter(Boolean).length<S.route.length){ var g0=calc(); ANA.hsd=handSides({obs:S.obs,route:S.route,turns:S.turns},g0,flowStats(S.obs,S.route,S.turns,g0)); }
-  var voice=null; try{ voice=speechSynthesis.getVoices().filter(function(v){return /^cs/i.test(v.lang);})[0]||null; }catch(e){}
+  var voice=null; try{ var vv=speechSynthesis.getVoices(); voice=(LANG==='en'?vv.filter(function(v){return /^en-GB/i.test(v.lang);})[0]||vv.filter(function(v){return /^en/i.test(v.lang);})[0]:vv.filter(function(v){return /^cs/i.test(v.lang);})[0])||null; }catch(e){}
   var tok={}; SAY=tok;
   var bar=document.createElement('div'); bar.className='saybar'; bar.id='sayBar'; bar.innerHTML='<span id="sayTxt">Čtu trasu…</span><button class="btn" id="sayStop">Zastavit</button>'; document.body.appendChild(bar);
   $('sayStop').onclick=sayStop;
   var g=document.createElementNS(NS,'g'); g.setAttribute('id','sayG'); $('field').appendChild(g);
   var geo=calc();
   S.route.forEach(function(id,i){
-    var u=new SpeechSynthesisUtterance(sayText(i,SET.sayHs!==false)); u.lang='cs-CZ'; if(voice) u.voice=voice; u.rate=SET.sayRate||1;
+    var u=new SpeechSynthesisUtterance(sayText(i,SET.sayHs!==false)); u.lang=LANG==='en'?'en-GB':'cs-CZ'; if(voice) u.voice=voice; u.rate=SET.sayRate||1;
     u.onstart=function(){ if(SAY!==tok) return; var p=geo.P[i].en; g.innerHTML='<circle cx="'+r(p.x)+'" cy="'+r(p.y)+'" r="1.4" fill="none" stroke="var(--accent)" stroke-width=".3"/>'; var tx=$('sayTxt'); if(tx) tx.textContent=(i+1)+' z '+S.route.length+': '+DEF[getO(id).type].l;
       if(zoom>1){ var wr=$('wrap'), sc=$('field').clientWidth/S.W; wr.scrollLeft=p.x*sc-wr.clientWidth/2; wr.scrollTop=p.y*sc-wr.clientHeight/2; } };
     if(i===S.route.length-1) u.onend=function(){ if(SAY===tok) setTimeout(sayStop,600); };
@@ -5017,6 +7205,85 @@ function fldLive(){
   if(ob) ob.setAttribute('transform','rotate('+r(FLD.h0+o.rot-FLD.h)+')');
 }
 
+/* ---------- HandlerMap 2.0: nastavení (jazyk, vzhled), průvodce prvním spuštěním, novinky ---------- */
+(function(){ var bm=$('brandMark'); if(bm) bm.innerHTML=IC.brand; })();
+/* podstránka ve Více: vlastní záložka nebo obrazovka modulu ('mod:<id>') */
+function moreOpen(t,arg){ moreTab=t; MORE_ARG=arg||null; if(view!=='more') show('more'); else { moreRender(); try{window.scrollTo(0,0);}catch(e){} } }
+
+/* ---------- Nastavení ---------- */
+function settingsHTML(){
+  function seg(attr,cur,opts,label){ return '<div class="seg wide" role="group" aria-label="'+label+'">'+opts.map(function(o){ return '<button data-'+attr+'="'+o[0]+'" class="'+(o[0]===cur?'on':'')+'"'+(o[2]?' translate="no"':'')+'>'+o[1]+'</button>'; }).join('')+'</div>'; }
+  return '<div class="panel set"><b>Jazyk</b>'+seg('lang',LANG,[['cs','Čeština',1],['en','English',1]],'Jazyk')+'<p class="hint">Language: Czech or English.</p></div>'+
+    '<div class="panel set"><b>Vzhled</b>'+seg('theme',THEME,[['system','Podle systému'],['light','Světlý'],['dark','Tmavý']],'Vzhled')+'<p class="hint">Tmavý vzhled je šetrnější k očím večer a k baterii telefonu.</p></div>'+
+    '<div class="panel set"><b>Průvodce</b><p class="hint">Krátké představení aplikace a nastavení psa.</p><div class="row"><button class="btn" data-onb="1">Spustit průvodce</button></div></div>';
+}
+
+/* ---------- průvodce prvním spuštěním ---------- */
+var ONBK='agility-onb-v1', ONB={step:1,dog:null};
+function onbHasData(){ return S.meta.dirty||DOGS.length>0||myDB().length>0||Object.keys(MK).some(function(k){return (MK[k].runs||[]).length||MK[k].fav||MK[k].done;}); }
+function onbStart(){
+  /* automatické testy (navigator.webdriver) průvodce ani novinky neukazují, pokud si ho test nevyžádá přes ?onb */
+  if(navigator.webdriver&&!/[?&]onb\b/.test(location.search)) return;
+  var st=lsGet(ONBK,null);
+  if(st&&st.step&&!st.done){ onbOpen(st.step); return; }
+  if(st) { newsCheck(); return; }
+  if(onbHasData()){ lsSet(ONBK,{done:1,v:2}); newsCheck(); return; }
+  onbOpen(1);
+}
+function newsCheck(){
+  if(lsGet('agility-news-v1',null)==='2.0') return; lsSet('agility-news-v1','2.0');
+  openSheet('<h3>Novinky v HandlerMap 2.0</h3><p>Aplikace Agility trasa se teď jmenuje HandlerMap.</p>'+
+    '<ul class="news"><li>Angličtina: Více → Nastavení → English</li><li>Tmavý vzhled podle systému, nebo natrvalo</li><li>Větší tlačítka a plynulejší přechody</li></ul>'+
+    '<div class="acts"><button class="btn primary" data-a="x">Pokračovat</button></div>',function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
+}
+function onbClose(done){ var o=$('onb'); if(o) o.parentNode.removeChild(o); if(done) lsSet(ONBK,{done:1,v:2}); document.documentElement.classList.remove('onb-open'); }
+function onbOpen(step){
+  ONB.step=step||1; var o=$('onb');
+  if(!o){ o=document.createElement('div'); o.id='onb'; o.className='onb'; o.setAttribute('role','dialog'); o.setAttribute('aria-modal','true'); document.body.appendChild(o); o.onclick=onbClick; o.onchange=onbClick; }
+  document.documentElement.classList.add('onb-open'); onbRender();
+}
+function onbRender(){
+  var o=$('onb'), s=ONB.step, h='<div class="onb-top"><div class="dots" aria-hidden="true"><i'+(s===1?' class="on"':'')+'></i><i'+(s===2?' class="on"':'')+'></i><i'+(s===3?' class="on"':'')+'></i></div><button class="btn ghost" data-o="skip">Přeskočit</button></div><div class="onb-body">';
+  if(s===1){
+    h+='<div class="onb-logo" aria-hidden="true">'+IC.brand+'</div><h1>Vítej v HandlerMap</h1><p class="lead">Plánuj parkury, čti plánky z fotky, trénuj se stopkami a sleduj, jak se tvůj pes zlepšuje.</p>'+
+      '<label>Jazyk / Language<div class="seg wide" role="group"><button data-o="lang" data-v="cs" class="'+(LANG==='cs'?'on':'')+'" translate="no">Čeština</button><button data-o="lang" data-v="en" class="'+(LANG==='en'?'on':'')+'" translate="no">English</button></div></label>'+
+      '<label>Vzhled<div class="seg wide" role="group"><button data-o="theme" data-v="system" class="'+(THEME==='system'?'on':'')+'">Podle systému</button><button data-o="theme" data-v="light" class="'+(THEME==='light'?'on':'')+'">Světlý</button><button data-o="theme" data-v="dark" class="'+(THEME==='dark'?'on':'')+'">Tmavý</button></div></label>';
+    h+='</div><div class="onb-foot"><button class="btn primary" data-o="next">Pokračovat</button></div>';
+  } else if(s===2){
+    var d=curDog()||{name:'',size:'L',cls:'A1'};
+    h+='<h1>Tvůj pes</h1><p class="lead">Podle velikosti a třídy aplikace nastaví výšky překážek, čas SČP a povede statistiky zvlášť pro každého psa.</p>'+
+      '<label for="oName">Jméno<input id="oName" type="text" maxlength="40" autocomplete="off" value="'+esc(d.name)+'" placeholder="např. Aris"></label>'+
+      '<div class="grid2"><label for="oSize">Velikost<select id="oSize">'+Object.keys(SIZES).map(function(k){return '<option value="'+k+'"'+(k===d.size?' selected':'')+'>'+SIZES[k].l+'</option>';}).join('')+'</select></label>'+
+      '<label for="oCls">Třída<select id="oCls">'+['A0','A1','A2','A3'].map(function(k){return '<option value="'+k+'"'+(k===d.cls?' selected':'')+'>'+k+'</option>';}).join('')+'</select></label></div>';
+    h+='</div><div class="onb-foot"><button class="btn" data-o="back">Zpět</button><button class="btn primary" data-o="dog">Pokračovat</button></div>';
+  } else {
+    h+='<h1>Čím začneš?</h1><p class="lead">Všechno najdeš i později na úvodní obrazovce.</p><div class="opts">'+
+      '<button class="opt" data-o="go" data-v="imp"><b>'+IC.scan+'Načíst plánek z fotky</b><span>Vyfoť plánek ze závodů, aplikace přečte překážky i trasu.</span></button>'+
+      '<button class="opt" data-o="go" data-v="lib"><b>'+IC.grid+'Projít parkury</b><span>Desítky parkurů A1–A3 a plánky trenérů.</span></button>'+
+      '<button class="opt" data-o="go" data-v="new"><b>'+IC.plus+'Postavit vlastní</b><span>Rozmísti překážky a naklikej trasu.</span></button></div>';
+    h+='</div><div class="onb-foot"><button class="btn" data-o="back">Zpět</button><button class="btn primary" data-o="go" data-v="home">Hotovo</button></div>';
+  }
+  o.innerHTML=h;
+}
+function onbClick(e){
+  if(e.type==='change') return;
+  var b=e.target.closest('[data-o]'); if(!b) return; var a=b.getAttribute('data-o'), v=b.getAttribute('data-v');
+  if(a==='skip'){ onbClose(true); show('home'); }
+  else if(a==='lang'){ if(v!==LANG){ lsSet(ONBK,{step:2}); setLang(v); } }
+  else if(a==='theme'){ setTheme(v); onbRender(); }
+  else if(a==='next'){ ONB.step=2; lsSet(ONBK,{step:2}); onbRender(); }
+  else if(a==='back'){ ONB.step=Math.max(1,ONB.step-1); onbRender(); }
+  else if(a==='dog'){
+    var nm=($('oName').value||'').trim();
+    if(nm){ var d=curDog(); if(!d){ d={id:'dog-'+Date.now().toString(36),name:nm,size:$('oSize').value,cls:$('oCls').value,u:Date.now()}; DOGS.push(d); } else { d.name=nm; d.size=$('oSize').value; d.cls=$('oCls').value; d.u=Date.now(); } DOGC=d.id; saveDogs(); }
+    ONB.step=3; lsSet(ONBK,{step:3}); onbRender();
+  }
+  else if(a==='go'){
+    onbClose(true);
+    if(v==='imp'){ show('plan'); impOpen(); } else if(v==='lib') show('lib'); else if(v==='new'){ show('plan'); $('newBtn').click(); } else show('home');
+  }
+}
+
 setSizeSel();
 /* ukázkový parkur jen při úplně prvním spuštění; prázdná plocha po Nový zůstane prázdná */
 if(FRESH&&!S.obs.length&&!S.meta.id){ var first=listFor('A1')[0]; if(first) loadCourse(first,true); }
@@ -5026,6 +7293,7 @@ else if(S.meta.gen&&S.meta.id&&/^A[123]-\d\d(-v\d+)?$/.test(S.meta.id)&&!S.meta.
 drawGrid(); ui(); render(); topbar(); undoReset();
 /* start na Domů; odkaz s #plan, #lib, #run, #video nebo #more otevře rovnou danou záložku */
 (function(){ var h=(location.hash||'').slice(1); show(['plan','lib','run','video','more'].indexOf(h)>=0?h:'home'); })();
+setTimeout(onbStart,250);
 var nw0=catScan(); catUI(); if(nw0.length) setTimeout(function(){newToast(nw0.length);},700);
 $('catBtn').onclick=catCheck;
 catSync();

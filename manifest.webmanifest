@@ -1,7 +1,7 @@
 {
- "name": "Agility trasa",
- "short_name": "Agility trasa",
- "description": "Plánovač agility parkurů: trasy, čtení plánků, trénink, stopky.",
+ "name": "HandlerMap",
+ "short_name": "HandlerMap",
+ "description": "Plánovač agility parkurů: trasy, čtení plánků z fotky, trénink, stopky. Česky i anglicky.",
  "lang": "cs",
  "id": "./",
  "start_url": "./",
