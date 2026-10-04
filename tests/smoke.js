@@ -85,6 +85,42 @@ module.exports = async function ({ browser, base }) {
   await step('otevřít parkur', async () => { await page.click('.nav [data-v="lib"]'); await page.click('#cards .pick >> nth=3'); T.ok(await T.ev(() => S.meta.id === listFor('A1')[3].id), 'parkur se neotevřel'); });
   for (const m of ['dogs', 'start', 'stats', 'diary', 'warm', 'coach', 'backup', 'about'])
     await step('více ' + m, async () => { await page.click('.nav [data-v="more"]'); await page.click(`#moreTabs [data-m="${m}"]`); });
+  /* karta parkuru jen na dva řádky: délka a překážky, pod tím barevná náročnost a SČP */
+  await step('krátké karty parkurů', async () => {
+    await page.click('.nav [data-v="lib"]'); await page.click('#libTabs [data-c="A3"]');
+    const c = await T.ev(() => [...document.querySelectorAll('#cards .card')].map(k => ({ ch: k.querySelector('.meta').children.length, ln: [...k.querySelectorAll('.meta .ln')].map(l => Math.round(l.getBoundingClientRect().height)), pill: (k.querySelector('.meta .dpill') || {}).textContent, star: !!k.querySelector('.st .fav') })));
+    T.ok(c.length > 0 && c.every(k => k.ch <= 3 && k.ln.length <= 2 && k.ln.every(h => h > 0 && h < 30) && k.star), 'karta má víc než 2 řádky údajů nebo chybí hvězdička: ' + JSON.stringify(c[0]));
+    T.ok(c.every(k => ['lehký', 'střední', 'těžký', 'velmi těžký'].includes(k.pill)), 'chybí barevný štítek náročnosti: ' + JSON.stringify(c[0]));
+    T.ok(await T.ev(() => trLookup('lehký') === 'easy' && trLookup('velmi těžký') === 'very hard'), 'chybí anglický překlad náročnosti');
+  });
+  /* Více: svislá nabídka, sekce se Zpět; přímý odkaz otevře sekci rovnou, klepnutí na Více v liště vrátí nabídku */
+  await step('více jako seznam', async () => {
+    await page.click('.nav [data-v="more"]');
+    T.ok(await page.isVisible('#moreTabs') && await page.isHidden('#moreHead') && await T.ev(() => moreTab === '' && $('moreBody').innerHTML === ''), 'Více nezačíná nabídkou');
+    const hs = await T.ev(() => [...document.querySelectorAll('#moreTabs [data-m]')].map(b => b.getBoundingClientRect().height));
+    T.ok(hs.length === 9 && hs.every(h => h >= 52), 'řádky nabídky nemají 52 px: ' + hs);
+    await page.click('#moreTabs [data-m="stats"]');
+    T.ok(await page.isHidden('#moreTabs') && await page.isVisible('#moreBack') && await T.ev(() => $('moreTitle').textContent === 'Statistiky' && moreTab === 'stats'), 'sekce se neotevřela se Zpět a názvem');
+    await page.click('#moreBack');
+    T.ok(await page.isVisible('#moreTabs') && await page.isHidden('#moreHead') && await T.ev(() => moreTab === ''), 'Zpět nevrátil nabídku');
+    await T.ev(() => { show('home'); moreTab = 'dogs'; show('more'); });
+    T.ok(await page.isHidden('#moreTabs') && await T.ev(() => $('moreTitle').textContent === 'Psi' && !!document.querySelector('#moreBody [data-dadd]')), 'přímý odkaz neotevřel sekci Psi');
+    await page.click('.nav [data-v="more"]'); T.ok(await page.isVisible('#moreTabs'), 'Více v liště nevrátilo nabídku');
+  });
+  /* cíle pro palec aspoň 44 px i na 360 px; přepínač Prohlížet/Stavba/Trasa zůstane v jednom řádku */
+  await step('cíle pro palec 44 px na 360 px', async () => {
+    await page.setViewportSize({ width: 360, height: 780 });
+    const hit = async sel => T.ev(s => [...document.querySelectorAll(s)].filter(e => e.offsetParent).map(e => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; }), sel);
+    const small = (a, w) => !a.length || a.some(r => r[1] < 44 || (w && r[0] < 44));
+    let a = await hit('#modeRow .seg button'); T.ok(!small(a), 'Prohlížet/Stavba/Trasa pod 44 px: ' + JSON.stringify(a));
+    T.ok(await T.ev(() => new Set([...document.querySelectorAll('#modeRow > :not(.grow)')].map(e => Math.round(e.getBoundingClientRect().top + e.getBoundingClientRect().height / 2))).size === 1 && $('modeRow').scrollWidth <= $('modeRow').clientWidth), 'řádek režimů se nevejde na jeden řádek');
+    a = await hit('.fieldbox .zoom .btn'); T.ok(!small(a, true), 'tlačítka zoomu pod 44 px: ' + JSON.stringify(a));
+    await page.click('.nav [data-v="lib"]'); a = await hit('#libFilters .chip'); T.ok(!small(a), 'filtry v Parkurech pod 44 px: ' + JSON.stringify(a));
+    await page.click('.nav [data-v="run"]'); a = await hit('.field-row .check'); T.ok(!small(a, true) && await T.ev(() => $('disChk').closest('label').classList.contains('check')), 'Diskvalifikace má malý cíl: ' + JSON.stringify(a));
+    await T.ev(() => { DOGS = [{ id: 'p1', name: 'Rex', size: 'L', cls: 'A1' }, { id: 'p2', name: 'Max', size: 'S', cls: 'A2' }]; DOGC = 'p1'; saveDogs(); moreTab = 'stats'; show('more'); });
+    a = await hit('#v-more .filters .chip'); T.ok(!small(a), 'filtry ve Více pod 44 px: ' + JSON.stringify(a));
+    await page.setViewportSize({ width: 390, height: 844 });
+  });
   await step('video', async () => {
     await page.click('.nav [data-v="video"]'); await page.click('#vidList button >> nth=0');
     await page.waitForFunction(() => V3D.api || V3D.fail || !V3D.gl, null, { timeout: 20000 }); await page.waitForTimeout(300);

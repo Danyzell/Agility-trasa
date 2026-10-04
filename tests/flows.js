@@ -35,22 +35,22 @@ module.exports = async function ({ browser, base }) {
   await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="dogs"]');
   await page.click('[data-dadd]'); await page.fill('#dName', 'Rex'); await T.sheet('ok');
   ok(await ev(() => DOGS.length === 1), 'pes se neuložil');
-  await page.click('#moreTabs [data-m="stats"]'); await page.waitForTimeout(150);
+  await page.click('#moreBack'); await page.click('#moreTabs [data-m="stats"]'); await page.waitForTimeout(150);
 
   T.step('záloha');
-  await page.click('#moreTabs [data-m="backup"]');
+  await page.click('#moreBack'); await page.click('#moreTabs [data-m="backup"]');
   const [dl] = await Promise.all([page.waitForEvent('download'), page.click('[data-bk="save"]')]);
   await dl.saveAs(bkPath);
   const bk = JSON.parse(fs.readFileSync(bkPath, 'utf8'));
   ok(bk.app === 'agility-trasa' && bk.data['agility-my-v1'] && bk.data['agility-dogs-v1'], 'záloha neobsahuje data');
 
   T.step('data po záloze');
-  await page.click('#moreTabs [data-m="dogs"]'); await page.click('[data-dadd]'); await page.fill('#dName', 'Max'); await T.sheet('ok');
-  await page.click('#moreTabs [data-m="diary"]'); await page.click('[data-dy="trenink"]'); await page.fill('#yNote', 'poznámka'); await T.sheet('ok');
+  await page.click('#moreBack'); await page.click('#moreTabs [data-m="dogs"]'); await page.click('[data-dadd]'); await page.fill('#dName', 'Max'); await T.sheet('ok');
+  await page.click('#moreBack'); await page.click('#moreTabs [data-m="diary"]'); await page.click('[data-dy="trenink"]'); await page.fill('#yNote', 'poznámka'); await T.sheet('ok');
   ok(await ev(() => DOGS.length === 2 && diary().length === 1), 'druhý pes nebo deník se neuložil');
 
   T.step('obnova zálohy');
-  await page.click('#moreTabs [data-m="backup"]');
+  await page.click('#moreBack'); await page.click('#moreTabs [data-m="backup"]');
   await page.setInputFiles('#jsonFile', bkPath); await page.waitForTimeout(200);
   await Promise.all([page.waitForNavigation(), T.sheet('ok')]); await page.waitForTimeout(400);
   const st = await ev(() => ({ dogs: DOGS.map(d => d.name), my: myDB().length, diary: diary().length, runs: getMark(myDB()[0].id).runs.length }));
@@ -99,7 +99,7 @@ module.exports = async function ({ browser, base }) {
   const cs = await ev(() => ({ route: S.route, sides: S.sides, obs: S.obs.length, cls: S.meta.cls, id: S.meta.id }));
   ok(JSON.stringify(cs) === '{"route":[2,3],"sides":["P","L"],"obs":2,"cls":"A1","id":null}', 'uložený plán se nevyčistil: ' + JSON.stringify(cs));
   await page.click('.nav [data-v="lib"]'); await page.click('#libTabs [data-c="my"]'); await page.waitForTimeout(200);
-  await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="dogs"]'); await page.click('#moreTabs [data-m="stats"]'); await page.waitForTimeout(150);
+  await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="dogs"]'); await page.click('#moreBack'); await page.click('#moreTabs [data-m="stats"]'); await page.waitForTimeout(150);
   await page.click('.nav [data-v="run"]'); await page.waitForTimeout(150);
 
   } catch (e) { T.fail(e); }

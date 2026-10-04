@@ -114,7 +114,7 @@ module.exports = async function ({ browser, base }) {
 
     T.step('postup A2 → A3');
     await ev(() => { const L = []; for (let i = 0; i < 5; i++) L.push({ id: 'y' + i, kind: 'zavod', date: '2026-0' + (i + 1) + '-10', dog: null, cls: 'A2', g: 'VD', tot: '', place: '2', judge: i % 2 ? 'A' : 'B' }); localStorage.setItem('agility-diary-v1', JSON.stringify(L)); });
-    await page.click('#moreTabs [data-m="diary"]');
+    await page.click('#moreBack'); await page.click('#moreTabs [data-m="diary"]');
     ok(await ev(() => !/5 z 5 zkoušek/.test($('moreBody').textContent)), 'VD bez trestných bodů se počítá do postupu do A3');
 
     T.step('datum v noci');
