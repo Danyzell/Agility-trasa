@@ -1,6 +1,8 @@
-/* HandlerMap: výsledky psa z kacr.info (veřejná stránka psa, jeden požadavek na psa).
-   Vstup: { dog: "14756" } nebo odkaz https://kacr.info/dogs/14756. Stahuje jen kacr.info/dogs/<číslo>,
-   nic jiného (žádný otevřený proxy). Výstup: pes (jméno, plemeno, velikost, narození) a jeho běhy po závodech. */
+/* HandlerMap: výsledky psa z kacr.info (veřejné stránky, jeden požadavek na dotaz).
+   Vstup: { dog: "14756" } nebo odkaz https://kacr.info/dogs/14756 → pes (jméno, plemeno, velikost, narození) a jeho běhy po závodech;
+   { q: "Wampi" } → hledání psů a psovodů podle jména (kacr.info/search/<text>);
+   { handler: "6625" } → psi psovoda (jeho průkazy).
+   Stahuje jen tyhle tři druhy stránek kacr.info, nic jiného (žádný otevřený proxy). */
 const UA = 'HandlerMap/2.0 (+https://danyzell.github.io/Agility-trasa/)';
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -35,13 +37,51 @@ function parseDog(id: string, html: string) {
   return { id: +id, name, breed: info['Plemeno'] || null, size: info['Velikost'] || null, born: isoDate(info['Datum narození'] || ''), comps, at: Date.now() };
 }
 
+/* výsledky hledání: oddíly <h2>Psi</h2> a <h2>Psovodi</h2> */
+function parseSearch(html: string) {
+  const part = (h: string) => (html.split(new RegExp('<h2>\\s*' + h + '\\s*</h2>'))[1] || '').split(/<h2>/)[0];
+  const dogs = [...part('Psi').matchAll(/<a href="https:\/\/kacr\.info\/dogs\/(\d+)">([\s\S]*?)<\/a><\/span>([^<]*)/g)]
+    .map((m) => ({ id: +m[1], name: text(m[2]), breed: text(m[3]).replace(/^,\s*/, '') || null }));
+  const handlers = [...part('Psovodi').matchAll(/<a href="https:\/\/kacr\.info\/handlers\/(\d+)">([\s\S]*?)<\/a><\/span>(?:<span>,\s*<a[^>]*>([\s\S]*?)<\/a>)?/g)]
+    .map((m) => ({ id: +m[1], name: text(m[2]), osa: m[3] ? text(m[3]) : null }));
+  return { dogs: dogs.slice(0, 30), handlers: handlers.slice(0, 30) };
+}
+
+/* stránka psovoda: jméno a průkazy (číslo průkazu, velikost, pes) */
+function parseHandler(id: string, html: string) {
+  const name = text((html.match(/<h1>([\s\S]*?)<\/h1>/) || [])[1] || '');
+  const books = (html.split(/<h2>\s*Průkazy\s*<\/h2>/)[1] || '').split(/<h2>/)[0];
+  const seen = new Set<number>(), dogs: { id: number; name: string; size: string | null }[] = [];
+  for (const m of books.matchAll(/<span>\s*\(([A-Z]{1,2})\)\s*<\/span>\s*,\s*<a href="https:\/\/kacr\.info\/dogs\/(\d+)">([\s\S]*?)<\/a>/g)) {
+    if (seen.has(+m[2])) continue; seen.add(+m[2]); dogs.push({ id: +m[2], name: text(m[3]), size: m[1] });
+  }
+  return { id: +id, name, dogs };
+}
+
+const get = (path: string) => fetch('https://kacr.info' + path, { headers: { 'User-Agent': UA, 'Accept-Language': 'cs' }, redirect: 'manual' });
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   try {
     const b = await req.json().catch(() => ({}));
+    if (b?.q != null) {
+      const q = String(b.q).replace(/[\/?#%\\<>]/g, ' ').replace(/\s+/g, ' ').trim();
+      if (q.length < 2 || q.length > 60) return json({ error: 'Napiš aspoň 2 písmena jména psa nebo psovoda.' }, 400);
+      const r = await get('/search/' + encodeURIComponent(q));
+      if (!r.ok) return json({ error: `kacr.info teď neodpovídá (${r.status}).` }, 502);
+      return json(parseSearch(await r.text()));
+    }
+    if (b?.handler != null) {
+      const h = String(b.handler).match(/^(?:https?:\/\/(?:www\.)?kacr\.info\/handlers\/)?(\d{1,7})\/?$/);
+      if (!h) return json({ error: 'Neplatné číslo psovoda.' }, 400);
+      const r = await get('/handlers/' + h[1]);
+      if (r.status === 404) return json({ error: 'Psovod s tímhle číslem na kacr.info není.' }, 404);
+      if (!r.ok) return json({ error: `kacr.info teď neodpovídá (${r.status}).` }, 502);
+      return json(parseHandler(h[1], await r.text()));
+    }
     const m = String(b?.dog ?? '').trim().match(/^(?:https?:\/\/(?:www\.)?kacr\.info\/dogs\/)?(\d{1,7})\/?(?:[?#].*)?$/);
     if (!m) return json({ error: 'Neplatný odkaz na psa. Vlož odkaz ve tvaru https://kacr.info/dogs/12345.' }, 400);
-    const r = await fetch(`https://kacr.info/dogs/${m[1]}`, { headers: { 'User-Agent': UA, 'Accept-Language': 'cs' }, redirect: 'manual' });
+    const r = await get('/dogs/' + m[1]);
     if (r.status === 404) return json({ error: 'Pes s tímhle číslem na kacr.info není.' }, 404);
     if (!r.ok) return json({ error: `kacr.info teď neodpovídá (${r.status}).` }, 502);
     const d = parseDog(m[1], await r.text());

@@ -10,7 +10,7 @@ Verze 2.0. Česky i anglicky (Více → Nastavení), světlý i tmavý vzhled.
 
 Trénink doma (Domů → Trénink doma, nebo Parkury → Generátor → Z parkurů): aplikace vyřízne ze skutečných parkurů úseky, které se vejdou na tvou plochu a postavíš je z vlastního vybavení. Pořadí, otočky kolem křídla i zadní strany zůstanou jako na parkuru. Úseky jde filtrovat podle toho, co chceš trénovat, otočit zrcadlově (otočky na druhou stranu) a kruh nebo skok daleký nahradit skokem; k úseku se ukládají oblíbené i běhy.
 
-Výsledky ze závodů: v profilu psa (Více → Psi) vlož odkaz na psa na kacr.info. Aplikace stáhne jeho výsledky (serverová funkce `supabase/functions/kacr`), ukáže statistiky a graf rychlosti a v Plánu odhadne čas psa na parkuru vůči SČP.
+Výsledky ze závodů: v profilu psa (Více → Psi) najdi psa na kacr.info podle jeho jména nebo podle jména psovoda (nebo vlož odkaz). Aplikace stáhne jeho výsledky (serverová funkce `supabase/functions/kacr`), ukáže statistiky a graf rychlosti a v Plánu odhadne čas psa na parkuru vůči SČP.
 
 Na aplikaci pracuje víc sezení Claude Code najednou – pravidla jsou v [SPOLUPRACE.md](SPOLUPRACE.md).
 
