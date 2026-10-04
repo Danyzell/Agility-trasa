@@ -148,7 +148,7 @@ module.exports = async function ({ browser, base }) {
     await ev(() => localStorage.removeItem('agility-week-v1'));
     board = { week: '2026-W40', total: 5, rows: [row(1, 'x', '<img src=x onerror=alert(4)>', '<b id="yy">M</b>', 31.2, 0), row(2, 'y', 'Ája', 'S', 33, 5, true)], me: [] };
     await page.click('.nav [data-v="home"]'); await page.waitForTimeout(500);
-    const r = await ev(() => ({ img: document.querySelectorAll('#v-home img').length, b: !!document.getElementById('yy'), top: ($('hmWkTop') || {}).textContent || '' }));
+    const r = await ev(() => ({ img: document.querySelectorAll('#v-home img').length, b: !!document.getElementById('yy'), top: ($('hmWkTop' + homeCls()) || {}).textContent || '' }));
     ok(!r.img && !r.b, 'jméno psa ze serveru se na kartě vložilo jako HTML');
     ok(r.top.indexOf('<img') >= 0 && /Ája/.test(r.top), 'karta neukazuje první z žebříčku: ' + r.top);
   });
