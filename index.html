@@ -112,6 +112,8 @@ select.btn{padding-right:8px;}
 .card .meta{padding:7px 9px 9px; display:flex; flex-direction:column; gap:1px;}
 .card .meta b{font-family:var(--display); font-size:17px; font-weight:600; line-height:1.15;}
 .card .meta span{font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.card .meta .ft{white-space:normal;}
+.card .meta .ft em{font-style:normal; color:var(--accent); font-weight:600; white-space:nowrap;}
 .card .st{position:absolute; top:6px; right:6px; display:flex; gap:4px;}
 .card .st button{width:30px; height:30px; border-radius:8px; border:0; background:color-mix(in srgb,var(--surface) 88%,transparent); color:var(--muted); display:grid; place-items:center;}
 .card .st button svg{width:17px; height:17px;}
@@ -922,7 +924,33 @@ function trTree(root){
 }
 /* Překlady nových textů: když přidáš do aplikace český text, sem dopiš jeho anglickou verzi (stejný formát jako i18nAdd). */
 var I18N_EXTRA={exact:{
+"Z parkurů": "From courses",
+"Úseky ze skutečných parkurů, které se vejdou na tvou plochu a postavíš je z vlastního vybavení. Pořadí, otočky i zadní strany zůstanou jako na parkuru.": "Sections of real courses that fit your space and that you can build with your own equipment. The order, wraps and backsides stay as on the course.",
+"Z čeho vybírat": "Choose from",
+"Všechny parkury": "All courses",
+"Parkury A1": "A1 courses",
+"Parkury A2": "A2 courses",
+"Parkury A3": "A3 courses",
+"Plánky trenérů a rozhodčích": "Trainers' and judges' course maps",
+"Moje parkury": "My courses",
+"Otevřený parkur v Plánu": "Course open in the Plan",
+"Plocha – délka (m)": "Space – length (m)",
+"Plocha – šířka (m)": "Space – width (m)",
+"Z druhé strany": "From the other side",
+"Zóny": "Contacts",
+"Ostré obraty": "Tight turns",
+"Procházím parkury…": "Going through the courses…",
+"Z vybraných parkurů se na tuhle plochu nic nevešlo. Zkus větší plochu, víc skoků, tunel, nebo jiné parkury.": "Nothing from the selected courses fits this space. Try a bigger space, more jumps, a tunnel, or other courses.",
+"Trénink doma": "Training at home",
+"Úseky ze skutečných parkurů": "Sections of real courses",
+"Vejdou se na tvou zahradu a postavíš je z toho, co máš": "They fit your garden and you build them from what you have",
+"Vybrat": "Choose",
+"Skoky": "Jumps",
 },num:{
+"Otočky #": "Wraps #",
+"Zadní strany #": "Backsides #",
+"Překážky #–#": "Obstacles #–#",
+"Plocha # × # m a tvoje vybavení": "Space # × # m and your equipment",
 },re:[
 ]};
 function i18nStart(){
@@ -4293,6 +4321,9 @@ function homeRender(){
       return '<button class="hm-cc" data-hc="'+i+'"><span class="m">'+thumb(c,s.geo)+'<span class="hm-tag">'+cls+' · '+tag+'</span></span><span class="t"><b>'+esc(c.name)+'</b><span>'+fmt(s.geo.total)+' m · náročnost '+fmt(s.diff)+' · '+diffLabel(s.diff)+'</span></span></button>';
     }).join('')+'</div>';
   }
+  /* trénink doma: úseky ze skutečných parkurů na vlastní plochu a vybavení (generátor, záložka Z parkurů) */
+  h+='<div class="hm-sec"><h3>Trénink doma</h3></div><div class="hm-ch hm-cut"><div class="ic">🏡</div><div class="tx"><b>Úseky ze skutečných parkurů</b><span>'+
+    (SET.cut?'Plocha '+SET.cut.W+' × '+SET.cut.H+' m a tvoje vybavení':'Vejdou se na tvou zahradu a postavíš je z toho, co máš')+'</span></div><button class="hm-go" data-h="cut">Vybrat</button></div>';
   h+=wkHomeHTML(cls);
   var ch=homeChallenge();
   if(ch) h+='<div class="hm-sec"><h3>Výzva dne</h3></div><div class="hm-ch"><div class="ic">🎯</div><div class="tx"><b>Zaběhni čistě pod SČP</b><span>'+esc(ch.c.name)+' · '+ch.c.route.length+' překážek</span></div>'+
@@ -4315,6 +4346,7 @@ $('v-home').onclick=function(e){
   else if(a==='ch'){ var ch=homeChallenge(); if(ch) loadCourse(ch.c); }
   else if(a==='wkopen'){ var wc=weekCourse(homeCls()); if(wc) loadCourse(wc); }
   else if(a==='wkboard') wkBoard();
+  else if(a==='cut'){ GEN.tab='cut'; genSheet(); }
 };
 
 /* ---------- Parkur týdne: jeden parkur pro třídu na celý týden (po–ne) a žebříček podle velikosti psa ---------- */
@@ -5437,17 +5469,23 @@ function genSheet(){
   var yardB='<label for="gStyle">Co složit<select id="gStyle"><option value="yard">Trénink (5–18 překážek v trase)</option><option value="A1">Celý parkur ve stylu A1</option><option value="A2">Celý parkur ve stylu A2</option><option value="A3">Celý parkur ve stylu A3</option></select></label>'+area+
     '<div class="grid2">'+num('gJ','Skoky',eq.jump,20)+num('gT','Tunely',eq.tunnel,4)+'<span id="gNw">'+num('gN','Překážek v trase',SET.eqN||10,18)+'</span></div>'+
     '<div class="row">'+chk('gW','Slalom')+chk('gTi','Kruh')+chk('gA','A-rampa')+chk('gD','Kladina')+chk('gS','Houpačka')+'</div><p class="hint" id="gStyleT"></p>';
-  var intro={seq:'Krátký úsek na jednu dovednost, na trénink se hodí víc než celý parkur.',
+  var ct=SET.cut||{W:20,H:15,src:'all'}, ceq=SET.eq||{jump:6,tunnel:1};
+  var cutB='<label for="gSrc">Z čeho vybírat<select id="gSrc"><option value="all">Všechny parkury</option><option value="A1">Parkury A1</option><option value="A2">Parkury A2</option><option value="A3">Parkury A3</option><option value="tr">Plánky trenérů a rozhodčích</option><option value="my">Moje parkury</option><option value="plan">Otevřený parkur v Plánu</option></select></label>'+
+    '<div class="grid2"><label for="gCW">Plocha – délka (m)<input id="gCW" type="number" min="10" max="60" value="'+ct.W+'" inputmode="numeric"></label><label for="gCH">Plocha – šířka (m)<input id="gCH" type="number" min="10" max="40" value="'+ct.H+'" inputmode="numeric"></label></div>'+
+    '<div class="grid2">'+num('gJ','Skoky',ceq.jump!=null?ceq.jump:6,20)+num('gT','Tunely',ceq.tunnel!=null?ceq.tunnel:1,4)+'</div>'+
+    '<div class="row">'+chk('gW','Slalom')+chk('gTi','Kruh')+chk('gLj','Skok daleký')+chk('gA','A-rampa')+chk('gD','Kladina')+chk('gS','Houpačka')+'</div>';
+  var intro={cut:'Úseky ze skutečných parkurů, které se vejdou na tvou plochu a postavíš je z vlastního vybavení. Pořadí, otočky i zadní strany zůstanou jako na parkuru.',
+    seq:'Krátký úsek na jednu dovednost, na trénink se hodí víc než celý parkur.',
     drill:'Klasická cvičení na pevném rozestavení. Překážky postavíš jednou a generátor k nim skládá různá pořadí.',
     yard:'Zadej, co máte doma nebo v klubu. Generátor složí trasy, které se vejdou, a překážky v nich opakuje. Vybavení si aplikace pamatuje.'}[tab];
-  openSheet('<h3>Generátor</h3><div class="seg wide" id="gTabs"><button data-a="tseq" class="'+on('seq')+'">Sekvence</button><button data-a="tdrill" class="'+on('drill')+'">Cvičení</button><button data-a="tyard" class="'+on('yard')+'">Zahrada a klub</button></div>'+
-    '<p>'+intro+'</p>'+(tab==='seq'?seqB:tab==='drill'?drillB:yardB)+'<div class="acts"><button class="btn" data-a="x">Zavřít</button><button class="btn primary" data-a="go">Vygenerovat</button></div><div class="cards" id="gOut"></div>',
+  openSheet('<h3>Generátor</h3><div class="seg wide" id="gTabs"><button data-a="tseq" class="'+on('seq')+'">Sekvence</button><button data-a="tdrill" class="'+on('drill')+'">Cvičení</button><button data-a="tyard" class="'+on('yard')+'">Zahrada a klub</button><button data-a="tcut" class="'+on('cut')+'">Z parkurů</button></div>'+
+    '<p>'+intro+'</p>'+(tab==='seq'?seqB:tab==='drill'?drillB:tab==='cut'?cutB:yardB)+'<div class="acts"><button class="btn" data-a="x">Zavřít</button><button class="btn primary" data-a="go">Vygenerovat</button></div><div class="cards" id="gOut"></div>',
     function(e){
       var b=e.target.closest('[data-a]'), pk=e.target.closest('[data-gi]');
-      if(pk){var c=GEN.out[+pk.getAttribute('data-gi')]; GENJOB++; closeSheet(); loadCourse(c); return;}
+      if(pk){var c=GEN.out[+pk.getAttribute('data-gi')]; GENJOB++; CUTJOB++; closeSheet(); loadCourse(c); return;}
       if(!b) return; var a=b.getAttribute('data-a');
-      if(a==='x'){GENJOB++; closeSheet(); return;}
-      if(a==='tseq'||a==='tyard'||a==='tdrill'){GENJOB++; GEN.tab=a.slice(1); genSheet(); return;}
+      if(a==='x'){GENJOB++; CUTJOB++; closeSheet(); return;}
+      if(a==='tseq'||a==='tyard'||a==='tdrill'||a==='tcut'){GENJOB++; CUTJOB++; GEN.tab=a.slice(1); genSheet(); return;}
       if(a==='go') genRun();
     });
   if(tab==='yard'){
@@ -5458,11 +5496,23 @@ function genSheet(){
       if(cl&&+$('gArea').value.split('x')[0]<30) $('gArea').value='40x20'; };
     $('gStyle').onchange=sty; sty();
   }
+  if(tab==='cut'){
+    $('gW').checked=!!ceq.weave; $('gTi').checked=!!ceq.tire; $('gLj').checked=!!ceq.longjump; $('gA').checked=!!ceq.aframe; $('gD').checked=!!ceq.dogwalk; $('gS').checked=!!ceq.seesaw;
+    $('gSrc').value=ct.src||'all';
+  }
   if(tab==='drill'){ if(GEN.drill) $('gDrill').value=GEN.drill; var upd=function(){GEN.drill=$('gDrill').value; $('gDrillT').textContent=DRILLS[GEN.drill].t;}; $('gDrill').onchange=upd; upd(); }
   if(tab==='seq'){ if(GEN.skill) $('gSkill').value=GEN.skill; $('gSkill').onchange=function(){GEN.skill=this.value;}; }
 }
-function genShow(out,busy){
+function genShow(out,busy,kind){
   var el=$('gOut'); if(!el) return;
+  if(kind==='cut'){
+    el.innerHTML=out.length?out.map(function(c,i){ var m=metrics(c.obs,c.route,c.cls,c.turns);
+      return '<div class="card"><button class="pick" data-gi="'+i+'">'+thumb(c)+'<div class="meta"><b translate="no">'+esc(c.cut.src)+'</b><span>Překážky '+c.cut.a+'–'+c.cut.b+'</span><span>'+fmt(m.len)+' m · '+m.n+' překážek</span>'+
+        (c.cut.feats.length?'<span class="ft">'+c.cut.feats.map(function(f){return '<em>'+esc(f)+'</em>';}).join(' · ')+'</span>':'')+'</div></button></div>';}).join('')+
+      (busy?'<div class="empty-state">Hledám další…</div>':'')
+      :busy?'<div class="empty-state">Procházím parkury…</div>':'<div class="empty-state">Z vybraných parkurů se na tuhle plochu nic nevešlo. Zkus větší plochu, víc skoků, tunel, nebo jiné parkury.</div>';
+    return;
+  }
   el.innerHTML=out.length?out.map(function(c,i){var m=metrics(c.obs,c.route,'A1',c.turns), tt=c.turns||[], nW=tt.filter(function(t){return t&&t.charAt(0)==='w';}).length, nB=tt.filter(function(t){return t&&t.charAt(0)==='b';}).length;
     return '<div class="card"><button class="pick" data-gi="'+i+'">'+thumb(c)+'<div class="meta"><b>'+esc(c.name)+'</b><span>'+fmt(m.len)+' m · '+m.n+' překážek</span><span>'+c.obs.length+' kusů vybavení</span>'+(nW||nB?'<span>Otočky '+nW+(nB?' · zadní strany '+nB:'')+'</span>':'')+'</div></button></div>';}).join('')+
     (busy?'<div class="empty-state">Hledám další…</div>':'')
@@ -5470,6 +5520,7 @@ function genShow(out,busy){
 }
 /* generování běží po kouscích, aby aplikace nezamrzla; výsledky přibývají postupně */
 function genRun(){
+  if(GEN.tab==='cut'){ cutRun(); return; }
   var job=++GENJOB, out=[], base=Date.now()%100000, k=0, max=60, want=6, tryOne;
   if(GEN.tab==='drill'){
     var d=DRILLS[$('gDrill').value], L=drillLayout(d), seen={}, fx=drillFixed(d,L); max=d.max?fx.length:40+fx.length; if(d.max) want=d.max;
@@ -5497,6 +5548,110 @@ function genRun(){
     while(k<max&&out.length<want&&Date.now()-t0<80) tryOne(k++);
     var busy=k<max&&out.length<want; genShow(out,busy);
     if(busy) setTimeout(tick,0);
+  })();
+}
+/* ---------- domácí sekvence: úseky ze skutečných parkurů, které se vejdou na tvou plochu a postavíš je z vlastního vybavení ----------
+   Projde parkury (knihovna A1–A3, plánky trenérů a rozhodčích, Moje, nebo otevřený plán). U každého začátku najde nejdelší úsek
+   (4–10 překážek v pořadí parkuru), na který stačí vybavení, a natočí ho po 15° tak, aby se překážky (i s křídly), dráha psa
+   a rozběh a doběh vešly na plochu s okrajem 1 m. Pořadí, otočky kolem křídla a zadní strany zůstanou jako na parkuru.
+   Úseky se řadí podle toho, kolik je v nich k tréninku (otočky, zadní strany, tunely, slalom, zóny, ostré obraty). */
+var CUT_MIN=4, CUT_MAX=10, CUT_MG=1, CUTJOB=0;
+/* kolik kusů vybavení úsek potřebuje (překážka, která se v úseku opakuje, se počítá jednou) */
+function cutNeed(by,ids){ var u={}, n={}; ids.forEach(function(id){ if(u[id]) return; u[id]=1; var t=by[id].type; n[t]=(n[t]||0)+1; }); return n; }
+function cutHas(n,eq){ for(var t in n){ var have=t==='jump'?(eq.jump||0):t==='tunnel'?(eq.tunnel||0):(eq[t]?1:0); if(n[t]>have) return false; } return true; }
+/* body, které se musí vejít na plochu: obrys překážek a křídla, dráha psa, 2 m rozběhu před první a doběhu za poslední překážkou */
+function cutPts(obs,route,turns){
+  var g=calc(obs,route,turns), P=[];
+  obs.forEach(function(o){
+    opoly(o).forEach(function(q){P.push({x:q.x,y:q.y});});
+    if(DEF[o.type].hl===0){ var a=o.rot*D2R, w=DEF[o.type].w; P.push({x:o.x+Math.sin(a)*w,y:o.y-Math.cos(a)*w},{x:o.x-Math.sin(a)*w,y:o.y+Math.cos(a)*w}); }
+  });
+  g.segs.forEach(function(s){ s.pcs.forEach(function(c){ for(var t=0;t<=8;t++) P.push(bz(c[0],c[1],c[2],c[3],t/8)); }); });
+  var p0=g.P[0], pl=g.P[g.P.length-1], dl=pl.dx||pl.dir;
+  P.push({x:p0.en.x-p0.dir.x*2,y:p0.en.y-p0.dir.y*2},{x:pl.ex.x+dl.x*2,y:pl.ex.y+dl.y*2});
+  return {P:P,g:g};
+}
+/* natočení po 15° s největší rezervou; null, když se úsek na plochu nevejde */
+function cutFit(P,W,H){
+  var best=null;
+  for(var k=0;k<12;k++){
+    var a=k*15*D2R, c=Math.cos(a), s=Math.sin(a), b=[1e9,1e9,-1e9,-1e9];
+    for(var i=0;i<P.length;i++){ var x=c*P[i].x-s*P[i].y, y=s*P[i].x+c*P[i].y; if(x<b[0])b[0]=x; if(y<b[1])b[1]=y; if(x>b[2])b[2]=x; if(y>b[3])b[3]=y; }
+    var sl=Math.min(W-2*CUT_MG-(b[2]-b[0]),H-2*CUT_MG-(b[3]-b[1]));
+    if(sl>=0&&(!best||sl>best.sl+.3)) best={a:k*15,sl:sl,cx:(b[0]+b[2])/2,cy:(b[1]+b[3])/2};
+  }
+  return best;
+}
+/* kolik pes v úseku celkem zatáčí (v pravých úhlech) */
+function cutTurning(g){
+  var sum=0, prev=null;
+  g.segs.forEach(function(s){ s.pcs.forEach(function(c){ for(var t=0;t<=8;t++){ var q=bz(c[0],c[1],c[2],c[3],t/8);
+    if(prev){ var dx=q.x-prev.x, dy=q.y-prev.y; if(dx*dx+dy*dy>1e-6){ var h=Math.atan2(dy,dx); if(prev.h!=null) sum+=Math.abs(nAng(h-prev.h)); q.h=h; } else q.h=prev.h; }
+    prev=q; } }); });
+  return sum/(Math.PI/2);
+}
+/* úseky jednoho parkuru: pro každý začátek nejdelší, který projde vybavením i plochou */
+function cutCourse(c,eq,W,H){
+  var by={}, out=[], n=c.route.length;
+  c.obs.forEach(function(o){by[o.id]=o;});
+  if(!c.route.every(function(id){return by[id];})) return out;
+  for(var i=0;i+CUT_MIN<=n;i++){
+    for(var L=Math.min(CUT_MAX,n-i);L>=CUT_MIN;L--){
+      var ids=c.route.slice(i,i+L), need=cutNeed(by,ids);
+      if(!cutHas(need,eq)) continue;
+      var tu=(c.turns||[]).slice(i,i+L).map(function(t){return t||null;});
+      while(tu.length<L) tu.push(null);
+      if(tu[L-1]&&tu[L-1].charAt(0)==='w') tu[L-1]=null;   /* otočka za posledním skokem už nikam nevede */
+      var map={}, sub=[];
+      ids.forEach(function(id){ if(!map[id]){ map[id]=sub.length+1; var o=by[id], q={id:map[id],type:o.type,x:o.x,y:o.y,rot:o.rot||0}; if(o.type==='tunnel'&&o.bend) q.bend=o.bend; sub.push(q); } });
+      var rt=ids.map(function(id){return map[id];}), G;
+      try{ G=cutPts(sub,rt,tu); }catch(e){ continue; }
+      var f=cutFit(G.P,W,H); if(!f) continue;
+      var a=f.a*D2R, ca=Math.cos(a), sa=Math.sin(a);
+      var placed=sub.map(function(o){ var q={id:o.id,type:o.type,x:r1(ca*o.x-sa*o.y-f.cx+W/2),y:r1(sa*o.x+ca*o.y-f.cy+H/2),rot:((o.rot+f.a)%360+360)%360}; if(o.bend) q.bend=o.bend; return q; });
+      var nw=tu.filter(function(t){return t&&t.charAt(0)==='w';}).length, nb=tu.filter(function(t){return t&&t.charAt(0)==='b';}).length, nf=tu.filter(function(t){return t==='f';}).length;
+      var nz=(need.aframe||0)+(need.dogwalk||0)+(need.seesaw||0), turn=cutTurning(G.g), tight=(turn-3.5*nw-3*nb)/L>=1.2;   /* bez smyček otoček a zadních stran */
+      var feats=[]; if(nw) feats.push('Otočky '+nw); if(nb) feats.push('Zadní strany '+nb); if(nf) feats.push('Z druhé strany');
+      if(need.tunnel) feats.push('Tunel'); if(need.weave) feats.push('Slalom'); if(nz) feats.push('Zóny'); if(tight) feats.push('Ostré obraty');
+      out.push({id:null,name:c.name+' · '+(i+1)+'–'+(i+L),cls:clsClean(c.cls),author:c.author||'',gen:true,W:W,H:H,obs:placed,route:rt,turns:tu,
+        sides:(c.sides||[]).slice(i,i+L).map(function(s){return s==='L'||s==='P'?s:null;}),
+        cut:{src:c.name,srcId:c.id,a:i+1,b:i+L,feats:feats,score:L+2*nw+2.5*nb+1.2*nf+(need.tunnel?1:0)+(need.weave?1.5:0)+nz+.35*turn}});
+      break;
+    }
+  }
+  return out;
+}
+/* nejlepší úseky: z jednoho parkuru nejvýš dva a navzájem se moc nepřekrývají */
+function cutPick(all,max){
+  var s=all.slice().sort(function(a,b){return b.cut.score-a.cut.score;}), out=[], per={};
+  for(var i=0;i<s.length&&out.length<max;i++){
+    var c=s[i], k=c.cut.srcId||c.cut.src, mine=per[k]||[];
+    if(mine.length>=2) continue;
+    if(mine.some(function(o){ var ov=Math.min(o.cut.b,c.cut.b)-Math.max(o.cut.a,c.cut.a)+1; return ov>Math.min(o.cut.b-o.cut.a,c.cut.b-c.cut.a)/2; })) continue;
+    mine.push(c); per[k]=mine; out.push(c);
+  }
+  return out;
+}
+function cutSources(src){
+  if(src==='plan') return S.route.length>=CUT_MIN?[{id:S.meta.id||'plan',name:S.meta.name,cls:S.meta.cls,author:S.meta.author,obs:S.obs,route:S.route,turns:S.turns,sides:S.sides}]:[];
+  if(src==='all') return listFor('A1').concat(listFor('A2'),listFor('A3'),listFor('tr'),listFor('my'));
+  return listFor(src);
+}
+/* hledání běží po kouscích, aby aplikace nezamrzla; nejlepší úseky přibývají postupně */
+function cutRun(){
+  var W=Math.round(cl(+$('gCW').value||20,10,60)), H=Math.round(cl(+$('gCH').value||15,10,60)), src=$('gSrc').value;
+  if(H>W){ var tt=W; W=H; H=tt; } H=Math.min(H,40);
+  var eq={jump:Math.max(0,+$('gJ').value||0),tunnel:Math.max(0,+$('gT').value||0),weave:$('gW').checked?1:0,tire:$('gTi').checked?1:0,longjump:$('gLj').checked?1:0,aframe:$('gA').checked?1:0,dogwalk:$('gD').checked?1:0,seesaw:$('gS').checked?1:0};
+  SET.eq=Object.assign({},SET.eq||{},eq); SET.cut={W:W,H:H,src:src}; lsSet(SETK,SET);
+  $('gCW').value=W; $('gCH').value=H;
+  var job=++CUTJOB, list=cutSources(src), all=[], k=0;
+  GEN.out=[]; genShow([],true);
+  (function tick(){
+    if(job!==CUTJOB||GEN.tab!=='cut'||!$('gOut')) return;
+    var t0=Date.now();
+    while(k<list.length&&Date.now()-t0<80){ try{ all=all.concat(cutCourse(list[k],eq,W,H)); }catch(e){} k++; }
+    GEN.out=cutPick(all,12); genShow(GEN.out,k<list.length,'cut');
+    if(k<list.length) setTimeout(tick,0);
   })();
 }
 $('genBtn').onclick=genSheet;
