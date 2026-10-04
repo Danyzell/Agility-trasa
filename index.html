@@ -693,6 +693,31 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 .onb-foot{display:flex; gap:10px; max-width:480px; width:100%; margin:0 auto;}
 .onb-foot .btn{flex:1; min-height:54px; font-size:16px; justify-content:center;}
 
+/* Sezení A: kratší karty parkurů, Více jako seznam, větší cíle pro palec (jen rozměry, vzhled tlačítek patří sezení B) */
+.card .meta{gap:2px;}
+.card .meta .l2{display:flex; align-items:center; gap:6px; min-width:0;}
+.card .meta .l2 span{min-width:0;}
+.dpill{flex:0 0 auto; font-style:normal; font-size:11.5px; font-weight:600; line-height:1; padding:3px 7px; border-radius:99px; --dc:var(--good); color:color-mix(in srgb,var(--dc) 72%,var(--text)); background:color-mix(in srgb,var(--dc) 17%,transparent);}
+.dpill.d2{--dc:var(--warn);} .dpill.d3{--dc:color-mix(in srgb,var(--warn) 45%,var(--bad));} .dpill.d4{--dc:var(--bad);}
+.mlist{display:flex; flex-direction:column; background:var(--surface); border:1px solid color-mix(in srgb,var(--border) 75%,transparent); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden;}
+.mrow{display:flex; align-items:center; gap:12px; min-height:52px; padding:0 12px 0 14px; border:0; background:none; text-align:left; font-size:16px; font-weight:500; color:var(--text);}
+.mrow+.mrow{border-top:1px solid color-mix(in srgb,var(--border) 75%,transparent);}
+.mrow:active{background:var(--sunk);}
+.mrow .mic{flex:0 0 auto; width:32px; height:32px; border-radius:10px; display:grid; place-items:center; background:color-mix(in srgb,var(--accent) 13%,transparent); color:var(--accent);}
+.mrow .mic svg{width:19px; height:19px;}
+.mrow .ml{flex:1; min-width:0;}
+.mrow .mch{display:grid; color:var(--muted);} .mrow .mch svg{width:18px; height:18px;}
+.mhead{display:flex; align-items:center; gap:6px; margin:-6px 0 -4px;}
+#moreBack{min-height:44px; padding:0 12px 0 4px; margin-left:-4px; color:var(--accent); gap:2px;}
+#moreBack svg{width:22px; height:22px;}
+.mhead b{font-family:var(--display); font-size:22px; font-weight:600; line-height:1.1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+#v-lib .filters .chip,#v-more .filters .chip{min-height:44px;}
+#modeRow .seg button{min-height:44px;}
+/* zoom: tlačítka 44 px, ale rámeček bez vnitřního okraje a blíž k rohu, aby z plochy nezakryl víc než dřív (klepání překážek u horního okraje) */
+.fieldbox .zoom{top:6px; right:6px; padding:0; gap:0;}
+.fieldbox .zoom .btn{min-height:44px; width:44px;}
+.field-row .check{min-height:44px; padding:0 8px; margin:0 -8px; cursor:pointer;}
+
 @media (prefers-reduced-motion: reduce){ .view.enter,.sheet,.scrim,.toast,.onb,.onb-body{animation:none!important;} }
 
 </style>
@@ -839,17 +864,19 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 
   <!-- VÍCE -->
   <section class="view" id="v-more" hidden>
-    <div class="filters" id="moreTabs">
-      <button class="chip on" data-m="dogs">Psi</button>
-      <button class="chip" data-m="start">Začínáme</button>
-      <button class="chip" data-m="stats">Statistiky</button>
-      <button class="chip" data-m="diary">Deník</button>
-      <button class="chip" data-m="warm">Rozcvička</button>
-      <button class="chip" data-m="coach">Trenéři</button>
-      <button class="chip" data-m="backup">Záloha</button>
-      <button class="chip" data-m="set">Nastavení</button>
-      <button class="chip" data-m="about">O aplikaci</button>
+    <!-- Více: svislá nabídka sekcí; otevřená sekce má nahoře Zpět a nabídka se schová -->
+    <div class="mlist" id="moreTabs" role="navigation" aria-label="Více">
+      <button class="mrow" data-m="dogs"><span class="mic" data-ic="paw"></span><span class="ml">Psi</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="start"><span class="mic" data-ic="flag"></span><span class="ml">Začínáme</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="stats"><span class="mic" data-ic="chart"></span><span class="ml">Statistiky</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="diary"><span class="mic" data-ic="log"></span><span class="ml">Deník</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="warm"><span class="mic" data-ic="heart"></span><span class="ml">Rozcvička</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="coach"><span class="mic" data-ic="people"></span><span class="ml">Trenéři</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="backup"><span class="mic" data-ic="cloud"></span><span class="ml">Záloha</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="set"><span class="mic" data-ic="sliders"></span><span class="ml">Nastavení</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="about"><span class="mic" data-ic="info"></span><span class="ml">O aplikaci</span><span class="mch" data-ic="chev"></span></button>
     </div>
+    <div class="mhead" id="moreHead" hidden><button class="btn ghost" id="moreBack" data-ic="back">Zpět</button><b id="moreTitle"></b></div>
     <div id="moreBody"></div>
   </section>
 </main>
@@ -3597,6 +3624,8 @@ function diffScore(c,fs){
   return {v:Math.round(cl(sc,1,10)*10)/10, why:parts.filter(function(p){return p[0]>=.3;}).sort(function(a,b){return b[0]-a[0];}).slice(0,3).map(function(p){return p[1];})};
 }
 function diffLabel(v){return v<3.5?'lehký':v<5.5?'střední':v<7.5?'těžký':'velmi těžký';}
+/* stupeň náročnosti 1–4 (barva štítku na kartě parkuru), stejné hranice jako diffLabel */
+function diffLvl(v){return v<3.5?1:v<5.5?2:v<7.5?3:4;}
 /* statistiky parkuru do knihovny: počítají se jednou a pamatují podle obsahu */
 var CST={};
 function cStats(c){
@@ -4374,14 +4403,13 @@ function libRender(){
   if(key) F.sort(function(a,b){return key(a)-key(b)||a.i-b.i;});
   $('libSort').value=libSort;
   $('cards').innerHTML=F.length?F.map(function(x){
-    var c=x.c, st=x.st, geo=st?st.geo:null, mk=getMark(c.id), m=metrics(c.obs,c.route,c.cls,c.turns,geo), bb=best(mk.runs), tt=c.turns||[];
-    var nW=tt.filter(function(t){return t&&t.charAt(0)==='w';}).length, nB=tt.filter(function(t){return t&&t.charAt(0)==='b';}).length;
+    var c=x.c, st=x.st, geo=st?st.geo:null, mk=getMark(c.id), m=metrics(c.obs,c.route,c.cls,c.turns,geo), bb=best(mk.runs);
     var srcOk=c.src&&/^https:\/\//.test(c.src);
+    /* karta jen na dva řádky: délka a počet překážek, pod tím barevná náročnost a SČP. Podrobná čísla (oblouky, křížení, otočky, MČP) jsou v Plánu v Rozboru */
     return '<div class="card'+(c.id===S.meta.id?' cur':'')+'">'+
       '<button class="pick" data-id="'+esc(c.id)+'">'+thumb(c,geo)+
-      '<div class="meta"><b>'+esc(c.name)+'</b><span>'+fmt(m.len)+' m · '+m.n+' překážek</span><span>SČP '+m.sct+' s · MČP '+m.mct+' s</span>'+
-      (st?'<span class="df">Náročnost <b>'+fmt(st.diff)+'</b> · '+diffLabel(st.diff)+'</span><span>Oblouky '+Math.round(st.fs.arc)+' %'+(st.fs.cross?' · křížení '+st.fs.cross:'')+'</span>':'')+
-      (nW||nB?'<span>Otočky '+nW+(nB?' · zadní strany '+nB:'')+'</span>':'')+'<span>'+esc(authorLine(c))+'</span></div></button>'+
+      '<div class="meta"><b translate="no">'+esc(c.name)+'</b><span class="ln">'+fmt(m.len)+' m · '+m.n+' překážek</span>'+
+      '<span class="ln l2">'+(st?'<i class="dpill d'+diffLvl(st.diff)+'">'+diffLabel(st.diff)+'</i>':'')+'<span>SČP '+m.sct+' s</span></span></div></button>'+
       (srcOk?'<a class="src" href="'+esc(c.src)+'" target="_blank" rel="noopener">Původní plánek</a>':'')+
       (isNewC(c.id)||mk.done?'<div class="tags">'+(isNewC(c.id)?'<span class="new-tag">Nový</span>':'')+(mk.done?'<span class="done-tag">✓ '+(bb?bb.g:'zaběhnuto')+'</span>':'')+'</div>':'')+
       '<div class="st"><button class="fav'+(mk.fav?' on':'')+'" data-fav="'+esc(c.id)+'" aria-label="Oblíbený">'+(mk.fav?IC.starF:IC.star)+'</button>'+
@@ -5058,7 +5086,8 @@ function show(v){
   try{window.scrollTo(0,0);}catch(e){}
   HM.emit('view',{v:v});
 }
-document.querySelector('.nav').onclick=function(e){var b=e.target.closest('button[data-v]'); if(b) show(b.getAttribute('data-v'));};
+/* Více ve spodní liště vždy ukáže nabídku sekcí; přímé odkazy (moreTab='dogs'; show('more')) jdou mimo lištu a sekci otevřou rovnou */
+document.querySelector('.nav').onclick=function(e){var b=e.target.closest('button[data-v]'); if(!b) return; if(b.getAttribute('data-v')==='more') moreTab=''; show(b.getAttribute('data-v'));};
 /* obrazovka modulu (HM.screen): otevře se jako podstránka ve Více */
 HM.open=function(id,arg){ if(!HM.screens[id]) return; moreOpen('mod:'+id,arg); };
 
@@ -6289,7 +6318,7 @@ $('genBtn').onclick=genSheet;
 
 /* ---------- psi ---------- */
 var DOGK='agility-dogs-v1', DOGCUR='agility-dogcur-v1', DIARYK='agility-diary-v1';
-var DOGS=lsGet(DOGK,[]), DOGC=lsGet(DOGCUR,null), moreTab='dogs', MORE_ARG=null;
+var DOGS=lsGet(DOGK,[]), DOGC=lsGet(DOGCUR,null), moreTab='', MORE_ARG=null; /* moreTab '' = nabídka sekcí */
 var SIZES={
   XS:{l:'XS – do 30 cm',jump:'15–20 cm',wall:'10–20 cm',tire:'45–55 cm',lj:'15–40 cm (1–2 díly)'},
   S:{l:'S – do 35 cm',jump:'25–30 cm',wall:'25–30 cm',tire:'55 cm',lj:'40–50 cm (2 díly)'},
@@ -6746,7 +6775,11 @@ function booksHTML(){
   return '<h2>Knihy</h2><div class="coach-list">'+BOOKS.map(function(b){return '<a class="coach" href="'+b[2]+'" target="_blank" rel="noopener"><span class="cc">CZ</span><span><b>'+esc(b[0])+'</b><span>'+esc(b[1])+'</span></span>'+IC.ext+'</a>';}).join('')+'</div>';
 }
 function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); },0);
-  Array.prototype.forEach.call(document.querySelectorAll('#moreTabs .chip'),function(b){b.classList.toggle('on',b.getAttribute('data-m')===moreTab);});
+  /* bez otevřené sekce jen nabídka; v sekci nabídka zmizí a nahoře je Zpět s názvem sekce */
+  var mb=document.querySelector('#moreTabs [data-m="'+moreTab+'"]'), sc0=moreTab.indexOf('mod:')===0&&HM.screens[moreTab.slice(4)];
+  $('moreTabs').hidden=!!moreTab; $('moreHead').hidden=!moreTab;
+  $('moreTitle').textContent=mb?mb.querySelector('.ml').textContent:sc0&&sc0.title?sc0.title:'';
+  if(!moreTab){ $('moreBody').innerHTML=''; return; }
   var h='', d=curDog();
   if(moreTab.indexOf('mod:')===0){ var sc=HM.screens[moreTab.slice(4)], el=$('moreBody'); el.innerHTML=''; if(sc){ try{ sc.render(el,MORE_ARG); }catch(e){ if(window.console) console.error(e); } } MORE_ARG=null; return; }
   if(moreTab==='set'){ $('moreBody').innerHTML=settingsHTML(); return; }
@@ -6783,7 +6816,8 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   if(moreTab==='stats'){dogChips('statDogs'); bindChart();}
   if(moreTab==='diary') dogChips('diaryDogs');
 }
-$('moreTabs').onclick=function(e){var b=e.target.closest('[data-m]'); if(!b) return; moreTab=b.getAttribute('data-m'); moreRender();};
+$('moreTabs').onclick=function(e){var b=e.target.closest('[data-m]'); if(!b) return; moreTab=b.getAttribute('data-m'); moreRender(); try{window.scrollTo(0,0);}catch(er){}};
+$('moreBack').onclick=function(){ moreTab=''; MORE_ARG=null; moreRender(); try{window.scrollTo(0,0);}catch(e){} };
 $('moreBody').onclick=function(e){
   var t=e.target.closest('button'); if(!t) return;
   var g=function(a){return t.getAttribute(a);};
