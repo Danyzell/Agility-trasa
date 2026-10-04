@@ -99,6 +99,26 @@ module.exports = async function ({ browser, base }) {
     ok(/14\. místo · 6 b · 3 týdnů/.test(await page.textContent('#v-home .lg-line')), 'karta neukazuje pořadí v lize: ' + await page.textContent('#v-home .lg-line'));
   });
 
+  await step('obrázek ke sdílení', async () => {
+    await ev(() => { window.__del = null; window.deliverFile = function (b, m, n, sh, t) { window.__del = { size: b.size, m, n, sh, t }; return Promise.resolve(); }; });
+    /* výsledek ze zahrady je odeslaný z kroku výše: žebříček nabízí sdílení */
+    await ev(() => wkBoard('M', 'Z')); await page.waitForTimeout(200);
+    ok(await page.isVisible('#sheet [data-a="share"]'), 'v žebříčku zahrady chybí Sdílet výsledek');
+    await page.click('#sheet [data-a="share"]'); await page.waitForFunction(() => window.__del, null, { timeout: 5000 });
+    const d = await ev(() => window.__del);
+    ok(d.m === 'image/png' && d.size > 20000 && d.sh === true && d.n === 'zahrada-' + await ev(() => weekKey()) + '.png' && /Zahrada týdne \d+: [\d,]+ s/.test(d.t) && /danyzell\.github\.io/.test(d.t), 'sdílený obrázek: ' + JSON.stringify(d));
+    const dim = await ev(() => { const c = shareCanvas(wkShareData('Z')); return [c.width, c.height]; });
+    ok(dim[0] === 1080 && dim[1] === 1350, 'rozměr obrázku ' + dim);
+    ok(await ev(() => wkShareData('A3') === null), 'bez výsledku nemá být co sdílet');
+    await ev(() => closeSheet());
+    /* liga: tlačítko až když jsem v lize */
+    await ev(() => { window.__del = null; lgBoard('M'); }); await page.waitForSelector('#lgList .lgrow', { timeout: 5000 });
+    ok(await page.isVisible('#lgShare'), 'v lize chybí Sdílet pořadí');
+    await page.click('#lgShare'); await page.waitForFunction(() => window.__del, null, { timeout: 5000 });
+    ok(await ev(() => window.__del.n === 'zahradni-liga-' + lgYear() + '.png' && /14\. místo/.test(window.__del.t)), 'sdílení ligy: ' + JSON.stringify(await ev(() => window.__del)));
+    await ev(() => closeSheet());
+  });
+
   await step('angličtina', async () => {
     ok(await ev(() => trLookup('Zahrada týdne') === 'Garden of the week' && trLookup('Zahrada týdne 41') === 'Garden of the week 41' &&
       /^place 14 · 6 pts · 3 weeks$/.test(trLookup('14. místo · 6 b · 3 týdnů')) && trLookup('20 × 15 m · zbývá 3 dny') === '20 × 15 m · 3 days left' &&
