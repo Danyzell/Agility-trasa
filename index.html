@@ -4622,7 +4622,7 @@ function ui(){
   svg.style.width=(zoom*100)+'%';
   if(BG){$('bgOp').value=Math.round((BG.op||.6)*100); $('bgFit').textContent=BG.fit==='none'?'Zachovat poměr':'Roztáhnout';}
   $('hint').textContent=panel==='side'?'':panel==='quiz'?'':mode==='build'
-    ? (sel!=null?'Klepnutím do volného místa zrušíš výběr. Tažením překážku přesuneš, tlačítky otočíš, dvěma prsty přiblížíš.':tool?'Klepnutím polož '+toolL(tool).toLowerCase()+' na plochu. Překážku přesuneš tažením, plochu přiblížíš dvěma prsty.':'Vyber překážku v nabídce, nebo klepni na překážku na ploše.')
+    ? (sel!=null&&!SELNEW?'Klepnutím do volného místa zrušíš výběr. Tažením překážku přesuneš, tlačítky otočíš, dvěma prsty přiblížíš.':tool?'Klepnutím polož '+toolL(tool).toLowerCase()+' na plochu. Překážku přesuneš tažením, plochu přiblížíš dvěma prsty.':'Vyber překážku v nabídce, nebo klepni na překážku na ploše.')
     : 'Klepej na překážky v pořadí, v jakém je pes poběží. Stejnou překážku můžeš použít víckrát. Otočku kolem křídla nebo zadní stranu nastavíš u skoku v seznamu pod plochou.';
   $('hint').hidden=special||mode==='view';
 }
@@ -4642,7 +4642,7 @@ svg.addEventListener('pointerdown',function(e){
   }
   if(panel==='quiz') return;
   if(mode==='build'&&g){
-    var o=getO(id), q=pt(e); sel=id;
+    var o=getO(id), q=pt(e); sel=id; SELNEW=false;
     drag={id:id,dx:o.x-q.x,dy:o.y-q.y,moved:false,x0:o.x,y0:o.y};
     try{svg.setPointerCapture(e.pointerId);}catch(x){}
   }
@@ -4671,11 +4671,11 @@ svg.addEventListener('pointerup',function(e){
       if(tap.id!=null){S.route.push(tap.id); if(S.chk) S.chk.push(0); syncSides(); touch(); render();}
     } else if(mode==='view'){
       if(tap.id!=null&&!ui.tipped){ ui.tipped=1; toast('Překážky upravíš v režimu Stavba, pořadí v režimu Trasa.'); }
-    } else if(sel!=null&&tap.id==null){ sel=null; render(); ui(); /* první klepnutí do volného místa jen zruší výběr */
+    } else if(sel!=null&&!SELNEW&&tap.id==null){ sel=null; render(); ui(); /* vybraná (ne právě položená) překážka: klepnutí do volného místa jen zruší výběr */
     } else if(tool){
       var p=pt(e), tp=tool.split(':'), o={id:nid(),type:tp[0],x:cl(r1(p.x),0,S.W),y:cl(r1(p.y),0,S.H),rot:0}; if(tp[0]==='tunnel') o.len=5; /* nový tunel: výchozí 5 m */
       if(tp[1]&&JV[tp[1]]) o.v=tp[1];
-      S.obs.push(o); sel=o.id; touch(); render(); ui();
+      S.obs.push(o); sel=o.id; SELNEW=true; touch(); render(); ui(); /* další klepnutí pokládá dál */
     } else { sel=null; render(); ui(); }
   }
   tap=null;
@@ -4691,7 +4691,7 @@ $('mBuild').onclick=function(){mode='build'; ui(); render();};
 $('mRoute').onclick=function(){mode='route'; sel=null; ui(); render();};
 $('zIn').onclick=function(){zoom=Math.min(4,zoom+.5); ui();};
 $('zOut').onclick=function(){zoom=Math.max(1,zoom-.5); ui();};
-$('rot').oninput=function(){var o=getO(sel); if(!o) return; o.rot=+this.value; $('rotLbl').textContent=o.rot+'°'; touch('rot'+o.id); renderSoon();};
+$('rot').oninput=function(){var o=getO(sel); if(!o) return; SELNEW=false; o.rot=+this.value; $('rotLbl').textContent=o.rot+'°'; touch('rot'+o.id); renderSoon();};
 $('rot').onchange=function(){UNDO_G=null;};
 /* kopie vybrané překážky o kus vedle (stejné natočení, tunel i s délkou a obloukem) */
 $('dupBtn').onclick=function(){
@@ -4707,7 +4707,8 @@ $('revRoute').onclick=function(){
   S.route.reverse(); S.sides.reverse(); S.turns=S.turns.reverse().map(fl); if(S.chk) S.chk.reverse();
   touch(); render(); ui(); toast('Trasa obrácená, start je teď u překážky '+obL(getO(S.route[0])).toLowerCase());
 };
-function rotBy(d){ var o=getO(sel); if(!o) return; o.rot=((o.rot+d)%360+360)%360; touch(); render(); ui(); }
+var SELNEW=false;
+function rotBy(d){ var o=getO(sel); if(!o) return; SELNEW=false; o.rot=((o.rot+d)%360+360)%360; touch(); render(); ui(); }
 $('rotL').onclick=function(){ rotBy(-15); }; $('rotR').onclick=function(){ rotBy(15); };
 /* kolmo na trasu: směr běhu od předchozí k další překážce (u prvního a posledního jen jedna strana); rot = směr běhu */
 var ORIENT_T={jump:1,tire:1,longjump:1};

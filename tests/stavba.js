@@ -16,15 +16,18 @@ module.exports = async function ({ browser, base }) {
 
   await step('klepnutí do volného místa', async () => {
     await fresh(); await lCourse(); await page.click('#mBuild');
-    await T.tapField(9, 13);
+    /* pokládání za sebou: každé klepnutí položí překážku */
+    await T.tapField(9, 13); await T.tapField(3, 16);
     let r = await ev(() => ({ n: S.obs.length, sel }));
-    ok(r.n === 5 && r.sel != null, 'první klepnutí má položit skok: ' + JSON.stringify(r));
+    ok(r.n === 6 && r.sel != null, 'klepnutí za sebou mají pokládat: ' + JSON.stringify(r));
+    /* vybraná existující překážka: klepnutí do volného místa jen zruší výběr */
+    await T.tapField(5, 5); ok((await ev(() => sel)) === 1, 'výběr skoku č. 1');
     ok(/zrušíš výběr/.test(await page.textContent('#hint')), 'nápověda s vybranou překážkou');
-    await T.tapField(3, 16);
+    await T.tapField(3, 12);
     r = await ev(() => ({ n: S.obs.length, sel }));
-    ok(r.n === 5 && r.sel === null, 'klepnutí do volného místa s vybranou překážkou má jen zrušit výběr: ' + JSON.stringify(r));
-    await T.tapField(3, 16);
-    ok((await ev(() => S.obs.length)) === 6, 'další klepnutí už pokládá');
+    ok(r.n === 6 && r.sel === null, 'klepnutí do volného místa s vybranou překážkou má jen zrušit výběr: ' + JSON.stringify(r));
+    await T.tapField(3, 12);
+    ok((await ev(() => S.obs.length)) === 7, 'další klepnutí už pokládá');
   });
 
   await step('otáčení po 15° a kolmo na trasu', async () => {
