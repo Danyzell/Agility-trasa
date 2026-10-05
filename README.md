@@ -24,6 +24,8 @@ Kolbiště podle GPS (Plán → Nástroje → Kolbiště (GPS)): poloha kolbišt
 
 Stavba na telefonu: přiblížení dvěma prsty (100–400 %), klepnutí do volného místa nejdřív zruší výběr, otáčení po 15° a ⟂ natočení kolmo na trasu (u jedné překážky, nebo všech skoků v režimu Trasa), kopírování překážky, obrácení trasy. Zeď a dvojitý skok (FCI) jsou skoky s variantou `o.v` (`wall`, `oxer`), počítají se jako skok a mají vlastní 3D model. Na plánku je Start a Cíl, kontrola FCI hlásí překážky přes sebe (tunel pod kladinou a A-rampou smí) a překážku přesahující plochu. Testy `tests/stavba.js`.
 
+Deník a postup (Více → Deník): do postupu A1 → A2 a A2 → A3 se počítají ručně zapsané závody i běhy agility z kacr.info (třída z názvu běhu, hodnocení z trestných bodů podle FCI, stejný běh se nepočítá dvakrát; rozhodčího kacr.info u výsledků neuvádí). U závodu jde zapsat čas, délku trati (ukáže rychlost) a odkaz na video. Jednotky (Více → Nastavení): metry, nebo stopy a yardy za sekundu; parkury se ukládají v metrech. Testy `tests/denik.js`.
+
 Délka tunelu: u vybraného tunelu ve Stavbě 2–6 m (nový tunel 5 m, uložené parkury si délku nechají). Kontrola FCI hlásí tunel kratší než 3 m.
 
 Zásady ochrany osobních údajů: [privacy.html](https://danyzell.github.io/Agility-trasa/privacy.html) (česky i anglicky, adresa se hodí i do Google Play).

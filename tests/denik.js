@@ -1,0 +1,74 @@
+/* Deník a postup (výsledky z kacr.info se počítají do postupu, čas, rychlost a video u závodu) a jednotky metry / stopy */
+const { phone, offline } = require('./helpers');
+
+module.exports = async function ({ browser, base }) {
+  const T = await phone(browser); const { page, ok, ev } = T;
+  await offline(T.ctx, { get_catalog: { version: 0 } });
+  const step = async (label, fn) => { T.step(label); try { await fn(); } catch (e) { T.errs.push(`[${label}] krok selhal: ${String(e && e.message || e).split('\n')[0]}`); } };
+  const fresh = async (h) => { await page.goto('about:blank'); await page.goto(base + '/' + (h || '#plan')); await page.waitForTimeout(300); await ev(() => { $('toast').hidden = true; }); };
+  const dog = () => ev(() => {
+    DOGS = [{ id: 'd1', name: 'Rex', size: 'L', cls: 'A1', kacr: '1' }]; DOGC = 'd1'; saveDogs();
+    const run = (id, name, pen, place, dis) => ({ id, name, pen, place, of: 20, t: 35, v: 4.2, dis: !!dis });
+    KACR = { d1: { name: 'Rex', comps: [
+      { id: 1, name: 'Jarní cena', date: '2026-04-11', runs: [run(11, 'Zkouška IA1', 0, 1), run(12, 'Jumping IJ1', 0, 2)] },
+      { id: 2, name: 'Letní pohár', date: '2026-06-20', runs: [run(21, 'Zkouška IA1', 5, 3), run(22, 'Zkouška IA1', 10, 5)] },
+      { id: 3, name: 'Podzim', date: '2026-09-05', runs: [run(31, 'A2 L', 0, 2), run(32, 'Zkouška IA1', 0, null, true)] }] } };
+    lsSet(KACRK, KACR); localStorage.removeItem(DIARYK);
+  });
+
+  await step('hodnocení z trestných bodů', async () => {
+    await fresh();
+    const r = await ev(() => [gOfPen(0), gOfPen(5.99), gOfPen(6), gOfPen(15.99), gOfPen(16), gOfPen(26), gOfPen(0, true)].join());
+    ok(r === 'V,V,VD,VD,D,BO,DIS', 'hodnocení: ' + r);
+  });
+
+  await step('postup počítá výsledky z kacr.info', async () => {
+    await fresh(); await dog();
+    let r = await ev(() => { const k = kacrDiary(curDog()); return { n: k.length, cls: k.map(x => x.cls + x.g).sort().join() }; });
+    ok(r.n === 5 && r.cls === 'A1DIS,A1V,A1V,A1VD,A2V', 'běhy agility z kacr.info (bez jumpingu a DIS jako DIS): ' + JSON.stringify(r));
+    await ev(() => { moreTab = 'diary'; show('more'); });
+    let t = await page.textContent('#moreBody .prog');
+    ok(/^Postup A1 → A2/.test(t) && /2 z 3 zkoušek/.test(t) && /Z toho z kacr\.info: 2/.test(t), 'postup A1 → A2 z kacr.info: ' + t);
+    /* ručně zapsaný stejný běh se nepočítá dvakrát, třetí V s rozhodčím doplní */
+    await ev(() => lsSet(DIARYK, [{ id: 'y1', kind: 'zavod', date: '2026-04-11', dog: 'd1', cls: 'A1', g: 'V', tot: '0', place: '1', judge: 'Novák' },
+      { id: 'y2', kind: 'zavod', date: '2026-10-01', dog: 'd1', cls: 'A1', g: 'V', tot: '2', place: '4', judge: 'Svoboda' }]));
+    await ev(() => moreRender()); await page.waitForTimeout(100);
+    t = await page.textContent('#moreBody .prog');
+    ok(/3 z 3 zkoušek/.test(t) && /rozhodčích: 2/.test(t) && /podmínka splněna/.test(t) && /Z toho z kacr\.info: 1/.test(t), 'bez dvojího počítání a se 2 rozhodčími: ' + t);
+  });
+
+  await step('závod s časem, délkou a videem', async () => {
+    await page.click('[data-dy="zavod"]');
+    await page.fill('#yEv', 'Test'); await page.fill('#yT', '40,5'); await page.fill('#yLen', '162'); await page.fill('#yVid', 'https://youtu.be/abc');
+    await T.sheet('ok');
+    const x = await ev(() => diary().find(e => e.event === 'Test'));
+    ok(x && x.t === 40.5 && x.len === 162 && x.video === 'https://youtu.be/abc', 'uložený závod: ' + JSON.stringify(x));
+    const li = await page.textContent('#moreBody .list');
+    ok(/40,5 s/.test(li) && /4,0 m\/s/.test(li) && await page.isVisible('#moreBody a.dy-vid[href="https://youtu.be/abc"]'), 'v deníku čas, rychlost a video: ' + li.slice(0, 200));
+    await page.click('[data-dy="zavod"]'); await page.fill('#yVid', 'javascript:alert(1)'); await T.sheet('ok');
+    ok(!(await ev(() => diary().some(e => /javascript/.test(e.video || '')))), 'nebezpečný odkaz se nesmí uložit');
+  });
+
+  await step('jednotky metry a stopy', async () => {
+    await fresh();
+    const m = await ev(() => ({ s: $('specs').textContent, g: $('grid').textContent }));
+    ok(/ m\b/.test(m.s) && /10 m/.test(m.g) && !/ft/.test(m.s), 'výchozí metry: ' + m.s);
+    await ev(() => { moreTab = 'set'; show('more'); }); await page.click('[data-unit="ft"]');
+    ok((await ev(() => SET.unit)) === 'ft', 'přepnutí na stopy');
+    await page.click('.nav [data-v="plan"]'); await page.waitForTimeout(150);
+    const f = await ev(() => ({ s: $('specs').textContent, g: $('grid').textContent, seg: $('pth').textContent, len: calc().total }));
+    ok(/ ft/.test(f.s) && /33 ft/.test(f.g) && / ft/.test(f.seg) && !/\d m\b/.test(f.seg), 've stopách: ' + f.s + ' | ' + f.g.slice(0, 30));
+    ok(new RegExp(String(Math.round(f.len * 3.28084)).slice(0, 3)).test(f.s.replace(/[,.]/g, '')), 'délka trati přepočtená na stopy: ' + f.s + ' / ' + f.len);
+    await ev(() => { moreTab = 'set'; show('more'); }); await page.click('[data-unit="m"]');
+    ok(!(await ev(() => SET.unit)), 'zpět na metry');
+  });
+
+  await step('angličtina', async () => {
+    const miss = await ev(() => ['Jednotky', 'Metry', 'Stopy (ft, yd/s)', 'Čas (s)', 'Délka trati (ft)', 'Odkaz na video (nepovinné)', '413,1 ft', '4,4 yd/s', '4,4 yd/s dle FCI',
+      'Z toho z kacr.info: 2. Rozhodčího tam výsledky neuvádějí, doplň ho zápisem závodu.'].filter(t => trLookup(t) == null));
+    ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
+  });
+
+  await T.ctx.close();
+  return T.errs;
+};

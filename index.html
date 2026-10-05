@@ -309,6 +309,7 @@ select.btn{padding-right:8px;}
 .tiles b{font-family:var(--display); font-size:24px; font-weight:600; font-variant-numeric:tabular-nums;}
 .chart{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:10px;}
 .chart svg{display:block; width:100%; height:auto;}
+.dy-vid{font-weight:600; color:var(--accent); text-decoration:none; font-size:13px;}
 .prog{display:flex; flex-direction:column; gap:6px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px;}
 .prog .bar{height:10px;}
 .table{width:100%; border-collapse:collapse; font-size:14px;}
@@ -1197,6 +1198,16 @@ function trTree(root){
 }
 /* Překlady nových textů: když přidáš do aplikace český text, sem dopiš jeho anglickou verzi (stejný formát jako i18nAdd). */
 var I18N_EXTRA={exact:{
+"Jednotky": "Units",
+"Metry": "Metres",
+"Stopy (ft, yd/s)": "Feet (ft, yd/s)",
+"Délky trati a vzdálenosti na plánku v metrech, nebo ve stopách a rychlost v yardech za sekundu (jako AKC a UKI). Parkury se dál ukládají v metrech.": "Course lengths and distances on the plan in metres, or in feet with speed in yards per second (as in AKC and UKI). Courses are still saved in metres.",
+"Čas (s)": "Time (s)",
+"Délka trati (m)": "Course length (m)",
+"Délka trati (ft)": "Course length (ft)",
+"Odkaz na video (nepovinné)": "Video link (optional)",
+"nepovinné": "optional",
+"Rozhodčího tam výsledky neuvádějí, doplň ho zápisem závodu.": "Results there don't list the judge, add it by recording the competition.",
 "dvojitý skok": "spread jump",
 "Dvojitý skok": "Spread jump",
 "⇄ Obrátit trasu": "⇄ Reverse route",
@@ -1648,6 +1659,10 @@ var I18N_EXTRA={exact:{
 "Zkontroluj podle plánku": "Check against the course map",
 "Náhled parkuru": "Course preview",
 },num:{
+"# ft": "# ft",
+"# yd/s": "# yd/s",
+"# yd/s dle FCI": "#1 yd/s per FCI",
+"Z toho z kacr.info: #. Rozhodčího tam výsledky neuvádějí, doplň ho zápisem závodu.": "Of these from kacr.info: #. Results there don't list the judge, add it by recording the competition.",
 "Natočeno překážek: #": "Obstacles aligned: #",
 "# s": "# s",
 "# měření": "# readings",
@@ -4398,6 +4413,11 @@ function setMark(id,patch){
 /* ---------- časy podle FCI ---------- */
 function fmt(v){var s=v.toFixed(1); return LANG==='en'?s:s.replace('.',',');}
 function fmt2(v){var s=v.toFixed(2); return LANG==='en'?s:s.replace('.',',');}
+/* jednotky: metry (výchozí) nebo stopy a yardy za sekundu (AKC, UKI); data se ukládají vždy v metrech */
+function UFT(){ return typeof SET==='object'&&SET&&SET.unit==='ft'; }
+function lenU(m){ return UFT()?fmt(m*3.28084)+' ft':fmt(m)+' m'; }
+function gridU(m){ return UFT()?Math.round(m*3.28084)+' ft':m+' m'; }
+function spdU(v){ return UFT()?fmt(v*1.09361)+' yd/s':fmt(v)+' m/s'; }
 function spdOf(cls){return (SET.spd&&SET.spd[cls])||3.5;}
 function metrics(obs,route,cls,turns,geo){
   var by={}; obs.forEach(function(o){by[o.id]=o;});
@@ -4415,14 +4435,14 @@ function planSpecs(m){
   var el=$('specs'); if(el) el.classList.toggle('mini',!PLANUI.specs);
   if(PLANUI.specs) return specsHTML(m)+'<button class="spec sfold" data-sp="0" aria-expanded="true">Méně ▴</button>';
   var dash='–';
-  return '<button class="smini" data-sp="1" aria-expanded="false"><b>'+(m.len?fmt(m.len)+' m':dash)+'</b><span>'+nPrek(m.n)+'</span><span><span>SČP</span> <b>'+(m.sct?m.sct+' s':dash)+'</b></span><span><span>MČP</span> <b>'+(m.mct?m.mct+' s':dash)+'</b></span><i aria-hidden="true">▾</i></button>'+kacrEstHTML(m);
+  return '<button class="smini" data-sp="1" aria-expanded="false"><b>'+(m.len?lenU(m.len):dash)+'</b><span>'+nPrek(m.n)+'</span><span><span>SČP</span> <b>'+(m.sct?m.sct+' s':dash)+'</b></span><span><span>MČP</span> <b>'+(m.mct?m.mct+' s':dash)+'</b></span><i aria-hidden="true">▾</i></button>'+kacrEstHTML(m);
 }
 function specsHTML(m){
   var dash='–';
-  return '<div class="spec"><small>Délka trati</small><b>'+(m.len?fmt(m.len)+' m':dash)+'</b><i>'+nPrek(m.n)+'</i></div>'+
+  return '<div class="spec"><small>Délka trati</small><b>'+(m.len?lenU(m.len):dash)+'</b><i>'+nPrek(m.n)+'</i></div>'+
     '<div class="spec"><small>Disciplína</small><b>'+m.disc+'</b><i>třída '+m.cls+'</i></div>'+
-    '<div class="spec"><small>SČP</small><b>'+(m.sct?m.sct+' s':dash)+'</b><i>'+fmt(m.spd)+' m/s</i></div>'+
-    '<div class="spec mct"><small>MČP (max.)</small><b>'+(m.mct?m.mct+' s':dash)+'</b><i>'+fmt(m.mcs)+' m/s dle FCI</i></div>'+kacrEstHTML(m);
+    '<div class="spec"><small>SČP</small><b>'+(m.sct?m.sct+' s':dash)+'</b><i>'+spdU(m.spd)+'</i></div>'+
+    '<div class="spec mct"><small>MČP (max.)</small><b>'+(m.mct?m.mct+' s':dash)+'</b><i>'+spdU(m.mcs)+' dle FCI</i></div>'+kacrEstHTML(m);
 }
 
 /* ---------- horní lišta ---------- */
@@ -4510,8 +4530,8 @@ function drawGrid(){
   var h='', x, y, op=(BG&&BG.src)?' stroke-opacity=".6"':'';
   for(x=0;x<=S.W;x++) h+='<line x1="'+x+'" y1="0" x2="'+x+'" y2="'+S.H+'" stroke="var(--grid)"'+op+' stroke-width="'+(x%10?(x%5?.03:.07):.12)+'"/>';
   for(y=0;y<=S.H;y++) h+='<line x1="0" y1="'+y+'" x2="'+S.W+'" y2="'+y+'" stroke="var(--grid)"'+op+' stroke-width="'+(y%10?(y%5?.03:.07):.12)+'"/>';
-  for(x=10;x<S.W;x+=10) h+='<text x="'+(x+.3)+'" y=".9" font-size=".7" fill="var(--muted)">'+x+' m</text>';
-  for(y=10;y<S.H;y+=10) h+='<text x=".3" y="'+(y-.3)+'" font-size=".7" fill="var(--muted)">'+y+' m</text>';
+  for(x=10;x<S.W;x+=10) h+='<text x="'+(x+.3)+'" y=".9" font-size=".7" fill="var(--muted)">'+gridU(x)+'</text>';
+  for(y=10;y<S.H;y+=10) h+='<text x=".3" y="'+(y-.3)+'" font-size=".7" fill="var(--muted)">'+gridU(y)+'</text>';
   $('grid').innerHTML=h; drawBg();
   svg.setAttribute('viewBox','0 0 '+S.W+' '+S.H);
 }
@@ -4561,7 +4581,7 @@ function render(){
   c.segs.forEach(function(s,i){
     if(i+1>=showN) return;
     h+='<path d="'+s.d+'" fill="none" stroke="'+(qc?qc(i):'var(--zone)')+'" stroke-width="'+(qc?'.2':'.14')+'" stroke-dasharray=".5 .35" marker-end="url(#arr)"'+(qdim&&qdim(i)?' opacity=".25"':'')+'/>'+
-      (quiz?'':'<text x="'+r(s.m.x)+'" y="'+r(s.m.y)+'" font-size=".62" text-anchor="middle" fill="var(--muted)" stroke="var(--field)" stroke-width=".22" paint-order="stroke">'+fmt(s.len)+' m</text>');
+      (quiz?'':'<text x="'+r(s.m.x)+'" y="'+r(s.m.y)+'" font-size=".62" text-anchor="middle" fill="var(--muted)" stroke="var(--field)" stroke-width=".22" paint-order="stroke">'+lenU(s.len)+'</text>');
   });
   $('pth').innerHTML=h;
   var gr={}, b='';
@@ -7330,7 +7350,7 @@ function kacrEstHTML(m){
   var sp=kacrSpeed(d,m.disc==='Jumping'?'J':'A'); if(!sp) return '';
   var t=m.len/sp.v, res=m.sct?m.sct-t:null, late=res!=null&&res<0;
   return '<div class="spec est'+(late?' late':'')+'"><small>Odhad pro psa <span translate="no">'+esc(dog.name)+'</span> (kacr.info)</small><b>'+fmt(Math.round(t*10)/10)+' s</b><i>'+
-    (res==null?fmt(sp.v)+' m/s':late?'o '+fmt(Math.round(-res*10)/10)+' s nad SČP':fmt(Math.round(res*10)/10)+' s pod SČP')+' · '+fmt(sp.v)+' m/s</i></div>';
+    (res==null?spdU(sp.v):late?'o '+fmt(Math.round(-res*10)/10)+' s nad SČP':fmt(Math.round(res*10)/10)+' s pod SČP')+' · '+spdU(sp.v)+'</i></div>';
 }
 /* rychlost v čase: agility zeleně, jumping oranžově */
 function kacrChart(d){
@@ -7408,8 +7428,8 @@ function statsHTML(){
   var mx=Math.max(1,Math.max.apply(null,Object.keys(gr).map(function(k){return gr[k];})));
   var doneN=Object.keys(MK).filter(function(k){return MK[k].done;}).length;
   return '<div class="tiles"><div><small>Běhů</small><b>'+n+'</b></div><div><small>Čisté běhy</small><b>'+Math.round(clean/n*100)+' %</b></div>'+
-    '<div><small>Průměr trestných bodů</small><b>'+fmt2(avgP)+'</b></div><div><small>Průměrná rychlost</small><b>'+(avgS?fmt(avgS)+' m/s':'–')+'</b></div>'+
-    '<div><small>Nejrychlejší běh</small><b>'+(maxS?fmt(maxS)+' m/s':'–')+'</b></div><div><small>Zaběhnuté parkury</small><b>'+doneN+'</b></div></div>'+
+    '<div><small>Průměr trestných bodů</small><b>'+fmt2(avgP)+'</b></div><div><small>Průměrná rychlost</small><b>'+(avgS?spdU(avgS):'–')+'</b></div>'+
+    '<div><small>Nejrychlejší běh</small><b>'+(maxS?spdU(maxS):'–')+'</b></div><div><small>Zaběhnuté parkury</small><b>'+doneN+'</b></div></div>'+
     speedChart(runs)+
     '<div class="chart"><b>Hodnocení běhů</b><table class="table" style="margin-top:6px">'+Object.keys(gr).map(function(k){
       return '<tr><td style="width:60px"><span class="g" style="display:inline-block" translate="no">'+gTxt(k)+'</span></td><td><div class="bar" style="height:10px"><i style="width:'+Math.round(gr[k]/mx*100)+'%"></i></div></td><td class="num" style="width:40px;text-align:right">'+gr[k]+'</td></tr>';
@@ -7418,12 +7438,27 @@ function statsHTML(){
 
 /* ---------- deník a postup ---------- */
 function diary(){return lsGet(DIARYK,[]);}
+/* hodnocení podle trestných bodů (FCI): V 0–5,99, VD 6–15,99, D 16–25,99, BO 26 a víc */
+function gOfPen(p,dis){ return dis?'DIS':p<6?'V':p<16?'VD':p<26?'D':'BO'; }
+/* běhy agility z kacr.info jako záznamy deníku (třída z názvu běhu; rozhodčího kacr.info u výsledku neuvádí) */
+function kacrDiary(dog){
+  var d=dog&&typeof KACR==='object'&&KACR[dog.id]; if(!d) return [];
+  return kacrRuns(d).filter(function(r){ return r.disc==='A'&&/A[0-3]\b/.test(r.name||''); }).map(function(r){
+    var c='A'+(r.name.match(/A([0-3])\b/)[1]); /* Zkouška IA1, A2 L… (velikost před třídou) */
+    return {kind:'zavod',src:'kacr',date:r.date,cls:c,g:gOfPen(+r.pen||0,r.dis),tot:r.pen==null?'':String(r.pen),place:r.place?String(r.place):'',event:r.comp,judge:''};
+  });
+}
 function promoHTML(){
   var d=curDog(), L=diary().filter(function(x){return x.kind==='zavod'&&(!d||x.dog===d.id);});
+  /* výsledky z kacr.info se přičtou, když stejný běh (den, třída, body, umístění) není zapsaný ručně */
+  var key=function(x){ return [x.date,x.cls,String(x.tot==null?'':x.tot).replace(',','.'),x.place||''].join('|'); }, have={};
+  L.forEach(function(x){ have[key(x)]=1; });
+  var K=kacrDiary(d).filter(function(x){ return !have[key(x)]; }); L=L.concat(K);
   function part(cls,need,test,label){
     var ok=L.filter(function(x){return x.cls===cls&&test(x);}), judges={}; ok.forEach(function(x){if(x.judge) judges[x.judge.trim().toLowerCase()]=1;});
-    var jn=Object.keys(judges).length, n=Math.min(ok.length,need);
-    return '<div class="prog"><b>'+label+'</b><div class="bar"><i style="width:'+Math.round(n/need*100)+'%"></i></div><span class="hint">'+ok.length+' z '+need+' zkoušek · rozhodčích: '+jn+' (potřeba aspoň 2)'+(ok.length>=need&&jn>=2?' · podmínka splněna':'')+'</span></div>';
+    var jn=Object.keys(judges).length, n=Math.min(ok.length,need), nk=ok.filter(function(x){return x.src==='kacr';}).length;
+    return '<div class="prog"><b>'+label+'</b><div class="bar"><i style="width:'+Math.round(n/need*100)+'%"></i></div><span class="hint">'+ok.length+' z '+need+' zkoušek · rozhodčích: '+jn+' (potřeba aspoň 2)'+(ok.length>=need&&jn>=2?' · podmínka splněna':'')+'</span>'+
+      (nk?'<span class="hint">Z toho z kacr.info: '+nk+'. Rozhodčího tam výsledky neuvádějí, doplň ho zápisem závodu.</span>':'')+'</div>';
   }
   return part('A1',3,function(x){return x.g==='V';},'Postup A1 → A2: 3× hodnocení Výborně')+
     part('A2',5,function(x){return x.g==='V'&&String(x.tot==null?'':x.tot).trim()!==''&&+x.tot===0&&+x.place>=1&&+x.place<=3;},'Postup A2 → A3: 5× bez trestných bodů do 3. místa')+
@@ -7433,7 +7468,7 @@ function diaryHTML(){
   var d=curDog(), L=diary().filter(function(x){return !d||!x.dog||x.dog===d.id;}).sort(function(a,b){return b.date<a.date?-1:1;});
   return promoHTML()+'<div class="row"><button class="btn primary" data-dy="trenink">＋ Trénink</button><button class="btn" data-dy="zavod">＋ Závod</button></div>'+
     '<div class="list">'+(L.length?L.map(function(x){
-      var t=x.kind==='zavod'?'<b>Závod'+(x.event?': '+esc(x.event):'')+'</b><span>'+esc(x.cls||'')+' · '+esc(gTxt(x.g||''))+(x.place?' · '+esc(T(x.place+'. místo')):'')+(x.tot!==''&&x.tot!=null?' · '+esc(T(x.tot+' tr. b.')):'')+(x.judge?' · '+esc(T('rozhodčí '+x.judge)):'')+'</span>' /* části přes T(): celý řádek slovník nepřeloží */
+      var t=x.kind==='zavod'?'<b>Závod'+(x.event?': '+esc(x.event):'')+'</b><span>'+esc(x.cls||'')+' · '+esc(gTxt(x.g||''))+(x.place?' · '+esc(T(x.place+'. místo')):'')+(x.tot!==''&&x.tot!=null?' · '+esc(T(x.tot+' tr. b.')):'')+(x.judge?' · '+esc(T('rozhodčí '+x.judge)):'')+(+x.t>0?' · '+esc(fmt(+x.t)+' s')+(+x.len>0?' · '+esc(spdU(+x.len/+x.t)):''):'')+'</span>'+(x.video?'<a class="dy-vid" href="'+esc(x.video)+'" target="_blank" rel="noopener">▶ Video</a>':'') /* části přes T(): celý řádek slovník nepřeloží */
         :'<b>Trénink'+(x.surface?' · '+esc(x.surface):'')+'</b>';
       return '<div class="item"><div>'+t+'<span>'+dateOf(x.date).toLocaleDateString(LOC)+(dogName(x.dog)?' · '+esc(dogName(x.dog)):'')+'</span>'+(x.note?'<span>'+esc(x.note)+'</span>':'')+'</div><div class="acts"><button class="btn" data-dydel="'+esc(x.id)+'" aria-label="Smazat záznam">×</button></div></div>';
     }).join(''):'<p class="hint">Zatím žádné záznamy. Zapiš si trénink nebo výsledek ze závodů.</p>')+'</div>';
@@ -7448,7 +7483,9 @@ function diarySheet(kind){
         '<label for="yJudge">Rozhodčí<input id="yJudge" type="text" maxlength="60"></label>'+
         '<div class="grid2"><label for="yCls">Třída<select id="yCls"><option>A0</option><option>A1</option><option>A2</option><option>A3</option><option>Jumping</option></select></label>'+
         '<label for="yG">Hodnocení<select id="yG" translate="no">'+['V','VD','D','BO','DIS'].map(function(g){ return '<option value="'+g+'">'+gTxt(g)+'</option>'; }).join('')+'</select></label></div>'+
-        '<div class="grid2"><label for="yTot">Trestné body<input id="yTot" type="text" inputmode="decimal" placeholder="0"></label><label for="yPl">Umístění<input id="yPl" type="number" min="1" inputmode="numeric"></label></div>'
+        '<div class="grid2"><label for="yTot">Trestné body<input id="yTot" type="text" inputmode="decimal" placeholder="0"></label><label for="yPl">Umístění<input id="yPl" type="number" min="1" inputmode="numeric"></label></div>'+
+        '<div class="grid2"><label for="yT">Čas (s)<input id="yT" type="text" inputmode="decimal" placeholder="nepovinné"></label><label for="yLen">Délka trati ('+(UFT()?'ft':'m')+')<input id="yLen" type="text" inputmode="decimal" placeholder="nepovinné"></label></div>'+
+        '<label for="yVid">Odkaz na video (nepovinné)<input id="yVid" type="url" inputmode="url" placeholder="https://"></label>'
       : '<label for="ySurf">Povrch<select id="ySurf"><option>tráva</option><option>umělá tráva</option><option>písek</option><option>hala</option><option>jiný</option></select></label>')+
     '<label for="yNote">Poznámka<textarea id="yNote" maxlength="600" placeholder="Co šlo, co ne, na čem zapracovat"></textarea></label>'+
     '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="ok">Uložit</button></div>',
@@ -7456,7 +7493,9 @@ function diarySheet(kind){
       var b=e.target.closest('[data-a]'); if(!b) return;
       if(b.getAttribute('data-a')==='ok'){
         var L=diary(), x={id:'y-'+Date.now().toString(36),kind:kind,date:$('yDate').value||today,dog:$('yDog').value||null,note:$('yNote').value.trim()};
-        if(kind==='zavod'){x.event=$('yEv').value.trim(); x.judge=$('yJudge').value.trim(); x.cls=$('yCls').value; x.g=$('yG').value; x.tot=String($('yTot').value).replace(',','.').trim(); x.place=$('yPl').value;}
+        if(kind==='zavod'){x.event=$('yEv').value.trim(); x.judge=$('yJudge').value.trim(); x.cls=$('yCls').value; x.g=$('yG').value; x.tot=String($('yTot').value).replace(',','.').trim(); x.place=$('yPl').value;
+          var tt=parseFloat(String($('yT').value).replace(',','.')), ll=parseFloat(String($('yLen').value).replace(',','.')), vu=String($('yVid').value).trim();
+          if(tt>0&&tt<1000) x.t=Math.round(tt*100)/100; if(ll>0&&ll<2000) x.len=Math.round((UFT()?ll/3.28084:ll)*10)/10; if(/^https?:\/\/\S+$/i.test(vu)) x.video=vu.slice(0,300);}
         else x.surface=$('ySurf').value;
         L.push(x); lsSet(DIARYK,L); toast('Zapsáno do deníku');
       }
@@ -8021,6 +8060,7 @@ $('moreBody').onclick=function(e){
   if(g('data-onb')){ onbOpen(); return; }
   if(g('data-lang')){ setLang(g('data-lang')); return; }
   if(g('data-theme')){ setTheme(g('data-theme')); moreRender(); return; }
+  if(g('data-unit')){ SET.unit=g('data-unit')==='ft'?'ft':null; lsSet(SETK,SET); drawGrid(); render(); moreRender(); return; }
   if(g('data-gdrill')){ GEN.tab='drill'; GEN.drill=g('data-gdrill'); show('lib'); genSheet(); return; }
   if(g('data-dadd')) dogSheet(null);
   else if(g('data-dsel')){DOGC=g('data-dsel'); saveDogs(); moreRender();}
@@ -9788,6 +9828,7 @@ function settingsHTML(){
   function seg(attr,cur,opts,label){ return '<div class="seg wide" role="group" aria-label="'+label+'">'+opts.map(function(o){ return '<button data-'+attr+'="'+o[0]+'" class="'+(o[0]===cur?'on':'')+'"'+(o[2]?' translate="no"':'')+'>'+o[1]+'</button>'; }).join('')+'</div>'; }
   return '<div class="panel set"><b>Jazyk</b>'+seg('lang',LANG,[['cs','Čeština',1],['en','English',1]],'Jazyk')+'<p class="hint">Language: Czech or English.</p></div>'+
     '<div class="panel set"><b>Vzhled</b>'+seg('theme',THEME,[['system','Podle systému'],['light','Světlý'],['dark','Tmavý']],'Vzhled')+'<p class="hint">Tmavý vzhled je šetrnější k očím večer a k baterii telefonu.</p></div>'+
+    '<div class="panel set"><b>Jednotky</b>'+seg('unit',UFT()?'ft':'m',[['m','Metry'],['ft','Stopy (ft, yd/s)']],'Jednotky')+'<p class="hint">Délky trati a vzdálenosti na plánku v metrech, nebo ve stopách a rychlost v yardech za sekundu (jako AKC a UKI). Parkury se dál ukládají v metrech.</p></div>'+
     '<div class="panel set"><b>Průvodce</b><p class="hint">Krátké představení aplikace a nastavení psa.</p><div class="row"><button class="btn" data-onb="1">Spustit průvodce</button></div></div>';
 }
 
