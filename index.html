@@ -733,6 +733,8 @@ body[data-view="plan"] #supBtn,body[data-view="run"] #supBtn{display:none!import
 /* Účet: tlačítko Google podle jejich pravidel (bílé, barevné G) */
 .gbtn{justify-content:center; gap:10px; min-height:50px; background:#fff; color:#1f1f1f; border:1px solid #747775; font-weight:600;}
 .glogo{width:20px; height:20px; flex:0 0 auto;}
+.stats-adm{display:flex; flex-direction:column; gap:10px; margin-bottom:12px;} .stats-adm p{margin:0;}
+.sbars{display:flex; align-items:flex-end; gap:2px; height:70px; padding:4px 0; border-bottom:1px solid var(--border);} .sbars i{flex:1; background:var(--accent); border-radius:3px 3px 0 0; min-width:3px;}
 .acct p{margin:0;} .acct .bad{color:var(--bad);} .acct a{color:var(--accent);}
 .acct-me{display:flex; align-items:center; gap:12px;} .acct-me .glogo{width:28px; height:28px;} .acct-me div{min-width:0;} .acct-me b,.acct-me span{display:block; overflow-wrap:anywhere;} .acct-me span{font-size:13px; color:var(--muted);}
 .fb .filters,.dn .filters{flex-wrap:wrap; overflow:visible;}
@@ -1340,6 +1342,13 @@ var I18N_EXTRA={exact:{
 "Hotovo. Pusť psa znovu, nebo parkur polož jinam.": "Done. Run the dog again, or place the course elsewhere.",
 "AR se nepodařilo spustit. Potřebuješ Chrome na Androidu s podporou ARCore.": "AR couldn't start. You need Chrome on Android with ARCore support.",
 "Účet": "Account",
+"Návštěvnost (vidíš jen ty)": "Visitors (only you can see this)",
+"Dnes": "Today",
+"Noví za 7 dní": "New in 7 days",
+"S ikonou na ploše": "With home screen icon",
+"Účty": "Accounts",
+"7 dní": "7 days",
+"30 dní": "30 days",
 "Parkury, psi a běhy pak budeš mít na všech svých zařízeních. Jde to i bez přihlášení, stačí Pokračovat.": "Your courses, dogs and runs will then be on all your devices. You can also go on without signing in, just tap Continue.",
 "Parkury, psi, běhy a deník pak budeš mít na každém zařízení a nezmizí ani se ztraceným telefonem.": "Your courses, dogs, runs and diary will then be on every device and won't be lost even with a lost phone.",
 "Pokračovat bez přihlášení": "Continue without signing in",
@@ -1541,6 +1550,7 @@ var I18N_EXTRA={exact:{
 "Zahrada týdne # · # × # m · zbývá # dní": "Garden of the week # · # × # m · # days left",
 "Zahrada týdne # · # × # m · zbývá poslední den": "Garden of the week # · # × # m · last day left",
 },re:[
+["^Lidé, kteří aplikaci otevřeli \\(každé zařízení jednou za den\\)\\. Celkem od začátku: (\\d+)\\. Anglicky: (\\d+) za 7 dní\\.$","People who opened the app (each device once a day). Total since the start: $1. In English: $2 in 7 days."],
 ["^Synchronizováno (\\d+:\\d+)$","Synced $1"],
 ["^Synchronizace se nepovedla: (.+)$","Sync failed: @1"],
 ["^Přihlášení se nepovedlo: (.+)$","Sign-in failed: $1"],
@@ -7406,6 +7416,28 @@ function acctAsk(){
     function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
   return true;
 }
+/* ---------- anonymní návštěvnost: jednou denně náhodné číslo instalace, datum, ikona na ploše a jazyk ---------- */
+var PINGK='agility-ping-v1';
+function appPing(){
+  if(navigator.webdriver||!IS_SRV||navigator.onLine===false) return;
+  var last=lsGet(PINGK,null), today=localDate(); if(last===today) return;
+  var inst=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+  sbCall('app_ping',{p_dev:devId(),p_standalone:!!inst,p_lang:LANG,p_first:!last}).then(function(){ lsSet(PINGK,today); },function(){});
+}
+setTimeout(appPing,4000);
+/* přehled návštěvnosti v O aplikaci: server ho vrátí jen autorovi (přihlášenému e-mailem autora) */
+function statsLoad(){
+  var el=$('statsBox'); if(!el||!AUTH) return;
+  authTok().then(function(tok){ return sbCall('app_stats',{},tok); }).then(function(r){
+    var el2=$('statsBox'); if(!el2||!r) return;
+    var days=r.days||[], mx=Math.max.apply(null,[1].concat(days.map(function(x){return x[1];})));
+    var tile=function(l,v){ return '<div><small>'+l+'</small><b>'+v+'</b></div>'; };
+    el2.innerHTML='<div class="panel stats-adm"><b>Návštěvnost (vidíš jen ty)</b><div class="tiles">'+
+      tile('Dnes',r.today)+tile('7 dní',r.d7)+tile('30 dní',r.d30)+tile('Noví za 7 dní',r.new7)+tile('S ikonou na ploše',r.icon7)+tile('Účty',r.accounts)+'</div>'+
+      '<div class="sbars" aria-label="Lidé za den, 30 dní">'+days.map(function(x){ return '<i style="height:'+Math.max(4,Math.round(x[1]/mx*100))+'%" title="'+esc(x[0])+': '+x[1]+'"></i>'; }).join('')+'</div>'+
+      '<p class="hint">Lidé, kteří aplikaci otevřeli (každé zařízení jednou za den). Celkem od začátku: '+r.total+'. Anglicky: '+r.en7+' za 7 dní.</p></div>';
+  },function(){});
+}
 function authStart(){
   if(!AUTH) return;
   var S0=lsGet(SYNCK,{})||{};
@@ -7604,7 +7636,7 @@ function rateHomeHTML(){
   return '<div class="hm-ch hm-rate"><div class="tx"><b>Jak se ti AgiPlan líbí?</b><span>Ťukni na hvězdičky a napiš autorovi.</span><div class="fb-stars">'+st+'</div></div>'+
     '<button class="hm-x" data-h="ratex" aria-label="Zavřít">'+IC.x+'</button></div>';
 }
-function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); },0);
+function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); if(moreTab==='about') statsLoad(); },0);
   /* bez otevřené sekce jen nabídka; v sekci nabídka zmizí a nahoře je Zpět s názvem sekce */
   var mb=document.querySelector('#moreTabs [data-m="'+moreTab+'"]'), sc0=moreTab.indexOf('mod:')===0&&HM.screens[moreTab.slice(4)];
   $('moreTabs').hidden=!!moreTab; $('moreHead').hidden=!moreTab;
@@ -7629,7 +7661,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='fb'){ h=fbHTML(); }
   else if(moreTab==='donate'){ h=donateOn()?donateHTML():'<p class="hint">Podpora zatím není nastavená.</p>'; }
   else {
-    h='<div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>AgiPlan 2.3</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
+    h='<div id="statsBox"></div><div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>AgiPlan 2.3</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
       '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
       '<h4>Novinky ve verzi 2.3</h4><ul class="news"><li>Účet: přihlášení přes Google a automatická synchronizace dat mezi telefonem a počítačem</li><li>AR na place: parkur kamerou na skutečném trávníku (Chrome na Androidu)</li><li>Náhled odkazu pro Facebook</li></ul>'+
       '<h4>Novinky ve verzi 2.2</h4><ul class="news"><li>3D parkur a přepínač 2D / 3D v Plánu</li><li>Pes ve 3D kličkuje slalomem podle pravidel FCI</li><li>Délka tunelu 2–6 m (nový tunel 5 m)</li><li>Google Pay, Apple Pay a uložení QR platby do galerie</li><li>Zásady ochrany osobních údajů</li></ul>'+
