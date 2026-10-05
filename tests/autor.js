@@ -47,7 +47,7 @@ module.exports = async function ({ browser, base }) {
     await page.click('#moreTabs [data-m="donate"]'); await page.waitForTimeout(150);
     const iban = await ev(() => czIban('1220369023/3030'));
     let q = await readQR('#moreBody .dn-qr svg');
-    ok(q === 'SPD*1.0*ACC:' + iban + '*AM:100.00*CC:CZK*MSG:Podpora HandlerMap', 'QR platba: ' + q);
+    ok(q === 'SPD*1.0*ACC:' + iban + '*AM:100.00*CC:CZK*MSG:Podpora AgiPlan', 'QR platba: ' + q);
     await page.click('#moreBody [data-dam="200"]'); await page.waitForTimeout(100);
     q = await readQR('#moreBody .dn-qr svg'); ok(/\*AM:200\.00\*/.test(q || ''), 'částka 200 Kč: ' + q);
     await page.click('#moreBody [data-dam="0"]'); await page.waitForTimeout(100);
@@ -139,7 +139,7 @@ module.exports = async function ({ browser, base }) {
   });
 
   await step('angličtina', async () => {
-    const miss = await ev(() => ['Napsat autorovi', 'Podpořit aplikaci', 'Jiná částka', '200 Kč', 'Díky, zpráva odešla!', 'Jak se ti HandlerMap líbí?', 'Napiš, co máš na srdci', 'E-mail pro odpověď (nepovinné)',
+    const miss = await ev(() => ['Napsat autorovi', 'Podpořit aplikaci', 'Jiná částka', '200 Kč', 'Díky, zpráva odešla!', 'Jak se ti AgiPlan líbí?', 'Napiš, co máš na srdci', 'E-mail pro odpověď (nepovinné)',
       'Nainstaluj si aplikaci', 'Doporuč aplikaci kamarádům', 'Ťukni na ⋮ vpravo nahoře.', 'Sdílet odkaz', 'Instalovat', 'Podpořit', '3 z 5', 'Zprávu se nepodařilo poslat', 'Dnes už jsi poslal(a) dost zpráv, zkus to zítra.']
       .filter(s => trLookup(s) == null));
     ok(!miss.length, 'chybí překlad: ' + miss.join(' | '));

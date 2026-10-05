@@ -1,4 +1,4 @@
-# Spolupráce na HandlerMap
+# Spolupráce na AgiPlan
 
 Na aplikaci pracují souběžně dvě sezení Claude Code. Aby se nepřepisovala:
 
@@ -7,7 +7,7 @@ Na aplikaci pracují souběžně dvě sezení Claude Code. Aby se nepřepisovala
 - **Kdo na čem dělá** (uprav, když se to změní):
   - Sezení A: úvodní obrazovka Domů, Parkur týdne, 3D animace techniky, testy a opravy (verze 1.10–1.13). Na přání uživatele i spodní nabídka jako plovoucí panel (CSS blok „plovoucí tmavý panel“ hned za „spodní navigace“). Postupně dál: 3D průlet vlastního parkuru, opravy 3D animací, domácí sekvence a zátěž psa, výsledky z kacr.info a hledání psa, přehlednější Plán (režim Prohlížet, souhrn v jednom řádku, nabídka Nástroje, zoom na ploše), přehlednější Běh, Zahrada týdne a Zahradní liga.
     - Kratší karty parkurů (2 řádky + barevný štítek náročnosti), Více jako svislá nabídka se Zpět (`moreTab=''` = nabídka), cíle pro palec ≥ 44 px (filtry, Prohlížet/Stavba/Trasa, zoom, Diskvalifikace) – jen rozměry ve vlastním CSS bloku „Sezení A: kratší karty…“, vzhled tlačítek nechává sezení B.
-  - Sezení B: název HandlerMap, angličtina, tmavý vzhled a Nastavení, průvodce prvním spuštěním, vzhled tlačítek a přechodů (verze 2.0).
+  - Sezení B: název HandlerMap (na přání uživatele přejmenováno sezením A na AgiPlan, verze 2.1), angličtina, tmavý vzhled a Nastavení, průvodce prvním spuštěním, vzhled tlačítek a přechodů (verze 2.0).
 
 ## Angličtina (platí pro všechny změny)
 

@@ -1,11 +1,11 @@
-/* HandlerMap: výsledky psa z kacr.info (veřejné stránky, jeden požadavek na dotaz).
+/* AgiPlan: výsledky psa z kacr.info (veřejné stránky, jeden požadavek na dotaz).
    Vstup: { dog: "14756" } nebo odkaz https://kacr.info/dogs/14756 → pes (jméno, plemeno, velikost, narození) a jeho běhy po závodech;
    { q: "Wampi" } → hledání psů a psovodů podle jména (kacr.info/search/<text>);
    { handler: "6625" } → psi psovoda (jeho průkazy);
    { comps: 1 } → kalendář závodů na 60 dní dopředu (datum, GPS, rozhodčí, povrch, uzávěrka, přihlášení psi).
    Kalendář je asi 50 stránek, proto se ukládá do tabulky kacr_cache a stahuje se nejvýš jednou za 12 hodin.
    Stahuje jen tyhle druhy stránek kacr.info, nic jiného (žádný otevřený proxy). */
-const UA = 'HandlerMap/2.0 (+https://danyzell.github.io/Agility-trasa/)';
+const UA = 'AgiPlan/2.1 (+https://danyzell.github.io/Agility-trasa/)';
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
