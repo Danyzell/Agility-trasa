@@ -7,3 +7,4 @@ import { HANDLING } from './scenes-handling.js';
 register(OBSTACLES);
 register(HANDLING || {});
 export { mount, hasScene };
+export { mountCourse } from './course.js';

@@ -46,9 +46,14 @@ module.exports = async function ({ browser, base }) {
 
     T.step('3D průlet');
     await fresh();
-    await ev(() => open3d()); await page.waitForTimeout(200);
-    await page.setViewportSize({ width: 390, height: 700 }); await page.waitForTimeout(250);
-    ok(await ev(() => { const c = $('c3d'), d = Math.min(2, devicePixelRatio || 1); return c.width === Math.round(c.clientWidth * d) && c.height === Math.round(c.clientHeight * d); }), '3D plátno po změně výšky zkreslené');
+    await ev(() => open3d()); await page.waitForFunction(() => C3.api, null, { timeout: 15000 }).catch(() => {}); /* bez WebGL zůstane jednoduchý průlet */
+    await page.waitForTimeout(400);
+    await page.setViewportSize({ width: 390, height: 700 }); await page.waitForTimeout(300);
+    ok(await ev(() => { const gl = !!C3.api, c = gl ? $('c3dgl') : $('c3d'), d = gl ? C3.api.pixelRatio : Math.min(2, devicePixelRatio || 1); return !c.hidden && c.width === Math.round(c.clientWidth * d) && c.height === Math.round(c.clientHeight * d); }), '3D plátno po změně výšky zkreslené');
+    /* 3D parkur: všechny překážky, výšky podle velikosti psa (FCI), dráha */
+    const sp = await ev(() => { const s = course3dSpec(); return { n: s.obs.length, m: S.obs.length, jump: s.size.jump, tire: s.size.tire, path: s.path.length, nums: s.obs.filter(o => o.nums.length).length, r: S.route.length }; });
+    ok(sp.n === sp.m && sp.path > sp.r && sp.nums > 0, '3D parkur: překážky nebo dráha ' + JSON.stringify(sp));
+    ok(await ev(() => { const d0 = DOGS, c0 = DOGC; DOGS = [{ id: 'm', name: 'M', size: 'M', cls: 'A1' }]; DOGC = 'm'; const s = course3dSpec().size; DOGS = d0; DOGC = c0; return s.jump === .4 && s.tire === .55 && s.lj === .9 && s.ljn === 3; }), '3D: výšky pro velikost M podle FCI');
     const o3 = await ev(() => JSON.stringify(S.obs)); await page.keyboard.press('Control+z');
     ok(await ev(b => JSON.stringify(S.obs) === b, o3), 'Ctrl+Z měnil plán pod 3D průletem');
     await page.keyboard.press('Escape'); ok(await ev(() => $('ov3d').hidden), 'Escape nezavřel 3D průlet');
