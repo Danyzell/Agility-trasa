@@ -1,0 +1,134 @@
+/* Napsat autorovi (hodnocení a zpráva na server), Podpořit aplikaci (QR platba), karta Hodnoť na Domů,
+   instalace přes Chrome a doporučení aplikace QR kódem. */
+const { phone, offline } = require('./helpers');
+const jsQR = require('jsqr');
+
+module.exports = async function ({ browser, base }) {
+  const T = await phone(browser); const { page, ok, ev } = T;
+  await offline(T.ctx, { get_catalog: { version: 0 } });
+  const sent = []; let reply = { status: 200, body: { ok: true, mailed: true } };
+  await T.ctx.route(/\/functions\/v1\/feedback$/, async r => {
+    sent.push(JSON.parse(r.request().postData() || '{}'));
+    await r.fulfill({ status: reply.status, contentType: 'application/json', body: JSON.stringify(reply.body) });
+  });
+  const step = async (label, fn) => { T.step(label); try { await fn(); } catch (e) { T.errs.push(`[${label}] krok selhal: ${String(e && e.message || e).split('\n')[0]}`); } };
+  const fresh = async (hash) => { await page.goto('about:blank'); await page.goto(base + '/' + (hash || '#home')); await page.waitForTimeout(300); await ev(() => { $('toast').hidden = true; }); };
+  const more = async (m) => { await page.click('.nav [data-v="more"]'); await page.click(`#moreTabs [data-m="${m}"]`); await page.waitForTimeout(150); };
+  /* QR kód ze SVG přečtený skutečnou čtečkou */
+  const readQR = async (sel) => {
+    const m = await page.evaluate(sel => { const svg = document.querySelector(sel); if (!svg) return null;
+      const vb = svg.viewBox.baseVal.width, cells = []; (svg.querySelector('path').getAttribute('d').match(/M\d+ \d+/g) || []).forEach(t => { const p = t.slice(1).split(' '); cells.push([+p[0], +p[1]]); });
+      return { vb, cells }; }, sel);
+    if (!m) return null;
+    const s = 4, W = m.vb * s, d = new Uint8ClampedArray(W * W * 4).fill(255);
+    m.cells.forEach(([x, y]) => { for (let a = 0; a < s; a++) for (let c = 0; c < s; c++) { const i = ((y * s + a) * W + x * s + c) * 4; d[i] = d[i + 1] = d[i + 2] = 0; } });
+    const r = jsQR(d, W, W); return r && r.data;
+  };
+
+  await step('QR kód a IBAN', async () => {
+    await fresh();
+    const r = await ev(() => [czIban('19-2000145399/0800'), czIban('1220369023/3030'), czIban('12/34'), qrMatrix('x'.repeat(300))]);
+    ok(r[0] === 'CZ6508000000192000145399', 'IBAN vzorového účtu: ' + r[0]);
+    ok(/^CZ\d{2}30300000001220369023$/.test(r[1]), 'IBAN účtu autora: ' + r[1]);
+    ok(r[2] === '' && r[3] === null, 'neplatný účet nebo příliš dlouhý text');
+    /* všechny délky až po verzi 10 se dají přečíst */
+    for (const n of [1, 17, 60, 100, 150, 212]) {
+      await ev(n => { const d = document.createElement('div'); d.id = 'qrT'; d.innerHTML = qrSvg('Q'.repeat(n - 1) + 'ř'.slice(0, n > 1 ? 1 : 0)); const o = $('qrT'); if (o) o.remove(); document.body.appendChild(d); }, n);
+      const want = await ev(n => 'Q'.repeat(n - 1) + 'ř'.slice(0, n > 1 ? 1 : 0), n);
+      ok(await readQR('#qrT svg') === want, 'QR kód s ' + n + ' znaky nejde přečíst');
+    }
+    await ev(() => $('qrT').remove());
+  });
+
+  await step('Podpořit aplikaci', async () => {
+    await fresh();
+    await page.click('.nav [data-v="more"]');
+    ok(await page.isVisible('#moreTabs [data-m="donate"]') && await page.isVisible('#moreTabs [data-m="fb"]'), 've Více chybí Podpořit nebo Napsat autorovi');
+    await page.click('#moreTabs [data-m="donate"]'); await page.waitForTimeout(150);
+    const iban = await ev(() => czIban('1220369023/3030'));
+    let q = await readQR('#moreBody .dn-qr svg');
+    ok(q === 'SPD*1.0*ACC:' + iban + '*AM:100.00*CC:CZK*MSG:Podpora HandlerMap', 'QR platba: ' + q);
+    await page.click('#moreBody [data-dam="200"]'); await page.waitForTimeout(100);
+    q = await readQR('#moreBody .dn-qr svg'); ok(/\*AM:200\.00\*/.test(q || ''), 'částka 200 Kč: ' + q);
+    await page.click('#moreBody [data-dam="0"]'); await page.waitForTimeout(100);
+    q = await readQR('#moreBody .dn-qr svg'); ok(q && !/AM:/.test(q) && /Částku zadáš v bance/.test(await page.textContent('#moreBody')), 'jiná částka: ' + q);
+    ok(/1220369023\/3030/.test(await page.textContent('#moreBody')), 'chybí číslo účtu');
+    await T.ctx.grantPermissions(['clipboard-read', 'clipboard-write']).catch(() => {});
+    await page.click('#moreBody [data-dcopy="1220369023/3030"]'); await page.waitForTimeout(150);
+    ok(/Zkopírováno|1220369023/.test(await page.textContent('#toast')), 'kopírování čísla účtu');
+    /* bez účtu se Podpořit neukazuje */
+    ok(await ev(() => { const a = DONATE.acc; DONATE.acc = ''; const r = donateOn(); DONATE.acc = a; return r === false; }), 'Podpořit bez účtu');
+  });
+
+  await step('Napsat autorovi', async () => {
+    await fresh(); await more('fb');
+    await page.click('#moreBody [data-fbsend]'); await page.waitForTimeout(100);
+    ok(sent.length === 0 && /Napiš zprávu nebo dej hvězdičky/.test(await page.textContent('#toast')), 'prázdná zpráva se nemá posílat');
+    await page.click('#moreBody [data-fbs="4"]'); await page.click('#moreBody [data-fbk="bug"]');
+    await page.fill('#fbMsg', 'Stopky se zasekly'); await page.fill('#fbMail', 'spatny-mail');
+    /* rozepsaná zpráva přežije nové načtení */
+    await fresh(); await more('fb');
+    ok(await page.inputValue('#fbMsg') === 'Stopky se zasekly' && await page.locator('#moreBody .fb-st.on').count() === 4 && await page.isVisible('#moreBody [data-fbk="bug"].on'), 'rozepsaná zpráva se neuložila');
+    await page.click('#moreBody [data-fbsend]'); await page.waitForTimeout(100);
+    ok(sent.length === 0 && /E-mail nevypadá správně/.test(await page.textContent('#toast')), 'špatný e-mail');
+    await page.fill('#fbMail', 'pavla@example.cz');
+    /* chyba serveru: zpráva zůstane */
+    reply = { status: 429, body: { error: 'Dnes už jsi poslal(a) dost zpráv, zkus to zítra.' } };
+    await page.click('#moreBody [data-fbsend]'); await page.waitForTimeout(400);
+    ok(/zkus to zítra/.test(await page.textContent('#toast')) && await page.inputValue('#fbMsg') === 'Stopky se zasekly', 'chyba serveru: ' + await page.textContent('#toast'));
+    reply = { status: 200, body: { ok: true, mailed: true } }; sent.length = 0;
+    await page.click('#moreBody [data-fbsend]'); await page.waitForSelector('#moreBody .fb-ok', { timeout: 5000 });
+    const s = sent[0] || {};
+    ok(s.stars === 4 && s.kind === 'bug' && s.msg === 'Stopky se zasekly' && s.contact === 'pavla@example.cz' && s.lang === 'cs' && /^[A-Za-z0-9_-]{16,}$/.test(s.device) && s.ver, 'odeslaná data: ' + JSON.stringify(s));
+    ok(await page.isVisible('#moreBody [data-mgo="donate"]'), 'po odeslání chybí nabídka Podpořit');
+    await page.click('#moreBody [data-fbnew]'); await page.waitForTimeout(100);
+    ok(await page.inputValue('#fbMsg') === '' && await page.inputValue('#fbMail') === 'pavla@example.cz', 'nová zpráva má být prázdná a e-mail zapamatovaný');
+  });
+
+  await step('karta Hodnoť na Domů', async () => {
+    await ev(() => { localStorage.removeItem('agility-rate-v1'); });
+    await fresh();
+    ok(!(await page.isVisible('#v-home .hm-rate')), 'karta se ukázala před 10 běhy');
+    await ev(() => { var id = 'test-rate', m = { fav: false, done: true, runs: [] }; for (var i = 0; i < 10; i++) m.runs.push({ d: Date.now() - i * 1000, t: 40, tot: 0, len: 150 }); MK[id] = m; lsSet(MKK, MK); });
+    await fresh();
+    ok(await page.isVisible('#v-home .hm-rate'), 'po 10 bězích chybí karta Hodnoť');
+    await page.click('#v-home [data-hrate="5"]'); await page.waitForTimeout(200);
+    ok(await ev(() => view === 'more' && moreTab === 'fb') && await page.locator('#moreBody .fb-st.on').count() === 5 && await page.isVisible('#moreBody [data-fbk="praise"].on'), 'hvězdička neotevřela zprávu s hodnocením');
+    await fresh();
+    await page.click('#v-home .hm-rate [data-h="ratex"]'); await page.waitForTimeout(100);
+    ok(!(await page.isVisible('#v-home .hm-rate')), 'karta po zavření nezmizela');
+    await fresh(); ok(!(await page.isVisible('#v-home .hm-rate')), 'zavřená karta se vrátila');
+  });
+
+  await step('instalace přes Chrome', async () => {
+    await ev(() => { localStorage.removeItem('agility-instx-v1'); });
+    await fresh();
+    ok(!(await page.isVisible('#hmInst .hm-inst')), 'bez nabídky Chromu nemá být karta Instalovat');
+    await ev(() => { window.__pr = 0; const e = new Event('beforeinstallprompt'); e.prompt = () => { window.__pr++; }; e.userChoice = Promise.resolve({ outcome: 'accepted' }); window.dispatchEvent(e); });
+    await page.waitForTimeout(100);
+    ok(await page.isVisible('#hmInst .hm-inst'), 'Chrome nabídl instalaci, ale na Domů chybí karta');
+    await page.click('#hmInst [data-inst]'); await page.waitForTimeout(150);
+    ok(await ev(() => window.__pr === 1) && !(await page.isVisible('#hmInst .hm-inst')), 'Instalovat nespustil okno Chromu');
+    await ev(() => { const e = new Event('beforeinstallprompt'); e.prompt = () => {}; e.userChoice = Promise.resolve({}); window.dispatchEvent(e); });
+    await page.waitForTimeout(100); await page.click('#hmInst [data-instx]'); await page.waitForTimeout(100);
+    ok(!(await page.isVisible('#hmInst .hm-inst')) && await ev(() => lsGet('agility-instx-v1', 0) === 1), 'zavření karty Instalovat');
+    /* O aplikaci: tlačítko z Chromu, jinak návod; doporučení s QR kódem */
+    await more('about');
+    ok(await page.isVisible('#pwaInst [data-inst]'), 'v O aplikaci chybí Nainstalovat');
+    await ev(() => { window.dispatchEvent(new Event('appinstalled')); });
+    await page.waitForTimeout(100);
+    ok(/Ťukni na ⋮|Sdílet/.test(await page.textContent('#pwaInst')), 'bez okna Chromu chybí návod: ' + await page.textContent('#pwaInst'));
+    ok(await readQR('#moreBody .share-app svg') === 'https://danyzell.github.io/Agility-trasa/', 'QR kód s odkazem na aplikaci');
+    ok(await page.isVisible('#moreBody [data-mgo="fb"]') && await page.isVisible('#moreBody [data-mgo="donate"]'), 'v O aplikaci chybí Napsat autorovi nebo Podpořit');
+  });
+
+  await step('angličtina', async () => {
+    const miss = await ev(() => ['Napsat autorovi', 'Podpořit aplikaci', 'Jiná částka', '200 Kč', 'Díky, zpráva odešla!', 'Jak se ti HandlerMap líbí?', 'Napiš, co máš na srdci', 'E-mail pro odpověď (nepovinné)',
+      'Nainstaluj si aplikaci', 'Doporuč aplikaci kamarádům', 'Ťukni na ⋮ vpravo nahoře.', 'Sdílet odkaz', 'Instalovat', '3 z 5', 'Zprávu se nepodařilo poslat', 'Dnes už jsi poslal(a) dost zpráv, zkus to zítra.']
+      .filter(s => trLookup(s) == null));
+    ok(!miss.length, 'chybí překlad: ' + miss.join(' | '));
+  });
+
+  await T.ctx.close();
+  return T.errs;
+};

@@ -16,6 +16,12 @@ Závody (Domů): kalendář z kacr.info na 60 dní dopředu se vzdáleností od 
 
 Zahrada týdne a Zahradní liga (Domů): každé pondělí se všem vygeneruje stejný parkur 20 × 15 m z domácího vybavení (6 skoků, tunel, slalom) – semínko je číslo týdne, takže parkur nepotřebuje server. Výsledky jdou do týdenního žebříčku podle velikosti psa a za umístění se sbírají body do ligy na celou sezónu (10-8-6-5-4-3-2, za každý další odeslaný týden 1 bod). Žebříčky počítá Supabase (`supabase/migrations`, funkce `week_submit`, `week_board`, `league_board`).
 
+Instalace přes Chrome: když Chrome nabídne instalaci, ukáže se na Domů karta **Nainstaluj si aplikaci**. Ve Více → O aplikaci je tlačítko Nainstalovat, nebo návod pro iPhone (Safari → Sdílet → Přidat na plochu), když tlačítko není. Je tam i QR kód s odkazem na aplikaci, aby si ji kamarádi mohli rovnou otevřít.
+
+Napsat autorovi (Více, nebo hvězdičky na Domů po 10 bězích): hodnocení 1–5, druh zprávy, text a nepovinný e-mail pro odpověď. Serverová funkce `supabase/functions/feedback` zprávu uloží do tabulky `feedback` a pošle ji e-mailem přes [Resend](https://resend.com). Adresa příjemce je v tabulce `app_secret` (klíč `feedback_to`), klíč Resend patří do tajných proměnných funkce jako `RESEND_API_KEY` (nebo do `app_secret` pod klíčem `resend_key`). Bez klíče se zprávy jen ukládají a jde je číst v Supabase → Table Editor → feedback.
+
+Podpořit aplikaci (Více): QR platba (formát SPAYD) na účet z proměnné `DONATE` v `index.html`, s částkou 50, 100, 200, 500 Kč nebo vlastní. IBAN se dopočítá z čísla účtu.
+
 Na aplikaci pracuje víc sezení Claude Code najednou – pravidla jsou v [SPOLUPRACE.md](SPOLUPRACE.md).
 
 3D animace techniky v záložce Videa jsou ve `v3d/src` (three.js); balíček `v3d/v3d.js` se sestaví příkazem `v3d/build.sh` (esbuild).
@@ -25,5 +31,5 @@ Na aplikaci pracuje víc sezení Claude Code najednou – pravidla jsou v [SPOLU
 Automatické testy v prohlížeči (všechny obrazovky, uložení parkuru, běh, záloha a obnova, tlačítko Zpět, Plánek z obrázku, kompas, offline start) běží na GitHubu při každé změně, v záložce Actions → Testy. Ručně:
 
 ```
-npm install --no-save playwright && npx playwright install chromium && node tests/run.js
+npm install --no-save playwright jsqr && npx playwright install chromium && node tests/run.js
 ```
