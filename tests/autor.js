@@ -154,9 +154,19 @@ module.exports = async function ({ browser, base }) {
     ok(!(await page.isVisible('#v-home .hm-sup')), 'bez účtu a odkazu se má Podpořit schovat');
   });
 
+  await step('zásady ochrany osobních údajů', async () => {
+    await fresh(); await more('about');
+    ok(await page.getAttribute('#moreBody a[href="privacy.html"]', 'target') === '_blank', 'v O aplikaci chybí odkaz na zásady');
+    await more('fb');
+    ok(await page.isVisible('#moreBody a[href="privacy.html"]'), 'u e-mailu ve zprávě autorovi chybí odkaz na zásady');
+    const r = await page.request.get(base + '/privacy.html');
+    const html = await r.text();
+    ok(r.ok() && /Zásady ochrany osobních údajů/.test(html) && /Privacy policy/.test(html) && /Supabase/.test(html) && !/HandlerMap/.test(html), 'stránka privacy.html chybí nebo je neúplná');
+  });
+
   await step('angličtina', async () => {
     const miss = await ev(() => ['Napsat autorovi', 'Podpořit aplikaci', 'Jiná částka', '200 Kč', 'Díky, zpráva odešla!', 'Jak se ti AgiPlan líbí?', 'Napiš, co máš na srdci', 'E-mail pro odpověď (nepovinné)',
-      'Nainstaluj si aplikaci', 'Doporuč aplikaci kamarádům', 'Ťukni na ⋮ vpravo nahoře.', 'Sdílet odkaz', 'Instalovat', 'Podpořit', 'Uložit QR do galerie', 'Google Pay / Apple Pay / karta', '3 z 5', 'Zprávu se nepodařilo poslat', 'Dnes už jsi poslal(a) dost zpráv, zkus to zítra.']
+      'Nainstaluj si aplikaci', 'Doporuč aplikaci kamarádům', 'Ťukni na ⋮ vpravo nahoře.', 'Sdílet odkaz', 'Instalovat', 'Podpořit', 'Uložit QR do galerie', 'Google Pay / Apple Pay / karta', 'Zásady ochrany osobních údajů', 'E-mail použijeme jen k odpovědi.', '3 z 5', 'Zprávu se nepodařilo poslat', 'Dnes už jsi poslal(a) dost zpráv, zkus to zítra.']
       .filter(s => trLookup(s) == null));
     ok(!miss.length, 'chybí překlad: ' + miss.join(' | '));
   });

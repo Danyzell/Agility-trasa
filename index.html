@@ -1243,6 +1243,8 @@ var I18N_EXTRA={exact:{
 "Přispět kartou": "Donate by card",
 "Za nápad nebo nahlášenou chybu jsem stejně vděčný.": "I'm just as grateful for an idea or a bug report.",
 "Zkopírováno": "Copied",
+"Zásady ochrany osobních údajů": "Privacy policy",
+"E-mail použijeme jen k odpovědi.": "We use the e-mail only to reply.",
 "Zobrazit parkur ve 3D": "Show the course in 3D",
 "2 m (trénink)": "2 m (training)",
 "Délka tunelu": "Tunnel length",
@@ -7122,6 +7124,7 @@ function fbHTML(){
     '<h4>O co jde</h4><div class="filters" role="group" aria-label="Druh zprávy">'+FB_KINDS.map(function(k){ return '<button class="chip'+(FB.kind===k[0]?' on':'')+'" data-fbk="'+k[0]+'">'+k[1]+'</button>'; }).join('')+'</div>'+
     '<label class="fld"><span>Zpráva</span><textarea id="fbMsg" rows="5" maxlength="2000" placeholder="'+(FB.kind==='bug'?'Co se stalo a kde v aplikaci?':'Napiš, co máš na srdci')+'">'+esc(FB.msg)+'</textarea></label>'+
     '<label class="fld"><span>E-mail pro odpověď (nepovinné)</span><input id="fbMail" type="email" inputmode="email" autocomplete="email" maxlength="120" value="'+esc(FB.mail)+'"></label>'+
+    '<p class="hint">E-mail použijeme jen k odpovědi. <a href="privacy.html" target="_blank" rel="noopener">Zásady ochrany osobních údajů</a></p>'+
     '<div class="row"><button class="btn primary" data-fbsend="1"'+(FB_BUSY?' disabled':'')+'>'+(FB_BUSY?'Odesílám…':'Odeslat')+'</button></div></div>';
 }
 function fbSend(){
@@ -7186,6 +7189,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
       '<p class="hint">Katalog parkurů: '+(CAT&&CAT.version?'verze '+CAT.version+' ze serveru, staženo '+new Date(CAT.at).toLocaleDateString(LOC):'vestavěný')+'. V aplikaci pro Android se nové parkury stáhnou samy při spuštění nebo tlačítkem Zkontrolovat nové parkury v záložce Parkury, bez aktualizace aplikace.</p>'+
       '<p class="hint">Data se ukládají v tomhle zařízení. Sdílení kódem a cloudová záloha běží přes server Supabase a fungují v aplikaci pro Android. Uložení PDF a obrázku do telefonu a podklad z fotky fungují ve webové verzi.</p>'+
       '<h4>Doporuč aplikaci kamarádům</h4><div class="share-app"><div class="dn-qr">'+qrSvg(APP_URL,'QR kód s odkazem na aplikaci')+'</div><div><p class="hint">Ať si kamarád naskenuje kód fotoaparátem, nebo mu pošli odkaz.</p><p translate="no"><b>'+esc(APP_URL.replace(/^https:\/\//,''))+'</b></p><button class="btn" data-appshare="1">Sdílet odkaz</button></div></div>'+
+      '<p class="hint"><a href="privacy.html" target="_blank" rel="noopener">Zásady ochrany osobních údajů</a></p>'+
       '<p class="hint">Pravidla: <a href="https://klubagility.cz/site/assets/files/1076/rad_agility_2023-1.pdf" target="_blank" rel="noopener">Řád agility FCI a ČR (od 2023)</a>.</p>'+
       '<div class="row"><button class="btn" data-mgo="fb">Napsat autorovi</button>'+(donateOn()?'<button class="btn" data-mgo="donate">Podpořit aplikaci</button>':'')+'<button class="btn" data-onb="1">Spustit průvodce znovu</button></div></div>';
   }
