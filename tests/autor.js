@@ -181,6 +181,50 @@ module.exports = async function ({ browser, base }) {
     await ctx.close();
   });
 
+  await step('návod na instalaci na iPhonu', async () => {
+    const SAF = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1';
+    const SAF26 = SAF.replace('Version/18.5', 'Version/26.0');
+    const IPAD = 'Mozilla/5.0 (iPad; CPU OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1';
+    const CRIOS = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/129.0 Mobile/15E148 Safari/604.1';
+    const open = async (ua, hash) => {
+      const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block', userAgent: ua });
+      await ctx.route(u => !/^http:\/\/(127\.0\.0\.1|localhost)/.test(u.href), r => r.abort());
+      const p = await ctx.newPage(); await p.goto(base + '/' + (hash || '?onb#home')); await p.waitForTimeout(500); return { ctx, p };
+    };
+    /* první spuštění v Safari: napřed návod (data ze Safari se na plochu nepřenesou), po zavření průvodce */
+    let { ctx, p } = await open(SAF);
+    ok(await p.isVisible('#iosg') && !(await p.isVisible('#onb')), 'na iPhonu v Safari se návod neukázal před průvodcem');
+    ok(await p.locator('#iosg li').count() === 3, 'návod pro Safari 18 nemá 3 kroky');
+    ok(await p.getAttribute('#iosgArr', 'class') === 'iosg-arr c', 'šipka nemíří doprostřed dolů: ' + await p.getAttribute('#iosgArr', 'class').catch(() => null));
+    const box = await p.locator('#iosg .iosg-in').boundingBox(); ok(box && box.x >= 0 && box.x + box.width <= 390, 'návod přetéká obrazovku');
+    await p.click('#iosg .iosg-ok'); await p.waitForTimeout(400);
+    ok(!(await p.isVisible('#iosg')) && !(await p.isVisible('#iosgArr')) && await p.isVisible('#onb'), 'po zavření návodu nezačal průvodce');
+    /* podruhé už sám nevyskočí, karta na Domů ho ukáže znovu */
+    await p.goto('about:blank'); await p.goto(base + '/?onb#home'); await p.waitForTimeout(500);
+    ok(!(await p.isVisible('#iosg')), 'návod vyskočil podruhé');
+    await p.evaluate(() => { const o = document.getElementById('onb'); if (o) o.remove(); localStorage.setItem('agility-onb-v1', JSON.stringify({ done: 1, v: 2 })); });
+    await p.goto('about:blank'); await p.goto(base + '/#home'); await p.waitForTimeout(500); await p.evaluate(() => closeSheet());
+    await p.click('#hmInst [data-iosgo]'); ok(await p.isVisible('#iosg'), 'karta Nainstaluj na Domů návod neotevře');
+    await p.keyboard.press('Escape'); ok(!(await p.isVisible('#iosg')), 'návod nejde zavřít Escapem');
+    await ctx.close();
+    /* Safari 26: tři tečky vpravo dole, šipka doprava */
+    ({ ctx, p } = await open(SAF26));
+    ok(await p.locator('#iosg li').count() === 4 && /tři tečky/.test(await p.textContent('#iosg li')) && await p.getAttribute('#iosgArr', 'class') === 'iosg-arr r', 'návod pro Safari 26');
+    await ctx.close();
+    /* iPad: Sdílet vpravo nahoře */
+    ({ ctx, p } = await open(IPAD));
+    ok(/vpravo nahoře/.test(await p.textContent('#iosg li')) && await p.getAttribute('#iosgArr', 'class') === 'iosg-arr r up', 'návod pro iPad');
+    await ctx.close();
+    /* Chrome na iPhonu: sám nevyskočí, v O aplikaci jde otevřít a radí Safari bez šipky */
+    ({ ctx, p } = await open(CRIOS));
+    ok(!(await p.isVisible('#iosg')), 'návod vyskočil v Chromu na iPhonu');
+    await p.evaluate(() => { const o = document.getElementById('onb'); if (o) o.remove(); document.documentElement.classList.remove('onb-open'); });
+    await p.click('.nav [data-v="more"]'); await p.click('#moreTabs [data-m="about"]'); await p.waitForTimeout(150);
+    await p.click('#pwaInst [data-iosgo]');
+    ok(await p.isVisible('#iosg') && /jen ze Safari/.test(await p.textContent('#iosg')) && !(await p.isVisible('#iosgArr')), 'návod v Chromu na iPhonu má radit Safari');
+    await ctx.close();
+  });
+
   await step('zásady ochrany osobních údajů', async () => {
     await fresh(); await more('about');
     ok(await page.getAttribute('#moreBody a[href="privacy.html"]', 'target') === '_blank', 'v O aplikaci chybí odkaz na zásady');
@@ -193,7 +237,7 @@ module.exports = async function ({ browser, base }) {
 
   await step('angličtina', async () => {
     const miss = await ev(() => ['Napsat autorovi', 'Podpořit aplikaci', 'Jiná částka', '200 Kč', 'Díky, zpráva odešla!', 'Jak se ti AgiPlan líbí?', 'Napiš, co máš na srdci', 'E-mail pro odpověď (nepovinné)',
-      'Nainstaluj si aplikaci', 'Doporuč aplikaci kamarádům', 'Ťukni na ⋮ vpravo nahoře.', 'Sdílet odkaz', 'Instalovat', 'Podpořit', 'Uložit QR do galerie', 'Google Pay / Apple Pay / karta', 'Zásady ochrany osobních údajů', 'E-mail použijeme jen k odpovědi.', '3 z 5', 'Díky za podporu!', 'Doporučit kamarádům', 'Otevřít v Chromu', 'Pro instalaci aplikace ji otevři v Chromu.',
+      'Nainstaluj si aplikaci', 'Doporuč aplikaci kamarádům', 'Ťukni na ⋮ vpravo nahoře.', 'Sdílet odkaz', 'Instalovat', 'Podpořit', 'Uložit QR do galerie', 'Google Pay / Apple Pay / karta', 'Zásady ochrany osobních údajů', 'E-mail použijeme jen k odpovědi.', '3 z 5', 'Díky za podporu!', 'Doporučit kamarádům', 'Otevřít v Chromu', 'Pro instalaci aplikace ji otevři v Chromu.', 'Nainstaluj AgiPlan na plochu', 'Sjeď níž a vyber Přidat na plochu', 'Ťukni dole vpravo na tři tečky ⋯', 'Vpravo nahoře ťukni na Přidat. Ikona AgiPlan je pak na ploše.', 'Ukázat jak', 'Rozumím',
       'Tvůj příspěvek pomůže s provozem serveru a dalším vývojem aplikace. Ať se vám s pejskem daří!', 'Zprávu se nepodařilo poslat', 'Dnes už jsi poslal(a) dost zpráv, zkus to zítra.']
       .filter(s => trLookup(s) == null));
     ok(!miss.length, 'chybí překlad: ' + miss.join(' | '));

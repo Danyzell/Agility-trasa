@@ -18,7 +18,9 @@ Zahrada týdne a Zahradní liga (Domů): každé pondělí se všem vygeneruje s
 
 3D parkur (Plán → tlačítko 3D na plánku, nebo Nástroje → 3D průlet): parkur se postaví z 3D modelů překážek v rozměrech FCI (pravidla od 2023; výška skoku, kruhu a délka skoku dalekého podle velikosti vybraného psa) a pes proběhne trasu – skáče, leze po zónách, kličkuje slalomem (1. tyčka po levém rameni) a houpačka se pod ním překlopí. Pohledy Volně, Očima psa, Za psem a Shora; přepínač 2D | 3D vrací do plánku. Kód je ve `v3d/src/course.js` (balíček `v3d/v3d.js`), bez WebGL zůstává jednoduchý průlet.
 
-AR na place (ve 3D tlačítko AR na place, Chrome na Androidu s ARCore): WebXR `immersive-ar` s hit-testem položí parkur startem na zaměřené místo ve skutečné velikosti nebo jako model 1 : 20, jde otočit, položit znovu a pustit psa. Kód `v3d/src/ar.js`.
+AR na place (ve 3D tlačítko AR na place, Chrome na Androidu s ARCore): WebXR `immersive-ar` s hit-testem položí parkur startem na zaměřené místo ve skutečné velikosti nebo jako model 1 : 20, jde otočit, položit znovu a pustit psa. Kód `v3d/src/ar.js`. Na iPhonu a iPadu (Safari) se parkur vyexportuje do USDZ a otevře v Apple AR Quick Look (bez animace psa, velikost jde měnit prsty), kód `v3d/src/quicklook.js`.
+
+Kolbiště podle GPS (Plán → Nástroje → Kolbiště (GPS)): poloha kolbiště se změří z GPS telefonu (25 s průměrování, ukáže přesnost), aplikace k němu naviguje šipkou podle kompasu se vzdáleností a odkazem do map. Natočení kolbiště se zaměří projitím dvou rohů podél dlouhé strany (nebo kompasem) a použije ho Stavba v terénu i AR na place. Plán závodiště jde načíst ze souboru GeoJSON nebo KML (kolbiště jako obdélník, úsečka nebo bod se šířkou, délkou a natočením) a k parkuru přiřadit kolbiště. Polohy zůstávají v zařízení (klíč `agility-rings-v1`). Přesnost GPS 2–5 m stačí na nalezení kolbiště, ne na umístění skoku.
 
 Délka tunelu: u vybraného tunelu ve Stavbě 2–6 m (nový tunel 5 m, uložené parkury si délku nechají). Kontrola FCI hlásí tunel kratší než 3 m.
 
@@ -28,7 +30,7 @@ Zásady ochrany osobních údajů: [privacy.html](https://danyzell.github.io/Agi
 
 Sdílení na Facebooku: odkaz https://danyzell.github.io/Agility-trasa/ má náhled (obrázek `og.jpg` a popis). Když ho někdo otevře ve vestavěném prohlížeči Facebooku nebo Messengeru, kde instalace nejde, ukáže se pruh Otevřít v Chromu (na iPhonu návod přes ⋯ → Otevřít v Safari).
 
-Instalace přes Chrome: když Chrome nabídne instalaci, ukáže se na Domů karta **Nainstaluj si aplikaci**. Ve Více → O aplikaci je tlačítko Nainstalovat, nebo návod pro iPhone (Safari → Sdílet → Přidat na plochu), když tlačítko není. Je tam i QR kód s odkazem na aplikaci, aby si ji kamarádi mohli rovnou otevřít.
+Instalace přes Chrome: když Chrome nabídne instalaci, ukáže se na Domů karta **Nainstaluj si aplikaci**. Ve Více → O aplikaci je tlačítko Nainstalovat, nebo návod pro iPhone (Safari → Sdílet → Přidat na plochu), když tlačítko není. Na iPhonu a iPadu v Safari se při prvním otevření (ještě před průvodcem, protože iOS dá aplikaci na ploše vlastní úložiště) ukáže obrazovkový návod: kroky s náčrtem Safari (Safari 26 přes ⋯ → Sdílet) a šipka na jeho lištu; znovu ho otevře karta na Domů nebo tlačítko Ukázat návod v O aplikaci. Je tam i QR kód s odkazem na aplikaci, aby si ji kamarádi mohli rovnou otevřít.
 
 Napsat autorovi (Více, nebo hvězdičky na Domů po 10 bězích): hodnocení 1–5, druh zprávy, text a nepovinný e-mail pro odpověď. Serverová funkce `supabase/functions/feedback` zprávu uloží do tabulky `feedback` a pošle ji e-mailem přes [Resend](https://resend.com). Adresa příjemce je v tabulce `app_secret` (klíč `feedback_to`), klíč Resend patří do tajných proměnných funkce jako `RESEND_API_KEY` (nebo do `app_secret` pod klíčem `resend_key`). Bez klíče se zprávy jen ukládají a jde je číst v Supabase → Table Editor → feedback.
 

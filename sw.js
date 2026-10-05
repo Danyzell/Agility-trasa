@@ -1,5 +1,5 @@
 /* AgiPlan (dříve HandlerMap a Agility trasa): offline a příjem plánku přes Sdílet */
-var CACHE='agility-trasa-2.3', FONTS='agility-fonts';
+var CACHE='agility-trasa-2.5', FONTS='agility-fonts';
 var CORE=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable-512.png','hero.webp','v3d/v3d.js'];
 /* na cvičišti bývá slabý signál: když server do 3 s neodpoví, otevře se uložená verze (nová se mezitím stáhne na příště) */
 var NAV_WAIT=3000;
@@ -22,6 +22,10 @@ self.addEventListener('fetch',function(e){
       return net; }); }));
     return; }
   if(u.origin!==location.origin) return;
+  /* jiné stránky v rozsahu aplikace (privacy.html): ze sítě, offline z mezipaměti; nikdy se neuloží místo aplikace */
+  if(e.request.mode==='navigate'&&!/\/(index\.html)?$/.test(u.pathname)){
+    e.respondWith(fetch(e.request).catch(function(){ return caches.match(e.request,{ignoreSearch:true}).then(function(r){ return r||caches.match('index.html'); }); }));
+    return; }
   if(e.request.mode==='navigate'){ /* nová verze, když je internet; jinak (nebo když server dlouho neodpovídá) uložená */
     /* jako aplikace se uloží jen stránka HTML (ne ikona nebo jiný soubor, který se otevřel v rozsahu aplikace) */
     var put=null, net=fetch(e.request.url,{cache:'no-cache',credentials:'same-origin',redirect:'manual'}).then(function(r){ if(r&&r.ok&&/^text\/html/.test(r.headers.get('content-type')||'')){ var cp=r.clone(); put=caches.open(CACHE).then(function(c){ return c.put('index.html',cp); }); } return r; });
