@@ -715,6 +715,8 @@ body[data-view="plan"] #supBtn,body[data-view="run"] #supBtn{display:none!import
 .hm-x{flex:0 0 auto; width:44px; height:44px; margin:-8px -8px 0 0; border:0; background:none; color:var(--muted); display:grid; place-items:center;}
 .hm-x svg{width:20px; height:20px;}
 .dn p{margin:0;}
+.dn-card{display:flex; align-items:center; justify-content:center; min-height:52px; font-size:16px; text-decoration:none;}
+.dn h4{margin:6px 0 0;}
 .dn-qr{align-self:center; width:min(240px,70vw); padding:8px; background:#fff; border-radius:16px; border:1px solid var(--border);}
 .dn-qr .qr{display:block; width:100%; height:auto;}
 .dn-acc{display:flex; align-items:center; gap:10px; justify-content:space-between; padding:10px 12px; border-radius:12px; background:var(--sunk);}
@@ -1232,6 +1234,11 @@ var I18N_EXTRA={exact:{
 "Přispět kartou": "Donate by card",
 "Za nápad nebo nahlášenou chybu jsem stejně vděčný.": "I'm just as grateful for an idea or a bug report.",
 "Zkopírováno": "Copied",
+"Google Pay / Apple Pay / karta": "Google Pay / Apple Pay / card",
+"Rychlá platba kartou nebo telefonem, částku si vybereš.": "Quick payment by card or phone, you choose the amount.",
+"Nebo převodem z banky": "Or by bank transfer",
+"Uložit QR do galerie": "Save QR to gallery",
+"Platíš z tohohle telefonu? Ulož si kód a v bance zvol QR platba → načíst z obrázku.": "Paying from this phone? Save the code and in your bank choose QR payment → load from image.",
 "Podpořit": "Support",
 "Díky, zpráva odešla!": "Thanks, your message was sent!",
 "Přečtu si ji. Když jsi nechal(a) e-mail, odpovím.": "I'll read it. If you left an e-mail, I'll reply.",
@@ -6982,7 +6989,7 @@ function czIban(acc){
 /* ---------- Podpořit aplikaci (QR platba) ----------
    Číslo účtu vyplní autor: acc '123456789/0800' nebo iban 'CZ…'; url je volitelný odkaz na platbu kartou (Ko-fi, PayPal…).
    Dokud není nic vyplněné, Podpořit se v aplikaci neukazuje. */
-var DONATE={acc:'1220369023/3030', iban:'', name:'', msg:'Podpora AgiPlan', url:''}, DN_AMT=100;
+var DONATE={acc:'1220369023/3030', iban:'', name:'', msg:'Podpora AgiPlan', url:'https://buy.stripe.com/dRm7sL12z7wK1ZUfoa4ko02'}, DN_AMT=100;
 function dnIban(){ var i=String(DONATE.iban||'').replace(/\s+/g,'').toUpperCase(); return /^CZ\d{22}$/.test(i)?i:czIban(DONATE.acc); }
 function donateOn(){ return !!(dnIban()||/^https:\/\//.test(DONATE.url||'')); }
 function spayd(amt){
@@ -6990,18 +6997,37 @@ function spayd(amt){
   var cl=function(s,n){ return String(s||'').replace(/\*/g,' ').replace(/[^\x20-\x7e -ſ]/g,'').trim().slice(0,n); };
   return 'SPD*1.0*ACC:'+i+(amt>0?'*AM:'+(+amt).toFixed(2):'')+'*CC:CZK'+(DONATE.name?'*RN:'+cl(DONATE.name,35):'')+'*MSG:'+cl(DONATE.msg||'AgiPlan',60);
 }
+function dnCard(){ return /^https:\/\//.test(DONATE.url||''); }
 function donateHTML(){
   var i=dnIban(), h='<div class="panel dn"><p>AgiPlan je zdarma a bez reklam. Když ti pomáhá v tréninku, můžeš přispět na provoz serveru a další vývoj. Každá koruna pomůže, díky! ❤️</p>';
+  if(dnCard()) h+='<a class="btn primary dn-card" href="'+esc(DONATE.url)+'" target="_blank" rel="noopener"><b>Google Pay / Apple Pay / karta</b></a><p class="hint">Rychlá platba kartou nebo telefonem, částku si vybereš.</p>'+(i?'<h4>Nebo převodem z banky</h4>':'');
   if(i){
     h+='<div class="filters" role="group" aria-label="Částka">'+[50,100,200,500,0].map(function(a){ return '<button class="chip'+(DN_AMT===a?' on':'')+'" data-dam="'+a+'">'+(a?a+' Kč':'Jiná částka')+'</button>'; }).join('')+'</div>'+
       '<div class="dn-qr">'+qrSvg(spayd(DN_AMT),'QR platba')+'</div>'+
       '<p class="hint">Naskenuj kód v aplikaci své banky (QR platba).'+(DN_AMT?'':' Částku zadáš v bance.')+'</p>'+
+      '<div class="row"><button class="btn" data-dqr="1">Uložit QR do galerie</button></div>'+
+      '<p class="hint">Platíš z tohohle telefonu? Ulož si kód a v bance zvol QR platba → načíst z obrázku.</p>'+
       '<div class="dn-acc"><div><span>Číslo účtu</span><b translate="no">'+esc(DONATE.acc||i)+'</b></div><button class="btn" data-dcopy="'+esc(DONATE.acc||i)+'">Kopírovat</button></div>'+
       (DONATE.acc?'<div class="dn-acc"><div><span>IBAN</span><b translate="no">'+esc(i.replace(/(.{4})/g,'$1 ').trim())+'</b></div><button class="btn" data-dcopy="'+esc(i)+'">Kopírovat</button></div>':'')+
       '<div class="dn-acc"><div><span>Zpráva pro příjemce</span><b translate="no">'+esc(DONATE.msg||'AgiPlan')+'</b></div></div>';
   }
-  if(/^https:\/\//.test(DONATE.url||'')) h+='<div class="row"><a class="btn'+(i?'':' primary')+'" href="'+esc(DONATE.url)+'" target="_blank" rel="noopener">Přispět kartou</a></div>';
   return h+'<p class="hint">Za nápad nebo nahlášenou chybu jsem stejně vděčný. <button class="linkbtn" data-mgo="fb">Napsat autorovi</button></p></div>';
+}
+/* QR platba jako obrázek (bankovní aplikace umí QR načíst z galerie, když platíš z telefonu s aplikací) */
+function dnQrCanvas(amt){
+  var M=qrMatrix(spayd(amt)); if(!M) return null;
+  var W=900, H=1120, cv=document.createElement('canvas'); cv.width=W; cv.height=H; var x=cv.getContext('2d');
+  x.fillStyle='#fff'; x.fillRect(0,0,W,H);
+  var n=M.length, q=4, s=Math.floor(720/(n+2*q)), sz=s*(n+2*q), ox=(W-sz)/2, oy=150;
+  x.fillStyle='#0a2a1c'; x.textAlign='center'; x.font='700 52px system-ui,sans-serif'; x.fillText(T('QR platba'),W/2,90);
+  x.fillStyle='#000'; for(var y=0;y<n;y++) for(var c=0;c<n;c++) if(M[y][c]) x.fillRect(ox+(c+q)*s,oy+(y+q)*s,s,s);
+  x.fillStyle='#0a2a1c'; x.font='600 38px system-ui,sans-serif'; x.fillText((amt?amt+' Kč · ':'')+(DONATE.acc||dnIban()),W/2,oy+sz+70);
+  x.fillStyle='#55625a'; x.font='32px system-ui,sans-serif'; x.fillText(DONATE.msg||'AgiPlan',W/2,oy+sz+120);
+  return cv;
+}
+function dnQrSave(){
+  var cv=dnQrCanvas(DN_AMT); if(!cv) return;
+  cv.toBlob(function(b){ if(b) deliverFile(b,'image/png','agiplan-qr-platba'+(DN_AMT?'-'+DN_AMT:'')+'.png',false); },'image/png');
 }
 function dnCopy(s){
   var done=function(){ toast(T('Zkopírováno')); };
@@ -7117,6 +7143,7 @@ $('moreBody').onclick=function(e){
   if(g('data-fbsend')){ fbSend(); return; }
   if(g('data-fbnew')){ FB_SENT=false; moreRender(); return; }
   if(g('data-dam')!=null){ DN_AMT=+g('data-dam')||0; moreRender(); return; }
+  if(g('data-dqr')){ dnQrSave(); return; }
   if(g('data-dcopy')){ dnCopy(g('data-dcopy')); return; }
   if(g('data-onb')){ onbOpen(); return; }
   if(g('data-lang')){ setLang(g('data-lang')); return; }
