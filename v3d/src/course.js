@@ -37,7 +37,7 @@ export function buildCourse(scene, spec, Q) {
       g = ob.tunnel({ points: o.tunnel && o.tunnel.length > 1 ? o.tunnel : [[o.x - fx * 2.25, o.y - fz * 2.25], [o.x + fx * 2.25, o.y + fz * 2.25]] });
       scene.add(g);
     } else {
-      if (o.type === 'jump') g = ob.jump({ h: size.jump || .6 });
+      if (o.type === 'jump') g = o.v === 'wall' ? ob.wall({ h: size.jump || .6 }) : o.v === 'oxer' ? ob.oxer({ h: size.jump || .6 }) : ob.jump({ h: size.jump || .6 });
       else if (o.type === 'tire') g = ob.tire({ h: size.tire || .8 });
       else if (o.type === 'longjump') g = ob.longjump({ len: size.lj || 1.4, n: size.ljn || 4 });
       else if (o.type === 'weave') { const w = ob.weave({}); w.position.x = -(11 * .6) / 2; g = new THREE.Group(); g.add(w); }

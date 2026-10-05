@@ -62,6 +62,24 @@ export function jump(o = {}) {
   return out;
 }
 
+/* ---------- zeď: cihlová stěna mezi dvěma věžičkami, nahoře snímatelné kostky (FCI) ---------- */
+export function wall(o = {}) {
+  const h = o.h != null ? o.h : .55, W = o.width || 1.3, g = new THREE.Group();
+  const brick = mat(o.color || '#b0533c', .8), wm = mat('#f5f5f2', .45), top = mat('#e8e3d6', .6);
+  const body = new THREE.Mesh(new THREE.BoxGeometry(.22, h - .08, W), brick); body.position.y = (h - .08) / 2; g.add(body);
+  for (let k = 0; k < 4; k++) { const c = new THREE.Mesh(new THREE.BoxGeometry(.24, .08, W / 4 - .01), top); c.position.set(0, h - .04, -W / 2 + W / 8 + k * W / 4); g.add(c); }
+  for (const s of [-1, 1]) { const t = new THREE.Mesh(new THREE.BoxGeometry(.3, 1.0, .3), wm); t.position.set(0, .5, s * (W / 2 + .15)); g.add(t); }
+  shadowAll(g); const out = mergeByMaterial(g); out.userData = { h, width: W }; return out;
+}
+
+/* ---------- dvojitý skok (oxer): dvě laťky za sebou, zadní výš ---------- */
+export function oxer(o = {}) {
+  const h = o.h != null ? o.h : .55, d = o.depth || .35, out = jump(Object.assign({}, o, { h: Math.max(.1, h - .1) }));
+  const W = out.userData.width, bar = stripedBar(W - .02, .02, '#ffffff', '#1f6b45', 10); bar.position.set(d, h, 0); bar.rotation.y = Math.PI / 2; out.add(bar); shadowAll(bar);
+  for (const s of [-1, 1]) { const p = new THREE.Mesh(new THREE.BoxGeometry(.055, 1.0, .055), mat('#f5f5f2', .45)); p.position.set(d, .5, s * (W / 2 + .03)); out.add(p); shadowAll(p); }
+  return out;
+}
+
 /* ---------- tunel: trubice ⌀ 60 cm po křivce [[x,z],...] (min. 3 m) ---------- */
 export function tunnel(o = {}) {
   const r = o.r || .3, pts = (o.points || [[-2, 0], [2, 0]]).map(p => new THREE.Vector3(p[0], r, p[1]));

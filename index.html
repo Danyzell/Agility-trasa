@@ -104,7 +104,8 @@ select.btn{padding-right:8px;}
 .selacts{display:flex; flex-wrap:wrap; gap:8px; margin-left:auto; max-width:100%;}
 .selacts select{max-width:100%;}
 
-#wrap{overflow:auto; max-height:70vh; border:1px solid var(--border); border-radius:12px; background:var(--field);}
+#wrap{overflow:auto; max-height:70vh; border:1px solid var(--border); border-radius:12px; background:var(--field); touch-action:pan-x pan-y;}
+.rotq{display:inline-flex; gap:4px;} .rotq .btn{min-width:44px; padding:6px 8px; justify-content:center;}
 #field{display:block; height:auto; user-select:none; -webkit-user-select:none;}
 #field.build .ob{touch-action:none; cursor:grab;}
 #field.route .ob{cursor:pointer;}
@@ -932,13 +933,16 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       <div class="palette" id="palette"></div>
       <div class="selrow" id="selRow" hidden>
         <span>Otočení</span><input type="range" id="rot" min="0" max="355" step="5" aria-label="Otočení překážky"><span id="rotLbl" class="num"></span>
+        <span class="rotq"><button class="btn" id="rotL" aria-label="Otočit o 15° doleva">↺15°</button><button class="btn" id="rotR" aria-label="Otočit o 15° doprava">↻15°</button><button class="btn" id="rotP" title="Natočit kolmo na trasu (podle předchozí a další překážky)">⟂ trasa</button></span>
         <span class="selacts"><select class="btn" id="bendSel" aria-label="Tvar tunelu" hidden><option value="0">Rovný</option><option value="90">Oblouk 90° ↶</option><option value="-90">Oblouk 90° ↷</option><option value="135">Oblouk 135° ↶</option><option value="-135">Oblouk 135° ↷</option><option value="180">Do U ↶</option><option value="-180">Do U ↷</option></select>
         <select class="btn" id="lenSel" aria-label="Délka tunelu" hidden><option value="2">2 m (trénink)</option><option value="3">3 m</option><option value="4">4 m</option><option value="4.5">4,5 m</option><option value="5">5 m</option><option value="6">6 m</option></select>
-        <button class="btn danger" id="delBtn">Smazat</button></span>
+        <button class="btn" id="dupBtn">Kopírovat</button><button class="btn danger" id="delBtn">Smazat</button></span>
       </div>
     </div>
     <div class="row" id="routeTools" hidden>
       <button class="btn" id="undoBtn">↶ Vrátit poslední</button>
+      <button class="btn" id="orientAll">⟂ Natočit skoky podle trasy</button>
+      <button class="btn" id="revRoute">⇄ Obrátit trasu</button>
       <button class="btn danger" id="clrRoute">Smazat trasu</button>
     </div>
     <div class="fieldbox">
@@ -1193,6 +1197,20 @@ function trTree(root){
 }
 /* Překlady nových textů: když přidáš do aplikace český text, sem dopiš jeho anglickou verzi (stejný formát jako i18nAdd). */
 var I18N_EXTRA={exact:{
+"dvojitý skok": "spread jump",
+"Dvojitý skok": "Spread jump",
+"⇄ Obrátit trasu": "⇄ Reverse route",
+"Cíl": "Finish",
+"Překážky přes sebe:": "Obstacles overlapping:",
+"Otočit o 15° doleva": "Rotate 15° left",
+"Otočit o 15° doprava": "Rotate 15° right",
+"Natočit kolmo na trasu (podle předchozí a další překážky)": "Turn square to the route (by the previous and next obstacle)",
+"⟂ trasa": "⟂ route",
+"⟂ Natočit skoky podle trasy": "⟂ Align jumps to the route",
+"Klepnutím do volného místa zrušíš výběr. Tažením překážku přesuneš, tlačítky otočíš, dvěma prsty přiblížíš.": "Tap an empty spot to deselect. Drag to move the obstacle, use the buttons to rotate it, pinch with two fingers to zoom.",
+"Vyber překážku v nabídce, nebo klepni na překážku na ploše.": "Pick an obstacle in the menu, or tap an obstacle on the field.",
+"Překážka není v trase. Nejdřív vyznač trasu v režimu Trasa.": "The obstacle isn't in the route. Mark the route in Route mode first.",
+"Skoky už jsou natočené podle trasy": "The jumps are already aligned to the route",
 "Kolbiště (GPS)": "Ring (GPS)",
 "Kolbiště": "Ring",
 "Ulož si, kde stojí kolbiště, a aplikace tě k němu dovede. Zaměřené natočení použije Stavba v terénu a AR na place. Polohy zůstávají v tomhle zařízení a v záloze, kterou si sám uložíš.": "Save where the ring is and the app will guide you to it. A measured orientation is used by Build on the field and AR on the field. Locations stay on this device and in backups you save yourself.",
@@ -1630,6 +1648,7 @@ var I18N_EXTRA={exact:{
 "Zkontroluj podle plánku": "Check against the course map",
 "Náhled parkuru": "Course preview",
 },num:{
+"Natočeno překážek: #": "Obstacles aligned: #",
 "# s": "# s",
 "# měření": "# readings",
 "přesnost ± # m": "accuracy ± # m",
@@ -1730,6 +1749,10 @@ var I18N_EXTRA={exact:{
 "Zahrada týdne # · # × # m · zbývá # dní": "Garden of the week # · # × # m · # days left",
 "Zahrada týdne # · # × # m · zbývá poslední den": "Garden of the week # · # × # m · last day left",
 },re:[
+["^Překážky přes sebe: (.+)$","Obstacles overlapping: $1"],
+["^Překážka přesahuje plochu: (.+)$","Obstacle sticks out of the field: $1"],
+["^Trasa obrácená, start je teď u překážky (.+)$","Route reversed, the start is now at the @1"],
+["^Klepnutím polož (.+) na plochu\\. Překážku přesuneš tažením, plochu přiblížíš dvěma prsty\\.$","Tap to place the @1 on the field. Drag to move an obstacle, pinch with two fingers to zoom."],
 ["^Lidé, kteří aplikaci otevřeli \\(každé zařízení jednou za den\\)\\. Celkem od začátku: (\\d+)\\. Anglicky: (\\d+) za 7 dní\\.$","People who opened the app (each device once a day). Total since the start: $1. In English: $2 in 7 days."],
 ["^Synchronizováno (\\d+:\\d+)$","Synced $1"],
 ["^Synchronizace se nepovedla: (.+)$","Sync failed: @1"],
@@ -4285,6 +4308,7 @@ function courseClean(d){
     var n={id:id,type:o.type,x:cl(x,0,W),y:cl(y,0,H),rot:isFinite(ro)?(ro%360+360)%360:0};
     if(o.type==='tunnel'&&b&&Math.abs(b)<=180) n.bend=b;
     if(o.type==='tunnel'){ var ln=Math.round(+o.len*2)/2; if(ln>=2&&ln<=6) n.len=ln; }
+    if(o.type==='jump'&&JV[o.v]) n.v=o.v;
     by[id]=n; obs.push(n);
   });
   var rt=Array.isArray(d.route)?d.route:[], sd=Array.isArray(d.sides)?d.sides:[], tu=Array.isArray(d.turns)?d.turns:[], route=[], sides=[], turns=[];
@@ -4300,6 +4324,15 @@ function clsClean(c){return ['A1','A2','A3'].indexOf(c)>=0?c:'A1';}
 function localDate(d){d=d||new Date(); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 function dateOf(s){ return /^\d{4}-\d{2}-\d{2}$/.test(s||'')?new Date(s+'T00:00'):new Date(s); }
 
+/* zeď a dvojitý skok (FCI) jsou skoky s variantou o.v: počítají se, otáčí a běhá se přes ně jako přes skok */
+var JV={
+  wall:{l:'Zeď',g:'<rect x="-.2" y="-.65" width=".4" height="1.3" rx=".05" fill="currentColor"/><path d="M-.2,-.2H.2M-.2,.25H.2M0,-.65V-.2M0,.25V.65" stroke="#fff" stroke-width=".05"/>',
+    p:'<rect x="-6" y="-2" width="12" height="7" rx=".6" fill="currentColor"/><path d="M-6,1.5H6M-2,-2V1.5M2,1.5V5" stroke="#fff" stroke-width=".8"/>'},
+  oxer:{l:'Dvojitý skok',g:'<line x1="-.22" y1="-.6" x2="-.22" y2=".6" stroke="currentColor" stroke-width=".12"/><line x1=".22" y1="-.6" x2=".22" y2=".6" stroke="currentColor" stroke-width=".12"/><rect x="-.37" y="-.8" width=".74" height=".3" fill="currentColor"/><rect x="-.37" y=".5" width=".74" height=".3" fill="currentColor"/>',
+    p:'<line x1="-6" y1="5" x2="-6" y2="-3" stroke="currentColor" stroke-width="1.4"/><line x1="6" y1="5" x2="6" y2="-3" stroke="currentColor" stroke-width="1.4"/><line x1="-6" y1="-3" x2="6" y2="-3" stroke="currentColor" stroke-width="1.2"/><line x1="-6" y1="-.5" x2="6" y2="-.5" stroke="currentColor" stroke-width="1.2"/>'}
+};
+function obL(o){ return o&&o.type==='jump'&&JV[o.v]?JV[o.v].l:DEF[o.type].l; }
+function toolL(t){ var p=String(t).split(':'); return p[1]&&JV[p[1]]?JV[p[1]].l:DEF[p[0]].l; }
 /* ---------- stav ---------- */
 var S=lsGet(KEY,null), FRESH=!S; /* FRESH: první spuštění aplikace */
 if(!S||typeof S!=='object') S={};
@@ -4419,7 +4452,8 @@ function topbar(){
 
 /* ---------- plocha ---------- */
 $('palette').innerHTML=Object.keys(DEF).map(function(k){var d=DEF[k];
-  return '<button class="ob-btn" data-type="'+k+'" style="color:'+d.c+'"><svg viewBox="-9 -9 18 18">'+d.p+'</svg><span style="color:var(--text)">'+d.l+'</span></button>';}).join('');
+  var b='<button class="ob-btn" data-type="'+k+'" style="color:'+d.c+'"><svg viewBox="-9 -9 18 18">'+d.p+'</svg><span style="color:var(--text)">'+d.l+'</span></button>';
+  return k!=='jump'?b:b+Object.keys(JV).map(function(v){ return '<button class="ob-btn" data-type="jump:'+v+'" style="color:'+d.c+'"><svg viewBox="-9 -9 18 18">'+JV[v].p+'</svg><span style="color:var(--text)">'+JV[v].l+'</span></button>'; }).join('');}).join('');
 
 function syncSides(){
   if(!S.sides) S.sides=[]; while(S.sides.length<S.route.length) S.sides.push(null); S.sides.length=S.route.length;
@@ -4486,7 +4520,7 @@ function obEl(o){
   g.setAttribute('class','ob'); g.setAttribute('data-id',o.id);
   g.setAttribute('transform','translate('+o.x+','+o.y+') rotate('+o.rot+')');
   g.setAttribute('style','color:'+d.c);
-  var gr=d.g;
+  var gr=o.type==='jump'&&JV[o.v]?JV[o.v].g:d.g;
   if(o.type==='tunnel'&&o.bend){ /* tunel do oblouku */
     var L2=tunLen(o)/2, pp=[], lo={x:0,y:0,rot:0,bend:o.bend};
     for(var j=0;j<=12;j++){ var q=tunPt(lo,-L2+j*L2/6); pp.push(r(q.x)+','+r(q.y)); }
@@ -4497,6 +4531,15 @@ function obEl(o){
   g.innerHTML=gr+'<rect x="'+(-hx)+'" y="'+(-hy)+'" width="'+(2*hx)+'" height="'+(2*hy)+'" fill="#000" fill-opacity="0"/>'+
     ((o.id===sel&&mode==='build')?'<rect x="'+(-hw-e)+'" y="'+(-d.w-e)+'" width="'+(2*(hw+e))+'" height="'+(2*(d.w+e))+'" rx=".2" fill="none" stroke="var(--accent)" stroke-width=".1" stroke-dasharray=".35 .25"/>':'');
   return g;
+}
+/* Start před první a Cíl za poslední překážkou trasy (2 m po směru běhu), jako na plánku rozhodčího */
+function startFinish(c){
+  var a=c.P[0], b=c.P[c.P.length-1]; if(!a||!b||!a.en||!b.ex) return '';
+  function mark(p,d,t){ var x=cl(p.x+d.x,.6,S.W-.6), y=cl(p.y+d.y,.6,S.H-.6), nx=-d.y/2, ny=d.x/2;
+    return '<g class="sf"><line x1="'+r(x-nx*.6)+'" y1="'+r(y-ny*.6)+'" x2="'+r(x+nx*.6)+'" y2="'+r(y+ny*.6)+'" stroke="var(--text)" stroke-width=".12" stroke-dasharray=".25 .15"/>'+
+      '<text x="'+r(x)+'" y="'+r(y-.55)+'" font-size=".62" font-weight="700" text-anchor="middle" fill="var(--text)" stroke="var(--field)" stroke-width=".22" paint-order="stroke">'+t+'</text></g>'; }
+  var da=a.dir||{x:1,y:0}, db=b.dx||b.dir||da, la=Math.hypot(da.x,da.y)||1, lb=Math.hypot(db.x,db.y)||1;
+  return mark(a.en,{x:-da.x/la*2,y:-da.y/la*2},'Start')+mark(b.ex,{x:db.x/lb*2,y:db.y/lb*2},'Cíl');
 }
 function sideChanges(){
   var out=[], sd=S.sides||[];
@@ -4541,6 +4584,7 @@ function render(){
   var mk='';
   if(panel==='side') sideChanges().forEach(function(i){var m=c.segs[i]&&c.segs[i].m; if(m) mk+='<g transform="translate('+r(m.x)+','+r(m.y-.9)+')"><circle r=".55" fill="var(--accent)"/><path d="M-.25,-.25L.25,.25M.25,-.25L-.25,.25" stroke="var(--on-accent)" stroke-width=".12"/></g>';});
   if(PLANUI.traps&&!quiz&&!drag&&panel!=='side'&&S.route.length>1) mk+=trapMarks(cs);
+  if(S.route.length>1&&!(quiz&&QZ.phase==='test')) mk+=startFinish(cs);
   if(pf&&S.route.length>1) mk+='<text x=".5" y="'+r(S.H-.5)+'" font-size=".8" font-weight="600" fill="var(--accent)" stroke="var(--field)" stroke-width=".2" paint-order="stroke">Dráha psa velikosti '+SET.psz+'</text>';
   $('marks').innerHTML=mk;
   $('specs').innerHTML=planSpecs(metrics(S.obs,S.route,S.meta.cls,S.turns,cs));
@@ -4550,7 +4594,7 @@ function render(){
   ol.innerHTML=S.route.length
     ? S.route.map(function(id,i){var sd=S.sides[i], ty=getO(id).type, t=tuValid(S.turns[i],ty), jp=ty==='jump';
         var tb=(jp||DEF[ty].hl>0)&&(t||mode==='route'||panel==='side')?' <button class="tu'+(t?' on':'')+'" data-tu="'+i+'" aria-label="'+(jp?'Otočka u skoku':'Vstup do překážky')+' č. '+(i+1)+'">'+(t?tuLabel(t,sd):jp?'+ otočka':'+ vstup')+'</button>':'';
-        return '<li>'+DEF[ty].l+(S.chk&&S.chk[i]?' <span class="chk" title="Zkontroluj podle plánku">?</span>':'')+tb+(panel==='side'?'<span class="sd"><button data-sd="'+i+'" data-v="L" class="'+(sd==='L'?'on':'')+'">L</button><button data-sd="'+i+'" data-v="P" class="'+(sd==='P'?'on':'')+'">P</button></span>':'')+'</li>';}).join('')
+        return '<li>'+obL(getO(id))+(S.chk&&S.chk[i]?' <span class="chk" title="Zkontroluj podle plánku">?</span>':'')+tb+(panel==='side'?'<span class="sd"><button data-sd="'+i+'" data-v="L" class="'+(sd==='L'?'on':'')+'">L</button><button data-sd="'+i+'" data-v="P" class="'+(sd==='P'?'on':'')+'">P</button></span>':'')+'</li>';}).join('')
     : '<li class="empty">Zatím žádná trasa. Přepni na Trasa a klepej na překážky v pořadí.</li>';
   if(panel==='side'){var n=sideChanges().length; $('sideInfo').textContent='Změny strany: '+n+(n<2?' (FCI chce aspoň 2)':'');}
 }
@@ -4578,7 +4622,7 @@ function ui(){
   svg.style.width=(zoom*100)+'%';
   if(BG){$('bgOp').value=Math.round((BG.op||.6)*100); $('bgFit').textContent=BG.fit==='none'?'Zachovat poměr':'Roztáhnout';}
   $('hint').textContent=panel==='side'?'':panel==='quiz'?'':mode==='build'
-    ? 'Vyber překážku a klepnutím ji polož na plochu. Tažením ji přesuneš, posuvníkem otočíš.'
+    ? (sel!=null&&!SELNEW?'Klepnutím do volného místa zrušíš výběr. Tažením překážku přesuneš, tlačítky otočíš, dvěma prsty přiblížíš.':tool?'Klepnutím polož '+toolL(tool).toLowerCase()+' na plochu. Překážku přesuneš tažením, plochu přiblížíš dvěma prsty.':'Vyber překážku v nabídce, nebo klepni na překážku na ploše.')
     : 'Klepej na překážky v pořadí, v jakém je pes poběží. Stejnou překážku můžeš použít víckrát. Otočku kolem křídla nebo zadní stranu nastavíš u skoku v seznamu pod plochou.';
   $('hint').hidden=special||mode==='view';
 }
@@ -4587,6 +4631,7 @@ function pt(e){var b=svg.getBoundingClientRect(); return {x:(e.clientX-b.left)/b
 /* přehrávání psa a psovoda: klepnutí na plochu ho jen zastaví, plán se nemění */
 svg.addEventListener('pointerdown',function(e){ if(!SIMA&&!$('simG')) return; e.stopImmediatePropagation(); tap=null; drag=null; simStop(); },true);
 svg.addEventListener('pointerdown',function(e){
+  if(PINCH) return;
   var g=e.target.closest('.ob'), id=g?+g.getAttribute('data-id'):null;
   tap={x:e.clientX,y:e.clientY,id:id};
   if(panel==='side'){
@@ -4597,8 +4642,8 @@ svg.addEventListener('pointerdown',function(e){
   }
   if(panel==='quiz') return;
   if(mode==='build'&&g){
-    var o=getO(id), q=pt(e); sel=id;
-    drag={id:id,dx:o.x-q.x,dy:o.y-q.y,moved:false};
+    var o=getO(id), q=pt(e); sel=id; SELNEW=false;
+    drag={id:id,dx:o.x-q.x,dy:o.y-q.y,moved:false,x0:o.x,y0:o.y};
     try{svg.setPointerCapture(e.pointerId);}catch(x){}
   }
 });
@@ -4608,7 +4653,7 @@ svg.addEventListener('pointermove',function(e){
     if(Math.hypot(l[0]-p.x,l[1]-p.y)>.35){hpDraw.push([r1(cl(p.x,0,S.W)),r1(cl(p.y,0,S.H))]); S.hp=hpDraw; renderSoon();}
     return;
   }
-  if(!drag||!tap) return;
+  if(!drag||!tap||PINCH) return;
   if(Math.hypot(e.clientX-tap.x,e.clientY-tap.y)>4) drag.moved=true;
   if(!drag.moved) return;
   var q=pt(e), o=getO(drag.id);
@@ -4626,9 +4671,11 @@ svg.addEventListener('pointerup',function(e){
       if(tap.id!=null){S.route.push(tap.id); if(S.chk) S.chk.push(0); syncSides(); touch(); render();}
     } else if(mode==='view'){
       if(tap.id!=null&&!ui.tipped){ ui.tipped=1; toast('Překážky upravíš v režimu Stavba, pořadí v režimu Trasa.'); }
+    } else if(sel!=null&&!SELNEW&&tap.id==null){ sel=null; render(); ui(); /* vybraná (ne právě položená) překážka: klepnutí do volného místa jen zruší výběr */
     } else if(tool){
-      var p=pt(e), o={id:nid(),type:tool,x:cl(r1(p.x),0,S.W),y:cl(r1(p.y),0,S.H),rot:0}; if(tool==='tunnel') o.len=5; /* nový tunel: výchozí 5 m */
-      S.obs.push(o); sel=o.id; touch(); render(); ui();
+      var p=pt(e), tp=tool.split(':'), o={id:nid(),type:tp[0],x:cl(r1(p.x),0,S.W),y:cl(r1(p.y),0,S.H),rot:0}; if(tp[0]==='tunnel') o.len=5; /* nový tunel: výchozí 5 m */
+      if(tp[1]&&JV[tp[1]]) o.v=tp[1];
+      S.obs.push(o); sel=o.id; SELNEW=true; touch(); render(); ui(); /* další klepnutí pokládá dál */
     } else { sel=null; render(); ui(); }
   }
   tap=null;
@@ -4644,8 +4691,62 @@ $('mBuild').onclick=function(){mode='build'; ui(); render();};
 $('mRoute').onclick=function(){mode='route'; sel=null; ui(); render();};
 $('zIn').onclick=function(){zoom=Math.min(4,zoom+.5); ui();};
 $('zOut').onclick=function(){zoom=Math.max(1,zoom-.5); ui();};
-$('rot').oninput=function(){var o=getO(sel); if(!o) return; o.rot=+this.value; $('rotLbl').textContent=o.rot+'°'; touch('rot'+o.id); renderSoon();};
+$('rot').oninput=function(){var o=getO(sel); if(!o) return; SELNEW=false; o.rot=+this.value; $('rotLbl').textContent=o.rot+'°'; touch('rot'+o.id); renderSoon();};
 $('rot').onchange=function(){UNDO_G=null;};
+/* kopie vybrané překážky o kus vedle (stejné natočení, tunel i s délkou a obloukem) */
+$('dupBtn').onclick=function(){
+  var o=getO(sel); if(!o) return; var n=JSON.parse(JSON.stringify(o)), a=(o.rot+90)*Math.PI/180;
+  n.id=nid(); n.x=cl(r1(o.x+Math.cos(a)*2),0,S.W); n.y=cl(r1(o.y+Math.sin(a)*2),0,S.H);
+  if(Math.abs(n.x-o.x)+Math.abs(n.y-o.y)<1){ n.x=cl(r1(o.x-Math.cos(a)*2),0,S.W); n.y=cl(r1(o.y-Math.sin(a)*2),0,S.H); }
+  S.obs.push(n); sel=n.id; touch(); render(); ui();
+};
+/* obrácená trasa: pořadí odzadu, otočky kolem křídla na druhou stranu (pes běží opačně) */
+$('revRoute').onclick=function(){
+  if(S.route.length<2) return; syncSides();
+  var fl=function(t){ return t&&/^[wb][LR]$/.test(t)?t.charAt(0)+(t.charAt(1)==='L'?'R':'L'):t; };
+  S.route.reverse(); S.sides.reverse(); S.turns=S.turns.reverse().map(fl); if(S.chk) S.chk.reverse();
+  touch(); render(); ui(); toast('Trasa obrácená, start je teď u překážky '+obL(getO(S.route[0])).toLowerCase());
+};
+var SELNEW=false;
+function rotBy(d){ var o=getO(sel); if(!o) return; SELNEW=false; o.rot=((o.rot+d)%360+360)%360; touch(); render(); ui(); }
+$('rotL').onclick=function(){ rotBy(-15); }; $('rotR').onclick=function(){ rotBy(15); };
+/* kolmo na trasu: směr běhu od předchozí k další překážce (u prvního a posledního jen jedna strana); rot = směr běhu */
+var ORIENT_T={jump:1,tire:1,longjump:1};
+function orientRot(o,i){
+  var a=i>0?getO(S.route[i-1]):null, b=i<S.route.length-1?getO(S.route[i+1]):null; if(!a&&!b) return null;
+  var ax=a?o.x-a.x:0, ay=a?o.y-a.y:0, bx=b?b.x-o.x:0, by=b?b.y-o.y:0, la=Math.hypot(ax,ay)||1, lb=Math.hypot(bx,by)||1;
+  var dx=(a?ax/la:0)+(b?bx/lb:0), dy=(a?ay/la:0)+(b?by/lb:0); if(Math.hypot(dx,dy)<1e-3){ dx=ax||bx; dy=ay||by; }
+  return ((Math.round(Math.atan2(dy,dx)*180/Math.PI/5)*5)%360+360)%360;
+}
+$('rotP').onclick=function(){
+  var o=getO(sel); if(!o) return; var i=S.route.indexOf(o.id);
+  if(i<0){ toast('Překážka není v trase. Nejdřív vyznač trasu v režimu Trasa.'); return; }
+  var r2=orientRot(o,i); if(r2==null) return; o.rot=r2; touch(); render(); ui();
+};
+/* všechny skoky, kruh a skok daleký v trase (bez otoček kolem křídla, ty si psovod natočí sám) */
+$('orientAll').onclick=function(){
+  var n=0, seen={};
+  S.route.forEach(function(id,i){ var o=getO(id); if(!o||!ORIENT_T[o.type]||seen[id]) return; seen[id]=1;
+    if(S.route.indexOf(id)!==S.route.lastIndexOf(id)||tuValid(S.turns[i],o.type)) return;
+    var r2=orientRot(o,i); if(r2!=null&&r2!==o.rot){ o.rot=r2; n++; } });
+  if(n){ touch(); render(); ui(); } toast(n?'Natočeno překážek: '+n:'Skoky už jsou natočené podle trasy');
+};
+/* přiblížení dvěma prsty: zoom 100–400 %, bod mezi prsty zůstane na místě (jedním prstem se plocha posouvá jako dřív) */
+var PINCH=null;
+(function(){
+  var wr=$('wrap');
+  function mid(t){ var b=wr.getBoundingClientRect(); return {x:(t[0].clientX+t[1].clientX)/2-b.left,y:(t[0].clientY+t[1].clientY)/2-b.top,d:Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY)||1}; }
+  wr.addEventListener('touchstart',function(e){ if(e.touches.length!==2) return;
+    var m=mid(e.touches); PINCH={d:m.d,z:zoom,fx:(wr.scrollLeft+m.x)/svg.clientWidth,fy:(wr.scrollTop+m.y)/svg.clientHeight};
+    /* rozjeté přesunutí překážky se vrátí, druhý prst nic nepoloží */
+    if(drag){ var o=getO(drag.id); if(o&&drag.moved&&drag.x0!=null){ o.x=drag.x0; o.y=drag.y0; } } drag=null; tap=null; hpDraw=null; },{passive:true});
+  wr.addEventListener('touchmove',function(e){ if(!PINCH||e.touches.length!==2) return; e.preventDefault();
+    var m=mid(e.touches), z=Math.round(cl(PINCH.z*m.d/PINCH.d,1,4)*100)/100; if(Math.abs(z-zoom)<.01) return;
+    zoom=z; svg.style.width=(zoom*100)+'%'; $('zLbl').textContent=Math.round(zoom*100)+' %';
+    wr.scrollLeft=PINCH.fx*svg.clientWidth-m.x; wr.scrollTop=PINCH.fy*svg.clientHeight-m.y; },{passive:false});
+  function end(e){ if(PINCH&&e.touches.length<2){ PINCH=null; tap=null; drag=null; render(); } }
+  wr.addEventListener('touchend',end); wr.addEventListener('touchcancel',end);
+})();
 $('undoAll').onclick=undo;
 document.addEventListener('keydown',function(e){
   if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&!e.altKey&&(e.key==='z'||e.key==='Z')&&view==='plan'&&$('scrim').hidden&&$('ov3d').hidden&&!$('modeRow').hidden&&!/^(INPUT|TEXTAREA|SELECT)$/.test((e.target&&e.target.tagName)||'')){ e.preventDefault(); undo(); }
@@ -4716,9 +4817,20 @@ function fciCheck(obs,route,turns,sides,cls,geo){
     var skip={}, hit=null; skip[route[i]]=1; skip[route[i+1]]=1;
     s.pcs.forEach(function(pc){ for(var t=0;t<=12&&!hit;t++){ var q=bz(pc[0],pc[1],pc[2],pc[3],t/12);
       for(var k=0;k<obs.length&&!hit;k++){ var o=obs[k]; if(skip[o.id]) continue; if(pdist(q,opoly(o))<.45) hit=o; } } });
-    if(hit){ var num=route.indexOf(hit.id); hits.push((i+1)+'→'+(i+2)+' přes '+DEF[hit.type].l.toLowerCase()+(num>=0?' č. '+(num+1):'')); }
+    if(hit){ var num=route.indexOf(hit.id); hits.push((i+1)+'→'+(i+2)+' přes '+obL(hit).toLowerCase()+(num>=0?' č. '+(num+1):'')); }
   });
   add(!hits.length,'Dráha psa nevede přes jinou překážku'+(hits.length?': '+hits.join('; '):''));
+  /* překážky přes sebe (tunel pod kladinou nebo A-rampou smí) a překážka přesahující plochu */
+  var ov=[], outF=[], W=geo.W||S.W, H=geo.H||S.H, num=function(o){ var k=route.indexOf(o.id); return obL(o).toLowerCase()+(k>=0?' č. '+(k+1):''); };
+  for(var a=0;a<obs.length;a++){
+    var A=obs[a], PA=opoly(A);
+    if(PA.some(function(q){ return q.x<-.05||q.y<-.05||q.x>W+.05||q.y>H+.05; })) outF.push(num(A));
+    for(var b2=a+1;b2<obs.length;b2++){ var B=obs[b2];
+      if((A.type==='tunnel'&&(B.type==='dogwalk'||B.type==='aframe'))||(B.type==='tunnel'&&(A.type==='dogwalk'||A.type==='aframe'))) continue;
+      if(polyD(PA,opoly(B))<.35) ov.push(num(A)+' a '+num(B)); }
+  }
+  if(ov.length) add(false,'Překážky přes sebe: '+ov.slice(0,4).join('; '));
+  if(outF.length) add(false,'Překážka přesahuje plochu: '+outF.slice(0,4).join(', '));
   return out;
 }
 function fciBar(geo){
@@ -5005,7 +5117,7 @@ function loadCourse(c,quiet){
   function go(){
     planReset(); bgClear();
     S.W=c.W||40; S.H=c.H||20; setSizeSel();
-    S.obs=c.obs.map(function(o){var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.type==='tunnel'&&o.bend) n.bend=o.bend; if(o.type==='tunnel'&&o.len) n.len=o.len; return n;}); S.route=c.route.slice(); sel=null;
+    S.obs=c.obs.map(function(o){var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.type==='tunnel'&&o.bend) n.bend=o.bend; if(o.type==='tunnel'&&o.len) n.len=o.len; if(o.type==='jump'&&JV[o.v]) n.v=o.v; return n;}); S.route=c.route.slice(); sel=null;
     S.sides=(c.sides||[]).slice(); S.turns=(c.turns||[]).slice(); S.hp=(c.hp||[]).map(function(p){return p.slice();}); if(panel==='quiz'){quizStop(); panel=null;}
     S.meta={id:c.id,name:c.name,cls:c.cls,author:c.author||'',gen:!!c.gen,dirty:false}; S.chk=null;
     newSeen(c.id);
@@ -5930,7 +6042,7 @@ function planPDF(){
     rows.forEach(function(rw){
       var o=rw.o, deg=rw.dir?Math.round((Math.atan2(rw.dir.y,rw.dir.x)*180/Math.PI+360)%360):((o.rot%360)+360)%360, d=DIRS[Math.round(deg/45)%8];
       x.fillStyle='#17201a'; x.font='22px sans-serif';
-      x.fillText(rw.nums.length?rw.nums.join(', '):'–',cols[0],y); x.fillText(T(DEF[o.type].l),cols[1],y);
+      x.fillText(rw.nums.length?rw.nums.join(', '):'–',cols[0],y); x.fillText(T(obL(o)),cols[1],y);
       x.fillText((LANG==='en'?String(o.x):String(o.x).replace('.',',')),cols[2],y); x.fillText((LANG==='en'?String(o.y):String(o.y).replace('.',',')),cols[3],y);
       x.fillText(d+' '+deg+'°',cols[4],y);
       var nt=[]; if(rw.nums.length>1) nt.push('použita '+rw.nums.length+'×'); if(!rw.nums.length) nt.push('mimo trasu'); nt=nt.concat(rw.notes||[]).map(function(q){return T(q);});
@@ -6481,7 +6593,7 @@ function course3dSpec(){
   S.route.forEach(function(id,i){ (nums[id]=nums[id]||[]).push(i+1); });
   var size={jump:sizeM(z.jump)||.6, tire:sizeM(z.tire)||.8, lj:sizeM(z.lj,1)||1.4, ljn:+((String(z.lj).match(/(\d)\s*díl/)||[])[1]||4)};
   var obs=S.obs.map(function(o){
-    var r={type:o.type,x:o.x,y:o.y,rot:o.rot,nums:nums[o.id]||[],idx:S.route.indexOf(o.id),sign:-1};
+    var r={type:o.type,v:o.v,x:o.x,y:o.y,rot:o.rot,nums:nums[o.id]||[],idx:S.route.indexOf(o.id),sign:-1};
     if(o.type==='tunnel'){ var L=tunLen(o), t=[]; for(var k=0;k<=8;k++){ var q=tunPt(o,-L/2+L*k/8); t.push([q.x,q.y]); } r.tunnel=t; }
     if(o.type==='seesaw'&&r.idx>=0){ var a=o.rot*PI/180, P0=c.P[r.idx]; r.sign=((P0.en.x-o.x)*Math.cos(a)+(P0.en.y-o.y)*Math.sin(a))<0?-1:1; }
     return r;
@@ -8276,7 +8388,7 @@ function weakHTML(){
 /* ---------- předčítání trasy ---------- */
 var SAY=null;
 function sayText(i,hs){
-  var id=S.route[i], o=getO(id), t=S.turns[i], parts=[(i+1)+'. '+T(DEF[o.type].l)];
+  var id=S.route[i], o=getO(id), t=S.turns[i], parts=[(i+1)+'. '+T(obL(o))];
   if(o.type==='tunnel'&&o.bend) parts.push(T(Math.abs(o.bend)>=180?'do U':'do oblouku'));
   if(t==='f') parts.push(T(o.type==='jump'?'z druhé strany':'vstup vzdálenějším koncem'));
   else if(t) parts.push(T(tuLabel(t,S.sides[i]).slice(2)));
@@ -9327,7 +9439,7 @@ function fldCard(){
   var o=FLD.ord[FLD.k], prev=FLD.k>0?FLD.ord[FLD.k-1]:{x:0,y:0}, d=Math.hypot(o.x-prev.x,o.y-prev.y), th=Math.atan2(o.y-prev.y,o.x-prev.x)*180/Math.PI, nums=fldNums(o);
   var dirTxt=Math.abs(th)<8?'rovně podél dlouhé strany':Math.abs(Math.abs(th)-180)<8?'zpátky podél dlouhé strany':(th>0?'o '+Math.round(th)+'° doprava':'o '+Math.round(-th)+'° doleva')+' od dlouhé strany';
   var bend=o.type==='tunnel'&&o.bend?' do '+(Math.abs(o.bend)>=180?'U':'oblouku '+Math.abs(o.bend)+'°'):'';
-  $('fdBody').innerHTML='<div class="fdhead"><b>'+(FLD.k+1)+' / '+FLD.ord.length+' · '+DEF[o.type].l+bend+'</b><span>'+(nums.length?'v trase č. '+nums.join(', '):'mimo trasu')+'</span></div>'+
+  $('fdBody').innerHTML='<div class="fdhead"><b>'+(FLD.k+1)+' / '+FLD.ord.length+' · '+obL(o)+bend+'</b><span>'+(nums.length?'v trase č. '+nums.join(', '):'mimo trasu')+'</span></div>'+
     '<div class="fdnav"><svg viewBox="-50 -50 100 100" class="fdarrow" id="fdArrow"><circle r="46" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/><g id="fdRot" transform="rotate('+(FLD.cal?0:r(th+90))+')"><path d="M0,-38 L14,-8 L5,-8 L5,30 L-5,30 L-5,-8 L-14,-8 Z" fill="var(--accent)"/></g></svg>'+
     '<div class="fddist"><b class="num">'+fmt(d)+' m</b><span>'+Math.max(1,Math.round(d/FLD.step))+' kroků '+(FLD.k?'od předchozí překážky':'od rohu')+'</span><span id="fdDir">'+(FLD.cal?'Jdi ve směru šipky.':'Směr: '+dirTxt+' (šipka ukazuje směr na plánku).')+'</span></div></div>'+
     '<div class="fdori"><svg viewBox="-30 -30 60 60" class="fdob"><g id="fdObRot" transform="rotate('+(FLD.cal?0:o.rot+90)+')" style="color:'+DEF[o.type].c+'">'+fldObG(o)+'</g></svg><span>'+fldOriTxt(o)+'</span></div>'+

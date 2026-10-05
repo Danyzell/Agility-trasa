@@ -22,6 +22,8 @@ AR na place (ve 3D tlačítko AR na place, Chrome na Androidu s ARCore): WebXR `
 
 Kolbiště podle GPS (Plán → Nástroje → Kolbiště (GPS)): poloha kolbiště se změří z GPS telefonu (25 s průměrování, ukáže přesnost), aplikace k němu naviguje šipkou podle kompasu se vzdáleností a odkazem do map. Natočení kolbiště se zaměří projitím dvou rohů podél dlouhé strany (nebo kompasem) a použije ho Stavba v terénu i AR na place. Plán závodiště jde načíst ze souboru GeoJSON nebo KML (kolbiště jako obdélník, úsečka nebo bod se šířkou, délkou a natočením) a k parkuru přiřadit kolbiště. Polohy zůstávají v zařízení (klíč `agility-rings-v1`). Přesnost GPS 2–5 m stačí na nalezení kolbiště, ne na umístění skoku.
 
+Stavba na telefonu: přiblížení dvěma prsty (100–400 %), klepnutí do volného místa nejdřív zruší výběr, otáčení po 15° a ⟂ natočení kolmo na trasu (u jedné překážky, nebo všech skoků v režimu Trasa), kopírování překážky, obrácení trasy. Zeď a dvojitý skok (FCI) jsou skoky s variantou `o.v` (`wall`, `oxer`), počítají se jako skok a mají vlastní 3D model. Na plánku je Start a Cíl, kontrola FCI hlásí překážky přes sebe (tunel pod kladinou a A-rampou smí) a překážku přesahující plochu. Testy `tests/stavba.js`.
+
 Délka tunelu: u vybraného tunelu ve Stavbě 2–6 m (nový tunel 5 m, uložené parkury si délku nechají). Kontrola FCI hlásí tunel kratší než 3 m.
 
 Zásady ochrany osobních údajů: [privacy.html](https://danyzell.github.io/Agility-trasa/privacy.html) (česky i anglicky, adresa se hodí i do Google Play).
