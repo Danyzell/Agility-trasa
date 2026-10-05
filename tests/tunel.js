@@ -103,6 +103,13 @@ module.exports = async function ({ browser, base }) {
     await ev(() => close3d());
   });
 
+  await step('AR na iPhonu (Quick Look)', async () => {
+    await fresh(); await tunCourse();
+    /* parkur jako model USDZ (zip), který iPhone položí na zem */
+    const r = await ev(() => v3dLoad().then(m => { build3d(); return m.quickLookBlob(course3dSpec()); }).then(b => b.arrayBuffer().then(a => { const u = new Uint8Array(a); return { n: u.length, pk: u[0] === 0x50 && u[1] === 0x4b, type: b.type }; })), null).catch(e => ({ err: String(e) }));
+    ok(r && r.pk && r.n > 20000 && r.type === 'model/vnd.usdz+zip', 'model USDZ pro iPhone se nevytvořil: ' + JSON.stringify(r));
+  });
+
   await step('3D: pes kličkuje slalomem', async () => {
     await fresh();
     await ev(() => { S.meta.dirty = false; const c = listFor('A1').find(x => x.route.some(id => (x.obs.find(o => o.id === id) || {}).type === 'weave')); loadCourse(c, true); });

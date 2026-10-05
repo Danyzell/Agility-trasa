@@ -1322,6 +1322,9 @@ var I18N_EXTRA={exact:{
 "Účet: přihlas se přes Google ve Více → Účet a parkury, psi i běhy budeš mít na všech zařízeních": "Account: sign in with Google in More → Account and have your courses, dogs and runs on all devices",
 "AR na place: ve 3D klepni na AR a parkur se položí na skutečný trávník (Chrome na Androidu)": "AR on the field: in 3D tap AR and the course is placed on real grass (Chrome on Android)",
 "AR na place": "AR on the field",
+"Připravuji AR, chvilku…": "Preparing AR, one moment…",
+"Ťukni dole na Sdílet (čtvereček se šipkou) a vyber Přidat na plochu. Pak aplikace běží z ikony a funguje i bez signálu.": "Tap Share at the bottom (the square with the arrow) and choose Add to Home Screen. The app then runs from the icon and works without signal too.",
+"AR se nepodařilo spustit.": "AR couldn't start.",
 "📷 AR na place": "📷 AR on the field",
 "AR se ještě načítá, klepni za chvilku znovu.": "AR is still loading, tap again in a moment.",
 "Pro AR potřebuješ trasu aspoň se 2 překážkami.": "For AR you need a route with at least 2 obstacles.",
@@ -6320,7 +6323,7 @@ function open3dGL(){
     if(g!==C3.gen||!m.mountCourse) throw new Error('no3d');
     var cv=$('c3dgl'); $('c3d').hidden=true; cv.hidden=false; $('ov3d').hidden=false;
     var api=m.mountCourse(cv,course3dSpec(),{}); V3D.m=m;
-    if(m.arSupported) m.arSupported().then(function(ok){ $('p3ar').hidden=!ok; });
+    if(AR.ql&&m.quickLookBlob) $('p3ar').hidden=false; else if(m.arSupported) m.arSupported().then(function(ok){ $('p3ar').hidden=!ok; });
     cv.addEventListener('webglcontextlost',function(e){ e.preventDefault(); close3dGL(); },{once:true});
     api.onCamera=function(){ if(!V3.on) render3d(); };
     C3.api=api; V3.path.len=api.length; return api;
@@ -6342,7 +6345,9 @@ $('dimBtn').onclick=function(){ open3d(false); };
 var AR={api:null,st:'',ok:false};
 /* AR umí jen některé telefony (Chrome na Androidu s ARCore); jen tam se ukáže tlačítko a dopředu se načte 3D balíček,
    aby se AR spustilo hned klepnutím (prohlížeč chce start AR přímo z klepnutí) */
-try{ if(navigator.xr&&navigator.xr.isSessionSupported) navigator.xr.isSessionSupported('immersive-ar').then(function(ok){
+/* iPhone: Safari WebXR neumí, ale umí AR Quick Look (parkur jako 3D model položený na zem) */
+try{ var qa=document.createElement('a'); if(qa.relList&&qa.relList.supports&&qa.relList.supports('ar')){ AR.ok=true; AR.ql=true; v3dLoad().then(function(m){ V3D.m=m; },function(){}); } }catch(e){}
+try{ if(!AR.ql&&navigator.xr&&navigator.xr.isSessionSupported) navigator.xr.isSessionSupported('immersive-ar').then(function(ok){
   if(!ok) return; AR.ok=true; ui(); v3dLoad().then(function(m){ V3D.m=m; },function(){});
 },function(){}); }catch(e){}
 function arHint(s){
@@ -6355,12 +6360,21 @@ function arStart(){
   if(!V3D.m||!V3D.m.startAR){ toast(T('AR se ještě načítá, klepni za chvilku znovu.')); v3dLoad().then(function(m){ V3D.m=m; },function(){}); return; }
   if(S.route.length<2){ toast(T('Pro AR potřebuješ trasu aspoň se 2 překážkami.')); return; }
   if(!C3.api) build3d();
+  if(AR.ql){ arQuickLook(); return; }
   V3.on=false; $('p3play').textContent=T('Přehrát');
   $('arUi').hidden=false; arHint('scan'); $('arUi').querySelector('[data-ar="play"]').textContent=T('Pustit psa');
   var cur=null;
   try{ cur=V3D.m.startAR($('arUi'),course3dSpec(),{onState:arHint,onEnd:function(){ AR.api=null; $('arUi').hidden=true; if(C3.api) render3d(); }}); }
   catch(e){ cur=Promise.reject(e); }
   cur.then(function(a){ AR.api=a; },function(){ $('arUi').hidden=true; toast(T('AR se nepodařilo spustit. Potřebuješ Chrome na Androidu s podporou ARCore.'),5000); });
+}
+function arQuickLook(){
+  if(!V3D.m.quickLookBlob||AR.busy) return; AR.busy=true; toast(T('Připravuji AR, chvilku…'));
+  V3D.m.quickLookBlob(course3dSpec()).then(function(b){
+    AR.busy=false; if(AR.url) URL.revokeObjectURL(AR.url); AR.url=URL.createObjectURL(b);
+    var a=document.createElement('a'); a.rel='ar'; a.href=AR.url+'#allowsContentScaling=1'; a.appendChild(document.createElement('img'));
+    document.body.appendChild(a); a.click(); setTimeout(function(){ if(a.parentNode) a.parentNode.removeChild(a); },1000);
+  },function(){ AR.busy=false; toast(T('AR se nepodařilo spustit.')); });
 }
 $('p3ar').onclick=arStart; $('arBtn').onclick=arStart;
 /* klepnutí na ovládání nesmí položit parkur */
@@ -9293,6 +9307,9 @@ catSync();
           :'<ol class="inst-steps"><li>Otevři stránku v Chromu.</li><li>Ťukni na ⋮ vpravo nahoře.</li><li>Vyber Instalovat aplikaci (nebo Přidat na plochu).</li></ol>')+'</div>';
     }
     var hm=document.getElementById('hmInst');
+    /* iPhone v Safari: instalace jen přes Sdílet → Přidat na plochu, tak to ukážeme na Domů */
+    var iosSaf=/iP(hone|ad|od)/.test(navigator.userAgent)&&!/CriOS|FxiOS|EdgiOS|FBAN|FBAV|Instagram/.test(navigator.userAgent);
+    if(hm&&!inst&&!ev&&iosSaf&&!lsGet('agility-instx-v1',0)){ hm.innerHTML='<div class="hm-ch hm-inst"><div class="ic">📲</div><div class="tx"><b>Nainstaluj si aplikaci</b><span>Ťukni dole na Sdílet (čtvereček se šipkou) a vyber Přidat na plochu. Pak aplikace běží z ikony a funguje i bez signálu.</span></div><button class="hm-x" data-instx="1" aria-label="Zavřít">'+IC.x+'</button></div>'; return; }
     if(hm) hm.innerHTML=inst||!ev||lsGet('agility-instx-v1',0)?'':'<div class="hm-ch hm-inst"><div class="ic">📲</div><div class="tx"><b>Nainstaluj si aplikaci</b><span>Ikona na ploše, celá obrazovka a funguje i bez signálu na cvičišti.</span>'+
       '<button class="hm-go" data-inst="1">Instalovat</button></div><button class="hm-x" data-instx="1" aria-label="Zavřít">'+IC.x+'</button></div>';
   };

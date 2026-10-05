@@ -18,7 +18,7 @@ Zahrada týdne a Zahradní liga (Domů): každé pondělí se všem vygeneruje s
 
 3D parkur (Plán → tlačítko 3D na plánku, nebo Nástroje → 3D průlet): parkur se postaví z 3D modelů překážek v rozměrech FCI (pravidla od 2023; výška skoku, kruhu a délka skoku dalekého podle velikosti vybraného psa) a pes proběhne trasu – skáče, leze po zónách, kličkuje slalomem (1. tyčka po levém rameni) a houpačka se pod ním překlopí. Pohledy Volně, Očima psa, Za psem a Shora; přepínač 2D | 3D vrací do plánku. Kód je ve `v3d/src/course.js` (balíček `v3d/v3d.js`), bez WebGL zůstává jednoduchý průlet.
 
-AR na place (ve 3D tlačítko AR na place, Chrome na Androidu s ARCore): WebXR `immersive-ar` s hit-testem položí parkur startem na zaměřené místo ve skutečné velikosti nebo jako model 1 : 20, jde otočit, položit znovu a pustit psa. Kód `v3d/src/ar.js`.
+AR na place (ve 3D tlačítko AR na place, Chrome na Androidu s ARCore): WebXR `immersive-ar` s hit-testem položí parkur startem na zaměřené místo ve skutečné velikosti nebo jako model 1 : 20, jde otočit, položit znovu a pustit psa. Kód `v3d/src/ar.js`. Na iPhonu a iPadu (Safari) se parkur vyexportuje do USDZ a otevře v Apple AR Quick Look (bez animace psa, velikost jde měnit prsty), kód `v3d/src/quicklook.js`.
 
 Délka tunelu: u vybraného tunelu ve Stavbě 2–6 m (nový tunel 5 m, uložené parkury si délku nechají). Kontrola FCI hlásí tunel kratší než 3 m.
 
