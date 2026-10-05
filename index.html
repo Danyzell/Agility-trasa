@@ -414,7 +414,10 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 body.at-home .top{display:none;}
 .home{padding:0 !important; max-width:none !important;}
 .hm-head{background:radial-gradient(120% 90% at 100% 0%,#2f9e62 0%,#14553a 45%,#0a2a1c 100%); color:#fff; padding:calc(18px + env(safe-area-inset-top,0px)) 18px 64px; border-radius:0 0 30px 30px; position:relative; overflow:hidden;}
-.hm-head:after{content:""; position:absolute; right:-50px; top:24px; width:210px; height:210px; border:18px solid rgba(198,244,50,.12); border-radius:50%; pointer-events:none;}
+.hm-head:after{content:none;}
+.hm-head{background:#0a2a1c;}
+.hm-pic{position:relative; z-index:0; margin:calc(-18px - env(safe-area-inset-top,0px) - 40px) -18px -46px; aspect-ratio:1456/1088; max-height:420px; pointer-events:none;
+  background:linear-gradient(180deg,rgba(10,42,28,.6) 0%,rgba(10,42,28,0) 26%,rgba(10,42,28,0) 66%,#0a2a1c 100%),url(hero.webp) 70% 40%/cover no-repeat;}
 .hm-tb{display:flex; align-items:center; gap:10px; white-space:nowrap; font-family:var(--display); font-weight:700; font-size:20px; letter-spacing:.4px; position:relative; z-index:1;}
 .hm-logo{flex:0 0 auto; width:34px; height:34px; border-radius:10px; background:#c6f432; display:grid; place-items:center;}
 .hm-logo svg{width:22px; height:22px;}
@@ -4824,7 +4827,7 @@ function homeRender(){
   var wd=['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota'][new Date().getDay()];
   var h='<div class="hm-head"><div class="hm-tb"><div class="hm-logo">'+IC.brand+'</div><span>AGIPLAN</span>'+
     '<button class="hm-dog" data-h="dog"><i>🐕</i><span style="overflow:hidden;text-overflow:ellipsis;min-width:0">'+(d?esc(d.name)+' · '+esc(d.cls):'Přidat psa')+'</span></button></div>'+
-    '<div class="hm-big">'+(donateOn()?'<button class="hm-sup" data-h="sup" aria-label="Podpořit aplikaci">'+IC.heartF+'<span>Podpořit</span></button>':'')+'<small>'+wd+(st?' · série '+st+(st===1?' den':st<5?' dny':' dní')+' 🔥':'')+'</small><h1>Připraveni<br>na <em>trénink?</em></h1></div>'+
+    '<div class="hm-pic" aria-hidden="true"></div><div class="hm-big">'+(donateOn()?'<button class="hm-sup" data-h="sup" aria-label="Podpořit aplikaci">'+IC.heartF+'<span>Podpořit</span></button>':'')+'<small>'+wd+(st?' · série '+st+(st===1?' den':st<5?' dny':' dní')+' 🔥':'')+'</small><h1>Připraveni<br>na <em>trénink?</em></h1></div>'+
     '<div class="hm-stats"><div><b>'+doneN+'</b><span>zaběhnuto</span></div><div><b>'+(avg?fmt(avg):'–')+'</b><span>m/s průměr</span></div><div><b>'+(runs.length?clean+' %':'–')+'</b><span>čisté běhy</span></div></div></div>';
   var m=curM();
   h+=S.route.length>1
