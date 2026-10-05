@@ -122,9 +122,25 @@ module.exports = async function ({ browser, base }) {
     ok(await page.isVisible('#moreBody [data-mgo="fb"]') && await page.isVisible('#moreBody [data-mgo="donate"]'), 'v O aplikaci chybí Napsat autorovi nebo Podpořit');
   });
 
+  await step('srdíčko Podpořit vpravo nahoře', async () => {
+    await fresh();
+    ok(await page.isVisible('#v-home .hm-sup'), 'na Domů chybí Podpořit');
+    await page.click('#v-home .hm-sup'); await page.waitForTimeout(200);
+    ok(await ev(() => view === 'more' && moreTab === 'donate') && await page.isVisible('#moreBody .dn-qr svg'), 'Podpořit na Domů neotevřelo QR platbu');
+    await page.click('.nav [data-v="lib"]'); await page.waitForTimeout(150);
+    ok(await page.isVisible('#supBtn'), 'v horní liště chybí Podpořit');
+    await page.click('#supBtn'); await page.waitForTimeout(200);
+    ok(await ev(() => view === 'more' && moreTab === 'donate'), 'Podpořit v liště neotevřelo QR platbu');
+    await page.click('.nav [data-v="plan"]'); await page.waitForTimeout(150);
+    ok(!(await page.isVisible('#supBtn')), 'v Plánu má být lišta bez Podpořit (místo pro název parkuru)');
+    /* bez účtu se srdíčko neukazuje */
+    await ev(() => { DONATE.acc = ''; homeRender(); });
+    ok(!(await page.isVisible('#v-home .hm-sup')), 'bez účtu se má Podpořit schovat');
+  });
+
   await step('angličtina', async () => {
     const miss = await ev(() => ['Napsat autorovi', 'Podpořit aplikaci', 'Jiná částka', '200 Kč', 'Díky, zpráva odešla!', 'Jak se ti HandlerMap líbí?', 'Napiš, co máš na srdci', 'E-mail pro odpověď (nepovinné)',
-      'Nainstaluj si aplikaci', 'Doporuč aplikaci kamarádům', 'Ťukni na ⋮ vpravo nahoře.', 'Sdílet odkaz', 'Instalovat', '3 z 5', 'Zprávu se nepodařilo poslat', 'Dnes už jsi poslal(a) dost zpráv, zkus to zítra.']
+      'Nainstaluj si aplikaci', 'Doporuč aplikaci kamarádům', 'Ťukni na ⋮ vpravo nahoře.', 'Sdílet odkaz', 'Instalovat', 'Podpořit', '3 z 5', 'Zprávu se nepodařilo poslat', 'Dnes už jsi poslal(a) dost zpráv, zkus to zítra.']
       .filter(s => trLookup(s) == null));
     ok(!miss.length, 'chybí překlad: ' + miss.join(' | '));
   });
