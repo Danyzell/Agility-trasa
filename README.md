@@ -22,6 +22,8 @@ Délka tunelu: u vybraného tunelu ve Stavbě 2–6 m (nový tunel 5 m, uložen�
 
 Zásady ochrany osobních údajů: [privacy.html](https://danyzell.github.io/Agility-trasa/privacy.html) (česky i anglicky, adresa se hodí i do Google Play).
 
+Účet a synchronizace (Více → Účet): přihlášení přes Google (Supabase Auth). Data aplikace (stejná jako v záloze) se po každé změně a při otevření aplikace synchronizují se serverem, slučují se třícestně proti stavu z poslední synchronizace, takže změny i smazání z více zařízení se zachovají. Na serveru tabulka `user_data` a funkce `sync_get`, `sync_put`, `sync_delete` (`supabase/migrations/20261005100000_user_data.sql`). Zapnutí: v Supabase → Authentication → Providers → Google vložit klíč z Google Cloud a v URL Configuration nastavit Site URL na adresu aplikace.
+
 Sdílení na Facebooku: odkaz https://danyzell.github.io/Agility-trasa/ má náhled (obrázek `og.jpg` a popis). Když ho někdo otevře ve vestavěném prohlížeči Facebooku nebo Messengeru, kde instalace nejde, ukáže se pruh Otevřít v Chromu (na iPhonu návod přes ⋯ → Otevřít v Safari).
 
 Instalace přes Chrome: když Chrome nabídne instalaci, ukáže se na Domů karta **Nainstaluj si aplikaci**. Ve Více → O aplikaci je tlačítko Nainstalovat, nebo návod pro iPhone (Safari → Sdílet → Přidat na plochu), když tlačítko není. Je tam i QR kód s odkazem na aplikaci, aby si ji kamarádi mohli rovnou otevřít.

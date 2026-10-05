@@ -36,7 +36,7 @@ hr{border:0; border-top:1px solid var(--border); margin:40px 0;}
 <section id="cs">
 <p class="muted">Aplikace AgiPlan · platné od 5. 10. 2026</p>
 <div class="box">
-<b>Stručně:</b> AgiPlan funguje bez registrace a bez reklam. Parkury, psi, běhy, deník i nastavení zůstávají jen ve tvém telefonu.
+<b>Stručně:</b> AgiPlan funguje bez registrace a bez reklam. Parkury, psi, běhy, deník i nastavení zůstávají jen ve tvém telefonu, pokud se nepřihlásíš k účtu.
 Na server odchází jen to, co sám odešleš (výsledek do žebříčku, sdílený parkur, záloha, zpráva autorovi). Nepoužíváme analytiku ani sledovací cookies.
 </div>
 
@@ -56,6 +56,10 @@ Na server odchází jen to, co sám odešleš (výsledek do žebříčku, sdíle
 
 <h3>4. Záloha v cloudu</h3>
 <p>Záloha obsahuje data aplikace (parkury, psi, běhy, deník) a ukládá se pod náhodným klíčem. Kdo zná klíč, zálohu načte, proto ho nikomu nedávej. Klíč nijak nespojujeme s tvou osobou.</p>
+
+<h3>4b. Účet a synchronizace (přihlášení přes Google)</h3>
+<p>Přihlášení je dobrovolné. Když se přihlásíš přes Google, uložíme e-mail, jméno z účtu Google a identifikátor účtu. K účtu se ukládají data aplikace (parkury, psi, běhy, deník, výsledky z kacr.info a nastavení), aby byla stejná na všech tvých zařízeních.
+Účel: synchronizace a obnova dat. Základ: plnění služby, o kterou žádáš přihlášením. Data uchováváme, dokud účet používáš; smažeš je v aplikaci tlačítkem <b>Více → Účet → Smazat data z účtu</b>, zrušení celého účtu vyřídíme na požádání.</p>
 
 <h3>5. Napsat autorovi</h3>
 <p>Uložíme hodnocení, text zprávy, nepovinný e-mail, jazyk, verzi aplikace, typ prohlížeče a náhodný identifikátor instalace. Zpráva se zároveň pošle e-mailem autorovi.
@@ -77,6 +81,7 @@ Na server odchází jen to, co sám odešleš (výsledek do žebříčku, sdíle
 <table>
 <tr><th>Služba</th><th>Na co</th><th>Kde</th></tr>
 <tr><td>Supabase</td><td>databáze a serverové funkce (žebříčky, sdílení, zálohy, zprávy)</td><td>EU (Frankfurt)</td></tr>
+<tr><td>Google</td><td>přihlášení k účtu (jen když ho použiješ)</td><td>USA (standardní smluvní doložky)</td></tr>
 <tr><td>Resend</td><td>odeslání zprávy autorovi e-mailem</td><td>USA (standardní smluvní doložky)</td></tr>
 <tr><td>GitHub Pages</td><td>provoz webu aplikace</td><td>USA</td></tr>
 <tr><td>Google Fonts</td><td>písmo</td><td>USA</td></tr>
@@ -103,7 +108,7 @@ Stížnost můžeš podat u Úřadu pro ochranu osobních údajů (<a href="http
 <h1>Privacy policy</h1>
 <p class="muted">AgiPlan app · effective 5 October 2026</p>
 <div class="box">
-<b>In short:</b> AgiPlan works without an account and without ads. Courses, dogs, runs, diary and settings stay on your phone only.
+<b>In short:</b> AgiPlan works without an account and without ads. Courses, dogs, runs, diary and settings stay on your phone only unless you sign in to an account.
 Only what you send yourself goes to the server (a result to a leaderboard, a shared course, a backup, a message to the author). We use no analytics and no tracking cookies.
 </div>
 
@@ -120,6 +125,9 @@ Purpose: leaderboards and the league. Legal basis: your consent given by sending
 <p>We store the course name, class, optionally the course author's name and the obstacle layout. Anyone with the code can load the course.</p>
 <h3>4. Cloud backup</h3>
 <p>The backup contains your app data (courses, dogs, runs, diary) under a random key. Anyone with the key can load the backup, so keep it private. The key is not linked to your identity.</p>
+<h3>4b. Account and sync (Sign in with Google)</h3>
+<p>Signing in is optional. When you sign in with Google we store your e-mail, the name from your Google account and an account ID. The app data (courses, dogs, runs, diary, kacr.info results and settings) is stored with the account so it is the same on all your devices.
+Purpose: syncing and restoring your data. Legal basis: providing the service you request by signing in. Kept while you use the account; delete it in the app with <b>More → Account → Delete data from account</b>; we delete the whole account on request.</p>
 <h3>5. Write to the author</h3>
 <p>We store the rating, message, optional e-mail, language, app version, browser type and a random installation ID; the message is also e-mailed to the author.
 Purpose: to reply and improve the app. The e-mail is used only to reply. Legal basis: legitimate interest in answering your message; your consent for the e-mail.</p>
@@ -136,6 +144,7 @@ Purpose: to reply and improve the app. The e-mail is used only to reply. Legal b
 <table>
 <tr><th>Service</th><th>Used for</th><th>Where</th></tr>
 <tr><td>Supabase</td><td>database and server functions (leaderboards, sharing, backups, messages)</td><td>EU (Frankfurt)</td></tr>
+<tr><td>Google</td><td>signing in to your account (only if you use it)</td><td>USA (standard contractual clauses)</td></tr>
 <tr><td>Resend</td><td>e-mailing your message to the author</td><td>USA (standard contractual clauses)</td></tr>
 <tr><td>GitHub Pages</td><td>hosting the app</td><td>USA</td></tr>
 <tr><td>Google Fonts</td><td>font</td><td>USA</td></tr>
