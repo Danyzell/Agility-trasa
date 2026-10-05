@@ -73,6 +73,28 @@ module.exports = async function ({ browser, base }) {
     ok(Math.abs(L - 6) < .05, '3D tunel nemá zvolenou délku: ' + L);
   });
 
+  await step('3D: pes kličkuje slalomem', async () => {
+    await fresh();
+    await ev(() => { S.meta.dirty = false; const c = listFor('A1').find(x => x.route.some(id => (x.obs.find(o => o.id === id) || {}).type === 'weave')); loadCourse(c, true); });
+    await ev(() => open3d(false));
+    const ready = await page.waitForFunction(() => C3.api, null, { timeout: 15000 }).then(() => true, () => false);
+    if (!ready) return;   /* bez WebGL se 3D netestuje */
+    const r = await ev(() => {
+      const sp = course3dSpec(), w = sp.weaves[0], a = w.rot * Math.PI / 180, ca = Math.cos(a), sa = Math.sin(a), out = [];
+      /* u každé tyčky: na které straně je pes (vlevo = kladně vůči směru běhu) */
+      for (let k = 0; k < 12; k++) {
+        const u = w.dir > 0 ? -3.3 + k * .6 : 3.3 - k * .6; let best = null;
+        for (let d = 0; d < C3.api.length; d += .02) { const p = C3.api.at(d); if (p.idx !== w.idx && p.idx !== w.idx - 1) continue;
+          const pu = (p.x - w.x) * ca + (p.z - w.y) * sa, pv = -(p.x - w.x) * sa + (p.z - w.y) * ca;
+          if (Math.abs(pv) < .8 && (!best || Math.abs(pu - u) < Math.abs(best.pu - u))) best = { pu, pv }; }
+        out.push(best ? Math.sign(best.pv * w.dir * -1) : 0);   /* +1 = pes vlevo od tyčky */
+      }
+      return out;
+    });
+    ok(r.length === 12 && r[0] === -1 && r.every((v, k) => v === (k % 2 ? 1 : -1)), 'pes neobíhá tyčky střídavě s 1. tyčkou po levém rameni: ' + r.join(','));
+    await ev(() => close3d());
+  });
+
   await step('angličtina', async () => {
     const miss = await ev(() => ['2 m (trénink)', 'Délka tunelu', 'Zobrazení', 'Tunel kratší než 3 m: 1× (FCI: délka tunelu 3–6 m)'].filter(s => trLookup(s) == null));
     ok(!miss.length, 'chybí překlad: ' + miss.join(' | '));

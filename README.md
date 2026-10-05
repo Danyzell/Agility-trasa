@@ -6,7 +6,7 @@ Plánovač agility parkurů jako aplikace do telefonu.
 
 Instalace: otevři stránku v Chromu na Androidu a zvol **Instalovat aplikaci** (nebo ⋮ → Přidat na plochu). Aplikace pak běží z ikony na ploše, i offline.
 
-Verze 2.1. Česky i anglicky (Více → Nastavení), světlý i tmavý vzhled.
+Verze 2.2. Česky i anglicky (Více → Nastavení), světlý i tmavý vzhled.
 
 Trénink doma (Domů → Trénink doma, nebo Parkury → Generátor → Z parkurů): aplikace vyřízne ze skutečných parkurů úseky, které se vejdou na tvou plochu a postavíš je z vlastního vybavení. Pořadí, otočky kolem křídla i zadní strany zůstanou jako na parkuru. Úseky jde filtrovat podle toho, co chceš trénovat, otočit zrcadlově (otočky na druhou stranu) a kruh nebo skok daleký nahradit skokem; k úseku se ukládají oblíbené i běhy.
 
@@ -16,11 +16,17 @@ Závody (Domů): kalendář z kacr.info na 60 dní dopředu se vzdáleností od 
 
 Zahrada týdne a Zahradní liga (Domů): každé pondělí se všem vygeneruje stejný parkur 20 × 15 m z domácího vybavení (6 skoků, tunel, slalom) – semínko je číslo týdne, takže parkur nepotřebuje server. Výsledky jdou do týdenního žebříčku podle velikosti psa a za umístění se sbírají body do ligy na celou sezónu (10-8-6-5-4-3-2, za každý další odeslaný týden 1 bod). Žebříčky počítá Supabase (`supabase/migrations`, funkce `week_submit`, `week_board`, `league_board`).
 
+3D parkur (Plán → tlačítko 3D na plánku, nebo Nástroje → 3D průlet): parkur se postaví z 3D modelů překážek v rozměrech FCI (pravidla od 2023; výška skoku, kruhu a délka skoku dalekého podle velikosti vybraného psa) a pes proběhne trasu – skáče, leze po zónách, kličkuje slalomem (1. tyčka po levém rameni) a houpačka se pod ním překlopí. Pohledy Volně, Očima psa, Za psem a Shora; přepínač 2D | 3D vrací do plánku. Kód je ve `v3d/src/course.js` (balíček `v3d/v3d.js`), bez WebGL zůstává jednoduchý průlet.
+
+Délka tunelu: u vybraného tunelu ve Stavbě 2–6 m (nový tunel 5 m, uložené parkury si délku nechají). Kontrola FCI hlásí tunel kratší než 3 m.
+
+Zásady ochrany osobních údajů: [privacy.html](https://danyzell.github.io/Agility-trasa/privacy.html) (česky i anglicky, adresa se hodí i do Google Play).
+
 Instalace přes Chrome: když Chrome nabídne instalaci, ukáže se na Domů karta **Nainstaluj si aplikaci**. Ve Více → O aplikaci je tlačítko Nainstalovat, nebo návod pro iPhone (Safari → Sdílet → Přidat na plochu), když tlačítko není. Je tam i QR kód s odkazem na aplikaci, aby si ji kamarádi mohli rovnou otevřít.
 
 Napsat autorovi (Více, nebo hvězdičky na Domů po 10 bězích): hodnocení 1–5, druh zprávy, text a nepovinný e-mail pro odpověď. Serverová funkce `supabase/functions/feedback` zprávu uloží do tabulky `feedback` a pošle ji e-mailem přes [Resend](https://resend.com). Adresa příjemce je v tabulce `app_secret` (klíč `feedback_to`), klíč Resend patří do tajných proměnných funkce jako `RESEND_API_KEY` (nebo do `app_secret` pod klíčem `resend_key`). Bez klíče se zprávy jen ukládají a jde je číst v Supabase → Table Editor → feedback.
 
-Podpořit aplikaci (Více): QR platba (formát SPAYD) na účet z proměnné `DONATE` v `index.html`, s částkou 50, 100, 200, 500 Kč nebo vlastní. IBAN se dopočítá z čísla účtu.
+Podpořit aplikaci (Více, nebo srdíčko na Domů a v horní liště): platba kartou, Google Pay nebo Apple Pay přes odkaz Stripe (`DONATE.url` v `index.html`) a QR platba (formát SPAYD) na účet z proměnné `DONATE`, s částkou 50, 100, 200, 500 Kč nebo vlastní. IBAN se dopočítá z čísla účtu. Když ve Stripe u odkazu na platbu nastavíš Po platbě → Přesměrovat na `https://danyzell.github.io/Agility-trasa/?dekuji`, aplikace po zaplacení poděkuje.
 
 Na aplikaci pracuje víc sezení Claude Code najednou – pravidla jsou v [SPOLUPRACE.md](SPOLUPRACE.md).
 
