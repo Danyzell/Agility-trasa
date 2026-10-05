@@ -10,6 +10,7 @@
   --text:#17201a; --muted:#5d6a60; --border:#d3dacb;
   --accent:#1f6b45; --on-accent:#ffffff; --zone:#e8a838; --on-zone:#2a1d05;
   --good:#2b8a57; --warn:#b97a06; --bad:#c0392b;
+  --g-v:#1f7a4a; --g-vd:#2f6fae; --g-d:#9a6504; /* štítky hodnocení: bílé písmo s kontrastem aspoň 4,5:1 */
   --display:'Barlow Condensed','Arial Narrow',system-ui,sans-serif;
   --body:'Barlow',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   --nav-h:62px;
@@ -21,6 +22,7 @@
     --text:#e5ebe2; --muted:#94a293; --border:#2b362d;
     --accent:#5fb487; --on-accent:#0b1a11; --zone:#f0b94d; --on-zone:#2a1d05;
     --good:#58c08a; --warn:#e2a93a; --bad:#ec6a5c;
+    --g-v:#58c08a; --g-vd:#6aa5e0; --g-d:#e2a93a;
   }
 }
 :root[data-theme="dark"]{
@@ -29,6 +31,7 @@
   --text:#e5ebe2; --muted:#94a293; --border:#2b362d;
   --accent:#5fb487; --on-accent:#0b1a11; --zone:#f0b94d; --on-zone:#2a1d05;
   --good:#58c08a; --warn:#e2a93a; --bad:#ec6a5c;
+  --g-v:#58c08a; --g-vd:#6aa5e0; --g-d:#e2a93a;
 }
 *{box-sizing:border-box;}
 html,body{min-height:100%;}
@@ -137,6 +140,7 @@ select.btn{padding-right:8px;}
 .btn[hidden],.chip[hidden],.ndot[hidden]{display:none;}
 .catbar{display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:13px; color:var(--muted);}
 .catbar .grow{min-width:0; flex:1 1 180px;}
+#sideInfo{flex:1 1 200px;} /* Dráha psovoda: na úzkém telefonu má text celý řádek a tlačítka se zalomí pod něj */
 .catbar .btn{flex:0 0 auto;}
 .btn.busy svg{animation:spin 1s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -176,14 +180,14 @@ select.btn{padding-right:8px;}
 .check input{width:18px; height:18px; accent-color:var(--bad);}
 .result{display:flex; align-items:center; gap:14px;}
 .grade{flex:0 0 auto; min-width:78px; text-align:center; font-family:var(--display); font-size:30px; font-weight:700; border-radius:12px; padding:6px 10px; color:#fff; background:var(--muted);}
-.grade.V{background:var(--good);} .grade.VD{background:#3f7fc1;} .grade.D{background:var(--warn);} .grade.BO,.grade.DIS{background:var(--bad);}
+.grade.V{background:var(--g-v);} .grade.VD{background:var(--g-vd);} .grade.D{background:var(--g-d);} .grade.BO,.grade.DIS{background:var(--bad);}
 .result p{margin:0; font-size:14px;}
 .result p b{font-variant-numeric:tabular-nums;}
 .hist{margin:0; padding:0; list-style:none; display:flex; flex-direction:column;}
 .hist li{display:grid; grid-template-columns:auto 1fr auto auto; gap:10px; align-items:center; padding:9px 0; border-top:1px solid var(--border); font-size:14px;}
 .hist li:first-child{border-top:0;}
 .hist .g{font-family:var(--display); font-weight:700; font-size:16px; border-radius:7px; padding:1px 7px; color:#fff; background:var(--muted);}
-.hist .g.V{background:var(--good);} .hist .g.VD{background:#3f7fc1;} .hist .g.D{background:var(--warn);} .hist .g.BO,.hist .g.DIS{background:var(--bad);}
+.hist .g.V{background:var(--g-v);} .hist .g.VD{background:var(--g-vd);} .hist .g.D{background:var(--g-d);} .hist .g.BO,.hist .g.DIS{background:var(--bad);}
 .hist small{color:var(--muted);}
 .hist button{border:0; background:none; color:var(--muted); font-size:18px; padding:2px 6px;}
 .speed{display:flex; align-items:center; gap:8px; font-size:14px;}
@@ -247,6 +251,14 @@ select.btn{padding-right:8px;}
 .ov3d-bar .seg{background:#233026; border-color:#35443a;}
 .ov3d-bar .seg button{color:#c6d3c4;}
 .ov3d-bar .seg button.on{background:#5fb487; color:#0b1a11;}
+/* na telefonu tři řádky: stav trasy a 2D | 3D, pod tím Přehrát a rychlost, dole pohledy přes celou šířku */
+@media (max-width:600px){
+  .ov3d-bar{gap:6px 8px; padding-top:8px;}
+  .ov3d-bar #p3info{order:-2; flex:1 1 calc(100% - 130px); min-width:0; font-size:12px; line-height:1.25; color:#a9b8a8;} /* šířka nechá místo jen pro 2D | 3D, Přehrát spadne pod ně */
+  .ov3d-bar #p3dim{order:-1;}
+  .ov3d-bar #p3speed button,.ov3d-bar #p3dim button{padding:8px; min-width:42px;}
+  .ov3d-bar #p3view{display:flex; flex:1 1 100%;} .ov3d-bar #p3view button{flex:1; padding:6px 4px; font-size:13px; line-height:1.15;}
+}
 
 /* videa */
 .topics{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px;}
@@ -274,11 +286,12 @@ select.btn{padding-right:8px;}
 
 /* více: formuláře, psi, statistiky, deník */
 .list{display:flex; flex-direction:column; gap:8px;}
-.item{display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:10px 12px;}
+.item{display:grid; grid-template-columns:minmax(100px,1fr) auto; gap:8px; align-items:center; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:10px 12px;}
 .item.cur{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent);}
 .item b{font-size:15px;}
 .item span{display:block; font-size:13px; color:var(--muted);}
-.item .acts{display:flex; gap:6px;}
+/* tlačítka psa (Vybrat, Závody, Upravit, ×) se na úzkém telefonu zalomí, nepřetečou z obrazovky */
+.item .acts{display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px;}
 .tiles{display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
 .tiles>div{background:var(--surface); padding:10px 12px;}
 .tiles small{display:block; font-size:12px; color:var(--muted);}
@@ -446,7 +459,8 @@ body.at-home .top{display:none;}
 .hm-cta b{display:block; font-size:18px; margin-top:2px; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 .hm-cta .tx span{display:block; font-size:13px; color:var(--muted);}
 .hm-sec{display:flex; align-items:center; gap:10px; justify-content:space-between; margin:22px 16px 10px;}
-.hm-sec h3{margin:0; font-family:var(--display); font-size:22px; text-transform:uppercase; letter-spacing:.3px; white-space:nowrap;}
+/* dlouhý nadpis (angličtina, záložní písmo bez Barlow) se zalomí, ať Žebříček › nepřeteče z obrazovky */
+.hm-sec h3{margin:0; font-family:var(--display); font-size:22px; text-transform:uppercase; letter-spacing:.3px; min-width:0; text-wrap:balance;}
 .hm-sec button{flex:0 0 auto; white-space:nowrap; border:0; background:none; color:var(--accent); font-weight:700; font-size:14px; min-height:40px;}
 .hm-car{display:flex; gap:12px; overflow-x:auto; padding:0 16px 4px; scroll-snap-type:x mandatory; scrollbar-width:none;}
 .hm-car::-webkit-scrollbar{display:none;}
@@ -500,7 +514,7 @@ body.at-home .top{display:none;}
 .hm-wk .m{flex:0 0 auto; width:108px; height:58px; border-radius:12px; overflow:hidden; background:#e4eddb; border:2px solid rgba(198,244,50,.55);}
 .hm-wk .m svg{width:100%; height:100%; display:block;}
 .hm-wk .tx{flex:1; min-width:0;}
-.hm-wk small{display:block; color:#c6f432; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.hm-wk small{display:block; color:#c6f432; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.8px;} /* na úzkém telefonu se zalomí, nic se neusekne */
 .hm-wk .tx b{display:block; font-family:var(--display); font-size:22px; line-height:1.1; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .hm-wk .tx span{display:block; font-size:13px; opacity:.8;}
 .hm-wk .wk-me{font-size:13px; background:rgba(255,255,255,.1); border-radius:12px; padding:7px 10px; overflow-wrap:anywhere;}
@@ -553,8 +567,8 @@ body.at-home .top{display:none;}
 input[type=range]{height:36px;}
 .sheet{max-height:calc(100dvh - 32px);}
 body:has(input:not([type=checkbox]):not([type=range]):not([type=file]):focus,textarea:focus) .nav{display:none;}
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .grade, :root:not([data-theme="light"]) .hist .g, :root:not([data-theme="light"]) .fcibar .ic{color:#0b1a11;} }
-:root[data-theme="dark"] .grade, :root[data-theme="dark"] .hist .g, :root[data-theme="dark"] .fcibar .ic{color:#0b1a11;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .grade, :root:not([data-theme="light"]) .hist .g, :root:not([data-theme="light"]) .fcibar .ic, :root:not([data-theme="light"]) .traps .tn{color:#0b1a11;} }
+:root[data-theme="dark"] .grade, :root[data-theme="dark"] .hist .g, :root[data-theme="dark"] .fcibar .ic, :root[data-theme="dark"] .traps .tn{color:#0b1a11;}
 
 @media (prefers-reduced-motion: reduce){ *{transition:none!important; animation:none!important;} }
 </style>
@@ -654,6 +668,8 @@ select.btn{padding-right:10px;}
 .nav button.on{color:#c6f432;}
 .nav button.on .nic{background:#c6f432; color:#0a2a1c;}
 .nav .nic{width:46px; border-radius:14px;}
+/* na 360 px se šest položek vejde do panelu: sloupce se smí zúžit pod šířku ikony s okraji tlačítka (jinak Více vyčnívá z panelu) */
+.nav-in{grid-template-columns:repeat(6,minmax(0,1fr));} .nav button{min-width:0; padding:0;}
 .nav .ndot{box-shadow:0 0 0 2px #0e1611;}
 main{padding-bottom:calc(var(--nav-h) + var(--nav-gap) + 28px + env(safe-area-inset-bottom,0px));}
 .toast{bottom:calc(var(--nav-h) + var(--nav-gap) + 12px + env(safe-area-inset-bottom,0px));}
@@ -763,7 +779,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 
 /* Sezení A: kratší karty parkurů, Více jako seznam, větší cíle pro palec (jen rozměry, vzhled tlačítek patří sezení B) */
 .card .meta{gap:2px;}
-.card .meta .l2{display:flex; align-items:center; gap:6px; min-width:0;}
+.card .meta .l2{display:flex; flex-wrap:wrap; align-items:center; gap:3px 6px; min-width:0;} /* SČP se při nedostatku místa zalomí pod štítek náročnosti */
 .card .meta .l2 span{min-width:0;}
 .dpill{flex:0 0 auto; font-style:normal; font-size:11.5px; font-weight:600; line-height:1; padding:3px 7px; border-radius:99px; --dc:var(--good); color:color-mix(in srgb,var(--dc) 72%,var(--text)); background:color-mix(in srgb,var(--dc) 17%,transparent);}
 .dpill.d2{--dc:var(--warn);} .dpill.d3{--dc:color-mix(in srgb,var(--warn) 45%,var(--bad));} .dpill.d4{--dc:var(--bad);}
@@ -970,10 +986,10 @@ html.onb-open,html.onb-open body{overflow:hidden;}
   <canvas id="c3dgl" hidden></canvas>
   <div class="ov3d-bar">
     <button class="btn" id="p3play">Pauza</button>
-    <div class="seg" id="p3view"><button data-v="orbit">Volně</button><button data-v="dog" class="on">Očima psa</button><button data-v="chase">Za psem</button><button data-v="top">Shora</button></div>
     <div class="seg" id="p3speed"><button data-s=".5">0,5×</button><button data-s="1" class="on">1×</button><button data-s="2">2×</button></div>
-    <span class="grow" id="p3info"></span>
     <div class="seg" id="p3dim" role="group" aria-label="Zobrazení"><button data-d="2">2D</button><button data-d="3" class="on">3D</button></div>
+    <div class="seg" id="p3view"><button data-v="orbit">Volně</button><button data-v="dog" class="on">Očima psa</button><button data-v="chase">Za psem</button><button data-v="top">Shora</button></div>
+    <span class="grow" id="p3info"></span>
   </div>
 </div>
 
@@ -1055,7 +1071,7 @@ function trLookup(s,depth){
     var m=k.match(R[0]);
     if(m){ return R[1].replace(/([$@])([1-9])/g,function(x,t,d){ var g=m[+d]; if(g==null) return '';
         if(/^\d+(?:[.,]\d+)?$/.test(g)) return i18nNumOut(g);
-        if(t==='@'&&(depth||0)<2){ var tg=trLookup(g,(depth||0)+1); return tg==null?g:tg; } return g; }); }
+        if(t==='@'&&(depth||0)<2){ var tg=trLookup(g,(depth||0)+1); if(tg==null) trMiss(g); return tg==null?g:tg; } return g; }); }
   }
   return null;
 }
@@ -1074,7 +1090,7 @@ function trText(n){
 }
 function trAttr(el,a){
   var v=el.getAttribute(a); if(!v) return; el.__tra=el.__tra||{}; if(el.__tra[a]===v) return;
-  if(trSkipEl(el)&&a!=='aria-label'&&a!=='title') return;
+  if(trSkipEl(el)&&a!=='aria-label'&&a!=='title'&&!(a==='placeholder'&&el.nodeName==='TEXTAREA')) return; /* text v poli píše uživatel, nápověda se ale přeloží */
   var t=trLookup(v); if(t==null){ trMiss(v); el.__tra[a]=v; return; }
   el.__tra[a]=t; if(t!==v) el.setAttribute(a,t);
 }
@@ -1318,8 +1334,42 @@ var I18N_EXTRA={exact:{
 "QR kód s odkazem na aplikaci": "QR code with a link to the app",
 "Ať si kamarád naskenuje kód fotoaparátem, nebo mu pošli odkaz.": "Let a friend scan the code with their camera, or send them the link.",
 "Sdílet odkaz": "Share link",
-"AgiPlan – plánovač agility parkurů, stopky a trénink. Zdarma v telefonu:": "AgiPlan – agility course planner, stopwatch and training. Free on your phone:"
+"AgiPlan – plánovač agility parkurů, stopky a trénink. Zdarma v telefonu:": "AgiPlan – agility course planner, stopwatch and training. Free on your phone:",
+"Způsob": "Mode",
+"Délka prohlídky": "Walkthrough length",
+"Překážek v trase": "Obstacles in the route",
+"Posun ve videu": "Video position",
+"Smazat běh": "Delete run",
+"diskvalifikace": "disqualification",
+"(diskvalifikace)": "(disqualification)",
+"(3 odmítnutí)": "(3 refusals)",
+"(překročen MČP)": "(MCT exceeded)",
+"psovod": "handler",
+"Upravit": "Edit",
+"Smazat psa": "Delete dog",
+"teď": "now",
+"Graf rychlosti psa v posledních bězích": "Chart of the dog's speed in recent runs",
+"Závod": "Competition",
+"Trénink": "Training",
+"Smazat záznam": "Delete entry",
+"Záloha do souboru": "Backup to a file",
+"· ukázat psy ›": "· show dogs ›",
+"např. Hranické hrátky": "e.g. Hranické hrátky",
+"Později": "Later",
+"vstup do slalomu z obratu": "weave entry out of a turn",
+"(moje)": "(mine)",
+"Co šlo, co ne, na čem zapracovat": "What went well, what didn't, what to work on",
+"Zkontroluj podle plánku": "Check against the course map",
+"Náhled parkuru": "Course preview",
 },num:{
+"# překážky": "# obstacles",
+"# překážka": "# obstacle",
+"# m · # překážky": "# m · # obstacles",
+"# m · # překážka": "# m · # obstacle",
+"# m · # překážky · SČP # s": "# m · # obstacles · SCT # s",
+"# m · # překážka · SČP # s": "# m · # obstacle · SCT # s",
+"# kusy vybavení": "# pieces of equipment",
+"# kus vybavení": "# piece of equipment",
 "Tunel kratší než # m: #× (FCI: délka tunelu #–# m)": "Tunnel shorter than # m: #× (FCI: tunnel length #–# m)",
 "Zahrada týdne #": "Garden of the week #",
 "Krok # z #": "Step #1 of #2",
@@ -1341,7 +1391,6 @@ var I18N_EXTRA={exact:{
 "rovně # m": "straight ahead # m",
 "Pasti na plánu: #": "Traps on the plan: #",
 "Týden #": "Week #",
-"# × # m · 6 skoků, tunel, slalom": "# × # m · 6 jumps, tunnel, weaves",
 "Zahradní liga #": "Garden league #",
 "#. místo · # b · # týdnů": "place #1 · #2 pts · #3 weeks",
 "# b": "# pts",
@@ -1361,13 +1410,57 @@ var I18N_EXTRA={exact:{
 "# tb · # m/s ·": "# pp · # m/s ·",
 "# Kč": "CZK #",
 "# z #": "# of #",
+"# kusů vybavení": "# pieces of equipment",
+"# týd. · 🥇#": "# wk · 🥇#",
+"# tb": "# pp",
+"# tr. b.": "# pp",
+"# s · # tb": "# s · # pp",
+"# tb · # m/s · #-#-#": "# pp · # m/s · #-#-#",
+"# m · # překážek · # skoků, tunel, slalom": "# m · # obstacles · # jumps, tunnel, weaves",
+"# × # m · # skoků, tunel, slalom": "# × # m · # jumps, tunnel, weaves",
+"# let": "# years",
+"# roky": "# years",
+"# m": "# m",
+"−#": "−#",
+"+#": "+#",
+"#×": "#×",
+"Otočky kolem křídla (vnitřkem, venkem) #": "Wraps around the wing (inside, outside) #",
+"Zadní strany skoků #": "Jump backsides #",
+"Vstupy do slalomu #": "Weave entries #",
+"Změny strany (ostré obraty, hady) #": "Side changes (sharp turns, serpentines) #",
+"Zóny v rytmu parkuru #": "Contacts in course rhythm #",
+"Tunely do oblouku a odbočky #": "Curved tunnels and turn-offs #",
+"Rychlá skoková linie #": "Fast jumping line #",
+"Štěně: tunel a nízké skoky #": "Puppy: tunnel and low jumps #",
+"Začátečník: první sekvence #": "Beginner: first sequences #",
+"Čtverec (box) · #": "Box · #",
+"Mlýnek · #": "Pinwheel · #",
+"Had (serpentina) · #": "Serpentine · #",
+"Skoková řada · #": "Jump grid · #",
+"Vstupy do slalomu · #": "Weave entries · #",
+"Tunel, nebo skok · #": "Tunnel or jump · #",
+"Osmička kolem křídel · #": "Figure of eight around the wings · #",
+"Zadní strana · #": "Backside · #",
+"Zahrada týdne # · # × # m · zbývá # dny": "Garden of the week # · # × # m · # days left",
+"Zahrada týdne # · # × # m · zbývá # dní": "Garden of the week # · # × # m · # days left",
+"Zahrada týdne # · # × # m · zbývá poslední den": "Garden of the week # · # × # m · last day left",
 },re:[
 ["^Kalendář závodů se nepodařilo načíst: (.+?)$","The competition calendar couldn't be loaded: @1"],
 ["^Parkur týdne · (A\\d)$","Course of the week · $1"],
 ["^Zahrada týdne (\\d+): (.+?) s, (.+?) tb(?:, (\\d+)\\. místo z (\\d+) \\((.+?)\\))?$","Garden of the week $1: $2 s, $3 pp"],
 ["^(obrat do U|had|oblouk doleva|oblouk doprava|rovně) · (.+?)$","@1 · @2"],
 ["^(\\d+) × (\\d+) m · zbývá poslední den$","$1 × $2 m · last day left"],
-["^Ligu se nepodařilo načíst: (.+?)$","The league couldn't be loaded: @1"]
+["^Ligu se nepodařilo načíst: (.+?)$","The league couldn't be loaded: @1"],
+["^3D animace: (.+)$","3D animation: @1"],
+["^(.+? cm) · (A\\d) · (.+)$","@1 · $2 · @3"],
+["^(.+? cm) · (A\\d)$","@1 · $2"],
+["^Závod: (.+)$","Competition: $1"],
+["^Trénink · (.+)$","Training · @1"],
+["^rozhodčí (.+)$","judge $1"],
+["^(.+?) Nejde u prvního skoku\\.$","@1 Not possible on the first jump."],
+["^(.+?) Nejde u posledního skoku\\.$","@1 Not possible on the last jump."],
+["^(.+?) · (A\\d) · zbývá (\\d+) (?:dny|dní)$","$1 · $2 · $3 days left"],
+["^(.+?) · (A\\d) · zbývá poslední den$","$1 · $2 · last day left"],
 ]};
 function i18nStart(){
   i18nAdd(I18N_EXTRA);
@@ -1780,8 +1873,8 @@ i18nAdd({
 "Club @1"
 ],
 [
-"^Zahrada (.+?)×(.+?)$",
-"Garden @1×@2"
+"^Zahrada (\\d+)×(\\d+)( \\d+)?$",
+"Garden $1×$2$3"
 ]
 ]
 });
@@ -3998,11 +4091,11 @@ function planSpecs(m){
   var el=$('specs'); if(el) el.classList.toggle('mini',!PLANUI.specs);
   if(PLANUI.specs) return specsHTML(m)+'<button class="spec sfold" data-sp="0" aria-expanded="true">Méně ▴</button>';
   var dash='–';
-  return '<button class="smini" data-sp="1" aria-expanded="false"><b>'+(m.len?fmt(m.len)+' m':dash)+'</b><span>'+m.n+' překážek</span><span><span>SČP</span> <b>'+(m.sct?m.sct+' s':dash)+'</b></span><span><span>MČP</span> <b>'+(m.mct?m.mct+' s':dash)+'</b></span><i aria-hidden="true">▾</i></button>'+kacrEstHTML(m);
+  return '<button class="smini" data-sp="1" aria-expanded="false"><b>'+(m.len?fmt(m.len)+' m':dash)+'</b><span>'+nPrek(m.n)+'</span><span><span>SČP</span> <b>'+(m.sct?m.sct+' s':dash)+'</b></span><span><span>MČP</span> <b>'+(m.mct?m.mct+' s':dash)+'</b></span><i aria-hidden="true">▾</i></button>'+kacrEstHTML(m);
 }
 function specsHTML(m){
   var dash='–';
-  return '<div class="spec"><small>Délka trati</small><b>'+(m.len?fmt(m.len)+' m':dash)+'</b><i>'+m.n+' překážek</i></div>'+
+  return '<div class="spec"><small>Délka trati</small><b>'+(m.len?fmt(m.len)+' m':dash)+'</b><i>'+nPrek(m.n)+'</i></div>'+
     '<div class="spec"><small>Disciplína</small><b>'+m.disc+'</b><i>třída '+m.cls+'</i></div>'+
     '<div class="spec"><small>SČP</small><b>'+(m.sct?m.sct+' s':dash)+'</b><i>'+fmt(m.spd)+' m/s</i></div>'+
     '<div class="spec mct"><small>MČP (max.)</small><b>'+(m.mct?m.mct+' s':dash)+'</b><i>'+fmt(m.mcs)+' m/s dle FCI</i></div>'+kacrEstHTML(m);
@@ -4015,9 +4108,15 @@ function authorLine(meta){
   if(meta.gen) return meta.id?'Generátor podle pravidel FCI':'Vygenerováno v aplikaci';
   return 'Autor neuveden';
 }
+/* název parkuru: vygenerovaný (Zahrada týdne, Klub, cvičení) se přeloží, vlastní a skutečné názvy zůstanou */
+function crsName(c){ return c.gen?T(c.name):c.name; }
+/* počty česky: 1 překážka, 2–4 překážky, 5 překážek */
+function czN(n,a,b,c){ return n+' '+(n===1?a:n>=2&&n<=4?b:c); }
+function nPrek(n){ return czN(n,'překážka','překážky','překážek'); }
+function nKus(n){ return czN(n,'kus vybavení','kusy vybavení','kusů vybavení'); }
 function topbar(){
   var m=S.meta, mk=getMark(m.id);
-  $('cName').textContent=m.name+(m.dirty&&m.id?' *':'');
+  $('cName').textContent=crsName(m)+(m.dirty&&m.id?' *':'');
   $('cSub').textContent=m.cls+' · '+authorLine(m)+(m.dirty&&m.id?' · upraveno':'');
   var fb=$('favBtn'), db=$('doneBtn');
   fb.setAttribute('aria-pressed',mk.fav?'true':'false'); fb.innerHTML=mk.fav?IC.starF:IC.star;
@@ -4167,7 +4266,7 @@ function render(){
 function ui(){
   var special=panel==='side'||panel==='quiz';
   if(mode==='view'&&!S.obs.length) mode='build'; /* prázdná plocha: rovnou stavět */
-  $('dimBtn').hidden=mode!=='view';
+  $('dimBtn').hidden=mode!=='view'||special; /* při tréninku paměti by 3D prozradilo čísla překážek */
   $('mView').className=mode==='view'?'on':''; $('mBuild').className=mode==='build'?'on':''; $('mRoute').className=mode==='route'?'on':'';
   $('modeRow').hidden=special;
   $('buildTools').hidden=mode!=='build'||special; $('routeTools').hidden=mode!=='route'||special;
@@ -4585,10 +4684,10 @@ function libRender(){
     /* karta jen na dva řádky: délka a počet překážek, pod tím barevná náročnost a SČP. Podrobná čísla (oblouky, křížení, otočky, MČP) jsou v Plánu v Rozboru */
     return '<div class="card'+(c.id===S.meta.id?' cur':'')+'">'+
       '<button class="pick" data-id="'+esc(c.id)+'">'+thumb(c,geo)+
-      '<div class="meta"><b translate="no">'+esc(c.name)+'</b><span class="ln">'+fmt(m.len)+' m · '+m.n+' překážek</span>'+
+      '<div class="meta"><b translate="no">'+esc(crsName(c))+'</b><span class="ln">'+fmt(m.len)+' m · '+nPrek(m.n)+'</span>'+
       '<span class="ln l2">'+(st?'<i class="dpill d'+diffLvl(st.diff)+'">'+diffLabel(st.diff)+'</i>':'')+'<span>SČP '+m.sct+' s</span></span></div></button>'+
       (srcOk?'<a class="src" href="'+esc(c.src)+'" target="_blank" rel="noopener">Původní plánek</a>':'')+
-      (isNewC(c.id)||mk.done?'<div class="tags">'+(isNewC(c.id)?'<span class="new-tag">Nový</span>':'')+(mk.done?'<span class="done-tag">✓ '+(bb?bb.g:'zaběhnuto')+'</span>':'')+'</div>':'')+
+      (isNewC(c.id)||mk.done?'<div class="tags">'+(isNewC(c.id)?'<span class="new-tag">Nový</span>':'')+(mk.done?'<span class="done-tag">'+(bb?'✓ <span translate="no">'+gTxt(bb.g)+'</span>':'✓ zaběhnuto')+'</span>':'')+'</div>':'')+
       '<div class="st"><button class="fav'+(mk.fav?' on':'')+'" data-fav="'+esc(c.id)+'" aria-label="Oblíbený">'+(mk.fav?IC.starF:IC.star)+'</button>'+
       (libTab==='my'?'<button data-del="'+esc(c.id)+'" aria-label="Smazat parkur">'+IC.x+'</button>':'')+'</div></div>';
   }).join(''):'<div class="empty-state">'+(libF==='new'&&L.length
@@ -4652,7 +4751,7 @@ $('randBtn').onclick=function(){
 function saveSheet(){
   if(S.route.length<2){toast('Nejdřív vyznač trasu v režimu Trasa.'); mode='route'; ui(); show('plan'); return;}
   var m=S.meta, isMy=!!(m.id&&m.id.indexOf('my-')===0&&myDB().some(function(c){return c.id===m.id;}));
-  var nm=m.gen?m.name+' (moje)':m.name;
+  var nm=m.gen?crsName(m)+' '+T('(moje)'):m.name; /* předvyplněný název je v poli: slovník ho sám nepřeloží */
   openSheet('<h3>Uložit parkur</h3>'+
     '<label for="fName">Název<input id="fName" type="text" maxlength="60" value="'+esc(nm)+'"></label>'+
     '<label for="fCls">Třída (podle ní se počítá SČP)<select id="fCls"><option>A1</option><option>A2</option><option>A3</option></select></label>'+
@@ -4693,6 +4792,8 @@ function evalRun(t,f,r,dis,m){
   return {tp:tp,cf:cf,tot:tot,why:why,g:why?'DIS':(tot<6?'V':tot<16?'VD':tot<26?'D':'BO')};
 }
 var GNAME={V:'Výborně',VD:'Velmi dobře',D:'Dobře',BO:'Bez ohodnocení',DIS:'Diskvalifikace'};
+/* zkratka hodnocení na displeji: v angličtině podle FCI (Excellent, Very good, Good, Not classified); uložený kód zůstává český */
+function gTxt(g){ return LANG==='en'&&{V:'EXC',VD:'VG',D:'G',BO:'NC'}[g]||g; }
 function tick(){
   var t=clockT(), m=curM(), c=$('clock');
   c.textContent=fmt2(t);
@@ -4704,7 +4805,7 @@ function resultRender(){
   $('fN').textContent=RUN.f; $('rN').textContent=RUN.r;
   if(S.route.length<2){$('result').innerHTML='<p>Parkur zatím nemá trasu. Vyznač ji v Plánu v režimu Trasa, pak se běh ohodnotí.</p>'; return;}
   if(!t&&!dis){$('result').innerHTML='<p>Změř čas stopkami nebo ho zadej ručně. Výsledek se spočítá podle Řádu agility.</p>'; return;}
-  $('result').innerHTML='<div class="grade '+e.g+'">'+e.g+'</div><p><b>'+GNAME[e.g]+'</b>'+(e.why?' ('+e.why+')':(e.tot===0?' · čistý běh':''))+'<br>'+
+  $('result').innerHTML='<div class="grade '+e.g+'" translate="no">'+gTxt(e.g)+'</div><p><b>'+GNAME[e.g]+'</b>'+(e.why?' ('+e.why+')':(e.tot===0?' · čistý běh':''))+'<br>'+
     'Čas <b>'+fmt2(t)+' s</b> · chyby a odmítnutí <b>'+e.cf+'</b> · za čas <b>'+fmt2(e.tp)+'</b><br>Trestné body celkem <b>'+fmt2(e.tot)+'</b></p>';
 }
 function runRender(){
@@ -4712,7 +4813,7 @@ function runRender(){
   var m=curM();
   /* Běh: parkur v jednom řádku (SČP a MČP jsou pod stopkami); klepnutím se ukáže nastavení rychlosti pro SČP */
   var rs=$('runSpecs'); rs.className='specs mini';
-  rs.innerHTML='<button class="smini" data-rs="1" aria-expanded="'+(PLANUI.speed?'true':'false')+'" aria-controls="speedRow"><b>'+(m.len?fmt(m.len)+' m':'–')+'</b><span>'+m.n+' překážek</span><span>'+m.disc+' '+m.cls+'</span><span><b>'+fmt(m.spd)+'</b> m/s</span><i aria-hidden="true">'+(PLANUI.speed?'▴':'▾')+'</i></button>'+kacrEstHTML(m);
+  rs.innerHTML='<button class="smini" data-rs="1" aria-expanded="'+(PLANUI.speed?'true':'false')+'" aria-controls="speedRow"><b>'+(m.len?fmt(m.len)+' m':'–')+'</b><span>'+nPrek(m.n)+'</span><span>'+m.disc+' '+m.cls+'</span><span><b>'+fmt(m.spd)+'</b> m/s</span><i aria-hidden="true">'+(PLANUI.speed?'▴':'▾')+'</i></button>'+kacrEstHTML(m);
   $('speedRow').hidden=!PLANUI.speed;
   $('runCare').innerHTML=careHTML();
   $('speedRow').innerHTML='<span class="grow">Rychlost pro SČP ('+m.cls+')<small>volí ji rozhodčí podle obtížnosti</small></span><button data-sp="-1" aria-label="Snížit rychlost">−</button><b class="num">'+fmt(m.spd)+' m/s</b><button data-sp="1" aria-label="Zvýšit rychlost">+</button>';
@@ -4745,7 +4846,7 @@ function histRender(){
   $('hist').innerHTML=runs.length?runs.map(function(x,i){return {x:x,i:i};}).reverse().map(function(o){
     var x=o.x, d=new Date(x.d);
     var dn=dogName(x.dog);
-    return '<li><span class="g '+x.g+'">'+x.g+'</span><span>'+fmt2(x.t)+' s · '+x.f+' ch. · '+x.r+' odm.<br><small>'+d.toLocaleDateString(LOC)+' · trestné body '+fmt2(x.tot)+(dn?' · '+esc(dn):'')+(x.sp?' · mezičasy':'')+'</small>'+
+    return '<li><span class="g '+x.g+'" translate="no">'+gTxt(x.g)+'</span><span>'+fmt2(x.t)+' s · '+x.f+' ch. · '+x.r+' odm.<br><small>'+d.toLocaleDateString(LOC)+' · trestné body '+fmt2(x.tot)+(dn?' · '+esc(dn):'')+(x.sp?' · mezičasy':'')+'</small>'+
       (x.vid&&vidOK(x.vid)?'<a class="hvid" href="'+esc(x.vid)+'" target="_blank" rel="noopener">▶ Video</a>':'')+'</span>'+
       '<button data-vid="'+o.i+'" aria-label="'+(x.vid?'Upravit odkaz na video':'Přidat odkaz na video')+'" class="'+(x.vid?'on':'')+'">🎥</button><button data-rm="'+o.i+'" aria-label="Smazat běh">×</button></li>';
   }).join(''):'<li><span></span><small>Zatím žádný běh. Po uložení se tu objeví s hodnocením.</small></li>';
@@ -4888,7 +4989,7 @@ function homeRender(){
     '<div class="hm-stats"><div><b>'+doneN+'</b><span>zaběhnuto</span></div><div><b>'+(avg?fmt(avg):'–')+'</b><span>m/s průměr</span></div><div><b>'+(runs.length?clean+' %':'–')+'</b><span>čisté běhy</span></div></div></div>';
   var m=curM();
   h+=S.route.length>1
-    ? '<button class="hm-cta" data-h="plan"><span class="hm-play">'+IC.playF+'</span><span class="tx"><small>Pokračovat</small><b>'+esc(S.meta.name)+'</b><span>'+fmt(m.len)+' m · '+m.n+' překážek · SČP '+m.sct+' s</span></span></button>'
+    ? '<button class="hm-cta" data-h="plan"><span class="hm-play">'+IC.playF+'</span><span class="tx"><small>Pokračovat</small><b>'+esc(S.meta.name)+'</b><span>'+fmt(m.len)+' m · '+nPrek(m.n)+' · SČP '+m.sct+' s</span></span></button>'
     : '<button class="hm-cta" data-h="lib"><span class="hm-play">'+IC.playF+'</span><span class="tx"><small>Začni</small><b>Vyber si parkur</b><span>90 parkurů podle pravidel FCI, nebo si postav vlastní</span></span></button>';
   h+='<div id="hmInst"></div>';
   /* parkury pro tebe: nové a nezaběhnuté ze třídy psa */
@@ -6338,7 +6439,7 @@ function genShow(out,busy,kind){
         return '<button class="chip'+(CUT.f===f[0]?' on':'')+'" data-cf="'+f[0]+'">'+f[1]+'</button>';}).join('')+
       '<button class="chip'+(CUT.m?' on':'')+'" data-a="cmir" aria-pressed="'+(CUT.m?'true':'false')+'"><span aria-hidden="true">⇋ </span>Zrcadlově</button></div>':'';
     el.innerHTML=fr+(out.length?out.map(function(c,i){ var m=metrics(c.obs,c.route,c.cls,c.turns);
-      return '<div class="card"><button class="pick" data-gi="'+i+'">'+thumb(c)+'<div class="meta"><b translate="no">'+esc(c.cut.src)+'</b><span>Překážky '+c.cut.a+'–'+c.cut.b+'</span><span>'+fmt(m.len)+' m · '+m.n+' překážek</span>'+
+      return '<div class="card"><button class="pick" data-gi="'+i+'">'+thumb(c)+'<div class="meta"><b translate="no">'+esc(c.cut.src)+'</b><span>Překážky '+c.cut.a+'–'+c.cut.b+'</span><span>'+fmt(m.len)+' m · '+nPrek(m.n)+'</span>'+
         (c.cut.feats.length?'<span class="ft">'+c.cut.feats.map(function(f){return '<em>'+esc(f)+'</em>';}).join(' · ')+'</span>':'')+'</div></button></div>';}).join('')+
       (busy?'<div class="empty-state">Hledám další…</div>':'')
       :busy?'<div class="empty-state">Procházím parkury…</div>':CUT.all.length?'<div class="empty-state">Žádný úsek s tímhle prvkem. Zkus jiný filtr.</div>':'<div class="empty-state">Z vybraných parkurů se na tuhle plochu nic nevešlo. Zkus větší plochu, víc skoků, tunel, nebo jiné parkury.</div>');
@@ -6346,7 +6447,7 @@ function genShow(out,busy,kind){
   }
   el.innerHTML=out.length?out.map(function(c,i){var m=metrics(c.obs,c.route,'A1',c.turns), tt=c.turns||[], nW=tt.filter(function(t){return t&&t.charAt(0)==='w';}).length, nB=tt.filter(function(t){return t&&t.charAt(0)==='b';}).length;
     var rn=c.id?((getMark(c.id).runs)||[]).length:0;
-    return '<div class="card"><button class="pick" data-gi="'+i+'">'+thumb(c)+'<div class="meta"><b>'+esc(c.name)+'</b>'+(rn?'<span class="gdone">✓ zaběhnuto '+rn+'×</span>':'')+'<span>'+fmt(m.len)+' m · '+m.n+' překážek</span><span>'+c.obs.length+' kusů vybavení</span>'+(nW||nB?'<span>Otočky '+nW+(nB?' · zadní strany '+nB:'')+'</span>':'')+'</div></button></div>';}).join('')+
+    return '<div class="card"><button class="pick" data-gi="'+i+'">'+thumb(c)+'<div class="meta"><b>'+esc(c.name)+'</b>'+(rn?'<span class="gdone">✓ zaběhnuto '+rn+'×</span>':'')+'<span>'+fmt(m.len)+' m · '+nPrek(m.n)+'</span><span>'+nKus(c.obs.length)+'</span>'+(nW||nB?'<span>Otočky '+nW+(nB?' · zadní strany '+nB:'')+'</span>':'')+'</div></button></div>';}).join('')+
     (busy?'<div class="empty-state">Hledám další…</div>':'')
     :busy?'<div class="empty-state">Skládám trasy…</div>':'<div class="empty-state">Na téhle ploše se trasu nepodařilo složit. Zkus větší plochu, méně překážek v trase nebo víc skoků.</div>';
 }
@@ -6653,6 +6754,10 @@ function compDate(c){
   var d=new Date(c.from+'T12:00:00'), e=c.to&&c.to!==c.from?new Date(c.to+'T12:00:00'):null;
   var wd=T(compDays()[d.getDay()])+(e?'–'+T(compDays()[e.getDay()]):'');
   var dt=e?(d.getMonth()===e.getMonth()?d.getDate()+'.–'+e.getDate()+'. '+(e.getMonth()+1)+'.':d.getDate()+'. '+(d.getMonth()+1)+'.–'+e.getDate()+'. '+(e.getMonth()+1)+'.'):d.getDate()+'. '+(d.getMonth()+1)+'.';
+  if(LANG==='en'){ /* anglicky 8–9 Oct, 30 Sep – 1 Oct */
+    var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    dt=e?(d.getMonth()===e.getMonth()?d.getDate()+'–'+e.getDate()+' '+M[e.getMonth()]:d.getDate()+' '+M[d.getMonth()]+' – '+e.getDate()+' '+M[e.getMonth()]):d.getDate()+' '+M[d.getMonth()];
+  }
   return '<span translate="no">'+wd+'</span><small translate="no">'+dt+'</small>';
 }
 function compDist(c,loc){
@@ -6848,7 +6953,7 @@ function statsHTML(){
     '<div><small>Nejrychlejší běh</small><b>'+(maxS?fmt(maxS)+' m/s':'–')+'</b></div><div><small>Zaběhnuté parkury</small><b>'+doneN+'</b></div></div>'+
     speedChart(runs)+
     '<div class="chart"><b>Hodnocení běhů</b><table class="table" style="margin-top:6px">'+Object.keys(gr).map(function(k){
-      return '<tr><td style="width:60px"><span class="g" style="display:inline-block">'+k+'</span></td><td><div class="bar" style="height:10px"><i style="width:'+Math.round(gr[k]/mx*100)+'%"></i></div></td><td class="num" style="width:40px;text-align:right">'+gr[k]+'</td></tr>';
+      return '<tr><td style="width:60px"><span class="g" style="display:inline-block" translate="no">'+gTxt(k)+'</span></td><td><div class="bar" style="height:10px"><i style="width:'+Math.round(gr[k]/mx*100)+'%"></i></div></td><td class="num" style="width:40px;text-align:right">'+gr[k]+'</td></tr>';
     }).join('')+'</table></div>';
 }
 
@@ -6869,7 +6974,7 @@ function diaryHTML(){
   var d=curDog(), L=diary().filter(function(x){return !d||!x.dog||x.dog===d.id;}).sort(function(a,b){return b.date<a.date?-1:1;});
   return promoHTML()+'<div class="row"><button class="btn primary" data-dy="trenink">＋ Trénink</button><button class="btn" data-dy="zavod">＋ Závod</button></div>'+
     '<div class="list">'+(L.length?L.map(function(x){
-      var t=x.kind==='zavod'?'<b>Závod'+(x.event?': '+esc(x.event):'')+'</b><span>'+esc(x.cls||'')+' · '+esc(x.g||'')+(x.place?' · '+esc(x.place)+'. místo':'')+(x.tot!==''&&x.tot!=null?' · '+esc(x.tot)+' tr. b.':'')+(x.judge?' · rozhodčí '+esc(x.judge):'')+'</span>'
+      var t=x.kind==='zavod'?'<b>Závod'+(x.event?': '+esc(x.event):'')+'</b><span>'+esc(x.cls||'')+' · '+esc(gTxt(x.g||''))+(x.place?' · '+esc(T(x.place+'. místo')):'')+(x.tot!==''&&x.tot!=null?' · '+esc(T(x.tot+' tr. b.')):'')+(x.judge?' · '+esc(T('rozhodčí '+x.judge)):'')+'</span>' /* části přes T(): celý řádek slovník nepřeloží */
         :'<b>Trénink'+(x.surface?' · '+esc(x.surface):'')+'</b>';
       return '<div class="item"><div>'+t+'<span>'+dateOf(x.date).toLocaleDateString(LOC)+(dogName(x.dog)?' · '+esc(dogName(x.dog)):'')+'</span>'+(x.note?'<span>'+esc(x.note)+'</span>':'')+'</div><div class="acts"><button class="btn" data-dydel="'+esc(x.id)+'" aria-label="Smazat záznam">×</button></div></div>';
     }).join(''):'<p class="hint">Zatím žádné záznamy. Zapiš si trénink nebo výsledek ze závodů.</p>')+'</div>';
@@ -6883,7 +6988,7 @@ function diarySheet(kind){
       ? '<label for="yEv">Akce<input id="yEv" type="text" maxlength="60" placeholder="např. Hranické hrátky"></label>'+
         '<label for="yJudge">Rozhodčí<input id="yJudge" type="text" maxlength="60"></label>'+
         '<div class="grid2"><label for="yCls">Třída<select id="yCls"><option>A0</option><option>A1</option><option>A2</option><option>A3</option><option>Jumping</option></select></label>'+
-        '<label for="yG">Hodnocení<select id="yG"><option>V</option><option>VD</option><option>D</option><option>BO</option><option>DIS</option></select></label></div>'+
+        '<label for="yG">Hodnocení<select id="yG" translate="no">'+['V','VD','D','BO','DIS'].map(function(g){ return '<option value="'+g+'">'+gTxt(g)+'</option>'; }).join('')+'</select></label></div>'+
         '<div class="grid2"><label for="yTot">Trestné body<input id="yTot" type="text" inputmode="decimal" placeholder="0"></label><label for="yPl">Umístění<input id="yPl" type="number" min="1" inputmode="numeric"></label></div>'
       : '<label for="ySurf">Povrch<select id="ySurf"><option>tráva</option><option>umělá tráva</option><option>písek</option><option>hala</option><option>jiný</option></select></label>')+
     '<label for="yNote">Poznámka<textarea id="yNote" maxlength="600" placeholder="Co šlo, co ne, na čem zapracovat"></textarea></label>'+
@@ -7271,7 +7376,7 @@ function anaSheet(){
   var dg=curDog(), sz=['XS','S','M','I','L'];
   var h='<h3>Rozbor parkuru</h3>'+
     '<div class="dmeter"><div class="top"><b>'+fmt(d.v)+'</b><span>z 10 · '+diffLabel(d.v)+'</span></div><div class="bar"><i style="width:'+Math.round(d.v*10)+'%"></i></div>'+
-    (d.why.length?'<p>Nejvíc přidává: '+esc(d.why.join(', '))+'.</p>':'<p>Parkur bez výrazných záludností.</p>')+'</div>'+
+    (d.why.length?'<p>Nejvíc přidává: '+esc(d.why.map(T).join(', '))+'.</p>':'<p>Parkur bez výrazných záludností.</p>')+'</div>'+ /* položky přeložit zvlášť: spojený seznam slovník nepozná */
     '<h4>Plynulost dráhy</h4><ul class="kv">'+
     row('Oblouky (poloměr 2–10 m)',Math.round(fs.arc)+' %','v '+S.meta.cls+' '+ty.arc)+
     row('Rovné úseky',Math.round(fs.str)+' %','')+
@@ -8435,7 +8540,7 @@ function impOpen(){
   var ov=document.createElement('div'); ov.className='ovsp'; ov.id='ovImp';
   ov.innerHTML='<div class="ovsp-top"><b>Plánek z obrázku</b><span class="grow"></span><button class="btn" id="imClose">Zavřít</button></div>'+
     '<p class="hint" id="imHint">'+(APK_LITE?'Zkopíruj obrázek plánku (v galerii nebo prohlížeči Kopírovat) a vlož ho do pole níž: podrž na něm prst a zvol Vložit. Nic se nenahrává, obrázek zůstane v telefonu.':'Vyber snímek obrazovky nebo fotku plánku, nebo obrázek vlož ze schránky (Ctrl+V). Nic se nenahrává, obrázek zůstane v zařízení.')+'</p>'+
-    '<div class="impaste" id="imPaste" contenteditable="true" aria-label="Sem vlož obrázek plánku">'+(APK_LITE?'Sem vlož obrázek plánku':'Sem můžeš vložit obrázek ze schránky')+'</div>'+
+    '<div class="impaste" id="imPaste" contenteditable="true" aria-label="Sem vlož obrázek plánku">'+T(APK_LITE?'Sem vlož obrázek plánku':'Sem můžeš vložit obrázek ze schránky')+'</div>'+ /* T(): text v contenteditable se sám nepřekládá */
     '<div class="imwrap"><canvas id="imCv"></canvas></div>'+
     '<div class="grid2" id="imSize"><label for="imW">Šířka plochy (m)<input id="imW" type="number" min="10" max="60" inputmode="numeric"></label><label for="imH">Hloubka plochy (m)<input id="imH" type="number" min="10" max="40" inputmode="numeric"></label></div>'+
     '<div class="acts"><button class="btn" id="imPick"'+(APK_LITE?' hidden':'')+'>Vybrat obrázek</button><button class="btn primary" id="imGo" disabled>Rozpoznat</button></div>'+
@@ -8448,7 +8553,7 @@ function impOpen(){
   /* vložení ze schránky: obrázek jako soubor, nebo obrázek v HTML (data: nebo blob:) */
   var pz=$('imPaste');
   pz.addEventListener('paste',function(e){ e.preventDefault(); impPaste(e.clipboardData); });
-  pz.addEventListener('input',function(){ var im=pz.querySelector('img'); if(im&&im.src){ impLoadSrc(im.src); } pz.textContent=APK_LITE?'Sem vlož obrázek plánku':'Sem můžeš vložit obrázek ze schránky'; });
+  pz.addEventListener('input',function(){ var im=pz.querySelector('img'); if(im&&im.src){ impLoadSrc(im.src); } pz.textContent=T(APK_LITE?'Sem vlož obrázek plánku':'Sem můžeš vložit obrázek ze schránky'); });
   var cv=$('imCv'), drag=-1;
   cv.addEventListener('pointerdown',function(e){ if(IMP.step!=='corners') return; var p=impPt(e), best=-1, bd=1e9;
     IMP.q.forEach(function(q,i){ var d2=Math.hypot(q[0]-p[0],q[1]-p[1]); if(d2<bd){bd=d2; best=i;} });

@@ -119,6 +119,11 @@ module.exports = async function ({ browser, base }) {
     await page.click('.nav [data-v="run"]'); a = await hit('.field-row .check'); T.ok(!small(a, true) && await T.ev(() => $('disChk').closest('label').classList.contains('check')), 'Diskvalifikace má malý cíl: ' + JSON.stringify(a));
     await T.ev(() => { DOGS = [{ id: 'p1', name: 'Rex', size: 'L', cls: 'A1' }, { id: 'p2', name: 'Max', size: 'S', cls: 'A2' }]; DOGC = 'p1'; saveDogs(); moreTab = 'stats'; show('more'); });
     a = await hit('#v-more .filters .chip'); T.ok(!small(a), 'filtry ve Více pod 44 px: ' + JSON.stringify(a));
+    /* spodní lišta: všech šest položek uvnitř plovoucího panelu */
+    T.ok(await T.ev(() => { const n = document.querySelector('.nav').getBoundingClientRect(); return [...document.querySelectorAll('.nav button')].every(b => { const r = b.getBoundingClientRect(); return r.left >= n.left - 1 && r.right <= n.right + 1; }); }), 'položky spodní lišty vyčnívají z panelu');
+    /* psi s odkazem na kacr.info: čtyři tlačítka (Vybrat, Závody, Upravit, ×) se zalomí, × zůstane na obrazovce */
+    await T.ev(() => { DOGS.forEach((d, i) => { d.kacr = String(777 + i); }); saveDogs(); moreTab = 'dogs'; show('more'); });
+    T.ok(await T.ev(() => [...document.querySelectorAll('#moreBody [data-ddel]')].every(b => b.getBoundingClientRect().right <= document.documentElement.clientWidth) && document.documentElement.scrollWidth <= document.documentElement.clientWidth), 'tlačítka psa přetékají z obrazovky');
     await page.setViewportSize({ width: 390, height: 844 });
   });
   await step('video', async () => {
@@ -135,6 +140,34 @@ module.exports = async function ({ browser, base }) {
     await page.click('#startBtn');
     T.ok(await T.ev(() => parseFloat($('manT').value.replace(',', '.')) > 0.2), 'stopky neměří');
     T.ok(await T.ev(() => __wl.every(l => l.released)), 'po zastavení stopek zůstal zámek obrazovky');
+  });
+  /* angličtina na 360 px: Domů nepřetéká (dlouhé nadpisy se zalomí), texty poskládané z víc částí se přeloží celé */
+  await step('angličtina na 360 px', async () => {
+    await page.setViewportSize({ width: 360, height: 780 });
+    await T.ev(() => localStorage.setItem('agility-lang-v1', '"en"'));
+    await page.goto('about:blank'); await page.goto(base + '/#home'); await page.waitForTimeout(400);
+    const w = await T.ev(() => [LANG, document.documentElement.scrollWidth, document.documentElement.clientWidth]);
+    T.ok(w[0] === 'en' && w[1] <= w[2], `Domů v angličtině přetéká (${w[1]} > ${w[2]} px)`);
+    await T.ev(() => { show('plan'); anaSheet(); }); await page.waitForTimeout(100);
+    const why = await T.ev(() => (document.querySelector('#sheet .dmeter p') || {}).textContent || '');
+    T.ok(/^(Adds the most|A course without)/.test(why) && !/[ěščřžůú]/.test(why), 'rozbor: důvody náročnosti zůstaly česky: ' + why);
+    await T.ev(() => closeSheet());
+    const miss = await T.ev(() => ['Upravit', 'Způsob', 'Délka prohlídky', '(překročen MČP)', '0 tb', '30.00 s · 0 tb', 'L – od 48 cm · A2 · 5 let', 'S – do 35 cm · A1', '3D animace: Skok',
+      'A2-17 · A2 · zbývá 7 dní', 'Zahrada týdne 41 · 20 × 15 m · zbývá 3 dny', 'Otočky kolem křídla (vnitřkem, venkem) 3', 'Čtverec (box) · 2', 'Závod: Hranické hrátky', 'Trénink · tráva'].filter(s => trLookup(s) == null));
+    T.ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
+    T.ok(await T.ev(() => trLookup('4,5 m') === '4.5 m' && trLookup('A1 · 20 × 15 m · 6 skoků, tunel, slalom') === 'A1 · 20 × 15 m · 6 jumps, tunnel, weaves'), 'desetinná čárka nebo podtitul Zahrady týdne v angličtině');
+    /* nápověda v textovém poli a předvyplněný název parkuru (hodnota pole) se slovníkem samy nepřeloží */
+    await T.ev(() => { moreTab = 'fb'; show('more'); }); await page.waitForTimeout(100);
+    T.ok(await T.ev(() => $('fbMsg').placeholder === "Tell me what's on your mind"), 'nápověda ve zprávě autorovi zůstala česky: ' + await T.ev(() => $('fbMsg').placeholder));
+    T.ok(await T.ev(() => { loadCourse(listFor('A1')[0], true); show('plan'); saveSheet(); const v = $('fName').value; closeSheet(); return / \(mine\)$/.test(v); }), 'předvyplněný název parkuru má české (moje)');
+    /* vygenerovaný název v liště Plánu, zkratky hodnocení, data závodů a počty */
+    T.ok(await T.ev(() => { const m0 = S.meta; S.meta = Object.assign({}, m0, { gen: true, name: 'Zahrada týdne 41', dirty: false }); topbar(); const a = $('cName').textContent; S.meta = m0; topbar(); return a === 'Garden of the week 41' && crsName({ name: 'Klub A2 3' }) === 'Klub A2 3'; }), 'vygenerovaný název parkuru zůstal česky (nebo se přeložil vlastní název)');
+    T.ok(await T.ev(() => ['V', 'VD', 'D', 'BO', 'DIS'].map(gTxt).join() === 'EXC,VG,G,NC,DIS'), 'zkratky hodnocení v angličtině');
+    T.ok(await T.ev(() => /8–9 Oct/.test(compDate({ from: '2026-10-08', to: '2026-10-09' })) && /30 Sep – 1 Oct/.test(compDate({ from: '2026-09-30', to: '2026-10-01' }))), 'datum závodů v angličtině');
+    T.ok(await T.ev(() => T('312 m · 4 překážky · SČP 40 s') === '312 m · 4 obstacles · SCT 40 s' && T('1 překážka') === '1 obstacle' && T('4 kusy vybavení') === '4 pieces of equipment' && T('Zahrada 20×15 3') === 'Garden 20×15 3'), 'počty překážek nebo název ze generátoru v angličtině');
+    T.ok(await T.ev(() => [nPrek(1), nPrek(3), nPrek(5), nPrek(0), nKus(2), nKus(12)].join('|') === '1 překážka|3 překážky|5 překážek|0 překážek|2 kusy vybavení|12 kusů vybavení'), 'skloňování počtu překážek');
+    await T.ev(() => localStorage.removeItem('agility-lang-v1'));
+    await page.setViewportSize({ width: 390, height: 844 });
   });
   await T.ctx.close();
   return T.errs;
