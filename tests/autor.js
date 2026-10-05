@@ -66,7 +66,7 @@ module.exports = async function ({ browser, base }) {
     const r = jsQR(new Uint8ClampedArray(img.px), img.w, img.h);
     ok(r && r.data === 'SPD*1.0*ACC:' + iban + '*AM:200.00*CC:CZK*MSG:Podpora AgiPlan', 'QR v uloženém obrázku: ' + (r && r.data));
     /* platba kartou až s odkazem ze Stripe */
-    ok(await page.getAttribute('#moreBody .dn-card', 'href') === 'https://buy.stripe.com/dRm7sL12z7wK1ZUfoa4ko02' && /Google Pay \/ Apple Pay \/ karta/.test(await page.textContent('#moreBody .dn-card')), 'tlačítko Google Pay / Apple Pay');
+    ok(await page.getAttribute('#moreBody .dn-card', 'href') === 'https://buy.stripe.com/aFa3cvh1x7wKbAub7U4ko03' && /Google Pay \/ Apple Pay \/ karta/.test(await page.textContent('#moreBody .dn-card')), 'tlačítko Google Pay / Apple Pay');
     const url0 = await ev(() => { const u = DONATE.url; DONATE.url = ''; moreRender(); return u; });
     ok(!(await page.isVisible('#moreBody .dn-card')), 'bez odkazu nemá být tlačítko kartou');
     await ev(u => { DONATE.url = u; moreRender(); }, url0);
