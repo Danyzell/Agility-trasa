@@ -6074,7 +6074,10 @@ function course3dSpec(){
     if(o.type==='jump') jumps.push([o.x,o.y,size.jump,1.5,i]);
     else if(o.type==='tire') jumps.push([o.x,o.y,Math.max(.25,size.tire-.4),1.4,i]);
     else if(o.type==='longjump') jumps.push([o.x,o.y,.35,size.lj/2+1,i]); });
-  return {W:S.W,H:S.H,size:size,obs:obs,jumps:jumps,path:V3.path.pts};
+  var weaves=[];
+  S.route.forEach(function(id,i){ var o=getO(id); if(!o||o.type!=='weave') return; var a=o.rot*PI/180, en=c.P[i].en;
+    weaves.push({x:o.x,y:o.y,rot:o.rot,idx:i,dir:((en.x-o.x)*Math.cos(a)+(en.y-o.y)*Math.sin(a))<0?1:-1}); });
+  return {W:S.W,H:S.H,size:size,obs:obs,jumps:jumps,weaves:weaves,path:V3.path.pts};
 }
 function open3dGL(){
   var g=++C3.gen;

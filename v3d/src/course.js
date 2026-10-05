@@ -63,13 +63,26 @@ export function mountCourse(canvas, spec, opts = {}) {
   const P = (spec.path || []).map(p => ({ x: p[0], z: p[1], h: p[2] || 0, i: p[3] }));
   const cum = [0]; for (let i = 1; i < P.length; i++) cum.push(cum[i - 1] + Math.hypot(P[i].x - P[i - 1].x, P[i].z - P[i - 1].z));
   const length = cum[cum.length - 1] || 0;
-  const jumps = spec.jumps || [];
+  const jumps = spec.jumps || [], weaves = (spec.weaves || []).map(w => ({ x: w.x, y: w.y, a: w.rot * Math.PI / 180, dir: w.dir || 1, idx: w.idx, n: 12, len: 6.6 }));
   function at(d) {
     d = Math.max(0, Math.min(length, d)); let i = 1; while (i < cum.length - 1 && cum[i] < d) i++;
     const a = P[i - 1] || { x: 0, z: 0, h: 0, i: 0 }, b = P[i] || a, f = (d - cum[i - 1]) / ((cum[i] - cum[i - 1]) || 1);
     const x = a.x + (b.x - a.x) * f, z = a.z + (b.z - a.z) * f; let h = a.h + (b.h - a.h) * f, air = 0;
     jumps.forEach(j => { const dd = Math.hypot(x - j[0], z - j[1]), r = j[3] || 1.4; if (dd < r) { const k = 1 - dd * dd / (r * r); h += (j[2] + .12) * k; air = Math.max(air, Math.min(1, k * 1.6)); } });
-    return { x, z, h, air, idx: Math.max(a.i, b.i) };
+    const idx = Math.max(a.i, b.i);
+    /* slalom: pes kličkuje mezi tyčkami, první tyčka mu zůstane po levém rameni (FCI) */
+    let wx = 0, wz = 0;
+    weaves.forEach(w => {
+      if (idx !== w.idx && idx !== w.idx - 1) return;
+      const ca = Math.cos(w.a), sa = Math.sin(w.a), u = (x - w.x) * ca + (z - w.y) * sa, v = -(x - w.x) * sa + (z - w.y) * ca;
+      if (Math.abs(v) > .8) return;
+      const sp = w.n > 1 ? w.len / (w.n - 1) : .6, st = w.dir > 0 ? u + w.len / 2 : w.len / 2 - u;   // vzdálenost od 1. tyčky
+      const env = st < 0 ? Math.max(0, 1 + st / .45) : st > w.len ? Math.max(0, 1 - (st - w.len) / .45) : 1;
+      if (env <= 0) return;
+      const fx = ca * w.dir, fz = sa * w.dir, off = -.17 * Math.cos(Math.PI * st / sp) * env;   // + = vlevo od směru běhu
+      wx += fz * off; wz += -fx * off;
+    });
+    return { x: x + wx, z: z + wz, h, air, idx };
   }
   /* trasa na zemi: tečkovaná čára */
   if (P.length > 1) {
@@ -139,9 +152,9 @@ export function mountCourse(canvas, spec, opts = {}) {
 
   const look = new THREE.Vector3();
   function render(d, view) {
-    const p = at(d), ah = at(d + .8), bk = at(d - 4);
+    const p = at(d), ah = at(d + .8), bk = at(d - 4), ny = at(d + .25);
     /* pes */
-    const yaw = Math.atan2(-(ah.z - p.z), ah.x - p.x);
+    const yaw = Math.atan2(-(ny.z - p.z), ny.x - p.x);
     const slope = Math.atan2(ah.h - p.h - (ah.air ? 0 : 0), Math.max(.2, Math.hypot(ah.x - p.x, ah.z - p.z))) * (p.air ? 0 : 1);
     dog.position.set(p.x, p.h, p.z); dog.rotation.y = yaw; dog.rotation.z = Math.max(-.6, Math.min(.6, slope));
     poseDog(dog, (d / DOG_STRIDE) % 1, p.air, p.air ? .15 * (ah.h < p.h ? 1 : -1) : 0, d <= 0 || d >= length ? 1 : 0, 0, { time: d / 4.5 });
