@@ -66,12 +66,12 @@ module.exports = async function ({ browser, base }) {
     const r = jsQR(new Uint8ClampedArray(img.px), img.w, img.h);
     ok(r && r.data === 'SPD*1.0*ACC:' + iban + '*AM:200.00*CC:CZK*MSG:Podpora AgiPlan', 'QR v uloženém obrázku: ' + (r && r.data));
     /* platba kartou až s odkazem ze Stripe */
+    ok(await page.getAttribute('#moreBody .dn-card', 'href') === 'https://buy.stripe.com/dRm7sL12z7wK1ZUfoa4ko02' && /Google Pay \/ Apple Pay \/ karta/.test(await page.textContent('#moreBody .dn-card')), 'tlačítko Google Pay / Apple Pay');
+    const url0 = await ev(() => { const u = DONATE.url; DONATE.url = ''; moreRender(); return u; });
     ok(!(await page.isVisible('#moreBody .dn-card')), 'bez odkazu nemá být tlačítko kartou');
-    await ev(() => { DONATE.url = 'https://buy.stripe.com/test_123'; moreRender(); });
-    ok(await page.getAttribute('#moreBody .dn-card', 'href') === 'https://buy.stripe.com/test_123' && /Google Pay \/ Apple Pay \/ karta/.test(await page.textContent('#moreBody .dn-card')), 'tlačítko Google Pay / Apple Pay');
-    await ev(() => { DONATE.url = ''; moreRender(); });
+    await ev(u => { DONATE.url = u; moreRender(); }, url0);
     /* bez účtu se Podpořit neukazuje */
-    ok(await ev(() => { const a = DONATE.acc; DONATE.acc = ''; const r = donateOn(); DONATE.acc = a; return r === false; }), 'Podpořit bez účtu');
+    ok(await ev(() => { const a = DONATE.acc, u = DONATE.url; DONATE.acc = ''; const kartou = donateOn(); DONATE.url = ''; const nic = donateOn(); DONATE.acc = a; DONATE.url = u; return kartou === true && nic === false; }), 'Podpořit bez účtu a bez odkazu');
   });
 
   await step('Napsat autorovi', async () => {
@@ -147,9 +147,11 @@ module.exports = async function ({ browser, base }) {
     ok(await ev(() => view === 'more' && moreTab === 'donate'), 'Podpořit v liště neotevřelo QR platbu');
     await page.click('.nav [data-v="plan"]'); await page.waitForTimeout(150);
     ok(!(await page.isVisible('#supBtn')), 'v Plánu má být lišta bez Podpořit (místo pro název parkuru)');
-    /* bez účtu se srdíčko neukazuje */
-    await ev(() => { DONATE.acc = ''; homeRender(); });
-    ok(!(await page.isVisible('#v-home .hm-sup')), 'bez účtu se má Podpořit schovat');
+    /* bez účtu i bez odkazu ze Stripe se srdíčko neukazuje */
+    await page.click('.nav [data-v="home"]'); await page.waitForTimeout(150);
+    ok(await page.isVisible('#v-home .hm-sup'), 'na Domů po návratu chybí Podpořit');
+    await ev(() => { DONATE.acc = ''; DONATE.url = ''; homeRender(); });
+    ok(!(await page.isVisible('#v-home .hm-sup')), 'bez účtu a odkazu se má Podpořit schovat');
   });
 
   await step('angličtina', async () => {

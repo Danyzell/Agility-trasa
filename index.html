@@ -6989,7 +6989,7 @@ function czIban(acc){
 /* ---------- Podpořit aplikaci (QR platba) ----------
    Číslo účtu vyplní autor: acc '123456789/0800' nebo iban 'CZ…'; url je volitelný odkaz na platbu kartou (Ko-fi, PayPal…).
    Dokud není nic vyplněné, Podpořit se v aplikaci neukazuje. */
-var DONATE={acc:'1220369023/3030', iban:'', name:'', msg:'Podpora AgiPlan', url:''}, DN_AMT=100;
+var DONATE={acc:'1220369023/3030', iban:'', name:'', msg:'Podpora AgiPlan', url:'https://buy.stripe.com/dRm7sL12z7wK1ZUfoa4ko02'}, DN_AMT=100;
 function dnIban(){ var i=String(DONATE.iban||'').replace(/\s+/g,'').toUpperCase(); return /^CZ\d{22}$/.test(i)?i:czIban(DONATE.acc); }
 function donateOn(){ return !!(dnIban()||/^https:\/\//.test(DONATE.url||'')); }
 function spayd(amt){
