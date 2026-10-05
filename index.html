@@ -727,6 +727,16 @@ body[data-view="plan"] #supBtn,body[data-view="run"] #supBtn{display:none!import
 .dn-qr .qr{display:block; width:100%; height:auto;}
 .dn-acc{display:flex; align-items:center; gap:10px; justify-content:space-between; padding:10px 12px; border-radius:12px; background:var(--sunk);}
 .dn-acc>div{min-width:0;} .dn-acc span{display:block; font-size:12.5px; color:var(--muted);} .dn-acc b{overflow-wrap:anywhere;}
+/* poděkování po platbě */
+.thx{display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px; padding-top:4px;}
+.thx h3{margin:6px 0 0;} .thx p{margin:0; color:var(--muted);}
+.sheet .thx+.acts{flex-direction:column-reverse; align-items:stretch; margin-top:16px;}
+.sheet .thx+.acts .btn{justify-content:center; text-align:center;}
+.thx-h{width:64px; height:64px; display:grid; place-items:center; border-radius:50%; background:color-mix(in srgb,#e5484d 12%,var(--surface)); color:#e5484d;}
+.thx-h svg{width:32px; height:32px; animation:supBeat 2.4s ease-in-out .2s 2; transform-origin:50% 60%;}
+:root[data-theme="dark"] .thx-h{color:#ff6b70;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .thx-h{color:#ff6b70;}}
+@media (prefers-reduced-motion:reduce){.thx-h svg{animation:none;}}
 .news{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:4px; font-size:14px;}
 .older summary{cursor:pointer; color:var(--accent); font-weight:600; font-size:14px; padding:4px 0;}
 
@@ -1243,6 +1253,19 @@ var I18N_EXTRA={exact:{
 "Přispět kartou": "Donate by card",
 "Za nápad nebo nahlášenou chybu jsem stejně vděčný.": "I'm just as grateful for an idea or a bug report.",
 "Zkopírováno": "Copied",
+"Novinky v AgiPlan 2.2": "What's new in AgiPlan 2.2",
+"Novinky ve verzi 2.2": "New in version 2.2",
+"3D parkur: v Plánu klepni na 3D a projdi si parkur ze všech stran": "3D course: tap 3D in the Plan and explore the course from every side",
+"Pes ve 3D skáče, leze po zónách a kličkuje slalomem": "In 3D the dog jumps, climbs the contact obstacles and weaves the poles",
+"Délka tunelu 2–6 m, nový tunel má 5 m": "Tunnel length 2–6 m, a new tunnel is 5 m",
+"Podpořit aplikaci i přes Google Pay a Apple Pay": "Support the app with Google Pay and Apple Pay too",
+"3D parkur a přepínač 2D / 3D v Plánu": "3D course and a 2D / 3D switch in the Plan",
+"Pes ve 3D kličkuje slalomem podle pravidel FCI": "In 3D the dog weaves the poles according to FCI rules",
+"Délka tunelu 2–6 m (nový tunel 5 m)": "Tunnel length 2–6 m (a new tunnel is 5 m)",
+"Google Pay, Apple Pay a uložení QR platby do galerie": "Google Pay, Apple Pay and saving the QR payment to the gallery",
+"Díky za podporu!": "Thank you for your support!",
+"Tvůj příspěvek pomůže s provozem serveru a dalším vývojem aplikace. Ať se vám s pejskem daří!": "Your contribution helps keep the server running and the app growing. Good luck to you and your dog!",
+"Doporučit kamarádům": "Recommend to friends",
 "Zásady ochrany osobních údajů": "Privacy policy",
 "E-mail použijeme jen k odpovědi.": "We use the e-mail only to reply.",
 "Zobrazit parkur ve 3D": "Show the course in 3D",
@@ -7113,7 +7136,7 @@ function appShare(){
   dnCopy(APP_URL);
 }
 /* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
-var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='2.1';
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='2.2';
 var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
 function fbSave(){ lsSet(FBK,FB); }
 var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];
@@ -7177,8 +7200,9 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='fb'){ h=fbHTML(); }
   else if(moreTab==='donate'){ h=donateOn()?donateHTML():'<p class="hint">Podpora zatím není nastavená.</p>'; }
   else {
-    h='<div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>AgiPlan 2.1</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
+    h='<div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>AgiPlan 2.2</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
       '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
+      '<h4>Novinky ve verzi 2.2</h4><ul class="news"><li>3D parkur a přepínač 2D / 3D v Plánu</li><li>Pes ve 3D kličkuje slalomem podle pravidel FCI</li><li>Délka tunelu 2–6 m (nový tunel 5 m)</li><li>Google Pay, Apple Pay a uložení QR platby do galerie</li><li>Zásady ochrany osobních údajů</li></ul>'+
       '<h4>Novinky ve verzi 2.1</h4><ul class="news"><li>Nový název AgiPlan</li><li>Napsat autorovi a hodnocení hvězdičkami</li><li>Podpořit aplikaci (QR platba)</li><li>Instalace z Domů a QR kód s odkazem pro kamarády</li></ul>'+
       '<h4>Novinky ve verzi 2.0</h4><ul class="news"><li>Nový název HandlerMap (dnes AgiPlan)</li><li>Angličtina (přepneš ve Více → Nastavení)</li><li>Tmavý vzhled podle systému, nebo natrvalo</li><li>Průvodce prvním spuštěním</li><li>Větší tlačítka a plynulejší přechody</li></ul>'+
       '<details class="older"><summary>Starší novinky</summary>'+
@@ -8680,7 +8704,17 @@ function settingsHTML(){
 /* ---------- průvodce prvním spuštěním ---------- */
 var ONBK='agility-onb-v1', ONB={step:1,dog:null};
 function onbHasData(){ return S.meta.dirty||DOGS.length>0||myDB().length>0||Object.keys(MK).some(function(k){return (MK[k].runs||[]).length||MK[k].fav||MK[k].done;}); }
+/* návrat z platby kartou: odkaz Stripe po zaplacení přesměruje na …/?dekuji (nastavuje se ve Stripe u odkazu na platbu) */
+var THX=/[?&]dekuji\b/.test(location.search);
+if(THX){ try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){} }
+function thxOpen(){
+  openSheet('<div class="thx"><span class="thx-h" aria-hidden="true">'+IC.heartF+'</span><h3>Díky za podporu!</h3><p>Tvůj příspěvek pomůže s provozem serveru a dalším vývojem aplikace. Ať se vám s pejskem daří!</p></div>'+
+    '<div class="acts"><button class="btn" data-a="share">Doporučit kamarádům</button><button class="btn primary" data-a="x">Pokračovat</button></div>',
+    function(e){ var b=e.target.closest('[data-a]'); if(!b) return; if(b.getAttribute('data-a')==='share') appShare(); else closeSheet(); });
+}
 function onbStart(){
+  /* poděkování po platbě má přednost, průvodce a novinky počkají na příští spuštění */
+  if(THX){ THX=false; thxOpen(); return; }
   /* automatické testy (navigator.webdriver) průvodce ani novinky neukazují, pokud si ho test nevyžádá přes ?onb */
   if(navigator.webdriver&&!/[?&]onb\b/.test(location.search)) return;
   var st=lsGet(ONBK,null);
@@ -8690,9 +8724,10 @@ function onbStart(){
   onbOpen(1);
 }
 function newsCheck(){
-  if(lsGet('agility-news-v1',null)==='2.1') return; lsSet('agility-news-v1','2.1');
-  openSheet('<h3>Novinky v AgiPlan 2.1</h3><p>Aplikace se teď jmenuje AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>'+
-    '<ul class="news"><li>Napsat autorovi: hvězdičky a zpráva přímo z aplikace</li><li>Podpořit aplikaci: QR platba v bance</li><li>Instalace na plochu jedním klepnutím a QR kód pro kamarády</li></ul>'+
+  var seen=lsGet('agility-news-v1',null); if(seen==='2.2') return; lsSet('agility-news-v1','2.2');
+  /* kdo neviděl novinky 2.1, dozví se i o novém názvu */
+  openSheet('<h3>Novinky v AgiPlan 2.2</h3>'+(seen!=='2.1'?'<p>Aplikace se teď jmenuje AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>':'')+
+    '<ul class="news"><li>3D parkur: v Plánu klepni na 3D a projdi si parkur ze všech stran</li><li>Pes ve 3D skáče, leze po zónách a kličkuje slalomem</li><li>Délka tunelu 2–6 m, nový tunel má 5 m</li><li>Podpořit aplikaci i přes Google Pay a Apple Pay</li></ul>'+
     '<div class="acts"><button class="btn primary" data-a="x">Pokračovat</button></div>',function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
 }
 function onbClose(done){ var o=$('onb'); if(o) o.parentNode.removeChild(o); if(done) lsSet(ONBK,{done:1,v:2}); document.documentElement.classList.remove('onb-open'); }
