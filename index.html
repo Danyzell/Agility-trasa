@@ -383,6 +383,34 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 .iabbar{position:fixed; left:12px; right:12px; top:calc(10px + env(safe-area-inset-top,0px)); z-index:80; display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; background:var(--text); color:var(--bg); border-radius:14px; padding:10px 10px 10px 14px; font-size:14px; box-shadow:0 8px 24px rgba(0,0,0,.25);}
 .iabbar span{flex:1 1 180px;}
 .iabbar a.btn{text-decoration:none;}
+/* návod na instalaci na iPhonu: kroky s náčrtem Safari a šipka na jeho lištu */
+.iosg{position:fixed; inset:0; z-index:90; background:var(--bg); overflow-y:auto; padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(110px + env(safe-area-inset-bottom,0px));}
+.iosg-in{max-width:440px; margin:0 auto;}
+.iosg-hd{display:flex; align-items:center; gap:12px; margin-bottom:14px;}
+.iosg-hd img{width:52px; height:52px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.18);}
+.iosg-hd h3{margin:0; font-size:19px; flex:1;}
+.iosg-hd p{margin:2px 0 0; color:var(--muted); font-size:13px; font-weight:400;}
+.iosg ol{list-style:none; margin:0; padding:0; display:grid; gap:10px;}
+.iosg li{display:flex; gap:12px; align-items:center; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:10px 12px;}
+.iosg li>b{flex:0 0 28px; height:28px; border-radius:50%; background:var(--accent); color:var(--on-accent); display:grid; place-items:center; font-size:15px;}
+.iosg li>span{flex:1; font-size:15px; line-height:1.35;}
+.iosg-mk{flex:0 0 112px; height:56px; border-radius:10px; background:#f2f2f7; color:#1c1c1e; display:flex; align-items:center; justify-content:space-around; padding:0 6px; font:600 11px -apple-system,BlinkMacSystemFont,sans-serif; position:relative;}
+.iosg-mk svg{width:20px; height:20px; flex:0 0 auto; color:#007aff;}
+.iosg-mk i{display:grid; place-items:center; width:30px; height:30px; border-radius:8px;}
+.iosg-mk i.hot{background:#fff; box-shadow:0 0 0 2px #ff9500; animation:iosgPulse 1.4s ease-in-out infinite;}
+.iosg-mk.ln{flex-basis:132px; justify-content:flex-start; gap:7px; padding:0 9px; white-space:nowrap; background:#fff; border:1px solid #d1d1d6;}
+.iosg-mk.ln.hot{box-shadow:0 0 0 2px #ff9500;}
+.iosg-mk.hd{align-items:flex-start; justify-content:space-between; padding-top:8px; font-weight:400; background:#fff; border:1px solid #d1d1d6;}
+.iosg-mk.hd em{font-style:normal; color:#007aff; font-weight:600; border-radius:6px; padding:1px 5px; box-shadow:0 0 0 2px #ff9500;}
+.iosg-mk.hd img{width:30px; height:30px; border-radius:7px; margin-top:14px;}
+@keyframes iosgPulse{50%{box-shadow:0 0 0 5px rgba(255,149,0,.35);}}
+.iosg-ok{width:100%; margin-top:14px; justify-content:center;}
+.iosg-arr{position:fixed; z-index:91; bottom:calc(6px + env(safe-area-inset-bottom,0px)); width:56px; height:72px; color:#ff9500; filter:drop-shadow(0 2px 4px rgba(0,0,0,.3)); animation:iosgBob 1s ease-in-out infinite; pointer-events:none;}
+.iosg-arr.c{left:calc(50% - 28px);} .iosg-arr.r{right:4px;}
+.iosg-arr.up{bottom:auto; top:calc(4px + env(safe-area-inset-top,0px)); transform:rotate(180deg); animation-name:iosgBobUp;}
+@keyframes iosgBob{50%{transform:translateY(10px);}}
+@keyframes iosgBobUp{0%,100%{transform:rotate(180deg);} 50%{transform:rotate(180deg) translateY(10px);}}
+@media (prefers-reduced-motion:reduce){.iosg-arr,.iosg-mk i.hot{animation:none;}}
 /* v1.6: plánek z obrázku, stavba v terénu */
 .imwrap{display:flex; justify-content:center;}
 .imwrap canvas{max-width:100%; touch-action:none; border-radius:10px; background:#fff; border:1px solid var(--border);}
@@ -1323,7 +1351,7 @@ var I18N_EXTRA={exact:{
 "AR na place: ve 3D klepni na AR a parkur se položí na skutečný trávník (Chrome na Androidu)": "AR on the field: in 3D tap AR and the course is placed on real grass (Chrome on Android)",
 "AR na place": "AR on the field",
 "Připravuji AR, chvilku…": "Preparing AR, one moment…",
-"Ťukni dole na Sdílet (čtvereček se šipkou) a vyber Přidat na plochu. Pak aplikace běží z ikony a funguje i bez signálu.": "Tap Share at the bottom (the square with the arrow) and choose Add to Home Screen. The app then runs from the icon and works without signal too.",
+"Stačí pár ťuknutí v Safari. Pak aplikace běží z ikony a funguje i bez signálu.": "Just a few taps in Safari. The app then runs from the icon and works without signal too.",
 "AR se nepodařilo spustit.": "AR couldn't start.",
 "📷 AR na place": "📷 AR on the field",
 "AR se ještě načítá, klepni za chvilku znovu.": "AR is still loading, tap again in a moment.",
@@ -1432,6 +1460,19 @@ var I18N_EXTRA={exact:{
 "Otevři stránku v Safari.": "Open the page in Safari.",
 "Ťukni na Sdílet (čtvereček se šipkou nahoru).": "Tap Share (the square with an up arrow).",
 "Vyber Přidat na plochu.": "Choose Add to Home Screen.",
+"Přidat na plochu": "Add to Home Screen",
+"Rozumím": "Got it",
+"Ukázat jak": "Show me how",
+"Ukázat návod": "Show the guide",
+"Vyber Sdílet": "Choose Share",
+"Ťukni dole vpravo na tři tečky ⋯": "Tap the three dots ⋯ at the bottom right",
+"Ťukni dole na Sdílet (čtvereček se šipkou)": "Tap Share at the bottom (the square with the arrow)",
+"Ťukni vpravo nahoře na Sdílet (čtvereček se šipkou)": "Tap Share at the top right (the square with the arrow)",
+"Sjeď níž a vyber Přidat na plochu": "Scroll down and choose Add to Home Screen",
+"Vpravo nahoře ťukni na Přidat. Ikona AgiPlan je pak na ploše.": "Tap Add at the top right. The AgiPlan icon is then on your Home Screen.",
+"Nainstaluj AgiPlan na plochu": "Install AgiPlan on your Home Screen",
+"Pak aplikace běží z ikony přes celou obrazovku, i bez signálu na cvičišti.": "The app then runs from its icon in full screen, even without signal at the training ground.",
+"Na iPhonu jde aplikace přidat na plochu jen ze Safari. Otevři tuhle stránku v Safari a postupuj takhle:": "On iPhone the app can only be added to the Home Screen from Safari. Open this page in Safari and do this:",
 "Otevři stránku v Chromu.": "Open the page in Chrome.",
 "Ťukni na ⋮ vpravo nahoře.": "Tap ⋮ in the top right.",
 "Vyber Instalovat aplikaci (nebo Přidat na plochu).": "Choose Install app (or Add to Home screen).",
@@ -9188,11 +9229,67 @@ function thxOpen(){
     '<div class="acts"><button class="btn" data-a="share">Doporučit kamarádům</button><button class="btn primary" data-a="x">Pokračovat</button></div>',
     function(e){ var b=e.target.closest('[data-a]'); if(!b) return; if(b.getAttribute('data-a')==='share') appShare(); else closeSheet(); });
 }
+/* ---------- návod na instalaci na iPhonu a iPadu: Safari nemá tlačítko Instalovat, jen Sdílet → Přidat na plochu ---------- */
+var IOSG='agility-iosg-v1';
+function iosInfo(){
+  var ua=navigator.userAgent||'', ipad=/iPad/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  var ios=ipad||/iP(hone|od)/.test(ua), v=+((ua.match(/Version\/(\d+)/)||[])[1]||0);
+  var inApp=/CriOS|FxiOS|EdgiOS|OPiOS|GSA\/|FBAN|FBAV|FBIOS|Instagram|Messenger|Line\//.test(ua);
+  var inst=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+  return {ios:ios, ipad:ipad, safari:ios&&!inApp&&/Safari/.test(ua), v26:v>=26, inst:inst};
+}
+var IOSIC={
+  share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 9.5H6.5a1.5 1.5 0 0 0-1.5 1.5v8.5A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V11a1.5 1.5 0 0 0-1.5-1.5h-2"/><path d="M12 14.5V3M8.5 6.5 12 3l3.5 3.5"/></svg>',
+  add:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8.5v7M8.5 12h7"/></svg>',
+  more:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5.5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="18.5" cy="12" r="1.9"/></svg>',
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+  fwd:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+  tabs:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="4" y="7" width="12" height="13" rx="2"/><path d="M8 4h10a2 2 0 0 1 2 2v10"/></svg>',
+  arrow:'<svg viewBox="0 0 56 72" aria-hidden="true"><path d="M28 69 5 43h14V3h18v40h14z" fill="currentColor" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg>'
+};
+function iosGuide(){
+  iosGuideClose();
+  var I=iosInfo(), st=[];
+  var shareRow='<div class="iosg-mk ln hot"><span style="color:#007aff">'+IOSIC.share+'</span>Sdílet</div>';
+  if(I.v26&&!I.ipad){
+    st.push(['Ťukni dole vpravo na tři tečky ⋯','<div class="iosg-mk"><i>'+IOSIC.back+'</i><span>agiplan</span><i class="hot">'+IOSIC.more+'</i></div>']);
+    st.push(['Vyber Sdílet',shareRow]);
+  } else st.push([I.ipad?'Ťukni vpravo nahoře na Sdílet (čtvereček se šipkou)':'Ťukni dole na Sdílet (čtvereček se šipkou)',
+    '<div class="iosg-mk"><i>'+IOSIC.back+'</i><i>'+IOSIC.fwd+'</i><i class="hot">'+IOSIC.share+'</i><i>'+IOSIC.tabs+'</i></div>']);
+  st.push(['Sjeď níž a vyber Přidat na plochu','<div class="iosg-mk ln hot">'+IOSIC.add+'Přidat na plochu</div>']);
+  st.push(['Vpravo nahoře ťukni na Přidat. Ikona AgiPlan je pak na ploše.','<div class="iosg-mk hd"><span>Zrušit</span><img src="icon-192.png" alt=""><em>Přidat</em></div>']);
+  var o=document.createElement('div'); o.className='iosg'; o.id='iosg'; o.setAttribute('role','dialog'); o.setAttribute('aria-modal','true'); o.setAttribute('aria-labelledby','iosgT');
+  o.innerHTML='<div class="iosg-in"><div class="iosg-hd"><img src="icon-192.png" alt=""><div style="flex:1"><h3 id="iosgT">Nainstaluj AgiPlan na plochu</h3><p>Pak aplikace běží z ikony přes celou obrazovku, i bez signálu na cvičišti.</p></div>'+
+    '<button class="iconbtn" data-iosg="x" aria-label="Zavřít">'+IC.x+'</button></div>'+
+    (I.safari?'':'<p class="hint">Na iPhonu jde aplikace přidat na plochu jen ze Safari. Otevři tuhle stránku v Safari a postupuj takhle:</p>')+
+    '<ol>'+st.map(function(s,i){ return '<li><b>'+(i+1)+'</b><span>'+s[0]+'</span>'+s[1]+'</li>'; }).join('')+'</ol>'+
+    '<button class="btn primary iosg-ok" data-iosg="x">Rozumím</button></div>';
+  document.body.appendChild(o);
+  /* šipka na tlačítko Safari: na iPhonu dole uprostřed (Sdílet) nebo vpravo (⋯ v Safari 26), na iPadu vpravo nahoře */
+  if(I.safari){ var a=document.createElement('div'); a.id='iosgArr'; a.className='iosg-arr '+(I.ipad?'r up':I.v26?'r':'c'); a.innerHTML=IOSIC.arrow; document.body.appendChild(a); }
+  o.onclick=function(e){ if(e.target.closest('[data-iosg]')) iosGuideClose(); };
+  lsSet(IOSG,1);
+  try{ o.querySelector('.iosg-ok').focus({preventScroll:true}); }catch(e){}
+}
+var IOSG_THEN=null;
+function iosGuideClose(){
+  var had=$('iosg'); ['iosg','iosgArr'].forEach(function(id){ var el=$(id); if(el) el.parentNode.removeChild(el); });
+  var f=IOSG_THEN; IOSG_THEN=null; if(had&&f) setTimeout(f,250);
+}
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&$('iosg')) iosGuideClose(); });
+document.addEventListener('click',function(e){ if(e.target.closest&&e.target.closest('[data-iosgo]')) iosGuide(); });
+/* sám se ukáže jednou: v Safari na iPhonu, když aplikace ještě není na ploše */
+function iosGuideAuto(){
+  var I=iosInfo(); if(!I.safari||I.inst||lsGet(IOSG,0)||$('onb')||!$('scrim').hidden) return false;
+  iosGuide(); return true;
+}
 function onbStart(){
   /* poděkování po platbě má přednost, průvodce a novinky počkají na příští spuštění */
   if(THX){ THX=false; thxOpen(); return; }
   /* automatické testy (navigator.webdriver) průvodce ani novinky neukazují, pokud si ho test nevyžádá přes ?onb */
   if(navigator.webdriver&&!/[?&]onb\b/.test(location.search)) return;
+  /* iPhone v Safari: data z Safari se do aplikace na ploše nepřenesou (iOS jí dá vlastní úložiště), proto napřed instalace */
+  if(iosGuideAuto()){ IOSG_THEN=onbStart; return; }
   var st=lsGet(ONBK,null);
   if(st&&st.step&&!st.done){ onbOpen(st.step); return; }
   if(st) { if(!newsCheck()) acctAsk(); return; }
@@ -9303,16 +9400,18 @@ catSync();
       var ios=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
       el.innerHTML=inst?'':'<div class="panel inst"><b>Nainstalovat do telefonu</b><p class="hint">Aplikace pak poběží z ikony na ploše přes celou obrazovku, i bez internetu.</p>'+
         (ev?'<div class="row"><button class="btn primary" data-inst="1">Nainstalovat</button></div>'
-          :ios?'<ol class="inst-steps"><li>Otevři stránku v Safari.</li><li>Ťukni na Sdílet (čtvereček se šipkou nahoru).</li><li>Vyber Přidat na plochu.</li></ol>'
+          :ios?'<ol class="inst-steps"><li>Otevři stránku v Safari.</li><li>Ťukni na Sdílet (čtvereček se šipkou nahoru).</li><li>Vyber Přidat na plochu.</li></ol><div class="row"><button class="btn primary" data-iosgo="1">Ukázat návod</button></div>'
           :'<ol class="inst-steps"><li>Otevři stránku v Chromu.</li><li>Ťukni na ⋮ vpravo nahoře.</li><li>Vyber Instalovat aplikaci (nebo Přidat na plochu).</li></ol>')+'</div>';
     }
     var hm=document.getElementById('hmInst');
     /* iPhone v Safari: instalace jen přes Sdílet → Přidat na plochu, tak to ukážeme na Domů */
     var iosSaf=/iP(hone|ad|od)/.test(navigator.userAgent)&&!/CriOS|FxiOS|EdgiOS|FBAN|FBAV|Instagram/.test(navigator.userAgent);
-    if(hm&&!inst&&!ev&&iosSaf&&!lsGet('agility-instx-v1',0)){ hm.innerHTML='<div class="hm-ch hm-inst"><div class="ic">📲</div><div class="tx"><b>Nainstaluj si aplikaci</b><span>Ťukni dole na Sdílet (čtvereček se šipkou) a vyber Přidat na plochu. Pak aplikace běží z ikony a funguje i bez signálu.</span></div><button class="hm-x" data-instx="1" aria-label="Zavřít">'+IC.x+'</button></div>'; return; }
+    if(hm&&!inst&&!ev&&iosSaf&&!lsGet('agility-instx-v1',0)){ hm.innerHTML='<div class="hm-ch hm-inst"><div class="ic">📲</div><div class="tx"><b>Nainstaluj si aplikaci</b><span>Stačí pár ťuknutí v Safari. Pak aplikace běží z ikony a funguje i bez signálu.</span><button class="hm-go" data-iosgo="1">Ukázat jak</button></div><button class="hm-x" data-instx="1" aria-label="Zavřít">'+IC.x+'</button></div>'; return; }
     if(hm) hm.innerHTML=inst||!ev||lsGet('agility-instx-v1',0)?'':'<div class="hm-ch hm-inst"><div class="ic">📲</div><div class="tx"><b>Nainstaluj si aplikaci</b><span>Ikona na ploše, celá obrazovka a funguje i bez signálu na cvičišti.</span>'+
       '<button class="hm-go" data-inst="1">Instalovat</button></div><button class="hm-x" data-instx="1" aria-label="Zavřít">'+IC.x+'</button></div>';
   };
+  /* Domů se vykreslí dřív, než je tahle funkce hotová (karta pro iPhone nečeká na beforeinstallprompt) */
+  pwaInstUI();
   document.addEventListener('click',function(e){
     var b=e.target.closest&&e.target.closest('[data-inst],[data-instx]'); if(!b) return;
     if(b.hasAttribute('data-instx')){ lsSet('agility-instx-v1',1); pwaInstUI(); return; }
