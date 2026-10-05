@@ -418,6 +418,7 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 .fdhead b{font-family:var(--display); font-size:24px;}
 .fdhead span{color:var(--muted); font-size:14px;}
 .fdnav{display:flex; align-items:center; gap:14px;}
+.share-app b,.share-app p{overflow-wrap:anywhere;}
 /* kolbiště podle GPS */
 .rg-now{margin:0; font-size:14px;}
 .rg-list{display:grid; gap:10px;}
@@ -1220,6 +1221,8 @@ var I18N_EXTRA={exact:{
 "Natočení řekne Stavbě v terénu a AR na place, kudy vede dlouhá strana kolbiště, takže se nemusíš otáčet podle oka.": "The orientation tells Build on the field and AR on the field which way the long side of the ring runs, so you don't have to line up by eye.",
 "Teď:": "Now:",
 "Projdu dva rohy (GPS)": "Walk two corners (GPS)",
+"Otočit o 180°": "Turn by 180°",
+"Natočení otočené o 180°": "Orientation turned by 180°",
 "Podle kompasu": "By compass",
 "GPS: postavíš se do rohu, který je na plánu vlevo nahoře, pak dojdeš podél dlouhé strany do rohu vpravo nahoře. Kompas: postav se na dlouhou stranu čelem doprava podle plánu. Kompas ruší kov a auta.": "GPS: stand in the corner that is top left on the plan, then walk along the long side to the top-right corner. Compass: stand on the long side facing right as on the plan. Metal and cars disturb the compass.",
 "Teď ne": "Not now",
@@ -5238,7 +5241,7 @@ var COACH=[
 function coachHTML(){
   return COACH.map(function(g){
     return '<h2>'+esc(g.h)+'</h2><div class="coach-list">'+g.items.map(function(c){
-      return '<a class="coach" href="'+esc(c[3])+'" target="_blank" rel="noopener"><span class="cc">'+c[0]+'</span><span><b>'+esc(c[1])+'</b><span>'+esc(c[2])+'</span></span>'+IC.ext+'</a>';
+      return '<a class="coach" href="'+esc(c[3])+'" target="_blank" rel="noopener"><span class="cc">'+c[0]+'</span><span><b'+(trLookup(c[1])==null?' translate="no"':'')+'>'+esc(c[1])+'</b><span>'+esc(c[2])+'</span></span>'+IC.ext+'</a>';
     }).join('')+'</div>';
   }).join('');
 }
@@ -6254,7 +6257,7 @@ function videoRender(){
   $('vidList').innerHTML='<p class="hint">Animace ukazují správnou techniku. U každého tématu je postup nácviku a vybraná videa trenérů, česká i zahraniční.</p>'+
     Object.keys(groups).map(function(g){return '<h2>'+esc(g)+'</h2><div class="topics">'+groups[g].map(function(t){
       return '<button class="topic" data-top="'+t.id+'">'+topicIcon(t.id)+(SC[t.id]&&v3dOK()?'<span class="b3d">3D</span>':'')+'<b>'+esc(t.t)+'</b><span>'+esc(t.s)+'</span></button>';}).join('')+'</div>';}).join('')+
-    '<h2 style="margin-top:14px">Knihy</h2><div class="coach-list">'+BOOKS.map(function(b){return '<a class="coach" href="'+b[2]+'" target="_blank" rel="noopener"><span class="cc">CZ</span><span><b>'+esc(b[0])+'</b><span>'+esc(b[1])+'</span></span>'+IC.ext+'</a>';}).join('')+'</div>';
+    '<h2 style="margin-top:14px">Knihy</h2><div class="coach-list">'+BOOKS.map(function(b){return '<a class="coach" href="'+b[2]+'" target="_blank" rel="noopener"><span class="cc">CZ</span><span><b translate="no">'+esc(b[0])+'</b><span translate="no">'+esc(b[1])+'</span></span>'+IC.ext+'</a>';}).join('')+'</div>';
 }
 function topicById(id){for(var i=0;i<TOPICS.length;i++) if(TOPICS[i].id===id) return TOPICS[i]; return null;}
 function showTopic(id){
@@ -7660,7 +7663,7 @@ var BOOKS=[
   ['Agility – Pracovní sešit','Karina Divišová, Martina Podešťová: 90 tréninkových sekvencí','https://www.knihydobrovsky.cz/kniha/agility-pracovni-sesit-22151']
 ];
 function booksHTML(){
-  return '<h2>Knihy</h2><div class="coach-list">'+BOOKS.map(function(b){return '<a class="coach" href="'+b[2]+'" target="_blank" rel="noopener"><span class="cc">CZ</span><span><b>'+esc(b[0])+'</b><span>'+esc(b[1])+'</span></span>'+IC.ext+'</a>';}).join('')+'</div>';
+  return '<h2>Knihy</h2><div class="coach-list">'+BOOKS.map(function(b){return '<a class="coach" href="'+b[2]+'" target="_blank" rel="noopener"><span class="cc">CZ</span><span><b translate="no">'+esc(b[0])+'</b><span translate="no">'+esc(b[1])+'</span></span>'+IC.ext+'</a>';}).join('')+'</div>';
 }
 /* ---------- QR kód (bajtový režim, oprava chyb M, verze 1–10) pro QR platbu ---------- */
 function qrMatrix(s){
@@ -9447,7 +9450,8 @@ function ringList(){
     '<div class="acts"><label class="btn" for="rgFile">Načíst plán závodiště</label><input type="file" id="rgFile" accept=".geojson,.json,.kml,application/geo+json,application/vnd.google-earth.kml+xml" hidden><button class="btn primary" data-rg="new">Uložit polohu kolbiště</button></div>'+
     '<p class="hint">Plán závodiště: soubor GeoJSON nebo KML (třeba z Google Earth nebo Mapy.cz) s kolbišti jako obdélníky (4 rohy) nebo body se šířkou, délkou a natočením.</p>';
   /* vzdálenosti: jedna rychlá poloha (může být i starší) */
-  if(L.length&&navigator.geolocation&&!navigator.webdriver) navigator.geolocation.getCurrentPosition(function(p){ if(!RG||!$('rgBody')||!$('rgBody').querySelector('.rg-list')) return; RG.here={lat:p.coords.latitude,lng:p.coords.longitude}; ringList(); },function(){},{maximumAge:60000,timeout:10000});
+  /* jen jednou za otevření (seznam se po zjištění polohy překreslí a znovu by se ptal) */
+  if(L.length&&!RG.here&&!RG.asked&&navigator.geolocation&&!navigator.webdriver){ RG.asked=true; navigator.geolocation.getCurrentPosition(function(p){ if(!RG||!$('rgBody')||!$('rgBody').querySelector('.rg-list')) return; RG.here={lat:p.coords.latitude,lng:p.coords.longitude}; ringList(); },function(){},{maximumAge:60000,timeout:10000}); }
 }
 function ringClick(e){
   var b=e.target.closest('[data-rg]'); if(!b||!RG) return;
@@ -9515,11 +9519,14 @@ function ringAz(g,fresh){
   $('rgBody').innerHTML='<h3 class="rg-h">Natočení kolbiště <span translate="no">'+esc(g.name)+'</span></h3>'+
     '<p>Natočení řekne Stavbě v terénu a AR na place, kudy vede dlouhá strana kolbiště, takže se nemusíš otáčet podle oka.</p>'+
     (g.az!=null?'<p>Teď: <b>'+Math.round(g.az)+'°</b> (<span>'+cardTxt(g.az)+'</span>)'+(g.azErr?' <span>± '+Math.round(g.azErr)+'°</span>':'')+'</p>':'')+
-    '<div class="rg-opts"><button class="btn primary" data-rgz="gps">Projdu dva rohy (GPS)</button><button class="btn" data-rgz="cmp">Podle kompasu</button></div>'+
+    '<div class="rg-opts"><button class="btn primary" data-rgz="gps">Projdu dva rohy (GPS)</button><button class="btn" data-rgz="cmp">Podle kompasu</button>'+
+    (g.az!=null?'<button class="btn" data-rgz="flip">Otočit o 180°</button>':'')+'</div>'+
     '<p class="hint">GPS: postavíš se do rohu, který je na plánu vlevo nahoře, pak dojdeš podél dlouhé strany do rohu vpravo nahoře. Kompas: postav se na dlouhou stranu čelem doprava podle plánu. Kompas ruší kov a auta.</p>'+
     '<div class="acts"><button class="btn" data-rg="list">'+(fresh?'Teď ne':'Zpět')+'</button></div>';
   $('rgBody').querySelector('[data-rgz="gps"]').onclick=function(){ ringAzGps(g); };
   $('rgBody').querySelector('[data-rgz="cmp"]').onclick=function(){ ringAzCmp(g); };
+  /* plán závodiště nebo opačně projité rohy: start je na druhém konci dlouhé strany */
+  var fl=$('rgBody').querySelector('[data-rgz="flip"]'); if(fl) fl.onclick=function(){ ringUpd(g.id,function(x){ x.az=Math.round(((x.az+180)%360)*10)/10; }); toast('Natočení otočené o 180°'); ringAz(ringById(g.id)); };
 }
 function ringAzGps(g){
   $('rgBody').innerHTML=ringMeasHTML('Roh 1 ze 2','Stůj v rohu kolbiště, který je na plánu <b>vlevo nahoře</b>.')+'<div class="acts"><button class="btn" data-rg="list">Zrušit</button><button class="btn" id="rgStop" disabled>Stačí</button></div>';
