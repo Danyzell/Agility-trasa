@@ -80,8 +80,18 @@ module.exports = async function ({ browser, base }) {
     ok(a[0] === true && a[1] && a[2] === false, 'nabídka přihlášení se neukázala, nebo se ukázala dvakrát: ' + JSON.stringify(a));
   });
 
+  await step('návštěvnost pro autora', async () => {
+    /* přehled se ukáže jen, když ho server vrátí (autorovi); ostatním nic */
+    await T.ctx.route(/\/rest\/v1\/rpc\/app_stats/, r => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(srv.admin ? { today: 3, d7: 12, d30: 40, new7: 5, total: 41, icon7: 4, en7: 2, accounts: 2, days: [['2026-10-04', 5], ['2026-10-05', 3]] } : null) }));
+    await ev(() => { AUTH = { uid: 'u-1', email: 'a@b.cz', name: 'A', at: 'x', rt: 'y', exp: 9e9 }; moreOpen('about'); }); await page.waitForTimeout(400);
+    ok(!(await page.isVisible('#statsBox .stats-adm')), 'přehled návštěvnosti vidí i ne-autor');
+    srv.admin = true; await ev(() => moreOpen('about')); await page.waitForTimeout(400);
+    ok(await page.isVisible('#statsBox .stats-adm') && /40/.test(await page.textContent('#statsBox')) && await page.locator('#statsBox .sbars i').count() === 2, 'autor nevidí přehled návštěvnosti');
+    await ev(() => { AUTH = null; });
+  });
+
   await step('angličtina', async () => {
-    const miss = await ev(() => ['Účet', 'Přihlásit přes Google', 'Synchronizovat teď', 'Odhlásit', 'Synchronizováno 10:42', 'Synchronizace se nepovedla: bez připojení k internetu', 'Smazat data z účtu', 'Přihlas se ke svým datům', 'Pokračovat bez přihlášení'].filter(s => trLookup(s) == null));
+    const miss = await ev(() => ['Účet', 'Přihlásit přes Google', 'Synchronizovat teď', 'Odhlásit', 'Synchronizováno 10:42', 'Synchronizace se nepovedla: bez připojení k internetu', 'Smazat data z účtu', 'Přihlas se ke svým datům', 'Pokračovat bez přihlášení', 'Návštěvnost (vidíš jen ty)', 'Lidé, kteří aplikaci otevřeli (každé zařízení jednou za den). Celkem od začátku: 41. Anglicky: 2 za 7 dní.'].filter(s => trLookup(s) == null));
     ok(!miss.length, 'chybí překlad: ' + miss.join(' | '));
   });
 
