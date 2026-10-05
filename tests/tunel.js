@@ -68,6 +68,11 @@ module.exports = async function ({ browser, base }) {
     ok(await ev(() => V3.on === false && $('p3play').textContent === 'Přehrát'), '3D z přepínače se má otevřít zastavené');
     await page.click('#p3dim [data-d="2"]'); await page.waitForTimeout(150);
     ok(await ev(() => $('ov3d').hidden && !C3.api), '2D nezavřelo 3D zobrazení');
+    /* při tréninku paměti 3D schované (prozradilo by čísla překážek), po ukončení zase vidět */
+    await ev(() => { mode = 'view'; setPanel('quiz'); });
+    ok(await page.isHidden('#dimBtn'), 'tlačítko 3D je vidět při tréninku paměti');
+    await ev(() => setPanel('quiz'));
+    ok(await page.isVisible('#dimBtn'), 'tlačítko 3D se po tréninku paměti neukázalo');
     /* 3D: tunel v 3D má zvolenou délku */
     const L = await ev(() => { const o = S.obs.find(q => q.type === 'tunnel' && !q.bend); o.len = 6; const t = course3dSpec().obs.find(q => q.type === 'tunnel' && !getO(S.obs.find(z => z.type === 'tunnel' && !z.bend).id).bend && q.x === o.x && q.y === o.y).tunnel; return Math.hypot(t[0][0] - t[t.length - 1][0], t[0][1] - t[t.length - 1][1]); });
     ok(Math.abs(L - 6) < .05, '3D tunel nemá zvolenou délku: ' + L);
