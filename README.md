@@ -22,6 +22,8 @@ Délka tunelu: u vybraného tunelu ve Stavbě 2–6 m (nový tunel 5 m, uložen�
 
 Zásady ochrany osobních údajů: [privacy.html](https://danyzell.github.io/Agility-trasa/privacy.html) (česky i anglicky, adresa se hodí i do Google Play).
 
+Sdílení na Facebooku: odkaz https://danyzell.github.io/Agility-trasa/ má náhled (obrázek `og.jpg` a popis). Když ho někdo otevře ve vestavěném prohlížeči Facebooku nebo Messengeru, kde instalace nejde, ukáže se pruh Otevřít v Chromu (na iPhonu návod přes ⋯ → Otevřít v Safari).
+
 Instalace přes Chrome: když Chrome nabídne instalaci, ukáže se na Domů karta **Nainstaluj si aplikaci**. Ve Více → O aplikaci je tlačítko Nainstalovat, nebo návod pro iPhone (Safari → Sdílet → Přidat na plochu), když tlačítko není. Je tam i QR kód s odkazem na aplikaci, aby si ji kamarádi mohli rovnou otevřít.
 
 Napsat autorovi (Více, nebo hvězdičky na Domů po 10 bězích): hodnocení 1–5, druh zprávy, text a nepovinný e-mail pro odpověď. Serverová funkce `supabase/functions/feedback` zprávu uloží do tabulky `feedback` a pošle ji e-mailem přes [Resend](https://resend.com). Adresa příjemce je v tabulce `app_secret` (klíč `feedback_to`), klíč Resend patří do tajných proměnných funkce jako `RESEND_API_KEY` (nebo do `app_secret` pod klíčem `resend_key`). Bez klíče se zprávy jen ukládají a jde je číst v Supabase → Table Editor → feedback.
