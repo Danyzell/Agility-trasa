@@ -4211,7 +4211,7 @@ svg.addEventListener('pointerup',function(e){
     } else if(mode==='view'){
       if(tap.id!=null&&!ui.tipped){ ui.tipped=1; toast('Překážky upravíš v režimu Stavba, pořadí v režimu Trasa.'); }
     } else if(tool){
-      var p=pt(e), o={id:nid(),type:tool,x:cl(r1(p.x),0,S.W),y:cl(r1(p.y),0,S.H),rot:0};
+      var p=pt(e), o={id:nid(),type:tool,x:cl(r1(p.x),0,S.W),y:cl(r1(p.y),0,S.H),rot:0}; if(tool==='tunnel') o.len=5; /* nový tunel: výchozí 5 m */
       S.obs.push(o); sel=o.id; touch(); render(); ui();
     } else { sel=null; render(); ui(); }
   }

@@ -40,6 +40,17 @@ module.exports = async function ({ browser, base }) {
     ok(await ev(() => { const c = courseClean({ W: 40, H: 20, obs: [{ id: 1, type: 'tunnel', x: 5, y: 5, rot: 0, len: 9 }, { id: 2, type: 'tunnel', x: 15, y: 5, rot: 0, len: 2.6 }, { id: 3, type: 'jump', x: 25, y: 5, rot: 0, len: 4 }], route: [1, 2, 3] }); return !('len' in c.obs[0]) && c.obs[1].len === 2.5 && !('len' in c.obs[2]); }), 'neplatná délka tunelu prošla kontrolou dat');
   });
 
+  await step('nový tunel má 5 m', async () => {
+    await fresh(); await page.click('#mBuild'); await page.click('#zOut'); await page.click('#zOut');
+    await page.click('#palette [data-type="tunnel"]');
+    const n0 = await ev(() => S.obs.length);
+    /* volné místo daleko od ostatních překážek */
+    const spot = await ev(() => { let best = null, bd = -1; for (let x = 3; x < S.W - 2; x++) for (let y = 3; y < S.H - 2; y++) { const d = Math.min(...S.obs.map(o => Math.hypot(o.x - x, o.y - y))); if (d > bd) { bd = d; best = [x, y]; } } return best; });
+    await T.tapField(spot[0], spot[1]); await page.waitForTimeout(150);
+    const o = await ev(() => S.obs[S.obs.length - 1]);
+    ok(await ev(() => S.obs.length) === n0 + 1 && o.type === 'tunnel' && o.len === 5, 'nový tunel nemá 5 m: ' + JSON.stringify(o));
+  });
+
   await step('kontrola FCI: tunel 3–6 m', async () => {
     await fresh(); const id = await tunCourse();
     const has = () => ev(() => fciCheck(S.obs, S.route, S.turns).some(r => !r.ok && /kratší než 3 m/.test(r.t)));
