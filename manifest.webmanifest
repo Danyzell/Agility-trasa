@@ -1,6 +1,6 @@
 {
- "name": "HandlerMap",
- "short_name": "HandlerMap",
+ "name": "AgiPlan",
+ "short_name": "AgiPlan",
  "description": "Plánovač agility parkurů: trasy, čtení plánků z fotky, trénink, stopky. Česky i anglicky.",
  "lang": "cs",
  "id": "./",

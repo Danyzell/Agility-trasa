@@ -1,12 +1,12 @@
-# HandlerMap
+# AgiPlan
 
-(dříve Agility trasa)
+(dříve HandlerMap a Agility trasa)
 
 Plánovač agility parkurů jako aplikace do telefonu.
 
 Instalace: otevři stránku v Chromu na Androidu a zvol **Instalovat aplikaci** (nebo ⋮ → Přidat na plochu). Aplikace pak běží z ikony na ploše, i offline.
 
-Verze 2.0. Česky i anglicky (Více → Nastavení), světlý i tmavý vzhled.
+Verze 2.1. Česky i anglicky (Více → Nastavení), světlý i tmavý vzhled.
 
 Trénink doma (Domů → Trénink doma, nebo Parkury → Generátor → Z parkurů): aplikace vyřízne ze skutečných parkurů úseky, které se vejdou na tvou plochu a postavíš je z vlastního vybavení. Pořadí, otočky kolem křídla i zadní strany zůstanou jako na parkuru. Úseky jde filtrovat podle toho, co chceš trénovat, otočit zrcadlově (otočky na druhou stranu) a kruh nebo skok daleký nahradit skokem; k úseku se ukládají oblíbené i běhy.
 

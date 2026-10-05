@@ -1,4 +1,4 @@
-/* HandlerMap: Napsat autorovi. Hodnocení (1–5 hvězd), druh zprávy a text z aplikace uloží do tabulky feedback
+/* AgiPlan: Napsat autorovi. Hodnocení (1–5 hvězd), druh zprávy a text z aplikace uloží do tabulky feedback
    a pošle e-mailem autorovi přes službu Resend. Adresu a klíč bere z proměnných FEEDBACK_TO a RESEND_API_KEY,
    jinak z tabulky app_secret (feedback_to, resend_key). Bez klíče se zpráva jen uloží a e-mail odejde,
    až bude klíč nastavený (mailed = false).
@@ -55,7 +55,7 @@ Deno.serve(async (req: Request) => {
         `Kontakt: ${contact || '—'}\nVerze: ${row.ver || '—'} · jazyk ${row.lang || '—'}\nZařízení: ${device.slice(0, 10)}…\n${row.ua}`;
       const r = await fetch('https://api.resend.com/emails', {
         method: 'POST', headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ from: 'HandlerMap <onboarding@resend.dev>', to: [to], subject: `HandlerMap: ${st}${KINDS[kind]}${msg ? ' – ' + msg.replace(/\s+/g, ' ').slice(0, 50) : ''}`,
+        body: JSON.stringify({ from: 'AgiPlan <onboarding@resend.dev>', to: [to], subject: `AgiPlan: ${st}${KINDS[kind]}${msg ? ' – ' + msg.replace(/\s+/g, ' ').slice(0, 50) : ''}`,
           text, ...(MAIL.test(contact) ? { reply_to: contact } : {}) }),
       });
       mailed = r.ok;

@@ -1,5 +1,5 @@
 <!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1f6b45"><meta name="mobile-web-app-capable" content="yes"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>window.AGILITY_PWA=1;</script></head><body>
-<title>HandlerMap</title>
+<title>AgiPlan</title>
 <script>try{var t0=JSON.parse(localStorage.getItem('agility-theme-v1'));if(t0==='light'||t0==='dark')document.documentElement.setAttribute('data-theme',t0);}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -772,7 +772,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 <header class="top">
   <div class="top-in">
     <div class="brand" id="brandMark" aria-hidden="true"></div>
-    <div class="apptitle" id="appTitle"><b>HandlerMap</b><span id="appSub"></span></div>
+    <div class="apptitle" id="appTitle"><b>AgiPlan</b><span id="appSub"></span></div>
     <button class="ctitle" id="titleBtn" aria-label="Upravit název, třídu a autora parkuru"><b id="cName" translate="no"></b><span id="cSub"></span></button>
     <button class="iconbtn fav" id="favBtn" aria-pressed="false" aria-label="Oblíbený" data-ic="star"></button>
     <button class="sup" id="supBtn" hidden aria-label="Podpořit aplikaci"><span class="sup-h" data-ic="heartF"></span><span class="sup-t">Podpořit</span></button>
@@ -967,7 +967,7 @@ function lsFull(e){
   if(lsFull.t&&Date.now()-lsFull.t<15000) return; lsFull.t=Date.now();
   setTimeout(function(){toast('Paměť aplikace je plná, poslední změna se neuložila. Odeber podklad z fotky nebo smaž staré parkury v Moje.',6000);},0);
 }
-/* ---------- HandlerMap: události a registr obrazovek (moduly se sem zapisují, UI je vykreslí) ---------- */
+/* ---------- AgiPlan: události a registr obrazovek (moduly se sem zapisují, UI je vykreslí) ---------- */
 var HM={_h:{},screens:{},cards:{},
   on:function(e,f){(this._h[e]=this._h[e]||[]).push(f);},
   off:function(e,f){this._h[e]=(this._h[e]||[]).filter(function(x){return x!==f;});},
@@ -1218,7 +1218,7 @@ var I18N_EXTRA={exact:{
 "Napsat autorovi": "Write to the author",
 "Podpořit aplikaci": "Support the app",
 "Podpora zatím není nastavená.": "Support isn't set up yet.",
-"HandlerMap je zdarma a bez reklam. Když ti pomáhá v tréninku, můžeš přispět na provoz serveru a další vývoj. Každá koruna pomůže, díky! ❤️": "HandlerMap is free and ad-free. If it helps your training, you can chip in for the server and further development. Every bit helps, thank you! ❤️",
+"AgiPlan je zdarma a bez reklam. Když ti pomáhá v tréninku, můžeš přispět na provoz serveru a další vývoj. Každá koruna pomůže, díky! ❤️": "AgiPlan is free and ad-free. If it helps your training, you can chip in for the server and further development. Every bit helps, thank you! ❤️",
 "Jiná částka": "Other amount",
 "Částka": "Amount",
 "QR platba": "QR payment",
@@ -1235,7 +1235,7 @@ var I18N_EXTRA={exact:{
 "Chceš vývoj podpořit i jinak?": "Want to support development in another way?",
 "Napsat další zprávu": "Write another message",
 "Co ti v aplikaci chybí, co nefunguje, nebo co se ti líbí? Zpráva přijde rovnou autorovi.": "What's missing in the app, what doesn't work, or what do you like? The message goes straight to the author.",
-"Jak se ti HandlerMap líbí?": "How do you like HandlerMap?",
+"Jak se ti AgiPlan líbí?": "How do you like AgiPlan?",
 "O co jde": "What it's about",
 "Nápad": "Idea",
 "Chyba": "Bug",
@@ -1268,7 +1268,7 @@ var I18N_EXTRA={exact:{
 "QR kód s odkazem na aplikaci": "QR code with a link to the app",
 "Ať si kamarád naskenuje kód fotoaparátem, nebo mu pošli odkaz.": "Let a friend scan the code with their camera, or send them the link.",
 "Sdílet odkaz": "Share link",
-"HandlerMap – plánovač agility parkurů, stopky a trénink. Zdarma v telefonu:": "HandlerMap – agility course planner, stopwatch and training. Free on your phone:"
+"AgiPlan – plánovač agility parkurů, stopky a trénink. Zdarma v telefonu:": "AgiPlan – agility course planner, stopwatch and training. Free on your phone:"
 },num:{
 "Zahrada týdne #": "Garden of the week #",
 "Krok # z #": "Step #1 of #2",
@@ -1995,7 +1995,7 @@ i18nAdd({
 "Soubor tady nejde uložit přímo. Zkopíruj si text a ulož ho jinam.": "The file can't be saved directly here. Copy the text and save it elsewhere.",
 "Kopírovat": "Copy",
 "V aplikaci se obrázek do telefonu uložit nedá. Udělej snímek obrazovky, nebo ho ulož ve webové verzi.": "The image can't be saved to the phone in the app. Take a screenshot, or save it in the web version.",
-"V aplikaci se PDF do telefonu uložit nedá. Ulož ho ve webové verzi HandlerMap.": "The PDF can't be saved to the phone in the app. Save it in the HandlerMap web version.",
+"V aplikaci se PDF do telefonu uložit nedá. Ulož ho ve webové verzi AgiPlan.": "The PDF can't be saved to the phone in the app. Save it in the AgiPlan web version.",
 "Podrž prst na obrázku a ulož ho, nebo si udělej snímek obrazovky.": "Press and hold the image to save it, or take a screenshot.",
 "PDF tady nejde uložit přímo. Ulož si obrázek.": "The PDF can't be saved directly here. Save the image instead.",
 "Označeno, zkopíruj ručně": "Selected, copy it manually",
@@ -2007,7 +2007,7 @@ i18nAdd({
 "Směr běhu": "Running direction",
 "Poznámka": "Note",
 "mimo trasu": "off route",
-"Obrázek parkuru si v aplikaci ulož snímkem obrazovky. PDF se stavebním plánem a ukládání souborů fungují ve webové verzi HandlerMap.": "Save the course image in the app with a screenshot. The PDF with the build plan and saving files work in the HandlerMap web version.",
+"Obrázek parkuru si v aplikaci ulož snímkem obrazovky. PDF se stavebním plánem a ukládání souborů fungují ve webové verzi AgiPlan.": "Save the course image in the app with a screenshot. The PDF with the build plan and saving files work in the AgiPlan web version.",
 "Obrázek se hodí na sdílení, PDF se stavebním plánem na tisk: u každé překážky jsou metry od okraje plochy a směr běhu.": "The image is good for sharing, the PDF with the build plan for printing: each obstacle has its distances from the field edges and the running direction.",
 "Sdílet obrázek": "Share image",
 "Sdílet PDF": "Share PDF",
@@ -2489,8 +2489,8 @@ i18nAdd({
 "Length @1 m · @2 obstacles · @3 · SCT – s (@4 m/s) · MCT – s"
 ],
 [
-"^HandlerMap · (.+?) · mřížka 1 m$",
-"HandlerMap · @1 · 1 m grid"
+"^AgiPlan · (.+?) · mřížka 1 m$",
+"AgiPlan · @1 · 1 m grid"
 ],
 [
 "^oblouk (.+?)°$",
@@ -2505,24 +2505,24 @@ i18nAdd({
 "used @1×"
 ],
 [
-"^x = vzdálenost středu překážky od levého okraje plochy, y = od horního okraje\\. Směr běhu: → doprava, ↓ dolů, ← doleva, ↑ nahoru\\. Otočka doleva a doprava je z pohledu psa\\. Zadní strana: pes skok mine, oběhne křídlo a skočí ho z druhé strany\\. HandlerMap, (.+?)$",
-"x = distance of the obstacle centre from the left edge of the field, y = from the top edge. Running direction: → right, ↓ down, ← left, ↑ up. Left and right wraps are from the dog's point of view. Backside: the dog passes the jump, runs around the wing and takes it from the other side. HandlerMap, @1"
+"^x = vzdálenost středu překážky od levého okraje plochy, y = od horního okraje\\. Směr běhu: → doprava, ↓ dolů, ← doleva, ↑ nahoru\\. Otočka doleva a doprava je z pohledu psa\\. Zadní strana: pes skok mine, oběhne křídlo a skočí ho z druhé strany\\. AgiPlan, (.+?)$",
+"x = distance of the obstacle centre from the left edge of the field, y = from the top edge. Running direction: → right, ↓ down, ← left, ↑ up. Left and right wraps are from the dog's point of view. Backside: the dog passes the jump, runs around the wing and takes it from the other side. AgiPlan, @1"
 ],
 [
-"^Parkur (.+?) \\(HandlerMap\\)$",
-"Course @1 (HandlerMap)"
+"^Parkur (.+?) \\(AgiPlan\\)$",
+"Course @1 (AgiPlan)"
 ],
 [
 "^Export se nepovedl: (.+?)$",
 "Export failed: @1"
 ],
 [
-"^Parkur „(.+?)“ \\((.+?), stavěl/a (.+?)\\)\\. V aplikaci HandlerMap otevři Plán → Sdílet a zadej kód (.+?)$",
-"Course “@1” (@2, built by @3). In the HandlerMap app open Plan → Share and enter the code @4"
+"^Parkur „(.+?)“ \\((.+?), stavěl/a (.+?)\\)\\. V aplikaci AgiPlan otevři Plán → Sdílet a zadej kód (.+?)$",
+"Course “@1” (@2, built by @3). In the AgiPlan app open Plan → Share and enter the code @4"
 ],
 [
-"^Parkur „(.+?)“ \\((.+?)\\)\\. V aplikaci HandlerMap otevři Plán → Sdílet a zadej kód (.+?)$",
-"Course “@1” (@2). In the HandlerMap app open Plan → Share and enter the code @3"
+"^Parkur „(.+?)“ \\((.+?)\\)\\. V aplikaci AgiPlan otevři Plán → Sdílet a zadej kód (.+?)$",
+"Course “@1” (@2). In the AgiPlan app open Plan → Share and enter the code @3"
 ],
 [
 "^Kód se nepodařilo vytvořit: (.+?)$",
@@ -2764,7 +2764,7 @@ i18nAdd({
 "Obecná doporučení k zahřátí před tréninkem. Pokud má pes zdravotní potíže, poraď se s veterinářem nebo psím fyzioterapeutem.": "General recommendations for warming up before training. If your dog has health problems, consult a vet or a canine physiotherapist.",
 "Po tréninku dej psovi ještě pár minut volné chůze.": "After training give the dog a few more minutes of loose walking.",
 "Hotovo, můžete trénovat": "Done, you can start training",
-"Tohle není záloha z aplikace HandlerMap.": "This isn't a backup from HandlerMap.",
+"Tohle není záloha z aplikace AgiPlan.": "This isn't a backup from AgiPlan.",
 "Obnovit zálohu?": "Restore the backup?",
 "Obnovit": "Restore",
 "Záloha jako text": "Backup as text",
@@ -3124,7 +3124,7 @@ i18nAdd({
 "Server vrátil neplatný kód, zkus to znovu.": "The server returned an invalid code, try again.",
 "Načítám…": "Loading…",
 "Současná data v aplikaci se nahradí zálohou.": "The current data in the app will be replaced with the backup.",
-"Nový název HandlerMap": "New name HandlerMap",
+"Nový název HandlerMap (dnes AgiPlan)": "New name HandlerMap (now AgiPlan)",
 "Angličtina (přepneš ve Více → Nastavení)": "English (switch in More → Settings)",
 "Větší tlačítka a plynulejší přechody": "Bigger buttons and smoother transitions",
 "Novinky v 1.13: 3D animace techniky ve Videích – pes a psovod na skutečných překážkách (skok, tunel, slalom, áčko, kladina, houpačka, kruh, skok daleký) i při vedení psa (čelo, záda, blind, otočky, zadní strana, start). Animace se stáhne až při otevření tématu, na slabším telefonu se sama zjednoduší a bez podpory 3D zůstane dosavadní 2D animace.": "New in 1.13: 3D technique animations in Videos – dog and handler on real obstacles (jump, tunnel, weave poles, A-frame, dog walk, seesaw, tyre, long jump) and in handling (front cross, rear cross, blind, wraps, backside, start). The animation downloads only when you open a topic, simplifies itself on slower phones, and without 3D support the 2D animation stays.",
@@ -3134,7 +3134,14 @@ i18nAdd({
 "zapne se po klepnutí na Stojím v rohu": "turns on after tapping I'm in the corner",
 "Je připravená nová verze aplikace.": "A new version of the app is ready.",
 "Paměť aplikace je plná, poslední změna se neuložila. Odeber podklad z fotky nebo smaž staré parkury v Moje.": "The app's storage is full, the last change wasn't saved. Remove the photo underlay or delete old courses in Mine.",
-"Aplikace Agility trasa se teď jmenuje HandlerMap.": "The app Agility trasa is now called HandlerMap.",
+"Aplikace se teď jmenuje AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.": "The app is now called AgiPlan. Your courses, dogs and runs stayed as they were.",
+"Napsat autorovi: hvězdičky a zpráva přímo z aplikace": "Write to the author: stars and a message right from the app",
+"Podpořit aplikaci: QR platba v bance": "Support the app: QR payment in your bank",
+"Instalace na plochu jedním klepnutím a QR kód pro kamarády": "One-tap install to the home screen and a QR code for friends",
+"Nový název AgiPlan": "New name AgiPlan",
+"Napsat autorovi a hodnocení hvězdičkami": "Write to the author and star rating",
+"Podpořit aplikaci (QR platba)": "Support the app (QR payment)",
+"Instalace z Domů a QR kód s odkazem pro kamarády": "Install from Home and a QR code with the link for friends",
 "Angličtina: Více → Nastavení → English": "English: More → Settings → English",
 "Jazyk": "Language",
 "Vzhled": "Appearance",
@@ -3142,11 +3149,11 @@ i18nAdd({
 "Průvodce": "Guide",
 "Krátké představení aplikace a nastavení psa.": "A short introduction to the app and setting up your dog.",
 "Spustit průvodce": "Start the guide",
-"Novinky v HandlerMap 2.0": "What's new in HandlerMap 2.0",
+"Novinky v AgiPlan 2.1": "What's new in AgiPlan 2.1",
 "Tmavý vzhled podle systému, nebo natrvalo": "Dark mode following the system, or permanently",
 "Pokračovat": "Continue",
 "Přeskočit": "Skip",
-"Vítej v HandlerMap": "Welcome to HandlerMap",
+"Vítej v AgiPlan": "Welcome to AgiPlan",
 "Plánuj parkury, čti plánky z fotky, trénuj se stopkami a sleduj, jak se tvůj pes zlepšuje.": "Plan courses, read course maps from photos, train with the stopwatch and watch your dog improve.",
 "Jazyk / Language": "Language",
 "Podle systému": "System",
@@ -3171,6 +3178,7 @@ i18nAdd({
 "Nastavení": "Settings",
 "Plánovač agility parkurů pro psovody": "Agility course planner for handlers",
 "Novinky ve verzi 2.0": "New in version 2.0",
+"Novinky ve verzi 2.1": "New in version 2.1",
 "Průvodce prvním spuštěním": "First-run guide",
 "Spustit průvodce znovu": "Run the guide again",
 "Starší novinky": "Earlier updates",
@@ -3820,7 +3828,7 @@ var IC={
   chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6l6 6-6 6"/></svg>',
   moon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>',
   globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.7 3.5 5.7 3.5 9s-1.1 6.3-3.5 9c-2.4-2.7-3.5-5.7-3.5-9s1.1-6.3 3.5-9z"/></svg>',
-  brand:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.4" y="3.6" width="3" height="16.8" rx="1.5" fill="currentColor"/><rect x="16.6" y="3.6" width="3" height="16.8" rx="1.5" fill="currentColor"/><rect x="6.4" y="10.5" width="11.2" height="3" rx="1.2" fill="currentColor"/><path d="M2.6 21.2c4.6-.2 6.8-4.4 9.4-9.1s4.8-8.6 9.4-9" fill="none" stroke="var(--mark-accent,var(--zone))" stroke-width="2.3" stroke-linecap="round"/><circle cx="2.9" cy="21.1" r="1.5" fill="var(--mark-accent,var(--zone))"/></svg>'
+  brand:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.6 20.6L12 9.2l6.4 11.4" fill="none" stroke="currentColor" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.6 16.6h6.8" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M2.4 19.6C4 .8 20 .8 21.6 19.6" fill="none" stroke="var(--mark-accent,var(--zone))" stroke-width="2.3" stroke-linecap="round"/><circle cx="2.45" cy="19.8" r="1.5" fill="var(--mark-accent,var(--zone))"/></svg>'
 };
 Array.prototype.forEach.call(document.querySelectorAll('[data-ic]'),function(el){el.insertAdjacentHTML('afterbegin',IC[el.getAttribute('data-ic')]);});
 DEF.tire.c='#6f7f8c';
@@ -4814,7 +4822,7 @@ function homeRender(){
   var clean=runs.length?Math.round(runs.filter(function(x){return x.tot===0&&x.g!=='DIS';}).length/runs.length*100):0;
   var doneN=Object.keys(MK).filter(function(k){return MK[k].done;}).length, days=activeDays(), st=streak(days);
   var wd=['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota'][new Date().getDay()];
-  var h='<div class="hm-head"><div class="hm-tb"><div class="hm-logo">'+IC.brand+'</div><span>HANDLERMAP</span>'+
+  var h='<div class="hm-head"><div class="hm-tb"><div class="hm-logo">'+IC.brand+'</div><span>AGIPLAN</span>'+
     '<button class="hm-dog" data-h="dog"><i>🐕</i><span style="overflow:hidden;text-overflow:ellipsis;min-width:0">'+(d?esc(d.name)+' · '+esc(d.cls):'Přidat psa')+'</span></button></div>'+
     '<div class="hm-big">'+(donateOn()?'<button class="hm-sup" data-h="sup" aria-label="Podpořit aplikaci">'+IC.heartF+'<span>Podpořit</span></button>':'')+'<small>'+wd+(st?' · série '+st+(st===1?' den':st<5?' dny':' dní')+' 🔥':'')+'</small><h1>Připraveni<br>na <em>trénink?</em></h1></div>'+
     '<div class="hm-stats"><div><b>'+doneN+'</b><span>zaběhnuto</span></div><div><b>'+(avg?fmt(avg):'–')+'</b><span>m/s průměr</span></div><div><b>'+(runs.length?clean+' %':'–')+'</b><span>čisté běhy</span></div></div></div>';
@@ -5087,8 +5095,11 @@ function shareCanvas(o){
   x.strokeStyle='rgba(198,244,50,.12)'; x.lineWidth=60; x.beginPath(); x.arc(W-60,170,260,0,Math.PI*2); x.stroke();
   /* značka */
   x.fillStyle='#c6f432'; x.beginPath(); x.roundRect?x.roundRect(72,72,88,88,22):x.rect(72,72,88,88); x.fill();
-  x.fillStyle='#0a2a1c'; x.font='800 60px '+disp; x.textAlign='center'; x.textBaseline='middle'; x.fillText('H',116,119);
-  x.textAlign='left'; x.fillStyle='#fff'; x.font='700 44px '+disp; x.fillText('HandlerMap',184,118);
+  if(window.Path2D){ x.save(); x.translate(80,80); x.scale(3,3); x.lineCap='round'; x.lineJoin='round';
+    x.strokeStyle='#0a2a1c'; x.lineWidth=3.1; x.stroke(new Path2D('M5.6 20.6L12 9.2l6.4 11.4')); x.lineWidth=2.6; x.stroke(new Path2D('M8.6 16.6h6.8'));
+    x.strokeStyle='#1f6b45'; x.lineWidth=2.3; x.stroke(new Path2D('M2.4 19.6C4 .8 20 .8 21.6 19.6')); x.fillStyle='#1f6b45'; x.beginPath(); x.arc(2.45,19.8,1.5,0,Math.PI*2); x.fill(); x.restore(); }
+  x.textBaseline='middle';
+  x.textAlign='left'; x.fillStyle='#fff'; x.font='700 44px '+disp; x.fillText('AgiPlan',184,118);
   x.fillStyle='#c6f432'; x.font='700 34px '+body; x.fillText(T(o.kicker).toUpperCase(),72,236);
   x.fillStyle='#fff'; x.font='800 92px '+disp; x.fillText(T(o.title),72,320);
   var y=380;
@@ -5130,7 +5141,7 @@ function shareCanvas(o){
   return cv;
 }
 function shareImage(o){
-  var cv=shareCanvas(o), name=(o.file||'handlermap')+'.png';
+  var cv=shareCanvas(o), name=(o.file||'agiplan')+'.png';
   var go=function(b){ if(!b){ toast('Obrázek se nepodařilo vytvořit'); return; } return deliverFile(b,'image/png',name,true,(o.text?T(o.text)+' ':'')+SHARE_URL); };
   if(cv.toBlob) cv.toBlob(go,'image/png'); else { var u=cv.toDataURL('image/png'), bs=atob(u.split(',')[1]), a=new Uint8Array(bs.length); for(var i=0;i<bs.length;i++) a[i]=bs.charCodeAt(i); go(new Blob([a],{type:'image/png'})); }
   return cv;
@@ -5370,7 +5381,7 @@ function fallbackView(data,mime,name){
     return;
   }
   var img=mime.indexOf('image/')===0, url=img?sheetUrl(data):'';
-  var tip=APK_LITE?(img?'V aplikaci se obrázek do telefonu uložit nedá. Udělej snímek obrazovky, nebo ho ulož ve webové verzi.':'V aplikaci se PDF do telefonu uložit nedá. Ulož ho ve webové verzi HandlerMap.')
+  var tip=APK_LITE?(img?'V aplikaci se obrázek do telefonu uložit nedá. Udělej snímek obrazovky, nebo ho ulož ve webové verzi.':'V aplikaci se PDF do telefonu uložit nedá. Ulož ho ve webové verzi AgiPlan.')
     :(img?'Podrž prst na obrázku a ulož ho, nebo si udělej snímek obrazovky.':'PDF tady nejde uložit přímo. Ulož si obrázek.');
   openSheet('<h3>'+esc(name)+'</h3><p>'+tip+'</p>'+
     (mime.indexOf('image/')===0?'<div class="preview"><img src="'+url+'" alt="Náhled parkuru"></div>':'')+'<div class="acts"><button class="btn primary" data-a="x">Zavřít</button></div>',
@@ -5424,7 +5435,7 @@ function courseJPG(){
     x.fillStyle='#17201a'; fitFont(x,h.title,'bold ',64,36,W-80); x.fillText(fitText(x,h.title,W-80),40,80);
     x.fillStyle='#55625a'; x.font='34px sans-serif'; x.fillText(T(h.sub),40,128); x.fillText(T(h.spec),40,170);
     x.drawImage(im,0,top,W,fh);
-    x.fillStyle='#55625a'; x.font='26px sans-serif'; x.fillText(T('HandlerMap · '+new Date().toLocaleDateString(LOC)+' · mřížka 1 m'),40,top+fh+45);
+    x.fillStyle='#55625a'; x.font='26px sans-serif'; x.fillText(T('AgiPlan · '+new Date().toLocaleDateString(LOC)+' · mřížka 1 m'),40,top+fh+45);
     return new Promise(function(res){cv.toBlob(function(b){res(b);},'image/jpeg',.9);});
   });
 }
@@ -5476,7 +5487,7 @@ function planPDF(){
     });
     x.font='22px sans-serif';
     x.fillStyle='#55625a'; x.font='18px sans-serif';
-    wrapText(x,'x = vzdálenost středu překážky od levého okraje plochy, y = od horního okraje. Směr běhu: → doprava, ↓ dolů, ← doleva, ↑ nahoru. Otočka doleva a doprava je z pohledu psa. Zadní strana: pes skok mine, oběhne křídlo a skočí ho z druhé strany. HandlerMap, '+new Date().toLocaleDateString(LOC),M,H-M+10,W-2*M,24);
+    wrapText(x,'x = vzdálenost středu překážky od levého okraje plochy, y = od horního okraje. Směr běhu: → doprava, ↓ dolů, ← doleva, ↑ nahoru. Otočka doleva a doprava je z pohledu psa. Zadní strana: pes skok mine, oběhne křídlo a skočí ho z druhé strany. AgiPlan, '+new Date().toLocaleDateString(LOC),M,H-M+10,W-2*M,24);
     var jpg=atob(cv.toDataURL('image/jpeg',.88).split(',')[1]);
     return makePdf(jpg,W,H);
   });
@@ -5502,7 +5513,7 @@ function makePdf(jpgBin,w,h){
 function fileBase(){return (S.meta.name||'parkur').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'').toLowerCase()||'parkur';}
 function exportSheet(){
   if(S.route.length<2){toast('Nejdřív vyznač trasu v režimu Trasa.'); return;}
-  var intro=APK_LITE?'<p>Obrázek parkuru si v aplikaci ulož snímkem obrazovky. PDF se stavebním plánem a ukládání souborů fungují ve webové verzi HandlerMap.</p>'
+  var intro=APK_LITE?'<p>Obrázek parkuru si v aplikaci ulož snímkem obrazovky. PDF se stavebním plánem a ukládání souborů fungují ve webové verzi AgiPlan.</p>'
     :'<p>Obrázek se hodí na sdílení, PDF se stavebním plánem na tisk: u každé překážky jsou metry od okraje plochy a směr běhu.</p>';
   var btns=APK_LITE?'<button class="btn primary" data-a="x">Zavřít</button>'
     :'<button class="btn" data-a="x">Zavřít</button>'+(NATIVE||IS_PWA&&navigator.canShare?'<button class="btn" data-a="shimg">Sdílet obrázek</button><button class="btn" data-a="shpdf">Sdílet PDF</button>':'')+
@@ -5510,7 +5521,7 @@ function exportSheet(){
   openSheet('<h3>Export parkuru</h3>'+intro+'<div class="preview" id="expPrev"><p class="hint" style="padding:12px">Připravuji náhled…</p></div>'+
     '<div class="acts">'+btns+'</div>',
     function(e){
-      var b=e.target.closest('[data-a]'); if(!b) return; var a=b.getAttribute('data-a'), nm=fileBase().slice(0,60), tx=T('Parkur '+S.meta.name+' (HandlerMap)');
+      var b=e.target.closest('[data-a]'); if(!b) return; var a=b.getAttribute('data-a'), nm=fileBase().slice(0,60), tx=T('Parkur '+S.meta.name+' (AgiPlan)');
       if(a==='x'){closeSheet(); return;}
       b.disabled=true;
       var job=(a==='img'||a==='shimg')?courseJPG().then(function(bl){return deliverFile(bl,'image/jpeg',nm+'.jpg',a==='shimg',tx);})
@@ -5540,7 +5551,7 @@ function shareSheet(){
         sbCall('share_course',{p_name:S.meta.name,p_cls:S.meta.cls,p_author:S.meta.author||'',p_data:data}).then(function(code){
           code=String(code==null?'':code).trim(); if(!/^[A-Za-z0-9]{4,12}$/.test(code)){ toast('Server vrátil neplatný kód, zkus to znovu.'); b.disabled=false; return; }
           var out=$('shOut'); if(!out) return;
-          var msg='Parkur „'+S.meta.name+'“ ('+S.meta.cls+(S.meta.author?', stavěl/a '+S.meta.author:'')+'). V aplikaci HandlerMap otevři Plán → Sdílet a zadej kód '+code; msg=T(msg);
+          var msg='Parkur „'+S.meta.name+'“ ('+S.meta.cls+(S.meta.author?', stavěl/a '+S.meta.author:'')+'). V aplikaci AgiPlan otevři Plán → Sdílet a zadej kód '+code; msg=T(msg);
           out.innerHTML='<div class="code">'+esc(code)+'</div><div class="acts" style="justify-content:flex-start">'+
             '<a class="btn" href="https://wa.me/?text='+encodeURIComponent(msg)+'" target="_blank" rel="noopener">WhatsApp</a>'+
             '<a class="btn" href="sms:?body='+encodeURIComponent(msg)+'">SMS</a>'+
@@ -6834,7 +6845,7 @@ function backupData(){
 }
 /* obnova nahradí všechna data aplikace zálohou; když zápis selže (plná paměť), vrátí se data, jak byla */
 function restoreData(o){
-  if(!o||o.app!=='agility-trasa'||!o.data||typeof o.data!=='object'){toast('Tohle není záloha z aplikace HandlerMap.'); return;}
+  if(!o||o.app!=='agility-trasa'||!o.data||typeof o.data!=='object'){toast('Tohle není záloha z aplikace AgiPlan.'); return;}
   var at=new Date(o.at), keys=Object.keys(o.data).filter(function(k){return k.indexOf('agility-')===0&&k.indexOf('agility-db-')!==0&&typeof o.data[k]==='string';});
   ask('Obnovit zálohu?','Současná data v aplikaci se nahradí zálohou'+(isNaN(at)?'':' z '+at.toLocaleString(LOC))+'.','Obnovit',function(){
     var old={};
@@ -6968,23 +6979,23 @@ function czIban(acc){
 /* ---------- Podpořit aplikaci (QR platba) ----------
    Číslo účtu vyplní autor: acc '123456789/0800' nebo iban 'CZ…'; url je volitelný odkaz na platbu kartou (Ko-fi, PayPal…).
    Dokud není nic vyplněné, Podpořit se v aplikaci neukazuje. */
-var DONATE={acc:'1220369023/3030', iban:'', name:'', msg:'Podpora HandlerMap', url:''}, DN_AMT=100;
+var DONATE={acc:'1220369023/3030', iban:'', name:'', msg:'Podpora AgiPlan', url:''}, DN_AMT=100;
 function dnIban(){ var i=String(DONATE.iban||'').replace(/\s+/g,'').toUpperCase(); return /^CZ\d{22}$/.test(i)?i:czIban(DONATE.acc); }
 function donateOn(){ return !!(dnIban()||/^https:\/\//.test(DONATE.url||'')); }
 function spayd(amt){
   var i=dnIban(); if(!i) return '';
   var cl=function(s,n){ return String(s||'').replace(/\*/g,' ').replace(/[^\x20-\x7e -ſ]/g,'').trim().slice(0,n); };
-  return 'SPD*1.0*ACC:'+i+(amt>0?'*AM:'+(+amt).toFixed(2):'')+'*CC:CZK'+(DONATE.name?'*RN:'+cl(DONATE.name,35):'')+'*MSG:'+cl(DONATE.msg||'HandlerMap',60);
+  return 'SPD*1.0*ACC:'+i+(amt>0?'*AM:'+(+amt).toFixed(2):'')+'*CC:CZK'+(DONATE.name?'*RN:'+cl(DONATE.name,35):'')+'*MSG:'+cl(DONATE.msg||'AgiPlan',60);
 }
 function donateHTML(){
-  var i=dnIban(), h='<div class="panel dn"><p>HandlerMap je zdarma a bez reklam. Když ti pomáhá v tréninku, můžeš přispět na provoz serveru a další vývoj. Každá koruna pomůže, díky! ❤️</p>';
+  var i=dnIban(), h='<div class="panel dn"><p>AgiPlan je zdarma a bez reklam. Když ti pomáhá v tréninku, můžeš přispět na provoz serveru a další vývoj. Každá koruna pomůže, díky! ❤️</p>';
   if(i){
     h+='<div class="filters" role="group" aria-label="Částka">'+[50,100,200,500,0].map(function(a){ return '<button class="chip'+(DN_AMT===a?' on':'')+'" data-dam="'+a+'">'+(a?a+' Kč':'Jiná částka')+'</button>'; }).join('')+'</div>'+
       '<div class="dn-qr">'+qrSvg(spayd(DN_AMT),'QR platba')+'</div>'+
       '<p class="hint">Naskenuj kód v aplikaci své banky (QR platba).'+(DN_AMT?'':' Částku zadáš v bance.')+'</p>'+
       '<div class="dn-acc"><div><span>Číslo účtu</span><b translate="no">'+esc(DONATE.acc||i)+'</b></div><button class="btn" data-dcopy="'+esc(DONATE.acc||i)+'">Kopírovat</button></div>'+
       (DONATE.acc?'<div class="dn-acc"><div><span>IBAN</span><b translate="no">'+esc(i.replace(/(.{4})/g,'$1 ').trim())+'</b></div><button class="btn" data-dcopy="'+esc(i)+'">Kopírovat</button></div>':'')+
-      '<div class="dn-acc"><div><span>Zpráva pro příjemce</span><b translate="no">'+esc(DONATE.msg||'HandlerMap')+'</b></div></div>';
+      '<div class="dn-acc"><div><span>Zpráva pro příjemce</span><b translate="no">'+esc(DONATE.msg||'AgiPlan')+'</b></div></div>';
   }
   if(/^https:\/\//.test(DONATE.url||'')) h+='<div class="row"><a class="btn'+(i?'':' primary')+'" href="'+esc(DONATE.url)+'" target="_blank" rel="noopener">Přispět kartou</a></div>';
   return h+'<p class="hint">Za nápad nebo nahlášenou chybu jsem stejně vděčný. <button class="linkbtn" data-mgo="fb">Napsat autorovi</button></p></div>';
@@ -6996,12 +7007,12 @@ function dnCopy(s){
 }
 var APP_URL='https://danyzell.github.io/Agility-trasa/';
 function appShare(){
-  var txt=T('HandlerMap – plánovač agility parkurů, stopky a trénink. Zdarma v telefonu:');
-  try{ if(navigator.share){ navigator.share({title:'HandlerMap',text:txt,url:APP_URL}).catch(function(){}); return; } }catch(e){}
+  var txt=T('AgiPlan – plánovač agility parkurů, stopky a trénink. Zdarma v telefonu:');
+  try{ if(navigator.share){ navigator.share({title:'AgiPlan',text:txt,url:APP_URL}).catch(function(){}); return; } }catch(e){}
   dnCopy(APP_URL);
 }
 /* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
-var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='2.0';
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='2.1';
 var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
 function fbSave(){ lsSet(FBK,FB); }
 var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];
@@ -7011,7 +7022,7 @@ function fbHTML(){
     '<div class="row"><button class="btn ghost" data-fbnew="1">Napsat další zprávu</button></div></div>';
   var st=''; for(var i=1;i<=5;i++) st+='<button class="fb-st'+(FB.stars>=i?' on':'')+'" data-fbs="'+i+'" role="radio" aria-checked="'+(FB.stars===i)+'" aria-label="'+i+' z 5">'+(FB.stars>=i?IC.starF:IC.star)+'</button>';
   return '<div class="panel fb"><p class="hint">Co ti v aplikaci chybí, co nefunguje, nebo co se ti líbí? Zpráva přijde rovnou autorovi.</p>'+
-    '<h4>Jak se ti HandlerMap líbí?</h4><div class="fb-stars" role="radiogroup" aria-label="Hodnocení">'+st+'</div>'+
+    '<h4>Jak se ti AgiPlan líbí?</h4><div class="fb-stars" role="radiogroup" aria-label="Hodnocení">'+st+'</div>'+
     '<h4>O co jde</h4><div class="filters" role="group" aria-label="Druh zprávy">'+FB_KINDS.map(function(k){ return '<button class="chip'+(FB.kind===k[0]?' on':'')+'" data-fbk="'+k[0]+'">'+k[1]+'</button>'; }).join('')+'</div>'+
     '<label class="fld"><span>Zpráva</span><textarea id="fbMsg" rows="5" maxlength="2000" placeholder="'+(FB.kind==='bug'?'Co se stalo a kde v aplikaci?':'Napiš, co máš na srdci')+'">'+esc(FB.msg)+'</textarea></label>'+
     '<label class="fld"><span>E-mail pro odpověď (nepovinné)</span><input id="fbMail" type="email" inputmode="email" autocomplete="email" maxlength="120" value="'+esc(FB.mail)+'"></label>'+
@@ -7037,7 +7048,7 @@ function rateSet(o){ lsSet(RATEK,Object.assign(rateGet(),o)); }
 function rateHomeHTML(){
   var r=rateGet(); if(r.done||r.x||allRuns().length<10) return '';
   var st=''; for(var i=1;i<=5;i++) st+='<button class="fb-st" data-hrate="'+i+'" aria-label="'+i+' z 5">'+IC.star+'</button>';
-  return '<div class="hm-ch hm-rate"><div class="tx"><b>Jak se ti HandlerMap líbí?</b><span>Ťukni na hvězdičky a napiš autorovi.</span><div class="fb-stars">'+st+'</div></div>'+
+  return '<div class="hm-ch hm-rate"><div class="tx"><b>Jak se ti AgiPlan líbí?</b><span>Ťukni na hvězdičky a napiš autorovi.</span><div class="fb-stars">'+st+'</div></div>'+
     '<button class="hm-x" data-h="ratex" aria-label="Zavřít">'+IC.x+'</button></div>';
 }
 function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); },0);
@@ -7064,9 +7075,10 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='fb'){ h=fbHTML(); }
   else if(moreTab==='donate'){ h=donateOn()?donateHTML():'<p class="hint">Podpora zatím není nastavená.</p>'; }
   else {
-    h='<div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>HandlerMap 2.0</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
+    h='<div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>AgiPlan 2.1</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
       '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
-      '<h4>Novinky ve verzi 2.0</h4><ul class="news"><li>Nový název HandlerMap</li><li>Angličtina (přepneš ve Více → Nastavení)</li><li>Tmavý vzhled podle systému, nebo natrvalo</li><li>Průvodce prvním spuštěním</li><li>Větší tlačítka a plynulejší přechody</li></ul>'+
+      '<h4>Novinky ve verzi 2.1</h4><ul class="news"><li>Nový název AgiPlan</li><li>Napsat autorovi a hodnocení hvězdičkami</li><li>Podpořit aplikaci (QR platba)</li><li>Instalace z Domů a QR kód s odkazem pro kamarády</li></ul>'+
+      '<h4>Novinky ve verzi 2.0</h4><ul class="news"><li>Nový název HandlerMap (dnes AgiPlan)</li><li>Angličtina (přepneš ve Více → Nastavení)</li><li>Tmavý vzhled podle systému, nebo natrvalo</li><li>Průvodce prvním spuštěním</li><li>Větší tlačítka a plynulejší přechody</li></ul>'+
       '<details class="older"><summary>Starší novinky</summary>'+
       '<p class="hint">Novinky v 1.13: 3D animace techniky ve Videích – pes a psovod na skutečných překážkách (skok, tunel, slalom, áčko, kladina, houpačka, kruh, skok daleký) i při vedení psa (čelo, záda, blind, otočky, zadní strana, start). Animace se stáhne až při otevření tématu, na slabším telefonu se sama zjednoduší a bez podpory 3D zůstane dosavadní 2D animace.</p>'+
       '<p class="hint">Novinky v 1.12: nová úvodní obrazovka Domů – série tréninkových dní, zaběhnuté parkury, průměrná rychlost a podíl čistých běhů, tlačítko Pokračovat na rozdělaný parkur, Parkury pro tebe podle třídy psa, Výzva dne a přehled tréninků v tomto týdnu. Parkur týdne: každý týden jeden parkur pro třídu, výsledek pošleš do žebříčku a porovnáš se s ostatními podle velikosti psa.</p>'+
@@ -8574,9 +8586,9 @@ function onbStart(){
   onbOpen(1);
 }
 function newsCheck(){
-  if(lsGet('agility-news-v1',null)==='2.0') return; lsSet('agility-news-v1','2.0');
-  openSheet('<h3>Novinky v HandlerMap 2.0</h3><p>Aplikace Agility trasa se teď jmenuje HandlerMap.</p>'+
-    '<ul class="news"><li>Angličtina: Více → Nastavení → English</li><li>Tmavý vzhled podle systému, nebo natrvalo</li><li>Větší tlačítka a plynulejší přechody</li></ul>'+
+  if(lsGet('agility-news-v1',null)==='2.1') return; lsSet('agility-news-v1','2.1');
+  openSheet('<h3>Novinky v AgiPlan 2.1</h3><p>Aplikace se teď jmenuje AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>'+
+    '<ul class="news"><li>Napsat autorovi: hvězdičky a zpráva přímo z aplikace</li><li>Podpořit aplikaci: QR platba v bance</li><li>Instalace na plochu jedním klepnutím a QR kód pro kamarády</li></ul>'+
     '<div class="acts"><button class="btn primary" data-a="x">Pokračovat</button></div>',function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
 }
 function onbClose(done){ var o=$('onb'); if(o) o.parentNode.removeChild(o); if(done) lsSet(ONBK,{done:1,v:2}); document.documentElement.classList.remove('onb-open'); }
@@ -8588,7 +8600,7 @@ function onbOpen(step){
 function onbRender(){
   var o=$('onb'), s=ONB.step, h='<div class="onb-top"><div class="dots" aria-hidden="true"><i'+(s===1?' class="on"':'')+'></i><i'+(s===2?' class="on"':'')+'></i><i'+(s===3?' class="on"':'')+'></i></div><button class="btn ghost" data-o="skip">Přeskočit</button></div><div class="onb-body">';
   if(s===1){
-    h+='<div class="onb-logo" aria-hidden="true">'+IC.brand+'</div><h1>Vítej v HandlerMap</h1><p class="lead">Plánuj parkury, čti plánky z fotky, trénuj se stopkami a sleduj, jak se tvůj pes zlepšuje.</p>'+
+    h+='<div class="onb-logo" aria-hidden="true">'+IC.brand+'</div><h1>Vítej v AgiPlan</h1><p class="lead">Plánuj parkury, čti plánky z fotky, trénuj se stopkami a sleduj, jak se tvůj pes zlepšuje.</p>'+
       '<label>Jazyk / Language<div class="seg wide" role="group"><button data-o="lang" data-v="cs" class="'+(LANG==='cs'?'on':'')+'" translate="no">Čeština</button><button data-o="lang" data-v="en" class="'+(LANG==='en'?'on':'')+'" translate="no">English</button></div></label>'+
       '<label>Vzhled<div class="seg wide" role="group"><button data-o="theme" data-v="system" class="'+(THEME==='system'?'on':'')+'">Podle systému</button><button data-o="theme" data-v="light" class="'+(THEME==='light'?'on':'')+'">Světlý</button><button data-o="theme" data-v="dark" class="'+(THEME==='dark'?'on':'')+'">Tmavý</button></div></label>';
     h+='</div><div class="onb-foot"><button class="btn primary" data-o="next">Pokračovat</button></div>';
