@@ -70,8 +70,18 @@ module.exports = async function ({ browser, base }) {
     ok(await page.isVisible('#moreBody [data-acct="in"]'), 'po odhlášení chybí Přihlásit');
   });
 
+  await step('přihlášení v úvodu a jednorázová nabídka', async () => {
+    /* nový uživatel: průvodce má hned na první stránce Přihlásit přes Google */
+    await page.goto('about:blank'); await page.goto(base + '/?onb#home'); await ev(() => localStorage.clear()); await page.goto('about:blank'); await page.goto(base + '/?onb#home'); await page.waitForTimeout(600);
+    ok(await page.isVisible('#onb .onb-acct [data-acct="in"]'), 'v průvodci chybí Přihlásit přes Google');
+    await page.click('#onb [data-o="skip"]'); await page.waitForTimeout(150);
+    /* stávající uživatel bez přihlášení: nabídka jednou, pak už ne */
+    const a = await ev(() => { localStorage.removeItem('agility-acctask-v1'); const r1 = acctAsk(), vis = !$('scrim').hidden && !!document.querySelector('#sheet [data-acct="in"]'); closeSheet(); const r2 = acctAsk(); return [r1, vis, r2]; });
+    ok(a[0] === true && a[1] && a[2] === false, 'nabídka přihlášení se neukázala, nebo se ukázala dvakrát: ' + JSON.stringify(a));
+  });
+
   await step('angličtina', async () => {
-    const miss = await ev(() => ['Účet', 'Přihlásit přes Google', 'Synchronizovat teď', 'Odhlásit', 'Synchronizováno 10:42', 'Synchronizace se nepovedla: bez připojení k internetu', 'Smazat data z účtu', 'Přihlas se ke svým datům'].filter(s => trLookup(s) == null));
+    const miss = await ev(() => ['Účet', 'Přihlásit přes Google', 'Synchronizovat teď', 'Odhlásit', 'Synchronizováno 10:42', 'Synchronizace se nepovedla: bez připojení k internetu', 'Smazat data z účtu', 'Přihlas se ke svým datům', 'Pokračovat bez přihlášení'].filter(s => trLookup(s) == null));
     ok(!miss.length, 'chybí překlad: ' + miss.join(' | '));
   });
 

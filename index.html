@@ -243,6 +243,7 @@ select.btn{padding-right:8px;}
 .ov3d canvas[hidden]{display:none;}
 .fieldbox .dimbtn{position:absolute; left:6px; bottom:6px; z-index:2; display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:0 14px 0 10px; border-radius:14px; border:1px solid var(--border); background:color-mix(in srgb,var(--surface) 88%,transparent); color:var(--text); font:800 15px var(--body); box-shadow:var(--shadow);}
 .fieldbox .dimbtn[hidden]{display:none;}
+.fieldbox .arbtn{left:auto; right:6px; background:var(--accent); color:var(--on-accent); border-color:var(--accent);} .fieldbox .arbtn svg{color:currentColor;}
 .fieldbox .dimbtn svg{width:20px; height:20px; color:var(--accent);}
 .ov3d-hint{position:absolute; left:50%; top:calc(12px + env(safe-area-inset-top,0px)); transform:translateX(-50%); background:rgba(13,20,16,.72); color:#e5ebe2; padding:7px 14px; border-radius:999px; font-size:13px; pointer-events:none;}
 .ov3d-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)); background:#18201a; color:#e5ebe2; font-size:13px;}
@@ -768,6 +769,8 @@ body[data-view="plan"] #supBtn,body[data-view="run"] #supBtn{display:none!import
 .sheet .thx+.acts .btn{justify-content:center; text-align:center;}
 .thx-h{width:64px; height:64px; display:grid; place-items:center; border-radius:50%; background:color-mix(in srgb,#e5484d 12%,var(--surface)); color:#e5484d;}
 .thx-h svg{width:32px; height:32px; animation:supBeat 2.4s ease-in-out .2s 2; transform-origin:50% 60%;}
+.thx-h.acct-h{color:var(--accent); background:color-mix(in srgb,var(--accent) 12%,var(--surface));} .thx-h.acct-h svg{animation:none;}
+.onb-acct{display:flex; flex-direction:column; gap:6px; margin-top:6px;} .onb-acct p{margin:0;}
 :root[data-theme="dark"] .thx-h{color:#ff6b70;}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .thx-h{color:#ff6b70;}}
 @media (prefers-reduced-motion:reduce){.thx-h svg{animation:none;}}
@@ -886,6 +889,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
     </div>
     <div class="fieldbox">
     <button class="dimbtn" id="dimBtn" title="Zobrazit parkur ve 3D" aria-label="Zobrazit parkur ve 3D"><span data-ic="cube"></span>3D</button>
+    <button class="dimbtn arbtn" id="arBtn" hidden title="Postavit parkur kamerou na skutečném place" aria-label="AR na place">📷 AR na place</button>
     <div class="zoom"><button class="btn" id="zOut" aria-label="Oddálit">−</button><span id="zLbl" class="num"></span><button class="btn" id="zIn" aria-label="Přiblížit">+</button></div>
     <div id="wrap" tabindex="0" aria-label="Plocha parkuru, posouvá se šipkami">
       <svg id="field" class="build" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plocha parkuru">
@@ -1316,6 +1320,10 @@ var I18N_EXTRA={exact:{
 "Účet: přihlas se přes Google ve Více → Účet a parkury, psi i běhy budeš mít na všech zařízeních": "Account: sign in with Google in More → Account and have your courses, dogs and runs on all devices",
 "AR na place: ve 3D klepni na AR a parkur se položí na skutečný trávník (Chrome na Androidu)": "AR on the field: in 3D tap AR and the course is placed on real grass (Chrome on Android)",
 "AR na place": "AR on the field",
+"📷 AR na place": "📷 AR on the field",
+"AR se ještě načítá, klepni za chvilku znovu.": "AR is still loading, tap again in a moment.",
+"Pro AR potřebuješ trasu aspoň se 2 překážkami.": "For AR you need a route with at least 2 obstacles.",
+"Postavit parkur kamerou na skutečném place": "Set up the course on the real field with the camera",
 "1 : 1": "1 : 1",
 "Model na stůl": "Table model",
 "Položit znovu": "Place again",
@@ -1332,6 +1340,9 @@ var I18N_EXTRA={exact:{
 "Hotovo. Pusť psa znovu, nebo parkur polož jinam.": "Done. Run the dog again, or place the course elsewhere.",
 "AR se nepodařilo spustit. Potřebuješ Chrome na Androidu s podporou ARCore.": "AR couldn't start. You need Chrome on Android with ARCore support.",
 "Účet": "Account",
+"Parkury, psi a běhy pak budeš mít na všech svých zařízeních. Jde to i bez přihlášení, stačí Pokračovat.": "Your courses, dogs and runs will then be on all your devices. You can also go on without signing in, just tap Continue.",
+"Parkury, psi, běhy a deník pak budeš mít na každém zařízení a nezmizí ani se ztraceným telefonem.": "Your courses, dogs, runs and diary will then be on every device and won't be lost even with a lost phone.",
+"Pokračovat bez přihlášení": "Continue without signing in",
 "přihlášení vypršelo, přihlas se znovu": "sign-in expired, please sign in again",
 "data se mezitím změnila, zkus to znovu": "the data changed in the meantime, try again",
 "v telefonu je plná paměť": "the phone's storage is full",
@@ -4356,6 +4367,7 @@ function ui(){
   var special=panel==='side'||panel==='quiz';
   if(mode==='view'&&!S.obs.length) mode='build'; /* prázdná plocha: rovnou stavět */
   $('dimBtn').hidden=mode!=='view'||special; /* při tréninku paměti by 3D prozradilo čísla překážek */
+  $('arBtn').hidden=!(typeof AR!=='undefined'&&AR.ok)||mode!=='view'||special||S.route.length<2;
   $('mView').className=mode==='view'?'on':''; $('mBuild').className=mode==='build'?'on':''; $('mRoute').className=mode==='route'?'on':'';
   $('modeRow').hidden=special;
   $('buildTools').hidden=mode!=='build'||special; $('routeTools').hidden=mode!=='route'||special;
@@ -6317,21 +6329,30 @@ function close3d(){ $('ov3d').hidden=true; V3.on=false; cancelAnimationFrame(V3.
 $('p3dim').onclick=function(e){ var b=e.target.closest('[data-d]'); if(b&&b.getAttribute('data-d')==='2') close3d(); };
 $('dimBtn').onclick=function(){ open3d(false); };
 /* AR na place (WebXR, Chrome na Androidu): parkur se položí kamerou na skutečný trávník */
-var AR={api:null,st:''};
+var AR={api:null,st:'',ok:false};
+/* AR umí jen některé telefony (Chrome na Androidu s ARCore); jen tam se ukáže tlačítko a dopředu se načte 3D balíček,
+   aby se AR spustilo hned klepnutím (prohlížeč chce start AR přímo z klepnutí) */
+try{ if(navigator.xr&&navigator.xr.isSessionSupported) navigator.xr.isSessionSupported('immersive-ar').then(function(ok){
+  if(!ok) return; AR.ok=true; ui(); v3dLoad().then(function(m){ V3D.m=m; },function(){});
+},function(){}); }catch(e){}
 function arHint(s){
   AR.st=s; var t={scan:'Pomalu pohybuj telefonem a miř na zem, až se objeví zelený kroužek.',ready:'Zamiř kroužek na místo startu a klepni na obrazovku.',
     noground:'Zem zatím nenašel. Miř telefonem na trávník a pomalu s ním pohybuj.',placed:'Parkur stojí. Projdi se po něm, nebo pusť psa.',done:'Hotovo. Pusť psa znovu, nebo parkur polož jinam.'}[s]||'';
   var h=$('arHint'); if(h.getAttribute('data-s')!==s){ h.setAttribute('data-s',s); h.textContent=T(t); }
 }
-$('p3ar').onclick=function(){
-  if(!V3D.m||!V3D.m.startAR||AR.api) return;
+function arStart(){
+  if(AR.api) return;
+  if(!V3D.m||!V3D.m.startAR){ toast(T('AR se ještě načítá, klepni za chvilku znovu.')); v3dLoad().then(function(m){ V3D.m=m; },function(){}); return; }
+  if(S.route.length<2){ toast(T('Pro AR potřebuješ trasu aspoň se 2 překážkami.')); return; }
+  if(!C3.api) build3d();
   V3.on=false; $('p3play').textContent=T('Přehrát');
   $('arUi').hidden=false; arHint('scan'); $('arUi').querySelector('[data-ar="play"]').textContent=T('Pustit psa');
   var cur=null;
   try{ cur=V3D.m.startAR($('arUi'),course3dSpec(),{onState:arHint,onEnd:function(){ AR.api=null; $('arUi').hidden=true; if(C3.api) render3d(); }}); }
   catch(e){ cur=Promise.reject(e); }
   cur.then(function(a){ AR.api=a; },function(){ $('arUi').hidden=true; toast(T('AR se nepodařilo spustit. Potřebuješ Chrome na Androidu s podporou ARCore.'),5000); });
-};
+}
+$('p3ar').onclick=arStart; $('arBtn').onclick=arStart;
 /* klepnutí na ovládání nesmí položit parkur */
 $('arUi').addEventListener('beforexrselect',function(e){ if(e.target.closest('.ar-bar')) e.preventDefault(); });
 $('arUi').addEventListener('click',function(e){
@@ -7376,6 +7397,15 @@ function acctAct(a){
 }
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-acct]'); if(b) acctAct(b.getAttribute('data-acct')); });
 /* po přihlášení: v zařízení můžou být data jiného účtu (sdílený telefon) – zeptat se, jestli je spojit, nebo nahradit */
+/* jednou nabídnout přihlášení i těm, kdo aplikaci používali už před účty (noví ho mají v průvodci) */
+var ACCTASK='agility-acctask-v1';
+function acctAsk(){
+  if(AUTH||!IS_SRV||lsGet(ACCTASK,0)) return false; lsSet(ACCTASK,1);
+  openSheet('<div class="thx"><span class="thx-h acct-h" aria-hidden="true">'+IC.user+'</span><h3>Přihlas se ke svým datům</h3><p>Parkury, psi, běhy a deník pak budeš mít na každém zařízení a nezmizí ani se ztraceným telefonem.</p></div>'+
+    '<div class="acts"><button class="btn" data-a="x">Pokračovat bez přihlášení</button><button class="btn gbtn" data-acct="in">'+GLOGO+'<span>Přihlásit přes Google</span></button></div>',
+    function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
+  return true;
+}
 function authStart(){
   if(!AUTH) return;
   var S0=lsGet(SYNCK,{})||{};
@@ -9119,16 +9149,17 @@ function onbStart(){
   if(navigator.webdriver&&!/[?&]onb\b/.test(location.search)) return;
   var st=lsGet(ONBK,null);
   if(st&&st.step&&!st.done){ onbOpen(st.step); return; }
-  if(st) { newsCheck(); return; }
-  if(onbHasData()){ lsSet(ONBK,{done:1,v:2}); newsCheck(); return; }
+  if(st) { if(!newsCheck()) acctAsk(); return; }
+  if(onbHasData()){ lsSet(ONBK,{done:1,v:2}); if(!newsCheck()) acctAsk(); return; }
   onbOpen(1);
 }
 function newsCheck(){
-  var seen=lsGet('agility-news-v1',null); if(seen==='2.3') return; lsSet('agility-news-v1','2.3');
+  var seen=lsGet('agility-news-v1',null); if(seen==='2.3') return false; lsSet('agility-news-v1','2.3');
   /* kdo neviděl novinky 2.1, dozví se i o novém názvu */
   openSheet('<h3>Novinky v AgiPlan 2.3</h3>'+(seen!=='2.1'&&seen!=='2.2'?'<p>Aplikace se teď jmenuje AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>':'')+
     '<ul class="news"><li>Účet: přihlas se přes Google ve Více → Účet a parkury, psi i běhy budeš mít na všech zařízeních</li><li>AR na place: ve 3D klepni na AR a parkur se položí na skutečný trávník (Chrome na Androidu)</li><li>3D parkur: v Plánu klepni na 3D a projdi si parkur ze všech stran</li><li>Pes ve 3D skáče, leze po zónách a kličkuje slalomem</li><li>Délka tunelu 2–6 m, nový tunel má 5 m</li><li>Podpořit aplikaci i přes Google Pay a Apple Pay</li></ul>'+
     '<div class="acts"><button class="btn primary" data-a="x">Pokračovat</button></div>',function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
+  return true;
 }
 function onbClose(done){ var o=$('onb'); if(o) o.parentNode.removeChild(o); if(done) lsSet(ONBK,{done:1,v:2}); document.documentElement.classList.remove('onb-open'); }
 function onbOpen(step){
@@ -9142,6 +9173,7 @@ function onbRender(){
     h+='<div class="onb-logo" aria-hidden="true">'+IC.brand+'</div><h1>Vítej v AgiPlan</h1><p class="lead">Plánuj parkury, čti plánky z fotky, trénuj se stopkami a sleduj, jak se tvůj pes zlepšuje.</p>'+
       '<label>Jazyk / Language<div class="seg wide" role="group"><button data-o="lang" data-v="cs" class="'+(LANG==='cs'?'on':'')+'" translate="no">Čeština</button><button data-o="lang" data-v="en" class="'+(LANG==='en'?'on':'')+'" translate="no">English</button></div></label>'+
       '<label>Vzhled<div class="seg wide" role="group"><button data-o="theme" data-v="system" class="'+(THEME==='system'?'on':'')+'">Podle systému</button><button data-o="theme" data-v="light" class="'+(THEME==='light'?'on':'')+'">Světlý</button><button data-o="theme" data-v="dark" class="'+(THEME==='dark'?'on':'')+'">Tmavý</button></div></label>';
+    if(!AUTH&&IS_SRV) h+='<div class="onb-acct"><button class="btn gbtn" data-acct="in" data-o="acct">'+GLOGO+'<span>Přihlásit přes Google</span></button><p class="hint">Parkury, psi a běhy pak budeš mít na všech svých zařízeních. Jde to i bez přihlášení, stačí Pokračovat.</p></div>';
     h+='</div><div class="onb-foot"><button class="btn primary" data-o="next">Pokračovat</button></div>';
   } else if(s===2){
     var d=curDog()||{name:'',size:'L',cls:'A1'};
@@ -9163,6 +9195,7 @@ function onbClick(e){
   if(e.type==='change') return;
   var b=e.target.closest('[data-o]'); if(!b) return; var a=b.getAttribute('data-o'), v=b.getAttribute('data-v');
   if(a==='skip'){ onbClose(true); show('home'); }
+  else if(a==='acct'){ lsSet(ONBK,{done:1,v:2}); lsSet(ACCTASK,1); } /* přihlášení otevře Google; po návratu se ukáže účet */
   else if(a==='lang'){ if(v!==LANG){ lsSet(ONBK,{step:2}); setLang(v); } }
   else if(a==='theme'){ setTheme(v); onbRender(); }
   else if(a==='next'){ ONB.step=2; lsSet(ONBK,{step:2}); onbRender(); }
