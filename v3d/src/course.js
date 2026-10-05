@@ -1,0 +1,179 @@
+/* 3D parkur z Plánu: plocha, překážky v rozměrech FCI (výšky podle velikosti psa), čísla, pes běžící po trase.
+   mountCourse(canvas, spec, opts) → {length, render(d, view), resize(), dispose(), tier}
+   spec = { W, H, size: {jump, tire, lj, ljn} (m),
+            obs: [{type, x, y, rot (°), nums: [1, 5], tunnel: [[x, y], ...]}],   // souřadnice plánu: y dolů = z v 3D
+            path: [[x, y, h, idx], ...],   // dráha psa (h = výška nad zemí na zónových překážkách, idx = pořadí překážky)
+            seesaw: [{x, y, rot, idx, sign}], jumps: [[x, y, h]] }
+   view: 'orbit' (volná kamera, táhnutí otáčí, dva prsty/kolečko přibližují) | 'chase' (za psem) | 'dog' (očima psa) | 'top' (shora) */
+import * as THREE from 'three';
+import { makeDog, poseDog } from './dog.js';
+import { makeWorld, autoTier, TIERS, M, shadowAll } from './world.js';
+import * as ob from './obstacles.js';
+
+const DOG_STRIDE = 1.35;
+
+export function mountCourse(canvas, spec, opts = {}) {
+  const tier = TIERS[opts.quality] ? opts.quality : autoTier();
+  const W = spec.W, H = spec.H, size = spec.size || {};
+  const world = makeWorld(canvas, tier, { x0: 0, x1: W, z0: 0, z1: H }), scene = world.scene, Q = world.Q;
+
+  /* kolbiště: světlejší tráva, bílé lajny po obvodu, značky po 5 m */
+  const ring = new THREE.Group();
+  const turf = new THREE.Mesh(new THREE.PlaneGeometry(W, H).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: '#7fb35a', roughness: 1, transparent: true, opacity: .35 }));
+  turf.position.set(W / 2, .003, H / 2); turf.receiveShadow = true; ring.add(turf);
+  const lm = M('#ffffff', .8);
+  [[W / 2, 0, W, .08], [W / 2, H, W, .08], [0, H / 2, .08, H], [W, H / 2, .08, H]].forEach(([x, z, w, d]) => {
+    const l = new THREE.Mesh(new THREE.BoxGeometry(w, .01, d), lm); l.position.set(x, .006, z); ring.add(l);
+  });
+  const tick = new THREE.BoxGeometry(.05, .01, .5);
+  for (let x = 5; x < W; x += 5) for (const z of [.25, H - .25]) { const t = new THREE.Mesh(tick, lm); t.position.set(x, .006, z); ring.add(t); }
+  scene.add(ring);
+
+  /* překážky */
+  const saws = [];
+  (spec.obs || []).forEach(o => {
+    const a = o.rot * Math.PI / 180, fx = Math.cos(a), fz = Math.sin(a);
+    let g = null;
+    if (o.type === 'tunnel') {
+      g = ob.tunnel({ points: o.tunnel && o.tunnel.length > 1 ? o.tunnel : [[o.x - fx * 2.25, o.y - fz * 2.25], [o.x + fx * 2.25, o.y + fz * 2.25]] });
+      scene.add(g);
+    } else {
+      if (o.type === 'jump') g = ob.jump({ h: size.jump || .6 });
+      else if (o.type === 'tire') g = ob.tire({ h: size.tire || .8 });
+      else if (o.type === 'longjump') g = ob.longjump({ len: size.lj || 1.4, n: size.ljn || 4 });
+      else if (o.type === 'weave') { const w = ob.weave({}); w.position.x = -(11 * .6) / 2; g = new THREE.Group(); g.add(w); }
+      else if (o.type === 'aframe') g = ob.aframe({});
+      else if (o.type === 'dogwalk') g = ob.dogwalk({});
+      else if (o.type === 'seesaw') { g = ob.seesaw({}); saws.push({ g, o }); }
+      if (!g) return;
+      g.position.set(o.x, 0, o.y); g.rotation.y = -a; scene.add(g);
+    }
+    /* číslo: cedulka vlevo před vstupem do překážky */
+    if (o.nums && o.nums.length) {
+      const hl = o.type === 'tunnel' ? 0 : ({ weave: 3.3, aframe: 2.1, dogwalk: 5.4, seesaw: 1.85 })[o.type] || 0;
+      const sx = -fz, sz = fx, back = hl + .6, side = o.type === 'jump' ? 1.15 : o.type === 'tire' || o.type === 'longjump' ? 1.05 : .75;
+      let px = o.x - fx * back + sx * side, pz = o.y - fz * back + sz * side;
+      if (o.type === 'tunnel' && o.tunnel) { const p = o.tunnel[0], q = o.tunnel[1]; const dx = q[0] - p[0], dz = q[1] - p[1], l = Math.hypot(dx, dz) || 1; px = p[0] - dx / l * .6 - dz / l * .8; pz = p[1] - dz / l * .6 + dx / l * .8; }
+      const s = ob.numSign(o.nums.join('·')); s.scale.setScalar(o.nums.length > 1 ? 1.6 : 1.4);
+      s.position.set(px, 0, pz); s.rotation.y = -a + Math.PI / 2; scene.add(s);
+    }
+  });
+
+  /* dráha psa */
+  const P = (spec.path || []).map(p => ({ x: p[0], z: p[1], h: p[2] || 0, i: p[3] }));
+  const cum = [0]; for (let i = 1; i < P.length; i++) cum.push(cum[i - 1] + Math.hypot(P[i].x - P[i - 1].x, P[i].z - P[i - 1].z));
+  const length = cum[cum.length - 1] || 0;
+  const jumps = spec.jumps || [];
+  function at(d) {
+    d = Math.max(0, Math.min(length, d)); let i = 1; while (i < cum.length - 1 && cum[i] < d) i++;
+    const a = P[i - 1] || { x: 0, z: 0, h: 0, i: 0 }, b = P[i] || a, f = (d - cum[i - 1]) / ((cum[i] - cum[i - 1]) || 1);
+    const x = a.x + (b.x - a.x) * f, z = a.z + (b.z - a.z) * f; let h = a.h + (b.h - a.h) * f, air = 0;
+    jumps.forEach(j => { const dd = Math.hypot(x - j[0], z - j[1]), r = j[3] || 1.4; if (dd < r) { const k = 1 - dd * dd / (r * r); h += (j[2] + .12) * k; air = Math.max(air, Math.min(1, k * 1.6)); } });
+    return { x, z, h, air, idx: Math.max(a.i, b.i) };
+  }
+  /* trasa na zemi: tečkovaná čára */
+  if (P.length > 1) {
+    const dots = new THREE.Group(), dg = new THREE.CircleGeometry(.05, 8).rotateX(-Math.PI / 2), dm = new THREE.MeshBasicMaterial({ color: '#f2c230', transparent: true, opacity: .85 });
+    const im = new THREE.InstancedMesh(dg, dm, Math.ceil(length / .5) + 1), o3 = new THREE.Object3D(); let n = 0;
+    for (let d = 0; d <= length; d += .5) { const p = at(d); if (p.h > .05) continue; o3.position.set(p.x, .012, p.z); o3.updateMatrix(); im.setMatrixAt(n++, o3.matrix); }
+    im.count = n; dots.add(im); scene.add(dots);
+  }
+
+  const dog = makeDog({ shells: Q.shells, shortShells: Q.shortShells }); scene.add(dog);
+  dog.traverse(o => { if (o.isMesh && o.userData.shell === 0) o.castShadow = true; });
+
+  const camera = new THREE.PerspectiveCamera(42, 2, .05, 500);
+  /* volná kamera: orbit kolem středu plochy */
+  const orb = { az: .55, el: .72, dist: Math.max(W, H) * 1.2, tx: W / 2, tz: H / 2 };
+  const ptr = new Map(); let pinch0 = 0, dist0 = 0;
+  canvas.style.touchAction = 'none';
+  const onDown = e => { ptr.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (ptr.size === 2) { const [p, q] = [...ptr.values()]; pinch0 = Math.hypot(p.x - q.x, p.y - q.y); dist0 = orb.dist; } try { canvas.setPointerCapture(e.pointerId); } catch (_) { } };
+  const onMove = e => {
+    const prev = ptr.get(e.pointerId); if (!prev) return;
+    if (ptr.size === 1) { orb.az -= (e.clientX - prev.x) * .006; orb.el = Math.max(.12, Math.min(1.45, orb.el + (e.clientY - prev.y) * .005)); }
+    ptr.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (ptr.size === 2) { const [p, q] = [...ptr.values()], dd = Math.hypot(p.x - q.x, p.y - q.y); if (pinch0) orb.dist = Math.max(4, Math.min(Math.max(W, H) * 4, dist0 * pinch0 / dd)); }
+    api.onCamera && api.onCamera();
+  };
+  const onUp = e => { ptr.delete(e.pointerId); pinch0 = 0; };
+  const onWheel = e => { e.preventDefault(); orb.dist = Math.max(4, Math.min(Math.max(W, H) * 4, orb.dist * (1 + Math.sign(e.deltaY) * .1))); api.onCamera && api.onCamera(); };
+  canvas.addEventListener('pointerdown', onDown); canvas.addEventListener('pointermove', onMove);
+  canvas.addEventListener('pointerup', onUp); canvas.addEventListener('pointercancel', onUp); canvas.addEventListener('wheel', onWheel, { passive: false });
+
+  /* vzdálenost kamery, při které se celá plocha (s okrajem 1 m) vejde do záběru */
+  const corners = [[-1, -1], [W + 1, -1], [W + 1, H + 1], [-1, H + 1]].map(c => new THREE.Vector3(c[0], 0, c[1]));
+  const tmp = new THREE.Vector3();
+  function fitDist(place) {
+    let lo = 3, hi = Math.max(W, H) * 4;
+    for (let k = 0; k < 22; k++) {
+      const mid = (lo + hi) / 2; place(mid); camera.updateMatrixWorld(); camera.updateProjectionMatrix();
+      const ok = corners.every(c => { tmp.copy(c).project(camera); return Math.abs(tmp.x) < .96 && Math.abs(tmp.y) < .94 && tmp.z < 1; });
+      if (ok) hi = mid; else lo = mid;
+    }
+    return hi;
+  }
+  const portrait = () => camera.aspect < 1;
+  function placeOrbit(dist) {
+    camera.fov = 42; camera.up.set(0, 1, 0);
+    camera.position.set(orb.tx + dist * Math.cos(orb.el) * Math.sin(orb.az), dist * Math.sin(orb.el), orb.tz + dist * Math.cos(orb.el) * Math.cos(orb.az));
+    camera.lookAt(orb.tx, 0, orb.tz);
+  }
+  function placeTop(hh) {
+    camera.fov = 40; camera.position.set(W / 2, hh, H / 2);
+    /* na výšku telefonu delší strana plochy svisle */
+    if (portrait() === (W > H)) camera.up.set(1, 0, 0); else camera.up.set(0, 0, -1);
+    camera.lookAt(W / 2, 0, H / 2);
+  }
+  let topH = Math.max(W, H);
+  function fitAll() {
+    /* volná kamera: na výšku se díváme podél delší strany */
+    orb.az = portrait() === (W > H) ? Math.PI / 2 + .12 : .12; orb.el = .95;
+    orb.dist = fitDist(placeOrbit); topH = fitDist(placeTop);
+  }
+  function resize() {
+    const w = canvas.clientWidth || 300, h = canvas.clientHeight || 200;
+    world.R.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    fitAll();
+  }
+  resize();
+
+  const look = new THREE.Vector3();
+  function render(d, view) {
+    const p = at(d), ah = at(d + .8), bk = at(d - 4);
+    /* pes */
+    const yaw = Math.atan2(-(ah.z - p.z), ah.x - p.x);
+    const slope = Math.atan2(ah.h - p.h - (ah.air ? 0 : 0), Math.max(.2, Math.hypot(ah.x - p.x, ah.z - p.z))) * (p.air ? 0 : 1);
+    dog.position.set(p.x, p.h, p.z); dog.rotation.y = yaw; dog.rotation.z = Math.max(-.6, Math.min(.6, slope));
+    poseDog(dog, (d / DOG_STRIDE) % 1, p.air, p.air ? .15 * (ah.h < p.h ? 1 : -1) : 0, d <= 0 || d >= length ? 1 : 0, 0, { time: d / 4.5 });
+    /* houpačka: překlopí se, když pes přejde osu */
+    saws.forEach(({ g, o }) => {
+      const a = o.rot * Math.PI / 180, ax = (p.x - o.x) * Math.cos(a) + (p.z - o.y) * Math.sin(a);
+      const passed = o.idx >= 0 && (p.idx > o.idx || (p.idx === o.idx && ax * o.sign < 0));
+      const want = (passed ? -o.sign : o.sign) * -g.userData.maxT, cur = g.userData.tilt;
+      g.setTilt(cur + (want - cur) * .2);
+    });
+    /* kamera */
+    dog.visible = view !== 'dog';
+    if (view === 'dog') { camera.fov = 75; camera.up.set(0, 1, 0); const f = at(d + .35); camera.position.set(f.x, f.h + .55, f.z); look.set(ah.x + (ah.x - p.x) * 4, ah.h + .3, ah.z + (ah.z - p.z) * 4); camera.lookAt(look); }
+    else if (view === 'chase') { camera.fov = 55; camera.up.set(0, 1, 0); camera.position.set(bk.x, Math.max(bk.h, p.h) + 2.4, bk.z); look.set(p.x, p.h + .4, p.z); camera.lookAt(look); }
+    else if (view === 'top') placeTop(topH);
+    else placeOrbit(orb.dist);
+    camera.updateProjectionMatrix();
+    world.R.render(scene, camera);
+    return p;
+  }
+  let disposed = false;
+  function dispose() {
+    if (disposed) return; disposed = true;
+    canvas.removeEventListener('pointerdown', onDown); canvas.removeEventListener('pointermove', onMove);
+    canvas.removeEventListener('pointerup', onUp); canvas.removeEventListener('pointercancel', onUp); canvas.removeEventListener('wheel', onWheel);
+    const done = new Set();
+    scene.traverse(o => {
+      if (o.geometry && !done.has(o.geometry)) { done.add(o.geometry); o.geometry.dispose(); }
+      (o.material ? (Array.isArray(o.material) ? o.material : [o.material]) : []).forEach(m => { if (done.has(m)) return; done.add(m); Object.keys(m).forEach(k => { const v = m[k]; if (v && v.isTexture && !done.has(v)) { done.add(v); v.dispose(); } }); m.dispose(); });
+    });
+    world.R.dispose(); try { world.R.forceContextLoss(); } catch (e) { }
+  }
+  const api = { length, render, resize, dispose, at, get tier() { return world.tier; }, get pixelRatio() { return world.R.getPixelRatio(); }, onCamera: null };
+  return api;
+}

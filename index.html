@@ -235,6 +235,8 @@ select.btn{padding-right:8px;}
 /* 3D */
 .ov3d{position:fixed; inset:0; z-index:70; background:#0d1410; display:flex; flex-direction:column;}
 .ov3d canvas{flex:1; width:100%; min-height:0; display:block; touch-action:none;}
+.ov3d canvas[hidden]{display:none;}
+.ov3d-hint{position:absolute; left:50%; top:calc(12px + env(safe-area-inset-top,0px)); transform:translateX(-50%); background:rgba(13,20,16,.72); color:#e5ebe2; padding:7px 14px; border-radius:999px; font-size:13px; pointer-events:none;}
 .ov3d-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)); background:#18201a; color:#e5ebe2; font-size:13px;}
 .ov3d-bar .btn{background:#233026; color:#e5ebe2; border-color:#35443a;}
 .ov3d-bar .btn.primary{background:#5fb487; color:#0b1a11; border-color:#5fb487;}
@@ -949,9 +951,10 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 
 <div class="ov3d" id="ov3d" hidden>
   <canvas id="c3d"></canvas>
+  <canvas id="c3dgl" hidden></canvas>
   <div class="ov3d-bar">
     <button class="btn" id="p3play">Pauza</button>
-    <div class="seg" id="p3view"><button data-v="dog" class="on">Očima psa</button><button data-v="chase">Za psem</button><button data-v="top">Shora</button></div>
+    <div class="seg" id="p3view"><button data-v="orbit">Volně</button><button data-v="dog" class="on">Očima psa</button><button data-v="chase">Za psem</button><button data-v="top">Shora</button></div>
     <div class="seg" id="p3speed"><button data-s=".5">0,5×</button><button data-s="1" class="on">1×</button><button data-s="2">2×</button></div>
     <span class="grow" id="p3info"></span>
     <button class="btn primary" id="p3close">Zavřít</button>
@@ -1234,6 +1237,7 @@ var I18N_EXTRA={exact:{
 "Přispět kartou": "Donate by card",
 "Za nápad nebo nahlášenou chybu jsem stejně vděčný.": "I'm just as grateful for an idea or a bug report.",
 "Zkopírováno": "Copied",
+"Volně": "Free view",
 "Google Pay / Apple Pay / karta": "Google Pay / Apple Pay / card",
 "Rychlá platba kartou nebo telefonem, částku si vybereš.": "Quick payment by card or phone, you choose the amount.",
 "Nebo převodem z banky": "Or by bank transfer",
@@ -5963,6 +5967,9 @@ function pathAt(d){
   return {x:x,z:z,h:h,idx:Math.max(a[3],b[3])};
 }
 function render3d(){
+  if(C3.api){ var gp; try{ gp=C3.api.render(V3.d,V3.view); }catch(e){ close3dGL(); return; }
+    var ob0=S.route.length, cur0=Math.min(ob0,Math.max(0,gp.idx+1)), tx0='Překážka '+cur0+' z '+ob0+' · '+fmt(V3.d)+' m z '+fmt(V3.path.len)+' m', pi0=$('p3info');
+    if(pi0.getAttribute('data-c')!==tx0){ pi0.setAttribute('data-c',tx0); pi0.textContent=tx0; } return; }
   var cv=$('c3d'), dpr=Math.min(2,window.devicePixelRatio||1), Wc=cv.clientWidth, Hc=cv.clientHeight;
   if(cv.width!==Math.round(Wc*dpr)||cv.height!==Math.round(Hc*dpr)){cv.width=Math.round(Wc*dpr); cv.height=Math.round(Hc*dpr);}
   var x=cv.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0);
@@ -6025,15 +6032,52 @@ function loop3d(ts){
   V3.last=ts; render3d();
   if(!$('ov3d').hidden) V3.raf=requestAnimationFrame(loop3d);
 }
+/* ---------- 3D parkur (three.js z v3d/v3d.js): překážky v rozměrech FCI podle velikosti psa, pes běží po trase ---------- */
+var C3={api:null,gen:0};
+function sizeM(txt,i){ var m=String(txt||'').match(/\d+/g); if(!m) return null; var v=+m[i==null?m.length-1:i]; return v/100; }
+function course3dSpec(){
+  build3d();   /* dráha psa (výška na zónových překážkách) je stejná jako u jednoduchého průletu */
+  var d=curDog(), z=SIZES[d&&d.size||'L']||SIZES.L, nums={}, c=calc();
+  S.route.forEach(function(id,i){ (nums[id]=nums[id]||[]).push(i+1); });
+  var size={jump:sizeM(z.jump)||.6, tire:sizeM(z.tire)||.8, lj:sizeM(z.lj,1)||1.4, ljn:+((String(z.lj).match(/(\d)\s*díl/)||[])[1]||4)};
+  var obs=S.obs.map(function(o){
+    var r={type:o.type,x:o.x,y:o.y,rot:o.rot,nums:nums[o.id]||[],idx:S.route.indexOf(o.id),sign:-1};
+    if(o.type==='tunnel'){ var L=tunLen(o), t=[]; for(var k=0;k<=8;k++){ var q=tunPt(o,-L/2+L*k/8); t.push([q.x,q.y]); } r.tunnel=t; }
+    if(o.type==='seesaw'&&r.idx>=0){ var a=o.rot*PI/180, P0=c.P[r.idx]; r.sign=((P0.en.x-o.x)*Math.cos(a)+(P0.en.y-o.y)*Math.sin(a))<0?-1:1; }
+    return r;
+  });
+  var jumps=[];
+  S.route.forEach(function(id,i){ var o=getO(id); if(!o) return;
+    if(o.type==='jump') jumps.push([o.x,o.y,size.jump,1.5,i]);
+    else if(o.type==='tire') jumps.push([o.x,o.y,Math.max(.25,size.tire-.4),1.4,i]);
+    else if(o.type==='longjump') jumps.push([o.x,o.y,.35,size.lj/2+1,i]); });
+  return {W:S.W,H:S.H,size:size,obs:obs,jumps:jumps,path:V3.path.pts};
+}
+function open3dGL(){
+  var g=++C3.gen;
+  return v3dLoad().then(function(m){
+    if(g!==C3.gen||!m.mountCourse) throw new Error('no3d');
+    var cv=$('c3dgl'); $('c3d').hidden=true; cv.hidden=false; $('ov3d').hidden=false;
+    var api=m.mountCourse(cv,course3dSpec(),{});
+    cv.addEventListener('webglcontextlost',function(e){ e.preventDefault(); close3dGL(); },{once:true});
+    api.onCamera=function(){ if(!V3.on) render3d(); };
+    C3.api=api; V3.path.len=api.length; return api;
+  });
+}
+function close3dGL(){ if(C3.api){ try{ C3.api.dispose(); }catch(e){} C3.api=null; } var cv=$('c3dgl'); if(cv){ var n=cv.cloneNode(false); n.hidden=true; cv.parentNode.replaceChild(n,cv); } $('c3d').hidden=false; }
 function open3d(){
   if(S.route.length<2){toast('Pro 3D průlet potřebuješ trasu aspoň se 2 překážkami.'); return;}
-  build3d(); V3.d=0; V3.on=true; V3.last=0; $('ov3d').hidden=false; $('p3play').textContent='Pauza';
-  cancelAnimationFrame(V3.raf); V3.raf=requestAnimationFrame(loop3d);
+  var go=function(){ V3.d=0; V3.on=true; V3.last=0; $('ov3d').hidden=false; $('p3play').textContent='Pauza'; p3setView(C3.api?'orbit':'dog'); cancelAnimationFrame(V3.raf); V3.raf=requestAnimationFrame(loop3d); };
+  build3d();
+  if(v3dOK()){ open3dGL().then(go,function(){ close3dGL(); go(); }); }
+  else go();
 }
-$('p3close').onclick=function(){$('ov3d').hidden=true; V3.on=false; cancelAnimationFrame(V3.raf);};
+function p3setView(v){ V3.view=v; Array.prototype.forEach.call($('p3view').children,function(c){ c.classList.toggle('on',c.getAttribute('data-v')===v); c.hidden=!C3.api&&c.getAttribute('data-v')==='orbit'; }); }
+$('p3close').onclick=function(){$('ov3d').hidden=true; V3.on=false; cancelAnimationFrame(V3.raf); C3.gen++; close3dGL();};
+window.addEventListener('resize',function(){ if(C3.api) C3.api.resize(); });
 document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!$('ov3d').hidden) $('p3close').click(); });
 $('p3play').onclick=function(){ if(V3.d>=V3.path.len) V3.d=0; V3.on=!V3.on; V3.last=0; this.textContent=V3.on?'Pauza':'Přehrát'; if(V3.on){cancelAnimationFrame(V3.raf); V3.raf=requestAnimationFrame(loop3d);} };
-$('p3view').onclick=function(e){var b=e.target.closest('button'); if(!b) return; V3.view=b.getAttribute('data-v'); Array.prototype.forEach.call(this.children,function(c){c.classList.toggle('on',c===b);}); render3d();};
+$('p3view').onclick=function(e){var b=e.target.closest('button'); if(!b) return; p3setView(b.getAttribute('data-v')); render3d();};
 $('p3speed').onclick=function(e){var b=e.target.closest('button'); if(!b) return; V3.spd=+b.getAttribute('data-s'); Array.prototype.forEach.call(this.children,function(c){c.classList.toggle('on',c===b);});};
 
 
