@@ -165,6 +165,22 @@ module.exports = async function ({ browser, base }) {
     ok(!(await page.isVisible('#sheet .thx')), 'poděkování se po obnovení stránky ukázalo znovu');
   });
 
+  await step('odkaz z Facebooku', async () => {
+    /* náhled odkazu (Open Graph) a obrázek */
+    const html = await (await page.request.get(base + '/')).text();
+    ok(/property="og:title"/.test(html) && /property="og:image" content="https:\/\/danyzell\.github\.io\/Agility-trasa\/og\.jpg"/.test(html), 'chybí náhled odkazu pro Facebook');
+    ok((await page.request.get(base + '/og.jpg')).ok(), 'chybí obrázek og.jpg');
+    /* ve vestavěném prohlížeči Facebooku na Androidu nabídne otevření v Chromu, jinde nic */
+    ok(!(await page.isVisible('#iabBar')), 'pruh pro Facebook v běžném prohlížeči');
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block', userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/480.0.0.0;]' });
+    await ctx.route(u => !/^http:\/\/(127\.0\.0\.1|localhost)/.test(u.href), r => r.abort());
+    const p2 = await ctx.newPage(); await p2.goto(base + '/#home'); await p2.waitForTimeout(400);
+    const href = await p2.getAttribute('#iabGo', 'href').catch(() => null);
+    ok(href && /^intent:\/\/.+#Intent;scheme=https;package=com\.android\.chrome;/.test(href), 've Facebooku chybí Otevřít v Chromu: ' + href);
+    await p2.click('#iabX'); ok(!(await p2.isVisible('#iabBar')), 'pruh pro Facebook nejde zavřít');
+    await ctx.close();
+  });
+
   await step('zásady ochrany osobních údajů', async () => {
     await fresh(); await more('about');
     ok(await page.getAttribute('#moreBody a[href="privacy.html"]', 'target') === '_blank', 'v O aplikaci chybí odkaz na zásady');
@@ -177,7 +193,7 @@ module.exports = async function ({ browser, base }) {
 
   await step('angličtina', async () => {
     const miss = await ev(() => ['Napsat autorovi', 'Podpořit aplikaci', 'Jiná částka', '200 Kč', 'Díky, zpráva odešla!', 'Jak se ti AgiPlan líbí?', 'Napiš, co máš na srdci', 'E-mail pro odpověď (nepovinné)',
-      'Nainstaluj si aplikaci', 'Doporuč aplikaci kamarádům', 'Ťukni na ⋮ vpravo nahoře.', 'Sdílet odkaz', 'Instalovat', 'Podpořit', 'Uložit QR do galerie', 'Google Pay / Apple Pay / karta', 'Zásady ochrany osobních údajů', 'E-mail použijeme jen k odpovědi.', '3 z 5', 'Díky za podporu!', 'Doporučit kamarádům',
+      'Nainstaluj si aplikaci', 'Doporuč aplikaci kamarádům', 'Ťukni na ⋮ vpravo nahoře.', 'Sdílet odkaz', 'Instalovat', 'Podpořit', 'Uložit QR do galerie', 'Google Pay / Apple Pay / karta', 'Zásady ochrany osobních údajů', 'E-mail použijeme jen k odpovědi.', '3 z 5', 'Díky za podporu!', 'Doporučit kamarádům', 'Otevřít v Chromu', 'Pro instalaci aplikace ji otevři v Chromu.',
       'Tvůj příspěvek pomůže s provozem serveru a dalším vývojem aplikace. Ať se vám s pejskem daří!', 'Zprávu se nepodařilo poslat', 'Dnes už jsi poslal(a) dost zpráv, zkus to zítra.']
       .filter(s => trLookup(s) == null));
     ok(!miss.length, 'chybí překlad: ' + miss.join(' | '));

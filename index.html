@@ -1,4 +1,4 @@
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1f6b45"><meta name="mobile-web-app-capable" content="yes"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>window.AGILITY_PWA=1;</script></head><body>
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1f6b45"><meta name="description" content="Plánovač agility parkurů v telefonu: parkury podle FCI, 3D průlet, stopky, trénink doma a výsledky z kacr.info. Zdarma a bez reklam."><meta property="og:type" content="website"><meta property="og:site_name" content="AgiPlan"><meta property="og:locale" content="cs_CZ"><meta property="og:url" content="https://danyzell.github.io/Agility-trasa/"><meta property="og:title" content="AgiPlan – plánovač agility parkurů v telefonu"><meta property="og:description" content="Parkury podle FCI, 3D průlet, stopky s hodnocením, trénink doma a výsledky z kacr.info. Zdarma, bez reklam. Otevři odkaz a nainstaluj na plochu."><meta property="og:image" content="https://danyzell.github.io/Agility-trasa/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="AgiPlan – plánovač agility parkurů"><meta name="twitter:card" content="summary_large_image"><meta name="mobile-web-app-capable" content="yes"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>window.AGILITY_PWA=1;</script></head><body>
 <title>AgiPlan</title>
 <script>try{var t0=JSON.parse(localStorage.getItem('agility-theme-v1'));if(t0==='light'||t0==='dark')document.documentElement.setAttribute('data-theme',t0);}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -369,6 +369,10 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 .ovsp-list li{display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding:4px 0;}
 .saybar{position:fixed; left:12px; right:12px; bottom:calc(76px + env(safe-area-inset-bottom,0px)); z-index:60; display:flex; align-items:center; gap:10px; background:var(--text); color:var(--bg); border-radius:12px; padding:8px 8px 8px 14px; font-size:14px;}
 .saybar span{flex:1;}
+/* otevřeno uvnitř Facebooku / Instagramu: instalace jde jen z prohlížeče */
+.iabbar{position:fixed; left:12px; right:12px; top:calc(10px + env(safe-area-inset-top,0px)); z-index:80; display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; background:var(--text); color:var(--bg); border-radius:14px; padding:10px 10px 10px 14px; font-size:14px; box-shadow:0 8px 24px rgba(0,0,0,.25);}
+.iabbar span{flex:1 1 180px;}
+.iabbar a.btn{text-decoration:none;}
 /* v1.6: plánek z obrázku, stavba v terénu */
 .imwrap{display:flex; justify-content:center;}
 .imwrap canvas{max-width:100%; touch-action:none; border-radius:10px; background:#fff; border:1px solid var(--border);}
@@ -1280,6 +1284,9 @@ var I18N_EXTRA={exact:{
 "Délka tunelu 2–6 m (nový tunel 5 m)": "Tunnel length 2–6 m (a new tunnel is 5 m)",
 "Google Pay, Apple Pay a uložení QR platby do galerie": "Google Pay, Apple Pay and saving the QR payment to the gallery",
 "Díky za podporu!": "Thank you for your support!",
+"Pro instalaci aplikace ji otevři v Chromu.": "To install the app, open it in Chrome.",
+"Otevřít v Chromu": "Open in Chrome",
+"Pro instalaci klepni na ⋯ vpravo nahoře a zvol Otevřít v Safari (nebo v prohlížeči).": "To install, tap ⋯ in the top right and choose Open in Safari (or in browser).",
 "Tvůj příspěvek pomůže s provozem serveru a dalším vývojem aplikace. Ať se vám s pejskem daří!": "Your contribution helps keep the server running and the app growing. Good luck to you and your dog!",
 "Doporučit kamarádům": "Recommend to friends",
 "Zásady ochrany osobních údajů": "Privacy policy",
@@ -8940,6 +8947,17 @@ catSync();
     if(b.hasAttribute('data-instx')){ lsSet('agility-instx-v1',1); pwaInstUI(); return; }
     if(!ev) return; ev.prompt(); ev.userChoice.then(function(){ ev=null; pwaInstUI(); },function(){ ev=null; pwaInstUI(); });
   });
+  /* odkaz otevřený ve Facebooku, Messengeru nebo Instagramu: jejich vestavěný prohlížeč aplikaci nainstalovat neumí */
+  var ua=navigator.userAgent||'';
+  if(/FBAN|FBAV|FB_IAB|FBIOS|Instagram|Messenger/i.test(ua)&&!window.IS_APK){
+    var andr=/Android/i.test(ua), bar=document.createElement('div'); bar.className='iabbar'; bar.id='iabBar'; bar.setAttribute('role','status');
+    var url=location.href.replace(/#.*$/,'');
+    bar.innerHTML=andr
+      ?'<span>Pro instalaci aplikace ji otevři v Chromu.</span><a class="btn primary" id="iabGo" href="intent://'+location.host+location.pathname+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(url)+';end">Otevřít v Chromu</a><button class="btn" id="iabX" aria-label="Zavřít">×</button>'
+      :'<span>Pro instalaci klepni na ⋯ vpravo nahoře a zvol Otevřít v Safari (nebo v prohlížeči).</span><button class="btn" id="iabX" aria-label="Zavřít">×</button>';
+    document.body.appendChild(bar);
+    $('iabX').onclick=function(){ bar.parentNode.removeChild(bar); };
+  }
   /* plánek poslaný přes Sdílet z galerie: service worker ho uložil, tady se otevře ve čtečce */
   if(/[?&]share=1/.test(location.search)&&window.caches){
     try{ history.replaceState(null,'',location.pathname); }catch(e){}
