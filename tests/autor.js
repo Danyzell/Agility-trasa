@@ -56,6 +56,20 @@ module.exports = async function ({ browser, base }) {
     await T.ctx.grantPermissions(['clipboard-read', 'clipboard-write']).catch(() => {});
     await page.click('#moreBody [data-dcopy="1220369023/3030"]'); await page.waitForTimeout(150);
     ok(/Zkopírováno|1220369023/.test(await page.textContent('#toast')), 'kopírování čísla účtu');
+    /* QR do galerie: obrázek PNG, který bankovní aplikace přečte */
+    await page.click('#moreBody [data-dam="200"]'); await page.waitForTimeout(100);
+    await ev(() => { window.__del = null; window.deliverFile = function (b, m, n, sh) { window.__del = { size: b.size, m, n, sh }; return Promise.resolve(); }; });
+    await page.click('#moreBody [data-dqr]'); await page.waitForFunction(() => window.__del, null, { timeout: 5000 });
+    const d = await ev(() => window.__del);
+    ok(d.m === 'image/png' && d.n === 'agiplan-qr-platba-200.png' && d.size > 5000, 'uložený QR: ' + JSON.stringify(d));
+    const img = await ev(() => { const c = dnQrCanvas(200), x = c.getContext('2d'); return { w: c.width, h: c.height, px: Array.from(x.getImageData(0, 0, c.width, c.height).data) }; });
+    const r = jsQR(new Uint8ClampedArray(img.px), img.w, img.h);
+    ok(r && r.data === 'SPD*1.0*ACC:' + iban + '*AM:200.00*CC:CZK*MSG:Podpora AgiPlan', 'QR v uloženém obrázku: ' + (r && r.data));
+    /* platba kartou až s odkazem ze Stripe */
+    ok(!(await page.isVisible('#moreBody .dn-card')), 'bez odkazu nemá být tlačítko kartou');
+    await ev(() => { DONATE.url = 'https://buy.stripe.com/test_123'; moreRender(); });
+    ok(await page.getAttribute('#moreBody .dn-card', 'href') === 'https://buy.stripe.com/test_123' && /Google Pay \/ Apple Pay \/ karta/.test(await page.textContent('#moreBody .dn-card')), 'tlačítko Google Pay / Apple Pay');
+    await ev(() => { DONATE.url = ''; moreRender(); });
     /* bez účtu se Podpořit neukazuje */
     ok(await ev(() => { const a = DONATE.acc; DONATE.acc = ''; const r = donateOn(); DONATE.acc = a; return r === false; }), 'Podpořit bez účtu');
   });
@@ -140,7 +154,7 @@ module.exports = async function ({ browser, base }) {
 
   await step('angličtina', async () => {
     const miss = await ev(() => ['Napsat autorovi', 'Podpořit aplikaci', 'Jiná částka', '200 Kč', 'Díky, zpráva odešla!', 'Jak se ti AgiPlan líbí?', 'Napiš, co máš na srdci', 'E-mail pro odpověď (nepovinné)',
-      'Nainstaluj si aplikaci', 'Doporuč aplikaci kamarádům', 'Ťukni na ⋮ vpravo nahoře.', 'Sdílet odkaz', 'Instalovat', 'Podpořit', '3 z 5', 'Zprávu se nepodařilo poslat', 'Dnes už jsi poslal(a) dost zpráv, zkus to zítra.']
+      'Nainstaluj si aplikaci', 'Doporuč aplikaci kamarádům', 'Ťukni na ⋮ vpravo nahoře.', 'Sdílet odkaz', 'Instalovat', 'Podpořit', 'Uložit QR do galerie', 'Google Pay / Apple Pay / karta', '3 z 5', 'Zprávu se nepodařilo poslat', 'Dnes už jsi poslal(a) dost zpráv, zkus to zítra.']
       .filter(s => trLookup(s) == null));
     ok(!miss.length, 'chybí překlad: ' + miss.join(' | '));
   });
