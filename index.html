@@ -414,7 +414,10 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 body.at-home .top{display:none;}
 .home{padding:0 !important; max-width:none !important;}
 .hm-head{background:radial-gradient(120% 90% at 100% 0%,#2f9e62 0%,#14553a 45%,#0a2a1c 100%); color:#fff; padding:calc(18px + env(safe-area-inset-top,0px)) 18px 64px; border-radius:0 0 30px 30px; position:relative; overflow:hidden;}
-.hm-head:after{content:""; position:absolute; right:-50px; top:24px; width:210px; height:210px; border:18px solid rgba(198,244,50,.12); border-radius:50%; pointer-events:none;}
+.hm-head:after{content:""; position:absolute; right:-70px; top:-60px; width:240px; height:240px; border-radius:50%; background:radial-gradient(circle,rgba(198,244,50,.16),rgba(198,244,50,0) 70%); pointer-events:none;}
+.hm-art{display:block; position:relative; z-index:0; width:min(70%,260px); height:auto; margin:-8px -10px -30px auto; pointer-events:none; filter:drop-shadow(0 10px 18px rgba(0,0,0,.25));}
+.hm-art+.hm-stats{justify-content:space-between; margin-top:0; padding:12px 16px; border-radius:18px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);}
+@media (min-width:600px){.hm-art{width:280px;}}
 .hm-tb{display:flex; align-items:center; gap:10px; white-space:nowrap; font-family:var(--display); font-weight:700; font-size:20px; letter-spacing:.4px; position:relative; z-index:1;}
 .hm-logo{flex:0 0 auto; width:34px; height:34px; border-radius:10px; background:#c6f432; display:grid; place-items:center;}
 .hm-logo svg{width:22px; height:22px;}
@@ -4816,6 +4819,8 @@ function homeChallenge(){
   return {c:c,ok:ok};
 }
 var HOME_C=[];
+/* ilustrace v úvodní kartě: pes ve skoku přes překážku (kreslená, bez obrázků ze sítě) */
+var HM_ART='<svg class="hm-art" viewBox="0 0 260 200" aria-hidden="true" focusable="false"><path d="M10 182 C 20 152, 32 130, 46 112 M 238 78 C 248 96, 254 116, 256 138" fill="none" stroke="#e8a838" stroke-width="3" stroke-dasharray="1.5 9" stroke-linecap="round" opacity=".9"/><g fill="#8fbf22"><path d="M150 100 C 152 112, 156 120, 160 124 C 152 128, 140 128, 132 126 C 132 122, 136 121, 142 120 C 140 114, 140 106, 142 100 Z"/><path d="M100 92 C 92 100, 82 108, 70 114 C 60 118, 48 122, 40 128 C 34 129, 32 124, 36 121 C 46 114, 56 106, 64 98 C 72 90, 82 84, 92 84 Z"/></g><path fill="#c6f432" d=" M226 60 C 227 63, 224 66, 219 66 L 209 67 C 206 70, 200 74, 194 80 C 188 88, 182 96, 174 102 C 172 110, 174 116, 178 120 C 182 124, 188 122, 190 126 C 190 130, 184 131, 176 129 C 168 127, 164 120, 162 110 C 158 108, 152 106, 144 106 C 130 106, 118 104, 108 100 C 102 104, 96 108, 88 112 C 76 118, 62 122, 48 126 C 40 130, 28 131, 24 127 C 22 122, 28 119, 36 116 C 50 112, 60 104, 70 96 C 78 90, 82 86, 86 82 C 72 84, 58 78, 48 66 C 42 58, 38 48, 40 38 C 48 42, 54 50, 62 56 C 72 62, 80 68, 90 72 C 104 66, 124 62, 144 62 C 154 62, 162 60, 168 54 C 172 46, 176 40, 180 36 L 176 20 C 176 18, 178 18, 180 20 L 190 32 C 196 32, 202 36, 206 42 C 210 46, 216 50, 222 54 C 225 56, 226 58, 226 60 Z"/><circle cx="198" cy="45" r="2.2" fill="#0a2a1c"/><g stroke-linecap="round"><path d="M92 148 V 198 M 176 148 V 198" stroke="#ffffff" stroke-opacity=".5" stroke-width="5"/><path d="M84 160 H 184" stroke="#e8a838" stroke-width="7"/></g></svg>';
 function homeRender(){
   var d=curDog(), cls=homeCls(), runs=allRuns(d&&d.id), ok=runs.filter(function(x){return x.g!=='DIS';});
   var sp=ok.filter(function(x){return x.t>0&&x.len>0;}).map(function(x){return x.len/x.t;}), avg=sp.length?sp.reduce(function(a,v){return a+v;},0)/sp.length:0;
@@ -4825,7 +4830,7 @@ function homeRender(){
   var h='<div class="hm-head"><div class="hm-tb"><div class="hm-logo">'+IC.brand+'</div><span>AGIPLAN</span>'+
     '<button class="hm-dog" data-h="dog"><i>🐕</i><span style="overflow:hidden;text-overflow:ellipsis;min-width:0">'+(d?esc(d.name)+' · '+esc(d.cls):'Přidat psa')+'</span></button></div>'+
     '<div class="hm-big">'+(donateOn()?'<button class="hm-sup" data-h="sup" aria-label="Podpořit aplikaci">'+IC.heartF+'<span>Podpořit</span></button>':'')+'<small>'+wd+(st?' · série '+st+(st===1?' den':st<5?' dny':' dní')+' 🔥':'')+'</small><h1>Připraveni<br>na <em>trénink?</em></h1></div>'+
-    '<div class="hm-stats"><div><b>'+doneN+'</b><span>zaběhnuto</span></div><div><b>'+(avg?fmt(avg):'–')+'</b><span>m/s průměr</span></div><div><b>'+(runs.length?clean+' %':'–')+'</b><span>čisté běhy</span></div></div></div>';
+    HM_ART+'<div class="hm-stats"><div><b>'+doneN+'</b><span>zaběhnuto</span></div><div><b>'+(avg?fmt(avg):'–')+'</b><span>m/s průměr</span></div><div><b>'+(runs.length?clean+' %':'–')+'</b><span>čisté běhy</span></div></div></div>';
   var m=curM();
   h+=S.route.length>1
     ? '<button class="hm-cta" data-h="plan"><span class="hm-play">'+IC.playF+'</span><span class="tx"><small>Pokračovat</small><b>'+esc(S.meta.name)+'</b><span>'+fmt(m.len)+' m · '+m.n+' překážek · SČP '+m.sct+' s</span></span></button>'
