@@ -98,7 +98,8 @@ select.btn{padding-right:8px;}
 .ob-btn.on{border-color:var(--accent); background:color-mix(in srgb,var(--accent) 12%,var(--surface));}
 .selrow{display:flex; align-items:center; gap:8px 10px; flex-wrap:wrap; font-size:13.5px; color:var(--muted);}
 .selrow input{flex:1 1 110px; min-width:110px; accent-color:var(--accent);}
-.selacts{display:flex; gap:8px; margin-left:auto;}
+.selacts{display:flex; flex-wrap:wrap; gap:8px; margin-left:auto; max-width:100%;}
+.selacts select{max-width:100%;}
 
 #wrap{overflow:auto; max-height:70vh; border:1px solid var(--border); border-radius:12px; background:var(--field);}
 #field{display:block; height:auto; user-select:none; -webkit-user-select:none;}
@@ -236,6 +237,9 @@ select.btn{padding-right:8px;}
 .ov3d{position:fixed; inset:0; z-index:70; background:#0d1410; display:flex; flex-direction:column;}
 .ov3d canvas{flex:1; width:100%; min-height:0; display:block; touch-action:none;}
 .ov3d canvas[hidden]{display:none;}
+.fieldbox .dimbtn{position:absolute; left:6px; bottom:6px; z-index:2; display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:0 14px 0 10px; border-radius:14px; border:1px solid var(--border); background:color-mix(in srgb,var(--surface) 88%,transparent); color:var(--text); font:800 15px var(--body); box-shadow:var(--shadow);}
+.fieldbox .dimbtn[hidden]{display:none;}
+.fieldbox .dimbtn svg{width:20px; height:20px; color:var(--accent);}
 .ov3d-hint{position:absolute; left:50%; top:calc(12px + env(safe-area-inset-top,0px)); transform:translateX(-50%); background:rgba(13,20,16,.72); color:#e5ebe2; padding:7px 14px; border-radius:999px; font-size:13px; pointer-events:none;}
 .ov3d-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)); background:#18201a; color:#e5ebe2; font-size:13px;}
 .ov3d-bar .btn{background:#233026; color:#e5ebe2; border-color:#35443a;}
@@ -828,6 +832,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       <div class="selrow" id="selRow" hidden>
         <span>Otočení</span><input type="range" id="rot" min="0" max="355" step="5" aria-label="Otočení překážky"><span id="rotLbl" class="num"></span>
         <span class="selacts"><select class="btn" id="bendSel" aria-label="Tvar tunelu" hidden><option value="0">Rovný</option><option value="90">Oblouk 90° ↶</option><option value="-90">Oblouk 90° ↷</option><option value="135">Oblouk 135° ↶</option><option value="-135">Oblouk 135° ↷</option><option value="180">Do U ↶</option><option value="-180">Do U ↷</option></select>
+        <select class="btn" id="lenSel" aria-label="Délka tunelu" hidden><option value="2">2 m (trénink)</option><option value="3">3 m</option><option value="4">4 m</option><option value="4.5">4,5 m</option><option value="5">5 m</option><option value="6">6 m</option></select>
         <button class="btn danger" id="delBtn">Smazat</button></span>
       </div>
     </div>
@@ -836,6 +841,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       <button class="btn danger" id="clrRoute">Smazat trasu</button>
     </div>
     <div class="fieldbox">
+    <button class="dimbtn" id="dimBtn" title="Zobrazit parkur ve 3D" aria-label="Zobrazit parkur ve 3D"><span data-ic="cube"></span>3D</button>
     <div class="zoom"><button class="btn" id="zOut" aria-label="Oddálit">−</button><span id="zLbl" class="num"></span><button class="btn" id="zIn" aria-label="Přiblížit">+</button></div>
     <div id="wrap" tabindex="0" aria-label="Plocha parkuru, posouvá se šipkami">
       <svg id="field" class="build" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plocha parkuru">
@@ -957,7 +963,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
     <div class="seg" id="p3view"><button data-v="orbit">Volně</button><button data-v="dog" class="on">Očima psa</button><button data-v="chase">Za psem</button><button data-v="top">Shora</button></div>
     <div class="seg" id="p3speed"><button data-s=".5">0,5×</button><button data-s="1" class="on">1×</button><button data-s="2">2×</button></div>
     <span class="grow" id="p3info"></span>
-    <button class="btn primary" id="p3close">Zavřít</button>
+    <div class="seg" id="p3dim" role="group" aria-label="Zobrazení"><button data-d="2">2D</button><button data-d="3" class="on">3D</button></div>
   </div>
 </div>
 
@@ -1237,6 +1243,11 @@ var I18N_EXTRA={exact:{
 "Přispět kartou": "Donate by card",
 "Za nápad nebo nahlášenou chybu jsem stejně vděčný.": "I'm just as grateful for an idea or a bug report.",
 "Zkopírováno": "Copied",
+"Zobrazit parkur ve 3D": "Show the course in 3D",
+"2 m (trénink)": "2 m (training)",
+"Délka tunelu": "Tunnel length",
+"Zobrazení": "View",
+"Pro 3D potřebuješ trasu aspoň se 2 překážkami.": "For 3D you need a route with at least 2 obstacles.",
 "Volně": "Free view",
 "Google Pay / Apple Pay / karta": "Google Pay / Apple Pay / card",
 "Rychlá platba kartou nebo telefonem, částku si vybereš.": "Quick payment by card or phone, you choose the amount.",
@@ -1284,6 +1295,7 @@ var I18N_EXTRA={exact:{
 "Sdílet odkaz": "Share link",
 "AgiPlan – plánovač agility parkurů, stopky a trénink. Zdarma v telefonu:": "AgiPlan – agility course planner, stopwatch and training. Free on your phone:"
 },num:{
+"Tunel kratší než # m: #× (FCI: délka tunelu #–# m)": "Tunnel shorter than # m: #× (FCI: tunnel length #–# m)",
 "Zahrada týdne #": "Garden of the week #",
 "Krok # z #": "Step #1 of #2",
 "Úsek zvládnutý, chyby #. Přidáme další.": "Chunk done, # mistakes. Let's add the next one.",
@@ -3327,7 +3339,7 @@ function mb(a){return function(){var t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t
 function ps(p,a,b){var dx=b.x-a.x,dy=b.y-a.y,l=dx*dx+dy*dy,t=l?cl(((p.x-a.x)*dx+(p.y-a.y)*dy)/l,0,1):0;return Math.hypot(p.x-a.x-t*dx,p.y-a.y-t*dy);}
 function cr(a,b,c){return (b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);}
 function sd(a,b,c,d){if(cr(a,b,c)*cr(a,b,d)<0&&cr(c,d,a)*cr(c,d,b)<0)return 0;return Math.min(ps(a,c,d),ps(b,c,d),ps(c,a,b),ps(d,a,b));}
-function seg(o){var h=DEF[o.type].hl,a=o.rot*Math.PI/180,u=Math.cos(a),v=Math.sin(a);
+function seg(o){var h=ohl(o),a=o.rot*Math.PI/180,u=Math.cos(a),v=Math.sin(a);
   return h?[{x:o.x-u*h,y:o.y-v*h},{x:o.x+u*h,y:o.y+v*h}]:[{x:o.x+v*.7,y:o.y-u*.7},{x:o.x-v*.7,y:o.y+u*.7}];}
 /* obrys překážky jako lomená čára (tunel do oblouku po kouscích) a vzdálenosti k ní */
 function opoly(o){
@@ -3619,7 +3631,10 @@ function loopPts(pcs){var out=[]; pcs.forEach(function(c){for(var t=1;t<=4;t++) 
 /* tunel do oblouku: o.bend ve stupních (kladně doleva ve směru rot), délka 4,5 m rovný až 6 m do U */
 /* platná otočka pro danou překážku: w/b jen u skoku, f (vstup druhým koncem, u skoku skok z druhé strany) u skoku, tunelu, zón a slalomu */
 function tuValid(t,ty){return t&&DEF[ty]&&(t==='f'?DEF[ty].hl>0||ty==='jump':ty==='jump'&&/^[wb][LR]$/.test(t))?t:null;}
-function tunLen(o){return o.bend?4.5+1.5*Math.min(1,Math.abs(o.bend)/180):2*DEF[o.type].hl;}
+/* délka tunelu: vlastní 2–6 m (o.len), jinak výchozí 4,5 m, do oblouku 4,5–6 m */
+function tunLen(o){return o.len>=2&&o.len<=6?+o.len:o.bend?4.5+1.5*Math.min(1,Math.abs(o.bend)/180):2*DEF[o.type].hl;}
+/* polovina délky překážky (tunel podle své délky) */
+function ohl(o){return o.type==='tunnel'?tunLen(o)/2:DEF[o.type].hl;}
 function tunPt(o,s){
   var a=o.rot*Math.PI/180, L=tunLen(o), k=(o.bend||0)*Math.PI/180/L;
   if(Math.abs(k)<1e-6) return {x:o.x+Math.cos(a)*s,y:o.y+Math.sin(a)*s,d:a};
@@ -3627,7 +3642,7 @@ function tunPt(o,s){
 }
 /* konce překážky: A = začátek ve směru rot, B = konec; dA/dB = směr pohybu v bodě A/B při průchodu od A k B */
 function ends(o){
-  var a=o.rot*Math.PI/180, u={x:Math.cos(a),y:Math.sin(a)}, hl=DEF[o.type].hl;
+  var a=o.rot*Math.PI/180, u={x:Math.cos(a),y:Math.sin(a)}, hl=ohl(o);
   if(o.type==='tunnel'&&o.bend){ var L2=tunLen(o)/2, pa=tunPt(o,-L2), pb=tunPt(o,L2);
     return {A:{x:pa.x,y:pa.y},B:{x:pb.x,y:pb.y},dA:{x:Math.cos(pa.d),y:Math.sin(pa.d)},dB:{x:Math.cos(pb.d),y:Math.sin(pb.d)}}; }
   return {A:{x:o.x-u.x*hl,y:o.y-u.y*hl},B:{x:o.x+u.x*hl,y:o.y+u.y*hl},dA:u,dB:u};
@@ -3638,7 +3653,7 @@ function calc(ob,rt,tu,pf){
   if(!ob){ob=S.obs; rt=S.route; tu=S.turns;}
   var st=rt.map(function(id){for(var j=0;j<ob.length;j++)if(ob[j].id===id)return ob[j];}), n=st.length, P=[], prev=null, prevD=null, i;
   for(i=0;i<n;i++){
-    var o=st[i], a=o.rot*Math.PI/180, u={x:Math.cos(a),y:Math.sin(a)}, hl=DEF[o.type].hl, ref, en, ex, dir, dxo=null, t=(o.type==='jump'&&tu&&tu[i])||null;
+    var o=st[i], a=o.rot*Math.PI/180, u={x:Math.cos(a),y:Math.sin(a)}, hl=ohl(o), ref, en, ex, dir, dxo=null, t=(o.type==='jump'&&tu&&tu[i])||null;
     /* první překážka: pes přibíhá z opačné strany než je druhá překážka; s otočkou po prvním skoku naopak od ní */
     ref=prev||(n>1?(t&&t.charAt(0)==='w'?{x:st[1].x,y:st[1].y}:{x:2*o.x-st[1].x,y:2*o.y-st[1].y}):{x:o.x-u.x,y:o.y-u.y});
     var A, B, dA=u, dB=u, bent=o.type==='tunnel'&&!!o.bend, len;
@@ -3860,6 +3875,7 @@ function courseClean(d){
     if(!(id>0&&id%1===0)||by[id]||!isFinite(x)||!isFinite(y)) return;
     var n={id:id,type:o.type,x:cl(x,0,W),y:cl(y,0,H),rot:isFinite(ro)?(ro%360+360)%360:0};
     if(o.type==='tunnel'&&b&&Math.abs(b)<=180) n.bend=b;
+    if(o.type==='tunnel'){ var ln=Math.round(+o.len*2)/2; if(ln>=2&&ln<=6) n.len=ln; }
     by[id]=n; obs.push(n);
   });
   var rt=Array.isArray(d.route)?d.route:[], sd=Array.isArray(d.sides)?d.sides:[], tu=Array.isArray(d.turns)?d.turns:[], route=[], sides=[], turns=[];
@@ -4051,7 +4067,7 @@ function drawGrid(){
   svg.setAttribute('viewBox','0 0 '+S.W+' '+S.H);
 }
 function obEl(o){
-  var d=DEF[o.type], g=document.createElementNS(NS,'g'), hw=d.hl+.5, e=.15;
+  var d=DEF[o.type], g=document.createElementNS(NS,'g'), hw=ohl(o)+.5, e=.15;
   g.setAttribute('class','ob'); g.setAttribute('data-id',o.id);
   g.setAttribute('transform','translate('+o.x+','+o.y+') rotate('+o.rot+')');
   g.setAttribute('style','color:'+d.c);
@@ -4126,6 +4142,7 @@ function render(){
 function ui(){
   var special=panel==='side'||panel==='quiz';
   if(mode==='view'&&!S.obs.length) mode='build'; /* prázdná plocha: rovnou stavět */
+  $('dimBtn').hidden=mode!=='view';
   $('mView').className=mode==='view'?'on':''; $('mBuild').className=mode==='build'?'on':''; $('mRoute').className=mode==='route'?'on':'';
   $('modeRow').hidden=special;
   $('buildTools').hidden=mode!=='build'||special; $('routeTools').hidden=mode!=='route'||special;
@@ -4136,7 +4153,8 @@ function ui(){
   var o=sel!=null?getO(sel):null;
   $('selRow').hidden=!o||special;
   if(o){$('rot').value=o.rot; $('rotLbl').textContent=o.rot+'°';}
-  $('bendSel').hidden=!o||o.type!=='tunnel';
+  $('bendSel').hidden=!o||o.type!=='tunnel'; $('lenSel').hidden=!o||o.type!=='tunnel';
+  if(o&&o.type==='tunnel'){ var lsv=String(Math.round(tunLen(o)*10)/10), ls=$('lenSel'); if(!Array.prototype.some.call(ls.options,function(x){return x.value===lsv;})){ var lo2=document.createElement('option'); lo2.value=lsv; lo2.textContent=fmt(+lsv)+' m'; ls.appendChild(lo2); } ls.value=lsv; }
   if(o&&o.type==='tunnel'){ var bs=$('bendSel'), bv=String(o.bend||0);
     if(!Array.prototype.some.call(bs.options,function(x){return x.value===bv;})){ var op=document.createElement('option'); op.value=bv; op.textContent=(Math.abs(o.bend)>=180?'Do U ':'Oblouk '+Math.abs(o.bend)+'° ')+(o.bend>0?'↶':'↷'); bs.appendChild(op); }
     bs.value=bv; }
@@ -4216,6 +4234,7 @@ $('undoAll').onclick=undo;
 document.addEventListener('keydown',function(e){
   if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&!e.altKey&&(e.key==='z'||e.key==='Z')&&view==='plan'&&$('scrim').hidden&&$('ov3d').hidden&&!$('modeRow').hidden&&!/^(INPUT|TEXTAREA|SELECT)$/.test((e.target&&e.target.tagName)||'')){ e.preventDefault(); undo(); }
 });
+$('lenSel').onchange=function(){var o=getO(sel); if(!o||o.type!=='tunnel') return; var v=+this.value; if(v>=2&&v<=6) o.len=v; touch(); render();};
 $('bendSel').onchange=function(){var o=getO(sel); if(!o||o.type!=='tunnel') return; var v=+this.value; if(v) o.bend=v; else delete o.bend; touch(); render();};
 $('delBtn').onclick=function(){
   var keep=[]; S.route.forEach(function(id,i){if(id!==sel) keep.push(i);});
@@ -4269,6 +4288,8 @@ function fciCheck(obs,route,turns,sides,cls,geo){
   add(cnt('weave')===1,'Slalom '+(cnt('weave')?cnt('weave')+'×':'chybí')+' (FCI: v každém parkuru, jen jednou)');
   if(cnt('tire')) add(cnt('tire')===1,'Kruh '+cnt('tire')+'× (FCI: jen jednou)');
   if(cnt('tunnel')) add(cnt('tunnel')<=5,'Tunel '+cnt('tunnel')+'× (FCI: nejvýš 5 průběhů)');
+  var shortT=obs.filter(function(o){return o.type==='tunnel'&&route.indexOf(o.id)>=0&&tunLen(o)<3;}).length;
+  if(shortT) add(false,'Tunel kratší než 3 m: '+shortT+'× (FCI: délka tunelu 3–6 m)');
   var zt=types.filter(function(t){return ZN.indexOf(t)>=0;}), kinds={}; zt.forEach(function(t){kinds[t]=1;});
   if(zt.length){ var mx=cls==='A1'?3:4; add(Object.keys(kinds).length===3&&zt.length<=mx,'Zónové překážky '+zt.length+'×, druhů '+Object.keys(kinds).length+' (FCI: všechny 3 druhy, v '+cls+' nejvýš '+mx+')'); }
   var sd=(sides||[]).slice(0,n);
@@ -4567,7 +4588,7 @@ function loadCourse(c,quiet){
   function go(){
     planReset(); bgClear();
     S.W=c.W||40; S.H=c.H||20; setSizeSel();
-    S.obs=c.obs.map(function(o){var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.type==='tunnel'&&o.bend) n.bend=o.bend; return n;}); S.route=c.route.slice(); sel=null;
+    S.obs=c.obs.map(function(o){var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.type==='tunnel'&&o.bend) n.bend=o.bend; if(o.type==='tunnel'&&o.len) n.len=o.len; return n;}); S.route=c.route.slice(); sel=null;
     S.sides=(c.sides||[]).slice(); S.turns=(c.turns||[]).slice(); S.hp=(c.hp||[]).map(function(p){return p.slice();}); if(panel==='quiz'){quizStop(); panel=null;}
     S.meta={id:c.id,name:c.name,cls:c.cls,author:c.author||'',gen:!!c.gen,dirty:false}; S.chk=null;
     newSeen(c.id);
@@ -5945,7 +5966,7 @@ function build3d(){
   // dráha psa podle trasy
   var c=calc(), pts=[];
   c.P.forEach(function(p,i){
-    var o=getO(S.route[i]), hl=DEF[o.type].hl;
+    var o=getO(S.route[i]), hl=ohl(o);
     if(i>0){var pcs=c.segs[i-1].pcs; pcs.forEach(function(pc,pj){ var nk=pcs.length===1?12:6; for(var k=1;k<=nk;k++){ if(pj===pcs.length-1&&k===nk) break; var q=bz(pc[0],pc[1],pc[2],pc[3],k/nk); pts.push([q.x,q.y,0,i-1]);} });}
     if(o.type==='tunnel'&&o.bend){ var Lb=tunLen(o); for(var s3=0;s3<=12;s3++){ var q3=tunPt(o,(p.rev?1:-1)*Lb/2*(1-2*s3/12)); pts.push([q3.x,q3.y,0,i]); } }
     else if(hl>0){for(var s=0;s<=10;s++){var f=s/10, x=p.en.x+(p.ex.x-p.en.x)*f, z=p.en.y+(p.ex.y-p.en.y)*f, dd=f*2*hl, h=0;
@@ -6065,17 +6086,19 @@ function open3dGL(){
   });
 }
 function close3dGL(){ if(C3.api){ try{ C3.api.dispose(); }catch(e){} C3.api=null; } var cv=$('c3dgl'); if(cv){ var n=cv.cloneNode(false); n.hidden=true; cv.parentNode.replaceChild(n,cv); } $('c3d').hidden=false; }
-function open3d(){
-  if(S.route.length<2){toast('Pro 3D průlet potřebuješ trasu aspoň se 2 překážkami.'); return;}
-  var go=function(){ V3.d=0; V3.on=true; V3.last=0; $('ov3d').hidden=false; $('p3play').textContent='Pauza'; p3setView(C3.api?'orbit':'dog'); cancelAnimationFrame(V3.raf); V3.raf=requestAnimationFrame(loop3d); };
+function open3d(play){ if(play==null) play=true;
+  if(S.route.length<2&&(play||!v3dOK()||!S.obs.length)){toast(S.obs.length&&!play?'Pro 3D potřebuješ trasu aspoň se 2 překážkami.':'Pro 3D průlet potřebuješ trasu aspoň se 2 překážkami.'); return;}
+  var go=function(){ V3.d=0; V3.on=!!play; V3.last=0; $('ov3d').hidden=false; $('p3play').textContent=play?'Pauza':'Přehrát'; p3setView(C3.api?'orbit':'dog'); if(!play) render3d(); cancelAnimationFrame(V3.raf); V3.raf=requestAnimationFrame(loop3d); };
   build3d();
   if(v3dOK()){ open3dGL().then(go,function(){ close3dGL(); go(); }); }
   else go();
 }
 function p3setView(v){ V3.view=v; Array.prototype.forEach.call($('p3view').children,function(c){ c.classList.toggle('on',c.getAttribute('data-v')===v); c.hidden=!C3.api&&c.getAttribute('data-v')==='orbit'; }); }
-$('p3close').onclick=function(){$('ov3d').hidden=true; V3.on=false; cancelAnimationFrame(V3.raf); C3.gen++; close3dGL();};
+function close3d(){ $('ov3d').hidden=true; V3.on=false; cancelAnimationFrame(V3.raf); C3.gen++; close3dGL(); }
+$('p3dim').onclick=function(e){ var b=e.target.closest('[data-d]'); if(b&&b.getAttribute('data-d')==='2') close3d(); };
+$('dimBtn').onclick=function(){ open3d(false); };
 window.addEventListener('resize',function(){ if(C3.api) C3.api.resize(); });
-document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!$('ov3d').hidden) $('p3close').click(); });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!$('ov3d').hidden) close3d(); });
 $('p3play').onclick=function(){ if(V3.d>=V3.path.len) V3.d=0; V3.on=!V3.on; V3.last=0; this.textContent=V3.on?'Pauza':'Přehrát'; if(V3.on){cancelAnimationFrame(V3.raf); V3.raf=requestAnimationFrame(loop3d);} };
 $('p3view').onclick=function(e){var b=e.target.closest('button'); if(!b) return; p3setView(b.getAttribute('data-v')); render3d();};
 $('p3speed').onclick=function(e){var b=e.target.closest('button'); if(!b) return; V3.spd=+b.getAttribute('data-s'); Array.prototype.forEach.call(this.children,function(c){c.classList.toggle('on',c===b);});};
@@ -6382,12 +6405,12 @@ function cutMake(c,by,i,L,W,H,o){
   ids.forEach(function(id){ if(map[id]) return; map[id]=sub.length+1; var ob=by[id], ty=ob.type;
     if((ty==='tire'&&o.st)||(ty==='longjump'&&o.sl)){ ty='jump'; subd++; }
     need[ty]=(need[ty]||0)+1;
-    var q={id:map[id],type:ty,x:ob.x,y:ob.y,rot:ob.rot||0}; if(ty==='tunnel'&&ob.bend) q.bend=ob.bend; sub.push(q); });
+    var q={id:map[id],type:ty,x:ob.x,y:ob.y,rot:ob.rot||0}; if(ty==='tunnel'&&ob.bend) q.bend=ob.bend; if(ty==='tunnel'&&ob.len) q.len=ob.len; sub.push(q); });
   var rt=ids.map(function(id){return map[id];}), G;
   try{ G=cutPts(sub,rt,tu); }catch(e){ return null; }
   var f=cutFit(G.P,W,H); if(!f) return null;
   var a=f.a*D2R, ca=Math.cos(a), sa=Math.sin(a);
-  var placed=sub.map(function(q){ var r={id:q.id,type:q.type,x:r1(ca*q.x-sa*q.y-f.cx+W/2),y:r1(sa*q.x+ca*q.y-f.cy+H/2),rot:((q.rot+f.a)%360+360)%360}; if(q.bend) r.bend=q.bend; return r; });
+  var placed=sub.map(function(q){ var r={id:q.id,type:q.type,x:r1(ca*q.x-sa*q.y-f.cx+W/2),y:r1(sa*q.x+ca*q.y-f.cy+H/2),rot:((q.rot+f.a)%360+360)%360}; if(q.bend) r.bend=q.bend; if(q.len) r.len=q.len; return r; });
   var nw=tu.filter(function(t){return t&&t.charAt(0)==='w';}).length, nb=tu.filter(function(t){return t&&t.charAt(0)==='b';}).length, nf=tu.filter(function(t){return t==='f';}).length;
   var nz=(need.aframe||0)+(need.dogwalk||0)+(need.seesaw||0), turn=cutTurning(G.g), tight=(turn-3.5*nw-3*nb)/L>=1.2;   /* bez smyček otoček a zadních stran */
   var feats=[]; if(nw) feats.push('Otočky '+nw); if(nb) feats.push('Zadní strany '+nb); if(nf) feats.push('Z druhé strany');
@@ -6422,7 +6445,7 @@ function cutCourse(c,eq,W,H){
 function cutMirror(c){
   var sw={wL:'wR',wR:'wL',bL:'bR',bR:'bL'};
   return Object.assign({},c,{
-    obs:c.obs.map(function(o){ var q={id:o.id,type:o.type,x:r1(c.W-o.x),y:o.y,rot:((180-o.rot)%360+360)%360}; if(o.bend) q.bend=-o.bend; return q; }),
+    obs:c.obs.map(function(o){ var q={id:o.id,type:o.type,x:r1(c.W-o.x),y:o.y,rot:((180-o.rot)%360+360)%360}; if(o.bend) q.bend=-o.bend; if(o.len) q.len=o.len; return q; }),
     turns:c.turns.map(function(t){return sw[t]||t;}), sides:(c.sides||[]).map(function(x){return x==='L'?'P':x==='P'?'L':x;}),
     name:c.name+' ⇋', id:c.id?c.id+'m':null,
     cut:Object.assign({},c.cut,{m:1})});
@@ -8452,7 +8475,7 @@ function impDraw(){
     IMP.obs.forEach(function(o){ var d=DEF[o.type]; if(!d) return; x.save(); x.translate(o.x*s*k,o.y*s*k); x.strokeStyle=d.c; x.fillStyle=d.c; x.lineWidth=3; x.setLineDash(o.ph?[5,4]:[]);
       if(o.type==='tunnel'&&o.bend){ x.rotate(0); var L=tunLen(o), pts=[]; for(var j=0;j<=12;j++){ var p=tunPt({x:0,y:0,rot:o.rot,bend:o.bend},-L/2+L*j/12); pts.push(p); }
         x.beginPath(); pts.forEach(function(p,j){ if(j) x.lineTo(p.x*s*k,p.y*s*k); else x.moveTo(p.x*s*k,p.y*s*k); }); x.stroke(); }
-      else { x.rotate(o.rot*Math.PI/180); var hl=Math.max(DEF[o.type].hl,.7); x.beginPath(); if(DEF[o.type].hl>0){ x.moveTo(-hl*s*k,0); x.lineTo(hl*s*k,0); } else { x.moveTo(0,-.7*s*k); x.lineTo(0,.7*s*k); } x.stroke(); }
+      else { x.rotate(o.rot*Math.PI/180); var hl=Math.max(ohl(o),.7); x.beginPath(); if(DEF[o.type].hl>0){ x.moveTo(-hl*s*k,0); x.lineTo(hl*s*k,0); } else { x.moveTo(0,-.7*s*k); x.lineTo(0,.7*s*k); } x.stroke(); }
       x.restore(); x.beginPath(); x.arc(o.x*s*k,o.y*s*k,4,0,7); x.fillStyle=d.c; x.fill(); });
     if(IMP.R){ var g=null; try{ g=calc(IMP.obs,IMP.R.route,IMP.R.turns.map(function(t){return t||null;})); }catch(e){}
       if(g){ x.strokeStyle='rgba(232,140,20,.9)'; x.lineWidth=3; g.segs.forEach(function(sg){ x.beginPath(); sg.pcs.forEach(function(q,j){ if(!j) x.moveTo(q[0].x*s*k,q[0].y*s*k); x.bezierCurveTo(q[1].x*s*k,q[1].y*s*k,q[2].x*s*k,q[2].y*s*k,q[3].x*s*k,q[3].y*s*k); }); x.stroke(); }); }

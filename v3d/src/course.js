@@ -153,7 +153,7 @@ export function mountCourse(canvas, spec, opts = {}) {
       g.setTilt(cur + (want - cur) * .2);
     });
     /* kamera */
-    dog.visible = view !== 'dog';
+    dog.visible = view !== 'dog' && P.length > 1;
     if (view === 'dog') { camera.fov = 75; camera.up.set(0, 1, 0); const f = at(d + .35); camera.position.set(f.x, f.h + .55, f.z); look.set(ah.x + (ah.x - p.x) * 4, ah.h + .3, ah.z + (ah.z - p.z) * 4); camera.lookAt(look); }
     else if (view === 'chase') { camera.fov = 55; camera.up.set(0, 1, 0); camera.position.set(bk.x, Math.max(bk.h, p.h) + 2.4, bk.z); look.set(p.x, p.h + .4, p.z); camera.lookAt(look); }
     else if (view === 'top') placeTop(topH);
