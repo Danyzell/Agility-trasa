@@ -83,6 +83,22 @@ module.exports = async function ({ browser, base }) {
     ok(Math.abs(L - 6) < .05, '3D tunel nemá zvolenou délku: ' + L);
   });
 
+  await step('AR na place', async () => {
+    await fresh(); await tunCourse();
+    /* bez WebXR tlačítko AR není; s podporou (podstrčené navigator.xr) se ukáže a nezdařený start AR se uklidí */
+    await ev(() => { window.__xr = []; Object.defineProperty(navigator, 'xr', { configurable: true, value: { isSessionSupported: m => Promise.resolve(m === 'immersive-ar'), requestSession: (m, o) => { window.__xr.push([m, o.requiredFeatures, !!(o.domOverlay && o.domOverlay.root)]); return Promise.reject(new Error('NotSupported')); } } }); });
+    await ev(() => open3d(false));
+    const gl = await page.waitForFunction(() => C3.api, null, { timeout: 15000 }).then(() => true, () => false);
+    if (!gl) return;   /* bez WebGL se 3D (a AR) netestuje */
+    await page.waitForTimeout(200);
+    T.ok(await page.isVisible('#p3ar'), 's podporou WebXR chybí tlačítko AR');
+    await page.click('#p3ar'); await page.waitForTimeout(300);
+    const r = await ev(() => ({ calls: window.__xr, hidden: $('arUi').hidden, toast: $('toast').textContent }));
+    ok(r.calls.length === 1 && r.calls[0][0] === 'immersive-ar' && r.calls[0][1].includes('hit-test') && r.calls[0][2], 'AR se nespustilo se správnými požadavky: ' + JSON.stringify(r.calls));
+    ok(r.hidden && /AR se nepodařilo/.test(r.toast), 'nezdařené AR po sobě neuklidilo: ' + JSON.stringify(r));
+    await ev(() => close3d());
+  });
+
   await step('3D: pes kličkuje slalomem', async () => {
     await fresh();
     await ev(() => { S.meta.dirty = false; const c = listFor('A1').find(x => x.route.some(id => (x.obs.find(o => o.id === id) || {}).type === 'weave')); loadCourse(c, true); });

@@ -12,10 +12,9 @@ import * as ob from './obstacles.js';
 
 const DOG_STRIDE = 1.35;
 
-export function mountCourse(canvas, spec, opts = {}) {
-  const tier = TIERS[opts.quality] ? opts.quality : autoTier();
+/* plocha, překážky, trasa a pes do skupiny parent (sdílí 3D v aplikaci i AR na place) */
+export function buildCourse(scene, spec, Q) {
   const W = spec.W, H = spec.H, size = spec.size || {};
-  const world = makeWorld(canvas, tier, { x0: 0, x1: W, z0: 0, z1: H }), scene = world.scene, Q = world.Q;
 
   /* kolbiště: světlejší tráva, bílé lajny po obvodu, značky po 5 m */
   const ring = new THREE.Group();
@@ -95,6 +94,31 @@ export function mountCourse(canvas, spec, opts = {}) {
   const dog = makeDog({ shells: Q.shells, shortShells: Q.shortShells }); scene.add(dog);
   dog.traverse(o => { if (o.isMesh && o.userData.shell === 0) o.castShadow = true; });
 
+  /* pes a houpačky ve vzdálenosti d po trase */
+  function pose(d) {
+    const p = at(d), ah = at(d + .8), ny = at(d + .25);
+    const yaw = Math.atan2(-(ny.z - p.z), ny.x - p.x);
+    const slope = Math.atan2(ah.h - p.h, Math.max(.2, Math.hypot(ah.x - p.x, ah.z - p.z))) * (p.air ? 0 : 1);
+    dog.position.set(p.x, p.h, p.z); dog.rotation.y = yaw; dog.rotation.z = Math.max(-.6, Math.min(.6, slope));
+    poseDog(dog, (d / DOG_STRIDE) % 1, p.air, p.air ? .15 * (ah.h < p.h ? 1 : -1) : 0, d <= 0 || d >= length ? 1 : 0, 0, { time: d / 4.5 });
+    /* houpačka: překlopí se, když pes přejde osu */
+    saws.forEach(({ g, o }) => {
+      const a = o.rot * Math.PI / 180, ax = (p.x - o.x) * Math.cos(a) + (p.z - o.y) * Math.sin(a);
+      const passed = o.idx >= 0 && (p.idx > o.idx || (p.idx === o.idx && ax * o.sign < 0));
+      const want = (passed ? -o.sign : o.sign) * -g.userData.maxT, cur = g.userData.tilt;
+      g.setTilt(cur + (want - cur) * .2);
+    });
+    return p;
+  }
+  return { length, at, pose, dog, start: P.length ? { x: P[0].x, z: P[0].z } : { x: W / 2, z: H / 2 } };
+}
+
+export function mountCourse(canvas, spec, opts = {}) {
+  const tier = TIERS[opts.quality] ? opts.quality : autoTier();
+  const W = spec.W, H = spec.H;
+  const world = makeWorld(canvas, tier, { x0: 0, x1: W, z0: 0, z1: H }), scene = world.scene, Q = world.Q;
+  const C = buildCourse(scene, spec, Q), { length, at, dog } = C, P = spec.path || [];
+
   const camera = new THREE.PerspectiveCamera(42, 2, .05, 500);
   /* volná kamera: orbit kolem středu plochy */
   const orb = { az: .55, el: .72, dist: Math.max(W, H) * 1.2, tx: W / 2, tz: H / 2 };
@@ -152,19 +176,7 @@ export function mountCourse(canvas, spec, opts = {}) {
 
   const look = new THREE.Vector3();
   function render(d, view) {
-    const p = at(d), ah = at(d + .8), bk = at(d - 4), ny = at(d + .25);
-    /* pes */
-    const yaw = Math.atan2(-(ny.z - p.z), ny.x - p.x);
-    const slope = Math.atan2(ah.h - p.h - (ah.air ? 0 : 0), Math.max(.2, Math.hypot(ah.x - p.x, ah.z - p.z))) * (p.air ? 0 : 1);
-    dog.position.set(p.x, p.h, p.z); dog.rotation.y = yaw; dog.rotation.z = Math.max(-.6, Math.min(.6, slope));
-    poseDog(dog, (d / DOG_STRIDE) % 1, p.air, p.air ? .15 * (ah.h < p.h ? 1 : -1) : 0, d <= 0 || d >= length ? 1 : 0, 0, { time: d / 4.5 });
-    /* houpačka: překlopí se, když pes přejde osu */
-    saws.forEach(({ g, o }) => {
-      const a = o.rot * Math.PI / 180, ax = (p.x - o.x) * Math.cos(a) + (p.z - o.y) * Math.sin(a);
-      const passed = o.idx >= 0 && (p.idx > o.idx || (p.idx === o.idx && ax * o.sign < 0));
-      const want = (passed ? -o.sign : o.sign) * -g.userData.maxT, cur = g.userData.tilt;
-      g.setTilt(cur + (want - cur) * .2);
-    });
+    const p = C.pose(d), ah = at(d + .8), bk = at(d - 4);
     /* kamera */
     dog.visible = view !== 'dog' && P.length > 1;
     if (view === 'dog') { camera.fov = 75; camera.up.set(0, 1, 0); const f = at(d + .35); camera.position.set(f.x, f.h + .55, f.z); look.set(ah.x + (ah.x - p.x) * 4, ah.h + .3, ah.z + (ah.z - p.z) * 4); camera.lookAt(look); }
