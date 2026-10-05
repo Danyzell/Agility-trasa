@@ -6,7 +6,7 @@ Plánovač agility parkurů jako aplikace do telefonu.
 
 Instalace: otevři stránku v Chromu na Androidu a zvol **Instalovat aplikaci** (nebo ⋮ → Přidat na plochu). Aplikace pak běží z ikony na ploše, i offline.
 
-Verze 2.2. Česky i anglicky (Více → Nastavení), světlý i tmavý vzhled.
+Verze 2.3. Česky i anglicky (Více → Nastavení), světlý i tmavý vzhled.
 
 Trénink doma (Domů → Trénink doma, nebo Parkury → Generátor → Z parkurů): aplikace vyřízne ze skutečných parkurů úseky, které se vejdou na tvou plochu a postavíš je z vlastního vybavení. Pořadí, otočky kolem křídla i zadní strany zůstanou jako na parkuru. Úseky jde filtrovat podle toho, co chceš trénovat, otočit zrcadlově (otočky na druhou stranu) a kruh nebo skok daleký nahradit skokem; k úseku se ukládají oblíbené i běhy.
 
@@ -17,6 +17,8 @@ Závody (Domů): kalendář z kacr.info na 60 dní dopředu se vzdáleností od 
 Zahrada týdne a Zahradní liga (Domů): každé pondělí se všem vygeneruje stejný parkur 20 × 15 m z domácího vybavení (6 skoků, tunel, slalom) – semínko je číslo týdne, takže parkur nepotřebuje server. Výsledky jdou do týdenního žebříčku podle velikosti psa a za umístění se sbírají body do ligy na celou sezónu (10-8-6-5-4-3-2, za každý další odeslaný týden 1 bod). Žebříčky počítá Supabase (`supabase/migrations`, funkce `week_submit`, `week_board`, `league_board`).
 
 3D parkur (Plán → tlačítko 3D na plánku, nebo Nástroje → 3D průlet): parkur se postaví z 3D modelů překážek v rozměrech FCI (pravidla od 2023; výška skoku, kruhu a délka skoku dalekého podle velikosti vybraného psa) a pes proběhne trasu – skáče, leze po zónách, kličkuje slalomem (1. tyčka po levém rameni) a houpačka se pod ním překlopí. Pohledy Volně, Očima psa, Za psem a Shora; přepínač 2D | 3D vrací do plánku. Kód je ve `v3d/src/course.js` (balíček `v3d/v3d.js`), bez WebGL zůstává jednoduchý průlet.
+
+AR na place (ve 3D tlačítko AR na place, Chrome na Androidu s ARCore): WebXR `immersive-ar` s hit-testem položí parkur startem na zaměřené místo ve skutečné velikosti nebo jako model 1 : 20, jde otočit, položit znovu a pustit psa. Kód `v3d/src/ar.js`.
 
 Délka tunelu: u vybraného tunelu ve Stavbě 2–6 m (nový tunel 5 m, uložené parkury si délku nechají). Kontrola FCI hlásí tunel kratší než 3 m.
 

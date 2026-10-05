@@ -251,6 +251,15 @@ select.btn{padding-right:8px;}
 .ov3d-bar .seg{background:#233026; border-color:#35443a;}
 .ov3d-bar .seg button{color:#c6d3c4;}
 .ov3d-bar .seg button.on{background:#5fb487; color:#0b1a11;}
+/* AR na place: ovládání přes obraz kamery */
+.arui{position:fixed; inset:0; z-index:90; display:flex; flex-direction:column; justify-content:space-between; pointer-events:none; color:#fff; font-family:var(--body);}
+.arui[hidden]{display:none;}
+.ar-hint{margin:calc(14px + env(safe-area-inset-top,0px)) 16px 0; align-self:center; max-width:520px; background:rgba(10,20,14,.72); padding:10px 16px; border-radius:16px; font-size:15px; text-align:center;}
+.ar-hint:empty{display:none;}
+.ar-bar{pointer-events:auto; display:flex; flex-direction:column; gap:8px; padding:12px 12px calc(14px + env(safe-area-inset-bottom,0px)); background:rgba(10,20,14,.72);}
+.ar-row{display:flex; gap:8px;} .ar-row .btn{flex:1; justify-content:center;}
+.arui .btn{background:#233026; color:#e5ebe2; border-color:#35443a;} .arui .btn.primary{background:#5fb487; color:#0b1a11; border-color:#5fb487;}
+.arui .seg{display:flex; background:#233026; border-color:#35443a;} .arui .seg button{flex:1; color:#c6d3c4;} .arui .seg button.on{background:#5fb487; color:#0b1a11;}
 /* na telefonu tři řádky: stav trasy a 2D | 3D, pod tím Přehrát a rychlost, dole pohledy přes celou šířku */
 @media (max-width:600px){
   .ov3d-bar{gap:6px 8px; padding-top:8px;}
@@ -998,11 +1007,20 @@ html.onb-open,html.onb-open body{overflow:hidden;}
     <button class="btn" id="p3play">Pauza</button>
     <div class="seg" id="p3speed"><button data-s=".5">0,5×</button><button data-s="1" class="on">1×</button><button data-s="2">2×</button></div>
     <div class="seg" id="p3dim" role="group" aria-label="Zobrazení"><button data-d="2">2D</button><button data-d="3" class="on">3D</button></div>
+    <button class="btn primary" id="p3ar" hidden>AR na place</button>
     <div class="seg" id="p3view"><button data-v="orbit">Volně</button><button data-v="dog" class="on">Očima psa</button><button data-v="chase">Za psem</button><button data-v="top">Shora</button></div>
     <span class="grow" id="p3info"></span>
   </div>
 </div>
 
+<div class="arui" id="arUi" hidden>
+  <div class="ar-hint" id="arHint" role="status"></div>
+  <div class="ar-bar">
+    <div class="seg" id="arScale" role="group" aria-label="Velikost"><button data-ar="real" class="on">1 : 1</button><button data-ar="model">Model na stůl</button></div>
+    <div class="ar-row"><button class="btn" data-ar="rotl" aria-label="Otočit doleva">↺ 15°</button><button class="btn" data-ar="rotr" aria-label="Otočit doprava">↻ 15°</button><button class="btn" data-ar="place">Položit znovu</button></div>
+    <div class="ar-row"><button class="btn primary" data-ar="play">Pustit psa</button><button class="btn" data-ar="end">Zavřít AR</button></div>
+  </div>
+</div>
 <div class="scrim" id="scrim" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
 <div class="toast" id="toast" hidden></div>
 <input type="file" id="jsonFile" accept="application/json,.json,text/plain" hidden>
@@ -1290,6 +1308,29 @@ var I18N_EXTRA={exact:{
 "Délka tunelu 2–6 m (nový tunel 5 m)": "Tunnel length 2–6 m (a new tunnel is 5 m)",
 "Google Pay, Apple Pay a uložení QR platby do galerie": "Google Pay, Apple Pay and saving the QR payment to the gallery",
 "Díky za podporu!": "Thank you for your support!",
+"Novinky v AgiPlan 2.3": "What's new in AgiPlan 2.3",
+"Novinky ve verzi 2.3": "New in version 2.3",
+"Účet: přihlášení přes Google a automatická synchronizace dat mezi telefonem a počítačem": "Account: sign in with Google and automatic data sync between phone and computer",
+"AR na place: parkur kamerou na skutečném trávníku (Chrome na Androidu)": "AR on the field: the course on real grass through the camera (Chrome on Android)",
+"Náhled odkazu pro Facebook": "Link preview for Facebook",
+"Účet: přihlas se přes Google ve Více → Účet a parkury, psi i běhy budeš mít na všech zařízeních": "Account: sign in with Google in More → Account and have your courses, dogs and runs on all devices",
+"AR na place: ve 3D klepni na AR a parkur se položí na skutečný trávník (Chrome na Androidu)": "AR on the field: in 3D tap AR and the course is placed on real grass (Chrome on Android)",
+"AR na place": "AR on the field",
+"1 : 1": "1 : 1",
+"Model na stůl": "Table model",
+"Položit znovu": "Place again",
+"Pustit psa": "Run the dog",
+"Zastavit psa": "Stop the dog",
+"Zavřít AR": "Close AR",
+"Otočit doleva": "Rotate left",
+"Otočit doprava": "Rotate right",
+"Velikost": "Size",
+"Pomalu pohybuj telefonem a miř na zem, až se objeví zelený kroužek.": "Move the phone slowly and point at the ground until a green ring appears.",
+"Zamiř kroužek na místo startu a klepni na obrazovku.": "Aim the ring at the start spot and tap the screen.",
+"Zem zatím nenašel. Miř telefonem na trávník a pomalu s ním pohybuj.": "No ground found yet. Point the phone at the grass and move it slowly.",
+"Parkur stojí. Projdi se po něm, nebo pusť psa.": "The course is set up. Walk around it, or run the dog.",
+"Hotovo. Pusť psa znovu, nebo parkur polož jinam.": "Done. Run the dog again, or place the course elsewhere.",
+"AR se nepodařilo spustit. Potřebuješ Chrome na Androidu s podporou ARCore.": "AR couldn't start. You need Chrome on Android with ARCore support.",
 "Účet": "Account",
 "přihlášení vypršelo, přihlas se znovu": "sign-in expired, please sign in again",
 "data se mezitím změnila, zkus to znovu": "the data changed in the meantime, try again",
@@ -6256,7 +6297,8 @@ function open3dGL(){
   return v3dLoad().then(function(m){
     if(g!==C3.gen||!m.mountCourse) throw new Error('no3d');
     var cv=$('c3dgl'); $('c3d').hidden=true; cv.hidden=false; $('ov3d').hidden=false;
-    var api=m.mountCourse(cv,course3dSpec(),{});
+    var api=m.mountCourse(cv,course3dSpec(),{}); V3D.m=m;
+    if(m.arSupported) m.arSupported().then(function(ok){ $('p3ar').hidden=!ok; });
     cv.addEventListener('webglcontextlost',function(e){ e.preventDefault(); close3dGL(); },{once:true});
     api.onCamera=function(){ if(!V3.on) render3d(); };
     C3.api=api; V3.path.len=api.length; return api;
@@ -6274,6 +6316,31 @@ function p3setView(v){ V3.view=v; Array.prototype.forEach.call($('p3view').child
 function close3d(){ $('ov3d').hidden=true; V3.on=false; cancelAnimationFrame(V3.raf); C3.gen++; close3dGL(); }
 $('p3dim').onclick=function(e){ var b=e.target.closest('[data-d]'); if(b&&b.getAttribute('data-d')==='2') close3d(); };
 $('dimBtn').onclick=function(){ open3d(false); };
+/* AR na place (WebXR, Chrome na Androidu): parkur se položí kamerou na skutečný trávník */
+var AR={api:null,st:''};
+function arHint(s){
+  AR.st=s; var t={scan:'Pomalu pohybuj telefonem a miř na zem, až se objeví zelený kroužek.',ready:'Zamiř kroužek na místo startu a klepni na obrazovku.',
+    noground:'Zem zatím nenašel. Miř telefonem na trávník a pomalu s ním pohybuj.',placed:'Parkur stojí. Projdi se po něm, nebo pusť psa.',done:'Hotovo. Pusť psa znovu, nebo parkur polož jinam.'}[s]||'';
+  var h=$('arHint'); if(h.getAttribute('data-s')!==s){ h.setAttribute('data-s',s); h.textContent=T(t); }
+}
+$('p3ar').onclick=function(){
+  if(!V3D.m||!V3D.m.startAR||AR.api) return;
+  V3.on=false; $('p3play').textContent=T('Přehrát');
+  $('arUi').hidden=false; arHint('scan'); $('arUi').querySelector('[data-ar="play"]').textContent=T('Pustit psa');
+  var cur=null;
+  try{ cur=V3D.m.startAR($('arUi'),course3dSpec(),{onState:arHint,onEnd:function(){ AR.api=null; $('arUi').hidden=true; if(C3.api) render3d(); }}); }
+  catch(e){ cur=Promise.reject(e); }
+  cur.then(function(a){ AR.api=a; },function(){ $('arUi').hidden=true; toast(T('AR se nepodařilo spustit. Potřebuješ Chrome na Androidu s podporou ARCore.'),5000); });
+};
+/* klepnutí na ovládání nesmí položit parkur */
+$('arUi').addEventListener('beforexrselect',function(e){ if(e.target.closest('.ar-bar')) e.preventDefault(); });
+$('arUi').addEventListener('click',function(e){
+  var b=e.target.closest('[data-ar]'); if(!b||!AR.api) return; var a=b.getAttribute('data-ar');
+  if(a==='place') AR.api.place(); else if(a==='rotl') AR.api.rotate(15); else if(a==='rotr') AR.api.rotate(-15);
+  else if(a==='real'||a==='model'){ AR.api.setScale(a==='model'); Array.prototype.forEach.call($('arScale').children,function(c){ c.classList.toggle('on',c===b); }); }
+  else if(a==='play'){ var on=AR.api.play(); b.textContent=T(on?'Zastavit psa':'Pustit psa'); }
+  else if(a==='end') AR.api.end();
+});
 window.addEventListener('resize',function(){ if(C3.api) C3.api.resize(); });
 document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!$('ov3d').hidden) close3d(); });
 $('p3play').onclick=function(){ if(V3.d>=V3.path.len) V3.d=0; V3.on=!V3.on; V3.last=0; this.textContent=V3.on?'Pauza':'Přehrát'; if(V3.on){cancelAnimationFrame(V3.raf); V3.raf=requestAnimationFrame(loop3d);} };
@@ -7467,7 +7534,7 @@ function appShare(){
   dnCopy(APP_URL);
 }
 /* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
-var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='2.2';
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='2.3';
 var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
 function fbSave(){ lsSet(FBK,FB); }
 var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];
@@ -7532,8 +7599,9 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='fb'){ h=fbHTML(); }
   else if(moreTab==='donate'){ h=donateOn()?donateHTML():'<p class="hint">Podpora zatím není nastavená.</p>'; }
   else {
-    h='<div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>AgiPlan 2.2</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
+    h='<div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>AgiPlan 2.3</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
       '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
+      '<h4>Novinky ve verzi 2.3</h4><ul class="news"><li>Účet: přihlášení přes Google a automatická synchronizace dat mezi telefonem a počítačem</li><li>AR na place: parkur kamerou na skutečném trávníku (Chrome na Androidu)</li><li>Náhled odkazu pro Facebook</li></ul>'+
       '<h4>Novinky ve verzi 2.2</h4><ul class="news"><li>3D parkur a přepínač 2D / 3D v Plánu</li><li>Pes ve 3D kličkuje slalomem podle pravidel FCI</li><li>Délka tunelu 2–6 m (nový tunel 5 m)</li><li>Google Pay, Apple Pay a uložení QR platby do galerie</li><li>Zásady ochrany osobních údajů</li></ul>'+
       '<h4>Novinky ve verzi 2.1</h4><ul class="news"><li>Nový název AgiPlan</li><li>Napsat autorovi a hodnocení hvězdičkami</li><li>Podpořit aplikaci (QR platba)</li><li>Instalace z Domů a QR kód s odkazem pro kamarády</li></ul>'+
       '<h4>Novinky ve verzi 2.0</h4><ul class="news"><li>Nový název HandlerMap (dnes AgiPlan)</li><li>Angličtina (přepneš ve Více → Nastavení)</li><li>Tmavý vzhled podle systému, nebo natrvalo</li><li>Průvodce prvním spuštěním</li><li>Větší tlačítka a plynulejší přechody</li></ul>'+
@@ -9056,10 +9124,10 @@ function onbStart(){
   onbOpen(1);
 }
 function newsCheck(){
-  var seen=lsGet('agility-news-v1',null); if(seen==='2.2') return; lsSet('agility-news-v1','2.2');
+  var seen=lsGet('agility-news-v1',null); if(seen==='2.3') return; lsSet('agility-news-v1','2.3');
   /* kdo neviděl novinky 2.1, dozví se i o novém názvu */
-  openSheet('<h3>Novinky v AgiPlan 2.2</h3>'+(seen!=='2.1'?'<p>Aplikace se teď jmenuje AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>':'')+
-    '<ul class="news"><li>3D parkur: v Plánu klepni na 3D a projdi si parkur ze všech stran</li><li>Pes ve 3D skáče, leze po zónách a kličkuje slalomem</li><li>Délka tunelu 2–6 m, nový tunel má 5 m</li><li>Podpořit aplikaci i přes Google Pay a Apple Pay</li></ul>'+
+  openSheet('<h3>Novinky v AgiPlan 2.3</h3>'+(seen!=='2.1'&&seen!=='2.2'?'<p>Aplikace se teď jmenuje AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>':'')+
+    '<ul class="news"><li>Účet: přihlas se přes Google ve Více → Účet a parkury, psi i běhy budeš mít na všech zařízeních</li><li>AR na place: ve 3D klepni na AR a parkur se položí na skutečný trávník (Chrome na Androidu)</li><li>3D parkur: v Plánu klepni na 3D a projdi si parkur ze všech stran</li><li>Pes ve 3D skáče, leze po zónách a kličkuje slalomem</li><li>Délka tunelu 2–6 m, nový tunel má 5 m</li><li>Podpořit aplikaci i přes Google Pay a Apple Pay</li></ul>'+
     '<div class="acts"><button class="btn primary" data-a="x">Pokračovat</button></div>',function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
 }
 function onbClose(done){ var o=$('onb'); if(o) o.parentNode.removeChild(o); if(done) lsSet(ONBK,{done:1,v:2}); document.documentElement.classList.remove('onb-open'); }
