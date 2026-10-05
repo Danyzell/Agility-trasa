@@ -104,7 +104,8 @@ select.btn{padding-right:8px;}
 .selacts{display:flex; flex-wrap:wrap; gap:8px; margin-left:auto; max-width:100%;}
 .selacts select{max-width:100%;}
 
-#wrap{overflow:auto; max-height:70vh; border:1px solid var(--border); border-radius:12px; background:var(--field);}
+#wrap{overflow:auto; max-height:70vh; border:1px solid var(--border); border-radius:12px; background:var(--field); touch-action:pan-x pan-y;}
+.rotq{display:inline-flex; gap:4px;} .rotq .btn{min-width:44px; padding:6px 8px; justify-content:center;}
 #field{display:block; height:auto; user-select:none; -webkit-user-select:none;}
 #field.build .ob{touch-action:none; cursor:grab;}
 #field.route .ob{cursor:pointer;}
@@ -932,6 +933,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       <div class="palette" id="palette"></div>
       <div class="selrow" id="selRow" hidden>
         <span>Otočení</span><input type="range" id="rot" min="0" max="355" step="5" aria-label="Otočení překážky"><span id="rotLbl" class="num"></span>
+        <span class="rotq"><button class="btn" id="rotL" aria-label="Otočit o 15° doleva">↺15°</button><button class="btn" id="rotR" aria-label="Otočit o 15° doprava">↻15°</button><button class="btn" id="rotP" title="Natočit kolmo na trasu (podle předchozí a další překážky)">⟂ trasa</button></span>
         <span class="selacts"><select class="btn" id="bendSel" aria-label="Tvar tunelu" hidden><option value="0">Rovný</option><option value="90">Oblouk 90° ↶</option><option value="-90">Oblouk 90° ↷</option><option value="135">Oblouk 135° ↶</option><option value="-135">Oblouk 135° ↷</option><option value="180">Do U ↶</option><option value="-180">Do U ↷</option></select>
         <select class="btn" id="lenSel" aria-label="Délka tunelu" hidden><option value="2">2 m (trénink)</option><option value="3">3 m</option><option value="4">4 m</option><option value="4.5">4,5 m</option><option value="5">5 m</option><option value="6">6 m</option></select>
         <button class="btn danger" id="delBtn">Smazat</button></span>
@@ -939,6 +941,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
     </div>
     <div class="row" id="routeTools" hidden>
       <button class="btn" id="undoBtn">↶ Vrátit poslední</button>
+      <button class="btn" id="orientAll">⟂ Natočit skoky podle trasy</button>
       <button class="btn danger" id="clrRoute">Smazat trasu</button>
     </div>
     <div class="fieldbox">
@@ -1193,6 +1196,15 @@ function trTree(root){
 }
 /* Překlady nových textů: když přidáš do aplikace český text, sem dopiš jeho anglickou verzi (stejný formát jako i18nAdd). */
 var I18N_EXTRA={exact:{
+"Otočit o 15° doleva": "Rotate 15° left",
+"Otočit o 15° doprava": "Rotate 15° right",
+"Natočit kolmo na trasu (podle předchozí a další překážky)": "Turn square to the route (by the previous and next obstacle)",
+"⟂ trasa": "⟂ route",
+"⟂ Natočit skoky podle trasy": "⟂ Align jumps to the route",
+"Klepnutím do volného místa zrušíš výběr. Tažením překážku přesuneš, tlačítky otočíš, dvěma prsty přiblížíš.": "Tap an empty spot to deselect. Drag to move the obstacle, use the buttons to rotate it, pinch with two fingers to zoom.",
+"Vyber překážku v nabídce, nebo klepni na překážku na ploše.": "Pick an obstacle in the menu, or tap an obstacle on the field.",
+"Překážka není v trase. Nejdřív vyznač trasu v režimu Trasa.": "The obstacle isn't in the route. Mark the route in Route mode first.",
+"Skoky už jsou natočené podle trasy": "The jumps are already aligned to the route",
 "Kolbiště (GPS)": "Ring (GPS)",
 "Kolbiště": "Ring",
 "Ulož si, kde stojí kolbiště, a aplikace tě k němu dovede. Zaměřené natočení použije Stavba v terénu a AR na place. Polohy zůstávají v tomhle zařízení a v záloze, kterou si sám uložíš.": "Save where the ring is and the app will guide you to it. A measured orientation is used by Build on the field and AR on the field. Locations stay on this device and in backups you save yourself.",
@@ -1630,6 +1642,7 @@ var I18N_EXTRA={exact:{
 "Zkontroluj podle plánku": "Check against the course map",
 "Náhled parkuru": "Course preview",
 },num:{
+"Natočeno překážek: #": "Obstacles aligned: #",
 "# s": "# s",
 "# měření": "# readings",
 "přesnost ± # m": "accuracy ± # m",
@@ -1730,6 +1743,7 @@ var I18N_EXTRA={exact:{
 "Zahrada týdne # · # × # m · zbývá # dní": "Garden of the week # · # × # m · # days left",
 "Zahrada týdne # · # × # m · zbývá poslední den": "Garden of the week # · # × # m · last day left",
 },re:[
+["^Klepnutím polož (.+) na plochu\\. Překážku přesuneš tažením, plochu přiblížíš dvěma prsty\\.$","Tap to place the @1 on the field. Drag to move an obstacle, pinch with two fingers to zoom."],
 ["^Lidé, kteří aplikaci otevřeli \\(každé zařízení jednou za den\\)\\. Celkem od začátku: (\\d+)\\. Anglicky: (\\d+) za 7 dní\\.$","People who opened the app (each device once a day). Total since the start: $1. In English: $2 in 7 days."],
 ["^Synchronizováno (\\d+:\\d+)$","Synced $1"],
 ["^Synchronizace se nepovedla: (.+)$","Sync failed: @1"],
@@ -4578,7 +4592,7 @@ function ui(){
   svg.style.width=(zoom*100)+'%';
   if(BG){$('bgOp').value=Math.round((BG.op||.6)*100); $('bgFit').textContent=BG.fit==='none'?'Zachovat poměr':'Roztáhnout';}
   $('hint').textContent=panel==='side'?'':panel==='quiz'?'':mode==='build'
-    ? 'Vyber překážku a klepnutím ji polož na plochu. Tažením ji přesuneš, posuvníkem otočíš.'
+    ? (sel!=null?'Klepnutím do volného místa zrušíš výběr. Tažením překážku přesuneš, tlačítky otočíš, dvěma prsty přiblížíš.':tool?'Klepnutím polož '+DEF[tool].l.toLowerCase()+' na plochu. Překážku přesuneš tažením, plochu přiblížíš dvěma prsty.':'Vyber překážku v nabídce, nebo klepni na překážku na ploše.')
     : 'Klepej na překážky v pořadí, v jakém je pes poběží. Stejnou překážku můžeš použít víckrát. Otočku kolem křídla nebo zadní stranu nastavíš u skoku v seznamu pod plochou.';
   $('hint').hidden=special||mode==='view';
 }
@@ -4587,6 +4601,7 @@ function pt(e){var b=svg.getBoundingClientRect(); return {x:(e.clientX-b.left)/b
 /* přehrávání psa a psovoda: klepnutí na plochu ho jen zastaví, plán se nemění */
 svg.addEventListener('pointerdown',function(e){ if(!SIMA&&!$('simG')) return; e.stopImmediatePropagation(); tap=null; drag=null; simStop(); },true);
 svg.addEventListener('pointerdown',function(e){
+  if(PINCH) return;
   var g=e.target.closest('.ob'), id=g?+g.getAttribute('data-id'):null;
   tap={x:e.clientX,y:e.clientY,id:id};
   if(panel==='side'){
@@ -4598,7 +4613,7 @@ svg.addEventListener('pointerdown',function(e){
   if(panel==='quiz') return;
   if(mode==='build'&&g){
     var o=getO(id), q=pt(e); sel=id;
-    drag={id:id,dx:o.x-q.x,dy:o.y-q.y,moved:false};
+    drag={id:id,dx:o.x-q.x,dy:o.y-q.y,moved:false,x0:o.x,y0:o.y};
     try{svg.setPointerCapture(e.pointerId);}catch(x){}
   }
 });
@@ -4608,7 +4623,7 @@ svg.addEventListener('pointermove',function(e){
     if(Math.hypot(l[0]-p.x,l[1]-p.y)>.35){hpDraw.push([r1(cl(p.x,0,S.W)),r1(cl(p.y,0,S.H))]); S.hp=hpDraw; renderSoon();}
     return;
   }
-  if(!drag||!tap) return;
+  if(!drag||!tap||PINCH) return;
   if(Math.hypot(e.clientX-tap.x,e.clientY-tap.y)>4) drag.moved=true;
   if(!drag.moved) return;
   var q=pt(e), o=getO(drag.id);
@@ -4626,6 +4641,7 @@ svg.addEventListener('pointerup',function(e){
       if(tap.id!=null){S.route.push(tap.id); if(S.chk) S.chk.push(0); syncSides(); touch(); render();}
     } else if(mode==='view'){
       if(tap.id!=null&&!ui.tipped){ ui.tipped=1; toast('Překážky upravíš v režimu Stavba, pořadí v režimu Trasa.'); }
+    } else if(sel!=null&&tap.id==null){ sel=null; render(); ui(); /* první klepnutí do volného místa jen zruší výběr */
     } else if(tool){
       var p=pt(e), o={id:nid(),type:tool,x:cl(r1(p.x),0,S.W),y:cl(r1(p.y),0,S.H),rot:0}; if(tool==='tunnel') o.len=5; /* nový tunel: výchozí 5 m */
       S.obs.push(o); sel=o.id; touch(); render(); ui();
@@ -4646,6 +4662,45 @@ $('zIn').onclick=function(){zoom=Math.min(4,zoom+.5); ui();};
 $('zOut').onclick=function(){zoom=Math.max(1,zoom-.5); ui();};
 $('rot').oninput=function(){var o=getO(sel); if(!o) return; o.rot=+this.value; $('rotLbl').textContent=o.rot+'°'; touch('rot'+o.id); renderSoon();};
 $('rot').onchange=function(){UNDO_G=null;};
+function rotBy(d){ var o=getO(sel); if(!o) return; o.rot=((o.rot+d)%360+360)%360; touch(); render(); ui(); }
+$('rotL').onclick=function(){ rotBy(-15); }; $('rotR').onclick=function(){ rotBy(15); };
+/* kolmo na trasu: směr běhu od předchozí k další překážce (u prvního a posledního jen jedna strana); rot = směr běhu */
+var ORIENT_T={jump:1,tire:1,longjump:1};
+function orientRot(o,i){
+  var a=i>0?getO(S.route[i-1]):null, b=i<S.route.length-1?getO(S.route[i+1]):null; if(!a&&!b) return null;
+  var ax=a?o.x-a.x:0, ay=a?o.y-a.y:0, bx=b?b.x-o.x:0, by=b?b.y-o.y:0, la=Math.hypot(ax,ay)||1, lb=Math.hypot(bx,by)||1;
+  var dx=(a?ax/la:0)+(b?bx/lb:0), dy=(a?ay/la:0)+(b?by/lb:0); if(Math.hypot(dx,dy)<1e-3){ dx=ax||bx; dy=ay||by; }
+  return ((Math.round(Math.atan2(dy,dx)*180/Math.PI/5)*5)%360+360)%360;
+}
+$('rotP').onclick=function(){
+  var o=getO(sel); if(!o) return; var i=S.route.indexOf(o.id);
+  if(i<0){ toast('Překážka není v trase. Nejdřív vyznač trasu v režimu Trasa.'); return; }
+  var r2=orientRot(o,i); if(r2==null) return; o.rot=r2; touch(); render(); ui();
+};
+/* všechny skoky, kruh a skok daleký v trase (bez otoček kolem křídla, ty si psovod natočí sám) */
+$('orientAll').onclick=function(){
+  var n=0, seen={};
+  S.route.forEach(function(id,i){ var o=getO(id); if(!o||!ORIENT_T[o.type]||seen[id]) return; seen[id]=1;
+    if(S.route.indexOf(id)!==S.route.lastIndexOf(id)||tuValid(S.turns[i],o.type)) return;
+    var r2=orientRot(o,i); if(r2!=null&&r2!==o.rot){ o.rot=r2; n++; } });
+  if(n){ touch(); render(); ui(); } toast(n?'Natočeno překážek: '+n:'Skoky už jsou natočené podle trasy');
+};
+/* přiblížení dvěma prsty: zoom 100–400 %, bod mezi prsty zůstane na místě (jedním prstem se plocha posouvá jako dřív) */
+var PINCH=null;
+(function(){
+  var wr=$('wrap');
+  function mid(t){ var b=wr.getBoundingClientRect(); return {x:(t[0].clientX+t[1].clientX)/2-b.left,y:(t[0].clientY+t[1].clientY)/2-b.top,d:Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY)||1}; }
+  wr.addEventListener('touchstart',function(e){ if(e.touches.length!==2) return;
+    var m=mid(e.touches); PINCH={d:m.d,z:zoom,fx:(wr.scrollLeft+m.x)/svg.clientWidth,fy:(wr.scrollTop+m.y)/svg.clientHeight};
+    /* rozjeté přesunutí překážky se vrátí, druhý prst nic nepoloží */
+    if(drag){ var o=getO(drag.id); if(o&&drag.moved&&drag.x0!=null){ o.x=drag.x0; o.y=drag.y0; } } drag=null; tap=null; hpDraw=null; },{passive:true});
+  wr.addEventListener('touchmove',function(e){ if(!PINCH||e.touches.length!==2) return; e.preventDefault();
+    var m=mid(e.touches), z=Math.round(cl(PINCH.z*m.d/PINCH.d,1,4)*100)/100; if(Math.abs(z-zoom)<.01) return;
+    zoom=z; svg.style.width=(zoom*100)+'%'; $('zLbl').textContent=Math.round(zoom*100)+' %';
+    wr.scrollLeft=PINCH.fx*svg.clientWidth-m.x; wr.scrollTop=PINCH.fy*svg.clientHeight-m.y; },{passive:false});
+  function end(e){ if(PINCH&&e.touches.length<2){ PINCH=null; tap=null; drag=null; render(); } }
+  wr.addEventListener('touchend',end); wr.addEventListener('touchcancel',end);
+})();
 $('undoAll').onclick=undo;
 document.addEventListener('keydown',function(e){
   if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&!e.altKey&&(e.key==='z'||e.key==='Z')&&view==='plan'&&$('scrim').hidden&&$('ov3d').hidden&&!$('modeRow').hidden&&!/^(INPUT|TEXTAREA|SELECT)$/.test((e.target&&e.target.tagName)||'')){ e.preventDefault(); undo(); }
