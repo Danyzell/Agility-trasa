@@ -1,5 +1,5 @@
 /* AgiPlan (dříve HandlerMap a Agility trasa): offline a příjem plánku přes Sdílet */
-var CACHE='agility-trasa-2.4', FONTS='agility-fonts';
+var CACHE='agility-trasa-2.5', FONTS='agility-fonts';
 var CORE=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable-512.png','hero.webp','v3d/v3d.js'];
 /* na cvičišti bývá slabý signál: když server do 3 s neodpoví, otevře se uložená verze (nová se mezitím stáhne na příště) */
 var NAV_WAIT=3000;

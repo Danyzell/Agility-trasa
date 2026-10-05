@@ -20,6 +20,8 @@ Zahrada týdne a Zahradní liga (Domů): každé pondělí se všem vygeneruje s
 
 AR na place (ve 3D tlačítko AR na place, Chrome na Androidu s ARCore): WebXR `immersive-ar` s hit-testem položí parkur startem na zaměřené místo ve skutečné velikosti nebo jako model 1 : 20, jde otočit, položit znovu a pustit psa. Kód `v3d/src/ar.js`. Na iPhonu a iPadu (Safari) se parkur vyexportuje do USDZ a otevře v Apple AR Quick Look (bez animace psa, velikost jde měnit prsty), kód `v3d/src/quicklook.js`.
 
+Kolbiště podle GPS (Plán → Nástroje → Kolbiště (GPS)): poloha kolbiště se změří z GPS telefonu (25 s průměrování, ukáže přesnost), aplikace k němu naviguje šipkou podle kompasu se vzdáleností a odkazem do map. Natočení kolbiště se zaměří projitím dvou rohů podél dlouhé strany (nebo kompasem) a použije ho Stavba v terénu i AR na place. Plán závodiště jde načíst ze souboru GeoJSON nebo KML (kolbiště jako obdélník, úsečka nebo bod se šířkou, délkou a natočením) a k parkuru přiřadit kolbiště. Polohy zůstávají v zařízení (klíč `agility-rings-v1`). Přesnost GPS 2–5 m stačí na nalezení kolbiště, ne na umístění skoku.
+
 Délka tunelu: u vybraného tunelu ve Stavbě 2–6 m (nový tunel 5 m, uložené parkury si délku nechají). Kontrola FCI hlásí tunel kratší než 3 m.
 
 Zásady ochrany osobních údajů: [privacy.html](https://danyzell.github.io/Agility-trasa/privacy.html) (česky i anglicky, adresa se hodí i do Google Play).

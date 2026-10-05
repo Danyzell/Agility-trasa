@@ -1,7 +1,8 @@
 /* Parkur v rozšířené realitě (WebXR, Chrome na Androidu s ARCore): kamera najde zem, klepnutím se parkur
    položí start na zaměřené místo a plocha se natočí směrem od telefonu. Ve skutečné velikosti, nebo jako model 1 : 20 na stůl.
    arSupported() → Promise<bool>
-   startAR(overlay, spec, ui) → Promise<api>; overlay = prvek s ovládáním (dom-overlay), ui = {onState(s), onEnd()}
+   startAR(overlay, spec, ui) → Promise<api>; overlay = prvek s ovládáním (dom-overlay), ui = {onState(s), onEnd(), heading()}
+   spec.az (nepovinné): kurz dlouhé strany kolbiště ze zaměření GPS; ui.heading() = kurz, kam míří kamera (kompas)
    api: {place(), rotate(deg), setScale(model), play(on), end()} */
 import * as THREE from 'three';
 import { buildCourse } from './course.js';
@@ -54,9 +55,13 @@ export function startAR(overlay, spec, ui = {}) {
       /* plocha od startu dál od telefonu: směr start → střed plochy = směr pohledu po zemi */
       const xc = R.xr.getCamera(); xc.getWorldDirection(fw); fw.y = 0; if (fw.lengthSq() < 1e-6) fw.set(0, 0, -1); fw.normalize();
       const vx = spec.W / 2 - C.start.x, vz = spec.H / 2 - C.start.z;
-      st.yaw = Math.atan2(-fw.z, fw.x) - (Math.hypot(vx, vz) > .5 ? Math.atan2(-vz, vx) : 0);
+      /* kolbiště se známým natočením (spec.az = kurz dlouhé strany, plán doprava) a kompas kamery: osa x plánu míří na az.
+         Kurz roste po směru hodin, úhel ve scéně (atan2(-z, x)) proti směru hodin. */
+      const h = spec.az != null && ui.heading ? ui.heading() : null, byAz = h != null && st.scale === 1;
+      st.yaw = byAz ? Math.atan2(-fw.z, fw.x) - (spec.az - h) * Math.PI / 180
+        : Math.atan2(-fw.z, fw.x) - (Math.hypot(vx, vz) > .5 ? Math.atan2(-vz, vx) : 0);
       root.position.copy(pos); root.rotation.set(0, st.yaw, 0); root.scale.setScalar(st.scale); root.visible = true;
-      st.placed = true; say('placed'); return true;
+      st.placed = true; say(byAz ? 'placedAz' : 'placed'); return true;
     }
     function rotate(deg) { if (!st.placed) return; st.yaw += deg * Math.PI / 180; root.rotation.y = st.yaw; }
     function setScale(model) { st.scale = model ? 1 / 20 : 1; root.scale.setScalar(st.scale); say(st.placed ? 'placed' : 'scan'); }
