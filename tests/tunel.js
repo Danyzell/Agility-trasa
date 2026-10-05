@@ -87,6 +87,10 @@ module.exports = async function ({ browser, base }) {
     await fresh(); await tunCourse();
     /* bez WebXR tlačítko AR není; s podporou (podstrčené navigator.xr) se ukáže a nezdařený start AR se uklidí */
     await ev(() => { window.__xr = []; Object.defineProperty(navigator, 'xr', { configurable: true, value: { isSessionSupported: m => Promise.resolve(m === 'immersive-ar'), requestSession: (m, o) => { window.__xr.push([m, o.requiredFeatures, !!(o.domOverlay && o.domOverlay.root)]); return Promise.reject(new Error('NotSupported')); } } }); });
+    /* na plánku je tlačítko AR hned vidět (jen kde AR jde a parkur má trasu) */
+    ok(!(await page.isVisible('#arBtn')), 'tlačítko AR bez podpory WebXR');
+    await ev(() => { AR.ok = true; ui(); });
+    ok(await page.isVisible('#arBtn'), 'na plánku chybí tlačítko AR na place');
     await ev(() => open3d(false));
     const gl = await page.waitForFunction(() => C3.api, null, { timeout: 15000 }).then(() => true, () => false);
     if (!gl) return;   /* bez WebGL se 3D (a AR) netestuje */

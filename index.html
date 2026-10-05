@@ -243,6 +243,7 @@ select.btn{padding-right:8px;}
 .ov3d canvas[hidden]{display:none;}
 .fieldbox .dimbtn{position:absolute; left:6px; bottom:6px; z-index:2; display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:0 14px 0 10px; border-radius:14px; border:1px solid var(--border); background:color-mix(in srgb,var(--surface) 88%,transparent); color:var(--text); font:800 15px var(--body); box-shadow:var(--shadow);}
 .fieldbox .dimbtn[hidden]{display:none;}
+.fieldbox .arbtn{left:auto; right:6px; background:var(--accent); color:var(--on-accent); border-color:var(--accent);} .fieldbox .arbtn svg{color:currentColor;}
 .fieldbox .dimbtn svg{width:20px; height:20px; color:var(--accent);}
 .ov3d-hint{position:absolute; left:50%; top:calc(12px + env(safe-area-inset-top,0px)); transform:translateX(-50%); background:rgba(13,20,16,.72); color:#e5ebe2; padding:7px 14px; border-radius:999px; font-size:13px; pointer-events:none;}
 .ov3d-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)); background:#18201a; color:#e5ebe2; font-size:13px;}
@@ -888,6 +889,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
     </div>
     <div class="fieldbox">
     <button class="dimbtn" id="dimBtn" title="Zobrazit parkur ve 3D" aria-label="Zobrazit parkur ve 3D"><span data-ic="cube"></span>3D</button>
+    <button class="dimbtn arbtn" id="arBtn" hidden title="Postavit parkur kamerou na skutečném place" aria-label="AR na place">📷 AR na place</button>
     <div class="zoom"><button class="btn" id="zOut" aria-label="Oddálit">−</button><span id="zLbl" class="num"></span><button class="btn" id="zIn" aria-label="Přiblížit">+</button></div>
     <div id="wrap" tabindex="0" aria-label="Plocha parkuru, posouvá se šipkami">
       <svg id="field" class="build" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plocha parkuru">
@@ -1318,6 +1320,10 @@ var I18N_EXTRA={exact:{
 "Účet: přihlas se přes Google ve Více → Účet a parkury, psi i běhy budeš mít na všech zařízeních": "Account: sign in with Google in More → Account and have your courses, dogs and runs on all devices",
 "AR na place: ve 3D klepni na AR a parkur se položí na skutečný trávník (Chrome na Androidu)": "AR on the field: in 3D tap AR and the course is placed on real grass (Chrome on Android)",
 "AR na place": "AR on the field",
+"📷 AR na place": "📷 AR on the field",
+"AR se ještě načítá, klepni za chvilku znovu.": "AR is still loading, tap again in a moment.",
+"Pro AR potřebuješ trasu aspoň se 2 překážkami.": "For AR you need a route with at least 2 obstacles.",
+"Postavit parkur kamerou na skutečném place": "Set up the course on the real field with the camera",
 "1 : 1": "1 : 1",
 "Model na stůl": "Table model",
 "Položit znovu": "Place again",
@@ -4361,6 +4367,7 @@ function ui(){
   var special=panel==='side'||panel==='quiz';
   if(mode==='view'&&!S.obs.length) mode='build'; /* prázdná plocha: rovnou stavět */
   $('dimBtn').hidden=mode!=='view'||special; /* při tréninku paměti by 3D prozradilo čísla překážek */
+  $('arBtn').hidden=!(typeof AR!=='undefined'&&AR.ok)||mode!=='view'||special||S.route.length<2;
   $('mView').className=mode==='view'?'on':''; $('mBuild').className=mode==='build'?'on':''; $('mRoute').className=mode==='route'?'on':'';
   $('modeRow').hidden=special;
   $('buildTools').hidden=mode!=='build'||special; $('routeTools').hidden=mode!=='route'||special;
@@ -6322,21 +6329,30 @@ function close3d(){ $('ov3d').hidden=true; V3.on=false; cancelAnimationFrame(V3.
 $('p3dim').onclick=function(e){ var b=e.target.closest('[data-d]'); if(b&&b.getAttribute('data-d')==='2') close3d(); };
 $('dimBtn').onclick=function(){ open3d(false); };
 /* AR na place (WebXR, Chrome na Androidu): parkur se položí kamerou na skutečný trávník */
-var AR={api:null,st:''};
+var AR={api:null,st:'',ok:false};
+/* AR umí jen některé telefony (Chrome na Androidu s ARCore); jen tam se ukáže tlačítko a dopředu se načte 3D balíček,
+   aby se AR spustilo hned klepnutím (prohlížeč chce start AR přímo z klepnutí) */
+try{ if(navigator.xr&&navigator.xr.isSessionSupported) navigator.xr.isSessionSupported('immersive-ar').then(function(ok){
+  if(!ok) return; AR.ok=true; ui(); v3dLoad().then(function(m){ V3D.m=m; },function(){});
+},function(){}); }catch(e){}
 function arHint(s){
   AR.st=s; var t={scan:'Pomalu pohybuj telefonem a miř na zem, až se objeví zelený kroužek.',ready:'Zamiř kroužek na místo startu a klepni na obrazovku.',
     noground:'Zem zatím nenašel. Miř telefonem na trávník a pomalu s ním pohybuj.',placed:'Parkur stojí. Projdi se po něm, nebo pusť psa.',done:'Hotovo. Pusť psa znovu, nebo parkur polož jinam.'}[s]||'';
   var h=$('arHint'); if(h.getAttribute('data-s')!==s){ h.setAttribute('data-s',s); h.textContent=T(t); }
 }
-$('p3ar').onclick=function(){
-  if(!V3D.m||!V3D.m.startAR||AR.api) return;
+function arStart(){
+  if(AR.api) return;
+  if(!V3D.m||!V3D.m.startAR){ toast(T('AR se ještě načítá, klepni za chvilku znovu.')); v3dLoad().then(function(m){ V3D.m=m; },function(){}); return; }
+  if(S.route.length<2){ toast(T('Pro AR potřebuješ trasu aspoň se 2 překážkami.')); return; }
+  if(!C3.api) build3d();
   V3.on=false; $('p3play').textContent=T('Přehrát');
   $('arUi').hidden=false; arHint('scan'); $('arUi').querySelector('[data-ar="play"]').textContent=T('Pustit psa');
   var cur=null;
   try{ cur=V3D.m.startAR($('arUi'),course3dSpec(),{onState:arHint,onEnd:function(){ AR.api=null; $('arUi').hidden=true; if(C3.api) render3d(); }}); }
   catch(e){ cur=Promise.reject(e); }
   cur.then(function(a){ AR.api=a; },function(){ $('arUi').hidden=true; toast(T('AR se nepodařilo spustit. Potřebuješ Chrome na Androidu s podporou ARCore.'),5000); });
-};
+}
+$('p3ar').onclick=arStart; $('arBtn').onclick=arStart;
 /* klepnutí na ovládání nesmí položit parkur */
 $('arUi').addEventListener('beforexrselect',function(e){ if(e.target.closest('.ar-bar')) e.preventDefault(); });
 $('arUi').addEventListener('click',function(e){
