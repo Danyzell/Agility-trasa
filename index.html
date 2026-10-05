@@ -719,7 +719,12 @@ body[data-view="plan"] #supBtn,body[data-view="run"] #supBtn{display:none!import
 .inst-steps{margin:0; padding-left:22px; display:flex; flex-direction:column; gap:4px;}
 .hm-inst{margin-bottom:12px; align-items:flex-start;}
 .hm-inst .hm-go{margin-top:10px;}
-.panel.fb,.panel.dn{display:flex; flex-direction:column; gap:10px;}
+.panel.fb,.panel.dn,.panel.acct{display:flex; flex-direction:column; gap:10px;}
+/* Účet: tlačítko Google podle jejich pravidel (bílé, barevné G) */
+.gbtn{justify-content:center; gap:10px; min-height:50px; background:#fff; color:#1f1f1f; border:1px solid #747775; font-weight:600;}
+.glogo{width:20px; height:20px; flex:0 0 auto;}
+.acct p{margin:0;} .acct .bad{color:var(--bad);} .acct a{color:var(--accent);}
+.acct-me{display:flex; align-items:center; gap:12px;} .acct-me .glogo{width:28px; height:28px;} .acct-me div{min-width:0;} .acct-me b,.acct-me span{display:block; overflow-wrap:anywhere;} .acct-me span{font-size:13px; color:var(--muted);}
 .fb .filters,.dn .filters{flex-wrap:wrap; overflow:visible;}
 .share-app{display:flex; gap:14px; align-items:center; flex-wrap:wrap;}
 .share-app .dn-qr{width:150px; align-self:auto;}
@@ -957,6 +962,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
   <section class="view" id="v-more" hidden>
     <!-- Více: svislá nabídka sekcí; otevřená sekce má nahoře Zpět a nabídka se schová -->
     <div class="mlist" id="moreTabs" role="navigation" aria-label="Více">
+      <button class="mrow" data-m="acct"><span class="mic" data-ic="user"></span><span class="ml">Účet</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="dogs"><span class="mic" data-ic="paw"></span><span class="ml">Psi</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="start"><span class="mic" data-ic="flag"></span><span class="ml">Začínáme</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="stats"><span class="mic" data-ic="chart"></span><span class="ml">Statistiky</span><span class="mch" data-ic="chev"></span></button>
@@ -1284,6 +1290,37 @@ var I18N_EXTRA={exact:{
 "Délka tunelu 2–6 m (nový tunel 5 m)": "Tunnel length 2–6 m (a new tunnel is 5 m)",
 "Google Pay, Apple Pay a uložení QR platby do galerie": "Google Pay, Apple Pay and saving the QR payment to the gallery",
 "Díky za podporu!": "Thank you for your support!",
+"Účet": "Account",
+"přihlášení vypršelo, přihlas se znovu": "sign-in expired, please sign in again",
+"data se mezitím změnila, zkus to znovu": "the data changed in the meantime, try again",
+"v telefonu je plná paměť": "the phone's storage is full",
+"nepřihlášeno": "not signed in",
+"Přihlas se ke svým datům": "Sign in to your data",
+"Parkury, psi, běhy a deník pak budeš mít na každém zařízení, kde se přihlásíš, třeba v telefonu i v počítači. Synchronizují se samy a nezmizí ani se ztraceným telefonem.": "Your courses, dogs, runs and diary will then be on every device where you sign in, like your phone and your computer. They sync on their own and won't be lost even if you lose your phone.",
+"Přihlásit přes Google": "Sign in with Google",
+"Bez přihlášení aplikace funguje dál a data zůstanou jen v tomhle zařízení. Co už v něm máš, se při prvním přihlášení nahraje do účtu.": "Without signing in the app keeps working and your data stays on this device only. What you already have here is uploaded to your account the first time you sign in.",
+"Synchronizovat teď": "Sync now",
+"Odhlásit": "Sign out",
+"Odhlásit?": "Sign out?",
+"Odhlášeno": "Signed out",
+"Přihlášeno": "Signed in",
+"Parkury, psi, běhy, deník a nastavení se synchronizují samy při každé změně a při otevření aplikace. Po odhlášení zůstanou data v tomhle zařízení.": "Courses, dogs, runs, diary and settings sync on their own after every change and when you open the app. After signing out the data stays on this device.",
+"Smazat data z účtu": "Delete data from account",
+"Smazat data z účtu?": "Delete data from account?",
+"Smažou se data uložená na serveru u tvého účtu. V tomhle zařízení zůstanou a odhlásíš se.": "The data stored on the server for your account will be deleted. It stays on this device and you'll be signed out.",
+"Data z účtu smazána": "Account data deleted",
+"Data se v tomhle zařízení zůstanou, jen se přestanou synchronizovat.": "The data stays on this device, it just stops syncing.",
+"Data v tomhle zařízení zůstanou, jen se přestanou synchronizovat.": "The data stays on this device, it just stops syncing.",
+"Synchronizuji…": "Syncing…",
+"Bez signálu. Změny se pošlou, až bude připojení.": "No signal. Changes will be sent once you're online.",
+"Data se synchronizují samy.": "Data syncs on its own.",
+"Přihlášení přes Google se právě zapíná, zkus to prosím později.": "Sign-in with Google is being set up, please try again later.",
+"Bez připojení k internetu se přihlásit nedá.": "You can't sign in without an internet connection.",
+"Nepovedlo se": "Failed",
+"Data jiného účtu": "Another account's data",
+"V tomhle zařízení jsou data, která patřila jinému účtu. Mám je spojit s tvým účtem, nebo je nahradit daty z účtu?": "This device has data that belonged to another account. Should I merge it with your account, or replace it with your account's data?",
+"Spojit": "Merge",
+"Nahradit daty z účtu": "Replace with account data",
 "Pro instalaci aplikace ji otevři v Chromu.": "To install the app, open it in Chrome.",
 "Otevřít v Chromu": "Open in Chrome",
 "Pro instalaci klepni na ⋯ vpravo nahoře a zvol Otevřít v Safari (nebo v prohlížeči).": "To install, tap ⋯ in the top right and choose Open in Safari (or in browser).",
@@ -1452,6 +1489,9 @@ var I18N_EXTRA={exact:{
 "Zahrada týdne # · # × # m · zbývá # dní": "Garden of the week # · # × # m · # days left",
 "Zahrada týdne # · # × # m · zbývá poslední den": "Garden of the week # · # × # m · last day left",
 },re:[
+["^Synchronizováno (\\d+:\\d+)$","Synced $1"],
+["^Synchronizace se nepovedla: (.+)$","Sync failed: @1"],
+["^Přihlášení se nepovedlo: (.+)$","Sign-in failed: $1"],
 ["^Kalendář závodů se nepodařilo načíst: (.+?)$","The competition calendar couldn't be loaded: @1"],
 ["^Parkur týdne · (A\\d)$","Course of the week · $1"],
 ["^Zahrada týdne (\\d+): (.+?) s, (.+?) tb(?:, (\\d+)\\. místo z (\\d+) \\((.+?)\\))?$","Garden of the week $1: $2 s, $3 pp"],
@@ -3946,6 +3986,7 @@ var IC={
   map:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15c2-5 4 1 6-3s3-2 4-2" stroke-dasharray="2 2.5"/></svg>',
   grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>',
   timer:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V10M10 3h4M18.5 6.5l-1.3 1.3"/></svg>',
+  user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.8-3.9 3.6-6 7.2-6s6.4 2.1 7.2 6"/></svg>',
   people:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.3 2.8-5 5.5-5s4.9 1.7 5.5 5"/><circle cx="17" cy="9" r="2.5"/><path d="M15.8 14.2c2.4-.3 4.3 1.2 4.7 4.3"/></svg>',
   ext:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
   x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
@@ -5396,9 +5437,9 @@ var IS_SRV=IS_APK||IS_PWA;
 var SB_URL='https://wtjyjknaibsamgczvaxy.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0anlqa25haWJzYW1nY3p2YXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MDA1NjAsImV4cCI6MjEwNjE3NjU2MH0.kV8UN9xQFKqTNcnY9B81-wWrnM5nWXUPnzcCTHVIMZc';
 /* při slabém signálu nečekat donekonečna: po 20 s to vzdát */
-function sbCall(fn,args){
+function sbCall(fn,args,tok){ /* tok: přístupový token přihlášeného uživatele (Účet), jinak anonymně */
   var ac=typeof AbortController==='function'?new AbortController():null, tm=ac?setTimeout(function(){ac.abort();},20000):0;
-  return fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(args),signal:ac?ac.signal:undefined})
+  return fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+(tok||SB_KEY),'Content-Type':'application/json'},body:JSON.stringify(args||{}),signal:ac?ac.signal:undefined})
     .then(function(r){ return r.text().then(function(t){ clearTimeout(tm); if(!r.ok){ var em=''; try{ em=JSON.parse(t).message||''; }catch(e){} throw new Error(r.status===400&&em&&em.length<80?em:'server '+r.status); } return t?JSON.parse(t):null; }); },
           function(e){ clearTimeout(tm); throw new Error(e&&e.name==='AbortError'?'server neodpovídá':'bez připojení k internetu'); });
 }
@@ -7057,17 +7098,17 @@ function warmAct(a){
 /* ---------- záloha ---------- */
 function backupData(){
   var o={app:'agility-trasa',v:3,at:new Date().toISOString(),data:{}};
-  try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i); if(k.indexOf('agility-')===0&&k.indexOf('agility-db-')!==0) o.data[k]=localStorage.getItem(k);}}catch(e){}
+  try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i); if(k.indexOf('agility-')===0&&k.indexOf('agility-db-')!==0&&!SYNC_OWN[k]) o.data[k]=localStorage.getItem(k);}}catch(e){}
   return o;
 }
 /* obnova nahradí všechna data aplikace zálohou; když zápis selže (plná paměť), vrátí se data, jak byla */
 function restoreData(o){
   if(!o||o.app!=='agility-trasa'||!o.data||typeof o.data!=='object'){toast('Tohle není záloha z aplikace AgiPlan.'); return;}
-  var at=new Date(o.at), keys=Object.keys(o.data).filter(function(k){return k.indexOf('agility-')===0&&k.indexOf('agility-db-')!==0&&typeof o.data[k]==='string';});
+  var at=new Date(o.at), keys=Object.keys(o.data).filter(function(k){return k.indexOf('agility-')===0&&k.indexOf('agility-db-')!==0&&!SYNC_OWN[k]&&typeof o.data[k]==='string';});
   ask('Obnovit zálohu?','Současná data v aplikaci se nahradí zálohou'+(isNaN(at)?'':' z '+at.toLocaleString(LOC))+'.','Obnovit',function(){
     var old={};
     try{
-      for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i); if(k.indexOf('agility-')===0&&k.indexOf('agility-db-')!==0) old[k]=localStorage.getItem(k);}
+      for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i); if(k.indexOf('agility-')===0&&k.indexOf('agility-db-')!==0&&!SYNC_OWN[k]) old[k]=localStorage.getItem(k);}
       Object.keys(old).forEach(function(k){localStorage.removeItem(k);});
       keys.forEach(function(k){localStorage.setItem(k,o.data[k]);});
     }catch(e){
@@ -7106,6 +7147,184 @@ $('jsonFile').onchange=function(){
   var f=this.files&&this.files[0]; this.value=''; if(!f) return;
   var rd=new FileReader(); rd.onload=function(){try{restoreData(JSON.parse(rd.result));}catch(e){toast('Soubor není platná záloha.');}}; rd.readAsText(f);
 };
+
+/* ---------- Účet: přihlášení přes Google a synchronizace dat mezi zařízeními ----------
+   Přihlášení přes Supabase Auth (Google), tokeny v localStorage. Synchronizují se stejná data jako v záloze (parkury, značky a běhy,
+   psi, deník, výsledky z kacr.info, nastavení). Slučuje se třícestně: základ je stav po poslední synchronizaci, takže změny
+   i smazání z obou zařízení se zachovají a nic se nepřepíše naslepo. Na serveru jeden řádek na uživatele (funkce sync_get, sync_put). */
+var AUTHK='agility-auth-v1', SYNCK='agility-sync-v1', SYNC_OWN={}; SYNC_OWN[AUTHK]=1; SYNC_OWN[SYNCK]=1;
+var SYNC_KEYS=[MYK,MKK,DOGK,DOGCUR,DIARYK,KACRK,SETK,NICKK,WKME,WARMK];
+var AUTH=lsGet(AUTHK,null), AUTH_NEW=false, AUTH_ERR='', SYNC={busy:false,again:false,tm:0,st:'',msg:'',at:0,p:null,apply:false};
+function jwtBody(t){ try{ var s=String(t).split('.')[1].replace(/-/g,'+').replace(/_/g,'/'); while(s.length%4) s+='='; return JSON.parse(decodeURIComponent(escape(atob(s)))); }catch(e){ return {}; } }
+function authFrom(p){
+  var j=jwtBody(p.access_token), um=j.user_metadata||{};
+  return {at:p.access_token, rt:p.refresh_token, exp:+p.expires_at||Math.floor(Date.now()/1000)+(+p.expires_in||3600), uid:j.sub||'', email:j.email||um.email||'', name:um.full_name||um.name||''};
+}
+/* návrat z přihlášení: tokeny přijdou v adrese za # (dřív, než se podle # otevře záložka) */
+(function(){
+  var h=location.hash||''; if(h.indexOf('access_token=')<0&&h.indexOf('error_description=')<0) return;
+  var p={}; h.slice(1).split('&').forEach(function(kv){ var i=kv.indexOf('='); if(i>0) try{ p[decodeURIComponent(kv.slice(0,i))]=decodeURIComponent(kv.slice(i+1).replace(/\+/g,' ')); }catch(e){} });
+  try{ history.replaceState(null,'',location.pathname+location.search+'#more'); }catch(e){ location.hash='#more'; }
+  if(p.access_token&&p.refresh_token){ var a=authFrom(p); if(a.uid){ AUTH=a; lsSet(AUTHK,AUTH); AUTH_NEW=true; } }
+  else AUTH_ERR=p.error_description||'přihlášení se nepovedlo';
+})();
+var AUTH_REF=null;
+function authTok(){
+  if(!AUTH) return Promise.reject(new Error('nepřihlášeno'));
+  if(AUTH.exp-120>Date.now()/1000) return Promise.resolve(AUTH.at);
+  if(AUTH_REF) return AUTH_REF;
+  AUTH_REF=fetch(SB_URL+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:AUTH.rt})})
+    .then(function(r){ return r.json().catch(function(){return {};}).then(function(j){
+      if(!r.ok){ if(r.status===400||r.status===401||r.status===403){ authOut(true); throw new Error('přihlášení vypršelo, přihlas se znovu'); } throw new Error('server '+r.status); }
+      var a=authFrom({access_token:j.access_token,refresh_token:j.refresh_token,expires_at:j.expires_at,expires_in:j.expires_in}); if(!a.uid) throw new Error('neplatné přihlášení');
+      AUTH=a; lsSet(AUTHK,AUTH); return AUTH.at; }); },function(e){ if(e&&e.message&&/vypršelo|neplatné/.test(e.message)) throw e; throw new Error('bez připojení k internetu'); })
+    .then(function(t){ AUTH_REF=null; return t; },function(e){ AUTH_REF=null; throw e; });
+  return AUTH_REF;
+}
+function authIn(){
+  var back=location.origin+location.pathname;
+  fetch(SB_URL+'/auth/v1/settings',{headers:{apikey:SB_KEY}}).then(function(r){return r.json();}).then(function(s){
+    if(!s||!s.external||!s.external.google){ toast(T('Přihlášení přes Google se právě zapíná, zkus to prosím později.'),5000); return; }
+    location.href=SB_URL+'/auth/v1/authorize?provider=google&redirect_to='+encodeURIComponent(back);
+  },function(){ toast(T('Bez připojení k internetu se přihlásit nedá.')); });
+}
+function authOut(quiet){
+  var a=AUTH; AUTH=null; clearTimeout(SYNC.tm);
+  try{ localStorage.removeItem(AUTHK); localStorage.removeItem(SYNCK); }catch(e){}
+  if(a&&!quiet) fetch(SB_URL+'/auth/v1/logout',{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+a.at}}).catch(function(){});
+  syncState(''); if(view==='more'&&moreTab==='acct') moreRender();
+}
+/* --- třícestné slučování (b = základ z poslední synchronizace, l = tohle zařízení, r = server) --- */
+function sjs(x){ return x===undefined?'~':JSON.stringify(x); }
+function m3val(b,l,r){ var L=sjs(l), R=sjs(r); if(L===R) return l; if(sjs(b)===L) return r; return l; } /* změna na obou stranách: vyhraje tohle zařízení */
+function m3map(b,l,r,sub){
+  b=b&&typeof b==='object'?b:{}; l=l&&typeof l==='object'?l:{}; r=r&&typeof r==='object'?r:{};
+  var o={}, ks={}; [b,l,r].forEach(function(x){ Object.keys(x).forEach(function(k){ ks[k]=1; }); });
+  Object.keys(ks).forEach(function(k){
+    var inB=Object.prototype.hasOwnProperty.call(b,k), inL=Object.prototype.hasOwnProperty.call(l,k), inR=Object.prototype.hasOwnProperty.call(r,k);
+    if(inL&&inR) o[k]=sub?sub(b[k],l[k],r[k]):m3val(b[k],l[k],r[k]);
+    else if(inL){ if(!inB||sjs(b[k])!==sjs(l[k])) o[k]=l[k]; }   /* na serveru chybí: smazané jinde, pokud tady není nové nebo změněné */
+    else if(inR){ if(!inB||sjs(b[k])!==sjs(r[k])) o[k]=r[k]; }
+  });
+  return o;
+}
+function m3list(b,l,r,key){
+  var kf=function(x){ var v=x&&typeof x==='object'?x[key]:null; return v!=null?'k'+v:'j'+JSON.stringify(x); };
+  var idx=function(a){ var o={}; (Array.isArray(a)?a:[]).forEach(function(x){ o[kf(x)]=x; }); return o; };
+  var m=m3map(idx(b),idx(l),idx(r)), out=[];
+  [l,r].forEach(function(a){ (Array.isArray(a)?a:[]).forEach(function(x){ var k=kf(x); if(Object.prototype.hasOwnProperty.call(m,k)){ out.push(m[k]); delete m[k]; } }); });
+  return out;
+}
+/* značky parkuru: oblíbený, zaběhnutý a běhy (běhy se sčítají podle času zápisu) */
+function m3mark(b,l,r){
+  b=b||{}; l=l||{}; r=r||{}; var o=m3map(b,l,r);
+  if(l.runs||r.runs) o.runs=m3list(b.runs,l.runs,r.runs,'d');
+  return o;
+}
+var SYNC_M={};
+SYNC_M[MYK]=SYNC_M[DOGK]=SYNC_M[DIARYK]=function(b,l,r){ return m3list(b,l,r,'id'); };
+SYNC_M[MKK]=function(b,l,r){ return m3map(b,l,r,m3mark); };
+SYNC_M[KACRK]=SYNC_M[WKME]=SYNC_M[SETK]=SYNC_M[WARMK]=function(b,l,r){ return m3map(b,l,r); };
+function syncLocal(){ var o={}; SYNC_KEYS.forEach(function(k){ try{ var v=localStorage.getItem(k); if(v!=null) o[k]=JSON.parse(v); }catch(e){} }); return o; }
+function syncMerge(B,L,R){
+  var o={};
+  Object.keys(R).forEach(function(k){ if(SYNC_KEYS.indexOf(k)<0) o[k]=R[k]; }); /* data z novější verze aplikace nechat být */
+  SYNC_KEYS.forEach(function(k){
+    var l=L[k], r=R[k], b=B[k]; if(l===undefined&&r===undefined) return;
+    var v=l===undefined||r===undefined?m3val(b,l,r):(SYNC_M[k]||m3val)(b,l,r);
+    if(v!==undefined) o[k]=v;
+  });
+  return o;
+}
+/* sloučená data do tohohle zařízení a překreslit, co je vidět */
+function syncApply(L,M){
+  var ch=false;
+  SYNC.apply=true;
+  try{
+    SYNC_KEYS.forEach(function(k){
+      if(sjs(L[k])===sjs(M[k])) return; ch=true;
+      if(M[k]===undefined) localStorage.removeItem(k); else localStorage.setItem(k,JSON.stringify(M[k]));
+    });
+  }catch(e){ SYNC.apply=false; lsFull(e); throw new Error('v telefonu je plná paměť'); }
+  SYNC.apply=false;
+  if(!ch) return false;
+  MK=lsGet(MKK,{})||{}; SET=Object.assign(SET,lsGet(SETK,{})||{}); DOGS=lsGet(DOGK,[])||[]; DOGC=lsGet(DOGCUR,null); KACR=lsGet(KACRK,{})||{};
+  try{ topbar(); if(view==='home') homeRender(); else if(view==='lib') libRender(); else if(view==='run') runRender(); else if(view==='more') moreRender(); }catch(e){ if(window.console) console.error(e); }
+  return true;
+}
+function syncRound(tok,n){
+  return sbCall('sync_get',{},tok).then(function(res){
+    var S0=lsGet(SYNCK,{})||{}, R=res&&res.data&&typeof res.data==='object'?res.data:{}, rev=+(res&&res.rev)||0;
+    var B=S0.uid===AUTH.uid&&S0.base?S0.base:{}, L=syncLocal(), M=syncMerge(B,L,R);
+    syncApply(L,M);
+    if(rev>0&&sjs(M)===sjs(R)){ lsSet(SYNCK,{uid:AUTH.uid,base:M,rev:rev}); return; }
+    return sbCall('sync_put',{p_data:M,p_rev:rev},tok).then(function(nr){
+      if(nr==null){ if(n>=3) throw new Error('data se mezitím změnila, zkus to znovu'); return syncRound(tok,n+1); }
+      lsSet(SYNCK,{uid:AUTH.uid,base:M,rev:+nr});
+    });
+  });
+}
+function syncNow(){
+  if(!AUTH) return Promise.resolve();
+  if(SYNC.busy){ SYNC.again=true; return SYNC.p; }
+  clearTimeout(SYNC.tm); SYNC.busy=true; syncState('busy');
+  SYNC.p=authTok().then(function(tok){ return syncRound(tok,0); })
+    .then(function(){ SYNC.at=Date.now(); syncState('ok'); },function(e){ syncState(navigator.onLine===false||/připojení|neodpovídá/.test(e.message)?'off':'err',e.message); })
+    .then(function(){ SYNC.busy=false; if(SYNC.again&&AUTH){ SYNC.again=false; syncSoon(800); } });
+  return SYNC.p;
+}
+function syncSoon(ms){ if(!AUTH) return; clearTimeout(SYNC.tm); SYNC.tm=setTimeout(syncNow,ms); }
+function syncText(){
+  return SYNC.st==='busy'?'Synchronizuji…':SYNC.st==='ok'?'Synchronizováno '+new Date(SYNC.at).toLocaleTimeString(LOC,{hour:'2-digit',minute:'2-digit'})
+    :SYNC.st==='off'?'Bez signálu. Změny se pošlou, až bude připojení.':SYNC.st==='err'?'Synchronizace se nepovedla: '+SYNC.msg:'Data se synchronizují samy.';
+}
+function syncState(s,msg){ SYNC.st=s; SYNC.msg=msg||''; var el=$('syncSt'); if(el) el.textContent=syncText(); }
+/* každá změna dat se za pár vteřin pošle; po otevření aplikace a po návratu signálu se stáhne novější stav */
+HM.on('store',function(d){ if(AUTH&&!SYNC.apply&&d&&SYNC_KEYS.indexOf(d.key)>=0) syncSoon(3000); });
+document.addEventListener('visibilitychange',function(){
+  if(!AUTH) return;
+  if(document.visibilityState==='hidden'){ if(SYNC.tm){ clearTimeout(SYNC.tm); SYNC.tm=0; syncNow(); } }
+  else if(Date.now()-SYNC.at>30000) syncSoon(400);
+});
+window.addEventListener('online',function(){ syncSoon(500); });
+var GLOGO='<svg class="glogo" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.6 13.3l7.9 6.1C12.4 13.7 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.4 5.7c4.3-4 6.9-9.9 6.9-17.1z"/><path fill="#FBBC05" d="M10.5 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.6 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.7c-2.1 1.4-4.8 2.3-8.5 2.3-6.3 0-11.6-4.2-13.5-10l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>';
+function acctHTML(){
+  if(!AUTH) return '<div class="panel acct"><b>Přihlas se ke svým datům</b><p class="hint">Parkury, psi, běhy a deník pak budeš mít na každém zařízení, kde se přihlásíš, třeba v telefonu i v počítači. Synchronizují se samy a nezmizí ani se ztraceným telefonem.</p>'+
+    '<button class="btn gbtn" data-acct="in">'+GLOGO+'<span>Přihlásit přes Google</span></button>'+
+    (AUTH_ERR?'<p class="hint bad">Přihlášení se nepovedlo: '+esc(AUTH_ERR)+'</p>':'')+
+    '<p class="hint">Bez přihlášení aplikace funguje dál a data zůstanou jen v tomhle zařízení. Co už v něm máš, se při prvním přihlášení nahraje do účtu. <a href="privacy.html" target="_blank" rel="noopener">Zásady ochrany osobních údajů</a></p></div>';
+  return '<div class="panel acct"><div class="acct-me">'+GLOGO+'<div><b translate="no">'+esc(AUTH.name||AUTH.email)+'</b>'+(AUTH.name?'<span translate="no">'+esc(AUTH.email)+'</span>':'')+'</div></div>'+
+    '<p class="hint" id="syncSt">'+syncText()+'</p>'+
+    '<div class="row"><button class="btn primary" data-acct="sync">Synchronizovat teď</button><button class="btn" data-acct="out">Odhlásit</button></div>'+
+    '<p class="hint">Parkury, psi, běhy, deník a nastavení se synchronizují samy při každé změně a při otevření aplikace. Po odhlášení zůstanou data v tomhle zařízení.</p>'+
+    '<p class="hint"><button class="linkbtn" data-acct="del">Smazat data z účtu</button></p></div>';
+}
+function acctAct(a){
+  if(a==='in') authIn();
+  else if(a==='sync') syncNow();
+  else if(a==='out') ask('Odhlásit?','Data v tomhle zařízení zůstanou, jen se přestanou synchronizovat.','Odhlásit',function(){ authOut(false); toast(T('Odhlášeno')); });
+  else if(a==='del') ask('Smazat data z účtu?','Smažou se data uložená na serveru u tvého účtu. V tomhle zařízení zůstanou a odhlásíš se.','Smazat',function(){
+    authTok().then(function(tok){ return sbCall('sync_delete',{},tok); }).then(function(){ authOut(false); toast(T('Data z účtu smazána')); },function(e){ toast(T('Nepovedlo se')+': '+e.message); });
+  },true);
+}
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-acct]'); if(b) acctAct(b.getAttribute('data-acct')); });
+/* po přihlášení: v zařízení můžou být data jiného účtu (sdílený telefon) – zeptat se, jestli je spojit, nebo nahradit */
+function authStart(){
+  if(!AUTH) return;
+  var S0=lsGet(SYNCK,{})||{};
+  if(AUTH_NEW&&S0.uid&&S0.uid!==AUTH.uid){
+    openSheet('<h3>Data jiného účtu</h3><p>V tomhle zařízení jsou data, která patřila jinému účtu. Mám je spojit s tvým účtem, nebo je nahradit daty z účtu?</p>'+
+      '<div class="acts"><button class="btn" data-a="mix">Spojit</button><button class="btn primary" data-a="rep">Nahradit daty z účtu</button></div>',function(e){
+        var b=e.target.closest('[data-a]'); if(!b) return; closeSheet();
+        if(b.getAttribute('data-a')==='rep'){ SYNC.apply=true; try{ SYNC_KEYS.forEach(function(k){ localStorage.removeItem(k); }); }catch(x){} SYNC.apply=false; }
+        try{ localStorage.removeItem(SYNCK); }catch(x){}
+        syncNow().then(function(){ if(b.getAttribute('data-a')==='rep') location.reload(); });
+      });
+    return;
+  }
+  if(AUTH_NEW){ toast(T('Přihlášeno')+': '+(AUTH.email||AUTH.name),4000); setTimeout(function(){ moreOpen('acct'); },0); }
+  syncSoon(AUTH_NEW?100:1500);
+}
 
 /* ---------- záložka Více ---------- */
 var BOOKS=[
@@ -7308,6 +7527,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='warm'){ h=warmHTML(); }
   else if(moreTab==='coach'){ h='<p class="hint">Plánky od rozhodčích a trenérů. Parkur podle plánku přeneseš v Plánu přes Plánek z obrázku (překážky se rozpoznají samy) a při ukládání vyplníš, kdo ho stavěl.</p>'+coachHTML()+booksHTML(); }
   else if(moreTab==='backup'){ h=backupHTML(); }
+  else if(moreTab==='acct'){ h=acctHTML(); }
   else if(moreTab==='start'){ h=startHTML(); }
   else if(moreTab==='fb'){ h=fbHTML(); }
   else if(moreTab==='donate'){ h=donateOn()?donateHTML():'<p class="hint">Podpora zatím není nastavená.</p>'; }
@@ -8900,6 +9120,7 @@ drawGrid(); ui(); render(); topbar(); undoReset();
 /* start na Domů; odkaz s #plan, #lib, #run, #video nebo #more otevře rovnou danou záložku */
 (function(){ var h=(location.hash||'').slice(1); show(['plan','lib','run','video','more'].indexOf(h)>=0?h:'home'); })();
 setTimeout(onbStart,250);
+setTimeout(authStart,350);
 var nw0=catScan(); catUI(); if(nw0.length) setTimeout(function(){newToast(nw0.length);},700);
 $('catBtn').onclick=catCheck;
 catSync();
