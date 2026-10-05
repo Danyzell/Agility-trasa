@@ -274,11 +274,12 @@ select.btn{padding-right:8px;}
 
 /* více: formuláře, psi, statistiky, deník */
 .list{display:flex; flex-direction:column; gap:8px;}
-.item{display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:10px 12px;}
+.item{display:grid; grid-template-columns:minmax(100px,1fr) auto; gap:8px; align-items:center; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:10px 12px;}
 .item.cur{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent);}
 .item b{font-size:15px;}
 .item span{display:block; font-size:13px; color:var(--muted);}
-.item .acts{display:flex; gap:6px;}
+/* tlačítka psa (Vybrat, Závody, Upravit, ×) se na úzkém telefonu zalomí, nepřetečou z obrazovky */
+.item .acts{display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px;}
 .tiles{display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
 .tiles>div{background:var(--surface); padding:10px 12px;}
 .tiles small{display:block; font-size:12px; color:var(--muted);}
@@ -446,7 +447,8 @@ body.at-home .top{display:none;}
 .hm-cta b{display:block; font-size:18px; margin-top:2px; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 .hm-cta .tx span{display:block; font-size:13px; color:var(--muted);}
 .hm-sec{display:flex; align-items:center; gap:10px; justify-content:space-between; margin:22px 16px 10px;}
-.hm-sec h3{margin:0; font-family:var(--display); font-size:22px; text-transform:uppercase; letter-spacing:.3px; white-space:nowrap;}
+/* dlouhý nadpis (angličtina, záložní písmo bez Barlow) se zalomí, ať Žebříček › nepřeteče z obrazovky */
+.hm-sec h3{margin:0; font-family:var(--display); font-size:22px; text-transform:uppercase; letter-spacing:.3px; min-width:0; text-wrap:balance;}
 .hm-sec button{flex:0 0 auto; white-space:nowrap; border:0; background:none; color:var(--accent); font-weight:700; font-size:14px; min-height:40px;}
 .hm-car{display:flex; gap:12px; overflow-x:auto; padding:0 16px 4px; scroll-snap-type:x mandatory; scrollbar-width:none;}
 .hm-car::-webkit-scrollbar{display:none;}
@@ -553,8 +555,8 @@ body.at-home .top{display:none;}
 input[type=range]{height:36px;}
 .sheet{max-height:calc(100dvh - 32px);}
 body:has(input:not([type=checkbox]):not([type=range]):not([type=file]):focus,textarea:focus) .nav{display:none;}
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .grade, :root:not([data-theme="light"]) .hist .g, :root:not([data-theme="light"]) .fcibar .ic{color:#0b1a11;} }
-:root[data-theme="dark"] .grade, :root[data-theme="dark"] .hist .g, :root[data-theme="dark"] .fcibar .ic{color:#0b1a11;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .grade, :root:not([data-theme="light"]) .hist .g, :root:not([data-theme="light"]) .fcibar .ic, :root:not([data-theme="light"]) .traps .tn{color:#0b1a11;} }
+:root[data-theme="dark"] .grade, :root[data-theme="dark"] .hist .g, :root[data-theme="dark"] .fcibar .ic, :root[data-theme="dark"] .traps .tn{color:#0b1a11;}
 
 @media (prefers-reduced-motion: reduce){ *{transition:none!important; animation:none!important;} }
 </style>
@@ -654,6 +656,8 @@ select.btn{padding-right:10px;}
 .nav button.on{color:#c6f432;}
 .nav button.on .nic{background:#c6f432; color:#0a2a1c;}
 .nav .nic{width:46px; border-radius:14px;}
+/* na 360 px se šest položek vejde do panelu: sloupce se smí zúžit pod šířku ikony s okraji tlačítka (jinak Více vyčnívá z panelu) */
+.nav-in{grid-template-columns:repeat(6,minmax(0,1fr));} .nav button{min-width:0; padding:0;}
 .nav .ndot{box-shadow:0 0 0 2px #0e1611;}
 main{padding-bottom:calc(var(--nav-h) + var(--nav-gap) + 28px + env(safe-area-inset-bottom,0px));}
 .toast{bottom:calc(var(--nav-h) + var(--nav-gap) + 12px + env(safe-area-inset-bottom,0px));}
@@ -1074,7 +1078,7 @@ function trText(n){
 }
 function trAttr(el,a){
   var v=el.getAttribute(a); if(!v) return; el.__tra=el.__tra||{}; if(el.__tra[a]===v) return;
-  if(trSkipEl(el)&&a!=='aria-label'&&a!=='title') return;
+  if(trSkipEl(el)&&a!=='aria-label'&&a!=='title'&&!(a==='placeholder'&&el.nodeName==='TEXTAREA')) return; /* text v poli píše uživatel, nápověda se ale přeloží */
   var t=trLookup(v); if(t==null){ trMiss(v); el.__tra[a]=v; return; }
   el.__tra[a]=t; if(t!==v) el.setAttribute(a,t);
 }
@@ -1318,7 +1322,33 @@ var I18N_EXTRA={exact:{
 "QR kód s odkazem na aplikaci": "QR code with a link to the app",
 "Ať si kamarád naskenuje kód fotoaparátem, nebo mu pošli odkaz.": "Let a friend scan the code with their camera, or send them the link.",
 "Sdílet odkaz": "Share link",
-"AgiPlan – plánovač agility parkurů, stopky a trénink. Zdarma v telefonu:": "AgiPlan – agility course planner, stopwatch and training. Free on your phone:"
+"AgiPlan – plánovač agility parkurů, stopky a trénink. Zdarma v telefonu:": "AgiPlan – agility course planner, stopwatch and training. Free on your phone:",
+"Způsob": "Mode",
+"Délka prohlídky": "Walkthrough length",
+"Překážek v trase": "Obstacles in the route",
+"Posun ve videu": "Video position",
+"Smazat běh": "Delete run",
+"diskvalifikace": "disqualification",
+"(diskvalifikace)": "(disqualification)",
+"(3 odmítnutí)": "(3 refusals)",
+"(překročen MČP)": "(MCT exceeded)",
+"psovod": "handler",
+"Upravit": "Edit",
+"Smazat psa": "Delete dog",
+"teď": "now",
+"Graf rychlosti psa v posledních bězích": "Chart of the dog's speed in recent runs",
+"Závod": "Competition",
+"Trénink": "Training",
+"Smazat záznam": "Delete entry",
+"Záloha do souboru": "Backup to a file",
+"· ukázat psy ›": "· show dogs ›",
+"např. Hranické hrátky": "e.g. Hranické hrátky",
+"Později": "Later",
+"vstup do slalomu z obratu": "weave entry out of a turn",
+"(moje)": "(mine)",
+"Co šlo, co ne, na čem zapracovat": "What went well, what didn't, what to work on",
+"Zkontroluj podle plánku": "Check against the course map",
+"Náhled parkuru": "Course preview",
 },num:{
 "Tunel kratší než # m: #× (FCI: délka tunelu #–# m)": "Tunnel shorter than # m: #× (FCI: tunnel length #–# m)",
 "Zahrada týdne #": "Garden of the week #",
@@ -1361,13 +1391,57 @@ var I18N_EXTRA={exact:{
 "# tb · # m/s ·": "# pp · # m/s ·",
 "# Kč": "CZK #",
 "# z #": "# of #",
+"# kusů vybavení": "# pieces of equipment",
+"# týd. · 🥇#": "# wk · 🥇#",
+"# tb": "# pp",
+"# tr. b.": "# pp",
+"# s · # tb": "# s · # pp",
+"# tb · # m/s · #-#-#": "# pp · # m/s · #-#-#",
+"# m · # překážek · # skoků, tunel, slalom": "# m · # obstacles · # jumps, tunnel, weaves",
+"# × # m · # skoků, tunel, slalom": "# × # m · # jumps, tunnel, weaves",
+"# let": "# years",
+"# roky": "# years",
+"# m": "# m",
+"−#": "−#",
+"+#": "+#",
+"#×": "#×",
+"Otočky kolem křídla (vnitřkem, venkem) #": "Wraps around the wing (inside, outside) #",
+"Zadní strany skoků #": "Jump backsides #",
+"Vstupy do slalomu #": "Weave entries #",
+"Změny strany (ostré obraty, hady) #": "Side changes (sharp turns, serpentines) #",
+"Zóny v rytmu parkuru #": "Contacts in course rhythm #",
+"Tunely do oblouku a odbočky #": "Curved tunnels and turn-offs #",
+"Rychlá skoková linie #": "Fast jumping line #",
+"Štěně: tunel a nízké skoky #": "Puppy: tunnel and low jumps #",
+"Začátečník: první sekvence #": "Beginner: first sequences #",
+"Čtverec (box) · #": "Box · #",
+"Mlýnek · #": "Pinwheel · #",
+"Had (serpentina) · #": "Serpentine · #",
+"Skoková řada · #": "Jump grid · #",
+"Vstupy do slalomu · #": "Weave entries · #",
+"Tunel, nebo skok · #": "Tunnel or jump · #",
+"Osmička kolem křídel · #": "Figure of eight around the wings · #",
+"Zadní strana · #": "Backside · #",
+"Zahrada týdne # · # × # m · zbývá # dny": "Garden of the week # · # × # m · # days left",
+"Zahrada týdne # · # × # m · zbývá # dní": "Garden of the week # · # × # m · # days left",
+"Zahrada týdne # · # × # m · zbývá poslední den": "Garden of the week # · # × # m · last day left",
 },re:[
 ["^Kalendář závodů se nepodařilo načíst: (.+?)$","The competition calendar couldn't be loaded: @1"],
 ["^Parkur týdne · (A\\d)$","Course of the week · $1"],
 ["^Zahrada týdne (\\d+): (.+?) s, (.+?) tb(?:, (\\d+)\\. místo z (\\d+) \\((.+?)\\))?$","Garden of the week $1: $2 s, $3 pp"],
 ["^(obrat do U|had|oblouk doleva|oblouk doprava|rovně) · (.+?)$","@1 · @2"],
 ["^(\\d+) × (\\d+) m · zbývá poslední den$","$1 × $2 m · last day left"],
-["^Ligu se nepodařilo načíst: (.+?)$","The league couldn't be loaded: @1"]
+["^Ligu se nepodařilo načíst: (.+?)$","The league couldn't be loaded: @1"],
+["^3D animace: (.+)$","3D animation: @1"],
+["^(.+? cm) · (A\\d) · (.+)$","@1 · $2 · @3"],
+["^(.+? cm) · (A\\d)$","@1 · $2"],
+["^Závod: (.+)$","Competition: $1"],
+["^Trénink · (.+)$","Training · @1"],
+["^rozhodčí (.+)$","judge $1"],
+["^(.+?) Nejde u prvního skoku\\.$","@1 Not possible on the first jump."],
+["^(.+?) Nejde u posledního skoku\\.$","@1 Not possible on the last jump."],
+["^(.+?) · (A\\d) · zbývá (\\d+) (?:dny|dní)$","$1 · $2 · $3 days left"],
+["^(.+?) · (A\\d) · zbývá poslední den$","$1 · $2 · last day left"],
 ]};
 function i18nStart(){
   i18nAdd(I18N_EXTRA);
@@ -4167,7 +4241,7 @@ function render(){
 function ui(){
   var special=panel==='side'||panel==='quiz';
   if(mode==='view'&&!S.obs.length) mode='build'; /* prázdná plocha: rovnou stavět */
-  $('dimBtn').hidden=mode!=='view';
+  $('dimBtn').hidden=mode!=='view'||special; /* při tréninku paměti by 3D prozradilo čísla překážek */
   $('mView').className=mode==='view'?'on':''; $('mBuild').className=mode==='build'?'on':''; $('mRoute').className=mode==='route'?'on':'';
   $('modeRow').hidden=special;
   $('buildTools').hidden=mode!=='build'||special; $('routeTools').hidden=mode!=='route'||special;
@@ -4652,7 +4726,7 @@ $('randBtn').onclick=function(){
 function saveSheet(){
   if(S.route.length<2){toast('Nejdřív vyznač trasu v režimu Trasa.'); mode='route'; ui(); show('plan'); return;}
   var m=S.meta, isMy=!!(m.id&&m.id.indexOf('my-')===0&&myDB().some(function(c){return c.id===m.id;}));
-  var nm=m.gen?m.name+' (moje)':m.name;
+  var nm=m.gen?m.name+' '+T('(moje)'):m.name; /* předvyplněný název je v poli: slovník ho sám nepřeloží */
   openSheet('<h3>Uložit parkur</h3>'+
     '<label for="fName">Název<input id="fName" type="text" maxlength="60" value="'+esc(nm)+'"></label>'+
     '<label for="fCls">Třída (podle ní se počítá SČP)<select id="fCls"><option>A1</option><option>A2</option><option>A3</option></select></label>'+
@@ -6869,7 +6943,7 @@ function diaryHTML(){
   var d=curDog(), L=diary().filter(function(x){return !d||!x.dog||x.dog===d.id;}).sort(function(a,b){return b.date<a.date?-1:1;});
   return promoHTML()+'<div class="row"><button class="btn primary" data-dy="trenink">＋ Trénink</button><button class="btn" data-dy="zavod">＋ Závod</button></div>'+
     '<div class="list">'+(L.length?L.map(function(x){
-      var t=x.kind==='zavod'?'<b>Závod'+(x.event?': '+esc(x.event):'')+'</b><span>'+esc(x.cls||'')+' · '+esc(x.g||'')+(x.place?' · '+esc(x.place)+'. místo':'')+(x.tot!==''&&x.tot!=null?' · '+esc(x.tot)+' tr. b.':'')+(x.judge?' · rozhodčí '+esc(x.judge):'')+'</span>'
+      var t=x.kind==='zavod'?'<b>Závod'+(x.event?': '+esc(x.event):'')+'</b><span>'+esc(x.cls||'')+' · '+esc(x.g||'')+(x.place?' · '+esc(T(x.place+'. místo')):'')+(x.tot!==''&&x.tot!=null?' · '+esc(T(x.tot+' tr. b.')):'')+(x.judge?' · '+esc(T('rozhodčí '+x.judge)):'')+'</span>' /* části přes T(): celý řádek slovník nepřeloží */
         :'<b>Trénink'+(x.surface?' · '+esc(x.surface):'')+'</b>';
       return '<div class="item"><div>'+t+'<span>'+dateOf(x.date).toLocaleDateString(LOC)+(dogName(x.dog)?' · '+esc(dogName(x.dog)):'')+'</span>'+(x.note?'<span>'+esc(x.note)+'</span>':'')+'</div><div class="acts"><button class="btn" data-dydel="'+esc(x.id)+'" aria-label="Smazat záznam">×</button></div></div>';
     }).join(''):'<p class="hint">Zatím žádné záznamy. Zapiš si trénink nebo výsledek ze závodů.</p>')+'</div>';
@@ -7271,7 +7345,7 @@ function anaSheet(){
   var dg=curDog(), sz=['XS','S','M','I','L'];
   var h='<h3>Rozbor parkuru</h3>'+
     '<div class="dmeter"><div class="top"><b>'+fmt(d.v)+'</b><span>z 10 · '+diffLabel(d.v)+'</span></div><div class="bar"><i style="width:'+Math.round(d.v*10)+'%"></i></div>'+
-    (d.why.length?'<p>Nejvíc přidává: '+esc(d.why.join(', '))+'.</p>':'<p>Parkur bez výrazných záludností.</p>')+'</div>'+
+    (d.why.length?'<p>Nejvíc přidává: '+esc(d.why.map(T).join(', '))+'.</p>':'<p>Parkur bez výrazných záludností.</p>')+'</div>'+ /* položky přeložit zvlášť: spojený seznam slovník nepozná */
     '<h4>Plynulost dráhy</h4><ul class="kv">'+
     row('Oblouky (poloměr 2–10 m)',Math.round(fs.arc)+' %','v '+S.meta.cls+' '+ty.arc)+
     row('Rovné úseky',Math.round(fs.str)+' %','')+
@@ -8435,7 +8509,7 @@ function impOpen(){
   var ov=document.createElement('div'); ov.className='ovsp'; ov.id='ovImp';
   ov.innerHTML='<div class="ovsp-top"><b>Plánek z obrázku</b><span class="grow"></span><button class="btn" id="imClose">Zavřít</button></div>'+
     '<p class="hint" id="imHint">'+(APK_LITE?'Zkopíruj obrázek plánku (v galerii nebo prohlížeči Kopírovat) a vlož ho do pole níž: podrž na něm prst a zvol Vložit. Nic se nenahrává, obrázek zůstane v telefonu.':'Vyber snímek obrazovky nebo fotku plánku, nebo obrázek vlož ze schránky (Ctrl+V). Nic se nenahrává, obrázek zůstane v zařízení.')+'</p>'+
-    '<div class="impaste" id="imPaste" contenteditable="true" aria-label="Sem vlož obrázek plánku">'+(APK_LITE?'Sem vlož obrázek plánku':'Sem můžeš vložit obrázek ze schránky')+'</div>'+
+    '<div class="impaste" id="imPaste" contenteditable="true" aria-label="Sem vlož obrázek plánku">'+T(APK_LITE?'Sem vlož obrázek plánku':'Sem můžeš vložit obrázek ze schránky')+'</div>'+ /* T(): text v contenteditable se sám nepřekládá */
     '<div class="imwrap"><canvas id="imCv"></canvas></div>'+
     '<div class="grid2" id="imSize"><label for="imW">Šířka plochy (m)<input id="imW" type="number" min="10" max="60" inputmode="numeric"></label><label for="imH">Hloubka plochy (m)<input id="imH" type="number" min="10" max="40" inputmode="numeric"></label></div>'+
     '<div class="acts"><button class="btn" id="imPick"'+(APK_LITE?' hidden':'')+'>Vybrat obrázek</button><button class="btn primary" id="imGo" disabled>Rozpoznat</button></div>'+
@@ -8448,7 +8522,7 @@ function impOpen(){
   /* vložení ze schránky: obrázek jako soubor, nebo obrázek v HTML (data: nebo blob:) */
   var pz=$('imPaste');
   pz.addEventListener('paste',function(e){ e.preventDefault(); impPaste(e.clipboardData); });
-  pz.addEventListener('input',function(){ var im=pz.querySelector('img'); if(im&&im.src){ impLoadSrc(im.src); } pz.textContent=APK_LITE?'Sem vlož obrázek plánku':'Sem můžeš vložit obrázek ze schránky'; });
+  pz.addEventListener('input',function(){ var im=pz.querySelector('img'); if(im&&im.src){ impLoadSrc(im.src); } pz.textContent=T(APK_LITE?'Sem vlož obrázek plánku':'Sem můžeš vložit obrázek ze schránky'); });
   var cv=$('imCv'), drag=-1;
   cv.addEventListener('pointerdown',function(e){ if(IMP.step!=='corners') return; var p=impPt(e), best=-1, bd=1e9;
     IMP.q.forEach(function(q,i){ var d2=Math.hypot(q[0]-p[0],q[1]-p[1]); if(d2<bd){bd=d2; best=i;} });
