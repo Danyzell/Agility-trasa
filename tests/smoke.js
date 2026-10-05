@@ -160,6 +160,12 @@ module.exports = async function ({ browser, base }) {
     await T.ev(() => { moreTab = 'fb'; show('more'); }); await page.waitForTimeout(100);
     T.ok(await T.ev(() => $('fbMsg').placeholder === "Tell me what's on your mind"), 'nápověda ve zprávě autorovi zůstala česky: ' + await T.ev(() => $('fbMsg').placeholder));
     T.ok(await T.ev(() => { loadCourse(listFor('A1')[0], true); show('plan'); saveSheet(); const v = $('fName').value; closeSheet(); return / \(mine\)$/.test(v); }), 'předvyplněný název parkuru má české (moje)');
+    /* vygenerovaný název v liště Plánu, zkratky hodnocení, data závodů a počty */
+    T.ok(await T.ev(() => { const m0 = S.meta; S.meta = Object.assign({}, m0, { gen: true, name: 'Zahrada týdne 41', dirty: false }); topbar(); const a = $('cName').textContent; S.meta = m0; topbar(); return a === 'Garden of the week 41' && crsName({ name: 'Klub A2 3' }) === 'Klub A2 3'; }), 'vygenerovaný název parkuru zůstal česky (nebo se přeložil vlastní název)');
+    T.ok(await T.ev(() => ['V', 'VD', 'D', 'BO', 'DIS'].map(gTxt).join() === 'EXC,VG,G,NC,DIS'), 'zkratky hodnocení v angličtině');
+    T.ok(await T.ev(() => /8–9 Oct/.test(compDate({ from: '2026-10-08', to: '2026-10-09' })) && /30 Sep – 1 Oct/.test(compDate({ from: '2026-09-30', to: '2026-10-01' }))), 'datum závodů v angličtině');
+    T.ok(await T.ev(() => T('312 m · 4 překážky · SČP 40 s') === '312 m · 4 obstacles · SCT 40 s' && T('1 překážka') === '1 obstacle' && T('4 kusy vybavení') === '4 pieces of equipment' && T('Zahrada 20×15 3') === 'Garden 20×15 3'), 'počty překážek nebo název ze generátoru v angličtině');
+    T.ok(await T.ev(() => [nPrek(1), nPrek(3), nPrek(5), nPrek(0), nKus(2), nKus(12)].join('|') === '1 překážka|3 překážky|5 překážek|0 překážek|2 kusy vybavení|12 kusů vybavení'), 'skloňování počtu překážek');
     await T.ev(() => localStorage.removeItem('agility-lang-v1'));
     await page.setViewportSize({ width: 390, height: 844 });
   });
