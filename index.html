@@ -669,6 +669,37 @@ main{padding-bottom:calc(var(--nav-h) + var(--nav-gap) + 28px + env(safe-area-in
 .about-ic svg{width:36px; height:36px;}
 .about-h b{display:block; font-family:var(--display); font-size:24px; line-height:1.1;}
 .about-h span{color:var(--muted); font-size:13.5px;}
+/* Napsat autorovi a Podpořit */
+.inst{display:flex; flex-direction:column; gap:8px;}
+.inst-steps{margin:0; padding-left:22px; display:flex; flex-direction:column; gap:4px;}
+.hm-inst{margin-bottom:12px; align-items:flex-start;}
+.hm-inst .hm-go{margin-top:10px;}
+.panel.fb,.panel.dn{display:flex; flex-direction:column; gap:10px;}
+.fb .filters,.dn .filters{flex-wrap:wrap; overflow:visible;}
+.share-app{display:flex; gap:14px; align-items:center; flex-wrap:wrap;}
+.share-app .dn-qr{width:150px; align-self:auto;}
+.share-app>div:last-child{flex:1; min-width:170px; display:flex; flex-direction:column; gap:8px; align-items:flex-start;}
+.share-app p{margin:0;}
+.fld{display:flex; flex-direction:column; gap:6px; font-size:13.5px; color:var(--muted);}
+.fld textarea,.fld input{font:inherit; font-size:16px; width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:12px; background:var(--bg); color:var(--text); box-sizing:border-box;}
+.fld input{min-height:44px;}
+.fb h4{margin:6px 0 0;}
+.fb-stars{display:flex; gap:4px;}
+.fb-st{width:44px; height:44px; border:0; background:none; padding:6px; color:var(--zone); border-radius:12px;}
+.fb-st svg{width:100%; height:100%;}
+.fb-st:active{background:var(--sunk);}
+.fb-ok{align-items:center; text-align:center;}
+.fb-big{font-size:44px; line-height:1;}
+.linkbtn{border:0; background:none; padding:0; color:var(--accent); font:inherit; text-decoration:underline; min-height:0;}
+.hm-rate{align-items:flex-start;}
+.hm-rate .fb-stars{margin-top:4px;}
+.hm-x{flex:0 0 auto; width:44px; height:44px; margin:-8px -8px 0 0; border:0; background:none; color:var(--muted); display:grid; place-items:center;}
+.hm-x svg{width:20px; height:20px;}
+.dn p{margin:0;}
+.dn-qr{align-self:center; width:min(240px,70vw); padding:8px; background:#fff; border-radius:16px; border:1px solid var(--border);}
+.dn-qr .qr{display:block; width:100%; height:auto;}
+.dn-acc{display:flex; align-items:center; gap:10px; justify-content:space-between; padding:10px 12px; border-radius:12px; background:var(--sunk);}
+.dn-acc>div{min-width:0;} .dn-acc span{display:block; font-size:12.5px; color:var(--muted);} .dn-acc b{overflow-wrap:anywhere;}
 .news{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:4px; font-size:14px;}
 .older summary{cursor:pointer; color:var(--accent); font-weight:600; font-size:14px; padding:4px 0;}
 
@@ -874,6 +905,8 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       <button class="mrow" data-m="coach"><span class="mic" data-ic="people"></span><span class="ml">Trenéři</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="backup"><span class="mic" data-ic="cloud"></span><span class="ml">Záloha</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="set"><span class="mic" data-ic="sliders"></span><span class="ml">Nastavení</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="fb"><span class="mic" data-ic="mail"></span><span class="ml">Napsat autorovi</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="donate" hidden><span class="mic" data-ic="gift"></span><span class="ml">Podpořit aplikaci</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="about"><span class="mic" data-ic="info"></span><span class="ml">O aplikaci</span><span class="mch" data-ic="chev"></span></button>
     </div>
     <div class="mhead" id="moreHead" hidden><button class="btn ghost" id="moreBack" data-ic="back">Zpět</button><b id="moreTitle"></b></div>
@@ -1165,6 +1198,59 @@ var I18N_EXTRA={exact:{
 "Liga zatím nemá body. Zaběhni Zahradu týdne a odešli výsledek!": "The league has no points yet. Run the Garden of the week and submit your result!",
 "Body za každý týden podle umístění ve velikosti psa: 1. místo 10, 2. 8, 3. 6, 4. 5, 5. 4, 6. 3, 7. 2, každé další 1.": "Points every week by placing within the dog's size: 1st 10, 2nd 8, 3rd 6, 4th 5, 5th 4, 6th 3, 7th 2, any other 1.",
 "· 6 skoků, tunel, slalom": "· 6 jumps, tunnel, weaves",
+"Napsat autorovi": "Write to the author",
+"Podpořit aplikaci": "Support the app",
+"Podpora zatím není nastavená.": "Support isn't set up yet.",
+"HandlerMap je zdarma a bez reklam. Když ti pomáhá v tréninku, můžeš přispět na provoz serveru a další vývoj. Každá koruna pomůže, díky! ❤️": "HandlerMap is free and ad-free. If it helps your training, you can chip in for the server and further development. Every bit helps, thank you! ❤️",
+"Jiná částka": "Other amount",
+"Částka": "Amount",
+"QR platba": "QR payment",
+"Naskenuj kód v aplikaci své banky (QR platba).": "Scan the code in your banking app (QR payment).",
+"Naskenuj kód v aplikaci své banky (QR platba). Částku zadáš v bance.": "Scan the code in your banking app (QR payment). Enter the amount in your bank.",
+"Číslo účtu": "Account number",
+"Zpráva pro příjemce": "Message for recipient",
+"Přispět kartou": "Donate by card",
+"Za nápad nebo nahlášenou chybu jsem stejně vděčný.": "I'm just as grateful for an idea or a bug report.",
+"Zkopírováno": "Copied",
+"Díky, zpráva odešla!": "Thanks, your message was sent!",
+"Přečtu si ji. Když jsi nechal(a) e-mail, odpovím.": "I'll read it. If you left an e-mail, I'll reply.",
+"Chceš vývoj podpořit i jinak?": "Want to support development in another way?",
+"Napsat další zprávu": "Write another message",
+"Co ti v aplikaci chybí, co nefunguje, nebo co se ti líbí? Zpráva přijde rovnou autorovi.": "What's missing in the app, what doesn't work, or what do you like? The message goes straight to the author.",
+"Jak se ti HandlerMap líbí?": "How do you like HandlerMap?",
+"O co jde": "What it's about",
+"Nápad": "Idea",
+"Chyba": "Bug",
+"Pochvala": "Praise",
+"Jiné": "Other",
+"Druh zprávy": "Message type",
+"Zpráva": "Message",
+"Co se stalo a kde v aplikaci?": "What happened and where in the app?",
+"Napiš, co máš na srdci": "Tell me what's on your mind",
+"E-mail pro odpověď (nepovinné)": "E-mail for a reply (optional)",
+"Odeslat": "Send",
+"Odesílám…": "Sending…",
+"Napiš zprávu nebo dej hvězdičky.": "Write a message or give stars.",
+"E-mail nevypadá správně.": "The e-mail doesn't look right.",
+"Bez připojení zprávu nejde poslat. Zůstane tu rozepsaná.": "Can't send without a connection. Your draft stays here.",
+"Zprávu se nepodařilo poslat": "The message couldn't be sent",
+"Dnes už jsi poslal(a) dost zpráv, zkus to zítra.": "You've sent enough messages today, try again tomorrow.",
+"Teď přišlo moc zpráv, zkus to za chvíli.": "Too many messages right now, try again in a while.",
+"Ťukni na hvězdičky a napiš autorovi.": "Tap the stars and write to the author.",
+"Otevři stránku v Safari.": "Open the page in Safari.",
+"Ťukni na Sdílet (čtvereček se šipkou nahoru).": "Tap Share (the square with an up arrow).",
+"Vyber Přidat na plochu.": "Choose Add to Home Screen.",
+"Otevři stránku v Chromu.": "Open the page in Chrome.",
+"Ťukni na ⋮ vpravo nahoře.": "Tap ⋮ in the top right.",
+"Vyber Instalovat aplikaci (nebo Přidat na plochu).": "Choose Install app (or Add to Home screen).",
+"Nainstaluj si aplikaci": "Install the app",
+"Ikona na ploše, celá obrazovka a funguje i bez signálu na cvičišti.": "Home screen icon, full screen, and it works without signal at training.",
+"Instalovat": "Install",
+"Doporuč aplikaci kamarádům": "Recommend the app to friends",
+"QR kód s odkazem na aplikaci": "QR code with a link to the app",
+"Ať si kamarád naskenuje kód fotoaparátem, nebo mu pošli odkaz.": "Let a friend scan the code with their camera, or send them the link.",
+"Sdílet odkaz": "Share link",
+"HandlerMap – plánovač agility parkurů, stopky a trénink. Zdarma v telefonu:": "HandlerMap – agility course planner, stopwatch and training. Free on your phone:"
 },num:{
 "Zahrada týdne #": "Garden of the week #",
 "Krok # z #": "Step #1 of #2",
@@ -1204,6 +1290,8 @@ var I18N_EXTRA={exact:{
 "# s pod SČP · # m/s": "# s under SCT · # m/s",
 "o # s nad SČP · # m/s": "# s over SCT · # m/s",
 "# tb · # m/s ·": "# pp · # m/s ·",
+"# Kč": "CZK #",
+"# z #": "# of #",
 },re:[
 ["^Kalendář závodů se nepodařilo načíst: (.+?)$","The competition calendar couldn't be loaded: @1"],
 ["^Parkur týdne · (A\\d)$","Course of the week · $1"],
@@ -3708,6 +3796,8 @@ var IC={
   chart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4M4 20h16"/><path d="M8.5 16v-4M13 16V8M17.5 16v-6"/></svg>',
   calendar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8.5 3v4M15.5 3v4"/></svg>',
   trophy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5.5a2.5 2.5 0 0 0 2.8 4M16 6h2.5a2.5 2.5 0 0 1-2.8 4M12 13v4M8.5 20h7"/></svg>',
+  mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4 7l8 6 8-6"/></svg>',
+  gift:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18M12 9v11"/><path d="M12 9c-1.5-3.5-5.5-4-5.5-1.5S10 9 12 9zM12 9c1.5-3.5 5.5-4 5.5-1.5S14 9 12 9z"/></svg>',
   chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6l6 6-6 6"/></svg>',
   moon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>',
   globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.7 3.5 5.7 3.5 9s-1.1 6.3-3.5 9c-2.4-2.7-3.5-5.7-3.5-9s1.1-6.3 3.5-9z"/></svg>',
@@ -4713,6 +4803,7 @@ function homeRender(){
   h+=S.route.length>1
     ? '<button class="hm-cta" data-h="plan"><span class="hm-play">'+IC.playF+'</span><span class="tx"><small>Pokračovat</small><b>'+esc(S.meta.name)+'</b><span>'+fmt(m.len)+' m · '+m.n+' překážek · SČP '+m.sct+' s</span></span></button>'
     : '<button class="hm-cta" data-h="lib"><span class="hm-play">'+IC.playF+'</span><span class="tx"><small>Začni</small><b>Vyber si parkur</b><span>90 parkurů podle pravidel FCI, nebo si postav vlastní</span></span></button>';
+  h+='<div id="hmInst"></div>';
   /* parkury pro tebe: nové a nezaběhnuté ze třídy psa */
   var L=listFor(cls).filter(function(c){return !getMark(c.id).done&&c.id!==S.meta.id;});
   L.sort(function(a,b){return (isNewC(b.id)?1:0)-(isNewC(a.id)?1:0);}); HOME_C=L.slice(0,6);
@@ -4738,17 +4829,19 @@ function homeRender(){
   var ch=homeChallenge();
   if(ch) h+='<div class="hm-sec"><h3>Výzva dne</h3></div><div class="hm-ch"><div class="ic">🎯</div><div class="tx"><b>Zaběhni čistě pod SČP</b><span>'+esc(ch.c.name)+' · '+ch.c.route.length+' překážek</span></div>'+
     (ch.ok?'<span class="hm-go ok" style="display:grid;place-items:center">Splněno ✓</span>':'<button class="hm-go" data-h="ch">Start</button>')+'</div>';
+  h+=rateHomeHTML();
   /* tento týden (pondělí až neděle) */
   var t=new Date(); t.setHours(12,0,0,0); var mon=new Date(t); mon.setDate(t.getDate()-((t.getDay()+6)%7)), today=localDate(t), wk='';
   ['Po','Út','St','Čt','Pá','So','Ne'].forEach(function(n,i){ var x=new Date(mon); x.setDate(mon.getDate()+i); var k=localDate(x);
     wk+='<div class="'+(k===today?'today':'')+'"><i class="'+(days[k]?'on':'')+'"></i>'+n+'</div>'; });
   h+='<div class="hm-sec"><h3>Tento týden</h3><button data-h="diary">Deník ›</button></div><div class="hm-week">'+wk+'</div>';
   $('v-home').innerHTML=h;
-  wkRefresh(cls); wkRefresh('Z'); lgRefresh(); compHomeRefresh();
+  wkRefresh(cls); wkRefresh('Z'); lgRefresh(); compHomeRefresh(); if(window.pwaInstUI) pwaInstUI();
 }
 $('v-home').onclick=function(e){
   var c=e.target.closest('[data-hc]'); if(c){ var x=HOME_C[+c.getAttribute('data-hc')]; if(x) loadCourse(x); return; }
   var hc=e.target.closest('[data-hcut]'); if(hc){ var y=HOME_CUT[+hc.getAttribute('data-hcut')]; if(y) loadCourse(y); return; }
+  var hr=e.target.closest('[data-hrate]'); if(hr){ FB.stars=+hr.getAttribute('data-hrate'); if(FB.stars>=5&&FB.kind==='idea') FB.kind='praise'; fbSave(); FB_SENT=false; moreOpen('fb'); return; }
   var hd=e.target.closest('[data-hdrill]'); if(hd){ GEN.tab='drill'; GEN.drill=hd.getAttribute('data-hdrill'); genSheet(); genRun(); return; }
   var b=e.target.closest('[data-h]'); if(!b) return; var a=b.getAttribute('data-h');
   if(a==='plan') show('plan');
@@ -4762,6 +4855,7 @@ $('v-home').onclick=function(e){
   else if(a==='comps') compsSheet();
   else if(a==='comploc') compLocate().then(function(){ homeRender(); },function(){});
   else if(a==='cut'){ GEN.tab='cut'; genSheet(); }
+  else if(a==='ratex'){ rateSet({x:1}); var rc=b.closest('.hm-rate'); if(rc) rc.remove(); }
 };
 
 /* ---------- Parkur týdne: jeden parkur pro třídu na celý týden (po–ne) a žebříček podle velikosti psa ---------- */
@@ -6774,6 +6868,158 @@ var BOOKS=[
 function booksHTML(){
   return '<h2>Knihy</h2><div class="coach-list">'+BOOKS.map(function(b){return '<a class="coach" href="'+b[2]+'" target="_blank" rel="noopener"><span class="cc">CZ</span><span><b>'+esc(b[0])+'</b><span>'+esc(b[1])+'</span></span>'+IC.ext+'</a>';}).join('')+'</div>';
 }
+/* ---------- QR kód (bajtový režim, oprava chyb M, verze 1–10) pro QR platbu ---------- */
+function qrMatrix(s){
+  var b=[], i, j, k; s=unescape(encodeURIComponent(s)); for(i=0;i<s.length;i++) b.push(s.charCodeAt(i));
+  /* [EC kódových slov na blok, bloků sk. 1, dat v sk. 1, bloků sk. 2, dat v sk. 2] */
+  var TB=[0,[10,1,16,0,0],[16,1,28,0,0],[26,1,44,0,0],[18,2,32,0,0],[24,2,43,0,0],[16,4,27,0,0],[18,4,31,0,0],[22,2,38,2,39],[22,3,36,2,37],[26,4,43,1,44]];
+  var AL=[0,[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50]];
+  var v, t, cap;
+  for(v=1;v<=10;v++){ t=TB[v]; cap=t[1]*t[2]+t[3]*t[4]; if(4+(v<10?8:16)+8*b.length<=cap*8) break; }
+  if(v>10) return null;
+  var bits=[]; function put(x,n){ for(var q=n-1;q>=0;q--) bits.push((x>>>q)&1); }
+  put(4,4); put(b.length,v<10?8:16); for(i=0;i<b.length;i++) put(b[i],8);
+  put(0,Math.min(4,cap*8-bits.length)); while(bits.length%8) bits.push(0);
+  var dw=[]; for(i=0;i<bits.length;i+=8){ var x=0; for(j=0;j<8;j++) x=x<<1|bits[i+j]; dw.push(x); }
+  for(i=0;dw.length<cap;i++) dw.push(i%2?0x11:0xEC);
+  var EXP=[], LOG=[], e=1; for(i=0;i<255;i++){ EXP[i]=e; LOG[e]=i; e<<=1; if(e&256) e^=0x11D; }
+  function mul(a,c){ return a&&c?EXP[(LOG[a]+LOG[c])%255]:0; }
+  var ec=t[0], gen=[1];
+  for(i=0;i<ec;i++){ var ng=[]; for(j=0;j<=gen.length;j++) ng[j]=(j<gen.length?gen[j]:0)^(j>0?mul(gen[j-1],EXP[i]):0); gen=ng; }
+  var blocks=[], pos=0;
+  function block(len){ var d=dw.slice(pos,pos+len), r=[]; pos+=len; for(k=0;k<ec;k++) r.push(0);
+    d.forEach(function(c){ var f=c^r.shift(); r.push(0); for(k=0;k<ec;k++) r[k]^=mul(gen[k+1],f); }); blocks.push({d:d,e:r}); }
+  for(i=0;i<t[1];i++) block(t[2]); for(i=0;i<t[3];i++) block(t[4]);
+  var all=[], mx=Math.max(t[2],t[4]);
+  for(i=0;i<mx;i++) blocks.forEach(function(B){ if(i<B.d.length) all.push(B.d[i]); });
+  for(i=0;i<ec;i++) blocks.forEach(function(B){ all.push(B.e[i]); });
+  var n=17+4*v, M=[], F=[];
+  for(i=0;i<n;i++){ M.push([]); F.push([]); for(j=0;j<n;j++){ M[i].push(false); F[i].push(false); } }
+  function set(x,y,d){ M[y][x]=d; F[y][x]=true; }
+  function finder(cx,cy){ for(var dy=-1;dy<=7;dy++) for(var dx=-1;dx<=7;dx++){ var X=cx+dx, Y=cy+dy; if(X<0||Y<0||X>=n||Y>=n) continue;
+    set(X,Y,dx>=0&&dx<=6&&dy>=0&&dy<=6&&(dx===0||dx===6||dy===0||dy===6||(dx>=2&&dx<=4&&dy>=2&&dy<=4))); } }
+  finder(0,0); finder(n-7,0); finder(0,n-7);
+  for(i=8;i<n-8;i++){ set(i,6,i%2===0); set(6,i,i%2===0); }
+  var ap=AL[v];
+  ap.forEach(function(ax){ ap.forEach(function(ay){
+    if((ax===6&&ay===6)||(ax===6&&ay===ap[ap.length-1])||(ax===ap[ap.length-1]&&ay===6)) return;
+    for(var dy=-2;dy<=2;dy++) for(var dx=-2;dx<=2;dx++) set(ax+dx,ay+dy,Math.max(Math.abs(dx),Math.abs(dy))!==1); }); });
+  function fmt(mask){ var d=mask, r=d; for(var q=0;q<10;q++) r=(r<<1)^((r>>>9)*0x537); var f=((d<<10)|r)^0x5412; /* úroveň M = 00 */
+    function bt(q){ return ((f>>>q)&1)===1; }
+    for(q=0;q<=5;q++) set(8,q,bt(q)); set(8,7,bt(6)); set(8,8,bt(7)); set(7,8,bt(8));
+    for(q=9;q<15;q++) set(14-q,8,bt(q));
+    for(q=0;q<8;q++) set(n-1-q,8,bt(q));
+    for(q=8;q<15;q++) set(8,n-15+q,bt(q));
+    set(8,n-8,true); }
+  fmt(0);
+  if(v>=7){ var r=v; for(i=0;i<12;i++) r=(r<<1)^((r>>>11)*0x1F25); var vb=(v<<12)|r;
+    for(i=0;i<18;i++){ var bt=((vb>>>i)&1)===1, a=n-11+i%3, c=Math.floor(i/3); set(a,c,bt); set(c,a,bt); } }
+  k=0;
+  for(var right=n-1;right>=1;right-=2){ if(right===6) right=5;
+    for(var vert=0;vert<n;vert++) for(j=0;j<2;j++){ var X=right-j, up=((right+1)&2)===0, Y=up?n-1-vert:vert;
+      if(!F[Y][X]&&k<all.length*8){ M[Y][X]=((all[k>>>3]>>>(7-(k&7)))&1)===1; k++; } } }
+  var MF=[function(x,y){return (x+y)%2===0;},function(x,y){return y%2===0;},function(x){return x%3===0;},function(x,y){return (x+y)%3===0;},
+    function(x,y){return (Math.floor(x/3)+Math.floor(y/2))%2===0;},function(x,y){return x*y%2+x*y%3===0;},function(x,y){return (x*y%2+x*y%3)%2===0;},function(x,y){return ((x+y)%2+x*y%3)%2===0;}];
+  function flip(m){ for(var y=0;y<n;y++) for(var x=0;x<n;x++) if(!F[y][x]&&MF[m](x,y)) M[y][x]=!M[y][x]; }
+  function pen(){ var p=0, dark=0, x, y, run, c;
+    for(y=0;y<n;y++){ run=1; for(x=1;x<=n;x++){ if(x<n&&M[y][x]===M[y][x-1]) run++; else { if(run>=5) p+=run-2; run=1; } } }
+    for(x=0;x<n;x++){ run=1; for(y=1;y<=n;y++){ if(y<n&&M[y][x]===M[y-1][x]) run++; else { if(run>=5) p+=run-2; run=1; } } }
+    for(y=0;y<n-1;y++) for(x=0;x<n-1;x++){ c=M[y][x]; if(c===M[y][x+1]&&c===M[y+1][x]&&c===M[y+1][x+1]) p+=3; }
+    for(y=0;y<n;y++) for(x=0;x<n;x++) if(M[y][x]) dark++;
+    return p+Math.floor(Math.abs(dark*20-n*n*10)/(n*n))*10; }
+  var best=0, bp=1e9;
+  for(i=0;i<8;i++){ flip(i); fmt(i); var pp=pen(); if(pp<bp){ bp=pp; best=i; } flip(i); }
+  flip(best); fmt(best);
+  return M;
+}
+function qrSvg(s,label){
+  var M=qrMatrix(s); if(!M) return '';
+  var n=M.length, q=4, d='';
+  for(var y=0;y<n;y++) for(var x=0;x<n;x++) if(M[y][x]) d+='M'+(x+q)+' '+(y+q)+'h1v1h-1z';
+  return '<svg class="qr" viewBox="0 0 '+(n+2*q)+' '+(n+2*q)+'" role="img" aria-label="'+esc(label||'QR kód')+'" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="#fff"/><path d="'+d+'" fill="#000"/></svg>';
+}
+/* české číslo účtu (předčíslí-číslo/banka) → IBAN */
+function czIban(acc){
+  var m=String(acc||'').replace(/\s+/g,'').match(/^(?:(\d{1,6})-)?(\d{2,10})\/(\d{4})$/); if(!m) return '';
+  var bban=m[3]+('000000'+(m[1]||'')).slice(-6)+('0000000000'+m[2]).slice(-10), s=bban+'123500', r=0;
+  for(var i=0;i<s.length;i++) r=(r*10+(+s[i]))%97;
+  var c=98-r; return 'CZ'+(c<10?'0':'')+c+bban;
+}
+/* ---------- Podpořit aplikaci (QR platba) ----------
+   Číslo účtu vyplní autor: acc '123456789/0800' nebo iban 'CZ…'; url je volitelný odkaz na platbu kartou (Ko-fi, PayPal…).
+   Dokud není nic vyplněné, Podpořit se v aplikaci neukazuje. */
+var DONATE={acc:'1220369023/3030', iban:'', name:'', msg:'Podpora HandlerMap', url:''}, DN_AMT=100;
+function dnIban(){ var i=String(DONATE.iban||'').replace(/\s+/g,'').toUpperCase(); return /^CZ\d{22}$/.test(i)?i:czIban(DONATE.acc); }
+function donateOn(){ return !!(dnIban()||/^https:\/\//.test(DONATE.url||'')); }
+function spayd(amt){
+  var i=dnIban(); if(!i) return '';
+  var cl=function(s,n){ return String(s||'').replace(/\*/g,' ').replace(/[^\x20-\x7e -ſ]/g,'').trim().slice(0,n); };
+  return 'SPD*1.0*ACC:'+i+(amt>0?'*AM:'+(+amt).toFixed(2):'')+'*CC:CZK'+(DONATE.name?'*RN:'+cl(DONATE.name,35):'')+'*MSG:'+cl(DONATE.msg||'HandlerMap',60);
+}
+function donateHTML(){
+  var i=dnIban(), h='<div class="panel dn"><p>HandlerMap je zdarma a bez reklam. Když ti pomáhá v tréninku, můžeš přispět na provoz serveru a další vývoj. Každá koruna pomůže, díky! ❤️</p>';
+  if(i){
+    h+='<div class="filters" role="group" aria-label="Částka">'+[50,100,200,500,0].map(function(a){ return '<button class="chip'+(DN_AMT===a?' on':'')+'" data-dam="'+a+'">'+(a?a+' Kč':'Jiná částka')+'</button>'; }).join('')+'</div>'+
+      '<div class="dn-qr">'+qrSvg(spayd(DN_AMT),'QR platba')+'</div>'+
+      '<p class="hint">Naskenuj kód v aplikaci své banky (QR platba).'+(DN_AMT?'':' Částku zadáš v bance.')+'</p>'+
+      '<div class="dn-acc"><div><span>Číslo účtu</span><b translate="no">'+esc(DONATE.acc||i)+'</b></div><button class="btn" data-dcopy="'+esc(DONATE.acc||i)+'">Kopírovat</button></div>'+
+      (DONATE.acc?'<div class="dn-acc"><div><span>IBAN</span><b translate="no">'+esc(i.replace(/(.{4})/g,'$1 ').trim())+'</b></div><button class="btn" data-dcopy="'+esc(i)+'">Kopírovat</button></div>':'')+
+      '<div class="dn-acc"><div><span>Zpráva pro příjemce</span><b translate="no">'+esc(DONATE.msg||'HandlerMap')+'</b></div></div>';
+  }
+  if(/^https:\/\//.test(DONATE.url||'')) h+='<div class="row"><a class="btn'+(i?'':' primary')+'" href="'+esc(DONATE.url)+'" target="_blank" rel="noopener">Přispět kartou</a></div>';
+  return h+'<p class="hint">Za nápad nebo nahlášenou chybu jsem stejně vděčný. <button class="linkbtn" data-mgo="fb">Napsat autorovi</button></p></div>';
+}
+function dnCopy(s){
+  var done=function(){ toast(T('Zkopírováno')); };
+  try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(s).then(done,function(){ toast(s,5000); }); return; } }catch(e){}
+  toast(s,5000);
+}
+var APP_URL='https://danyzell.github.io/Agility-trasa/';
+function appShare(){
+  var txt=T('HandlerMap – plánovač agility parkurů, stopky a trénink. Zdarma v telefonu:');
+  try{ if(navigator.share){ navigator.share({title:'HandlerMap',text:txt,url:APP_URL}).catch(function(){}); return; } }catch(e){}
+  dnCopy(APP_URL);
+}
+/* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='2.0';
+var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
+function fbSave(){ lsSet(FBK,FB); }
+var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];
+function fbHTML(){
+  if(FB_SENT) return '<div class="panel fb fb-ok"><div class="fb-big">🐾</div><b>Díky, zpráva odešla!</b><p class="hint">Přečtu si ji. Když jsi nechal(a) e-mail, odpovím.</p>'+
+    (donateOn()?'<p class="hint">Chceš vývoj podpořit i jinak?</p><div class="row"><button class="btn" data-mgo="donate">Podpořit aplikaci</button></div>':'')+
+    '<div class="row"><button class="btn ghost" data-fbnew="1">Napsat další zprávu</button></div></div>';
+  var st=''; for(var i=1;i<=5;i++) st+='<button class="fb-st'+(FB.stars>=i?' on':'')+'" data-fbs="'+i+'" role="radio" aria-checked="'+(FB.stars===i)+'" aria-label="'+i+' z 5">'+(FB.stars>=i?IC.starF:IC.star)+'</button>';
+  return '<div class="panel fb"><p class="hint">Co ti v aplikaci chybí, co nefunguje, nebo co se ti líbí? Zpráva přijde rovnou autorovi.</p>'+
+    '<h4>Jak se ti HandlerMap líbí?</h4><div class="fb-stars" role="radiogroup" aria-label="Hodnocení">'+st+'</div>'+
+    '<h4>O co jde</h4><div class="filters" role="group" aria-label="Druh zprávy">'+FB_KINDS.map(function(k){ return '<button class="chip'+(FB.kind===k[0]?' on':'')+'" data-fbk="'+k[0]+'">'+k[1]+'</button>'; }).join('')+'</div>'+
+    '<label class="fld"><span>Zpráva</span><textarea id="fbMsg" rows="5" maxlength="2000" placeholder="'+(FB.kind==='bug'?'Co se stalo a kde v aplikaci?':'Napiš, co máš na srdci')+'">'+esc(FB.msg)+'</textarea></label>'+
+    '<label class="fld"><span>E-mail pro odpověď (nepovinné)</span><input id="fbMail" type="email" inputmode="email" autocomplete="email" maxlength="120" value="'+esc(FB.mail)+'"></label>'+
+    '<div class="row"><button class="btn primary" data-fbsend="1"'+(FB_BUSY?' disabled':'')+'>'+(FB_BUSY?'Odesílám…':'Odeslat')+'</button></div></div>';
+}
+function fbSend(){
+  if(FB_BUSY) return;
+  FB.msg=String(FB.msg||'').trim(); FB.mail=String(FB.mail||'').trim();
+  if(!FB.msg&&!FB.stars){ toast(T('Napiš zprávu nebo dej hvězdičky.')); return; }
+  if(FB.mail&&!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(FB.mail)){ toast(T('E-mail nevypadá správně.')); return; }
+  FB_BUSY=true; moreRender();
+  var ac=window.AbortController?new AbortController():null, to=setTimeout(function(){ if(ac) ac.abort(); },15000);
+  fetch(SB_URL+'/functions/v1/feedback',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify({stars:FB.stars||null,kind:FB.kind,msg:FB.msg,contact:FB.mail,lang:LANG,ver:APPV,device:devId()}),signal:ac?ac.signal:undefined})
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if(!r.ok||!j||!j.ok) throw new Error(j&&j.error||('HTTP '+r.status)); return j; }); })
+    .then(function(){ clearTimeout(to); FB_BUSY=false; FB_SENT=true; FB={stars:0,kind:'idea',msg:'',mail:FB.mail}; fbSave(); rateSet({done:1}); if(view==='more'&&moreTab==='fb') moreRender(); },
+      function(e){ clearTimeout(to); FB_BUSY=false; if(view==='more'&&moreTab==='fb') moreRender();
+        toast(navigator.onLine===false?T('Bez připojení zprávu nejde poslat. Zůstane tu rozepsaná.'):T('Zprávu se nepodařilo poslat')+': '+T(e&&e.message||''),4500); });
+}
+/* karta na Domů: po 10 bězích jednou požádá o hodnocení; zmizí po odeslání nebo zavření */
+function rateGet(){ return lsGet(RATEK,{}); }
+function rateSet(o){ lsSet(RATEK,Object.assign(rateGet(),o)); }
+function rateHomeHTML(){
+  var r=rateGet(); if(r.done||r.x||allRuns().length<10) return '';
+  var st=''; for(var i=1;i<=5;i++) st+='<button class="fb-st" data-hrate="'+i+'" aria-label="'+i+' z 5">'+IC.star+'</button>';
+  return '<div class="hm-ch hm-rate"><div class="tx"><b>Jak se ti HandlerMap líbí?</b><span>Ťukni na hvězdičky a napiš autorovi.</span><div class="fb-stars">'+st+'</div></div>'+
+    '<button class="hm-x" data-h="ratex" aria-label="Zavřít">'+IC.x+'</button></div>';
+}
 function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); },0);
   /* bez otevřené sekce jen nabídka; v sekci nabídka zmizí a nahoře je Zpět s názvem sekce */
   var mb=document.querySelector('#moreTabs [data-m="'+moreTab+'"]'), sc0=moreTab.indexOf('mod:')===0&&HM.screens[moreTab.slice(4)];
@@ -6795,6 +7041,8 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='coach'){ h='<p class="hint">Plánky od rozhodčích a trenérů. Parkur podle plánku přeneseš v Plánu přes Plánek z obrázku (překážky se rozpoznají samy) a při ukládání vyplníš, kdo ho stavěl.</p>'+coachHTML()+booksHTML(); }
   else if(moreTab==='backup'){ h=backupHTML(); }
   else if(moreTab==='start'){ h=startHTML(); }
+  else if(moreTab==='fb'){ h=fbHTML(); }
+  else if(moreTab==='donate'){ h=donateOn()?donateHTML():'<p class="hint">Podpora zatím není nastavená.</p>'; }
   else {
     h='<div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>HandlerMap 2.0</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
       '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
@@ -6809,8 +7057,9 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
       '<p class="hint">Novinky v 1.7: tlačítko Zkontrolovat nové parkury v záložce Parkury, nové parkury mají štítek Nový a tečku u záložky, přibyl parkur trenéra Euskadi Sextuple 2018 A1.</p></details>'+
       '<p class="hint">Katalog parkurů: '+(CAT&&CAT.version?'verze '+CAT.version+' ze serveru, staženo '+new Date(CAT.at).toLocaleDateString(LOC):'vestavěný')+'. V aplikaci pro Android se nové parkury stáhnou samy při spuštění nebo tlačítkem Zkontrolovat nové parkury v záložce Parkury, bez aktualizace aplikace.</p>'+
       '<p class="hint">Data se ukládají v tomhle zařízení. Sdílení kódem a cloudová záloha běží přes server Supabase a fungují v aplikaci pro Android. Uložení PDF a obrázku do telefonu a podklad z fotky fungují ve webové verzi.</p>'+
+      '<h4>Doporuč aplikaci kamarádům</h4><div class="share-app"><div class="dn-qr">'+qrSvg(APP_URL,'QR kód s odkazem na aplikaci')+'</div><div><p class="hint">Ať si kamarád naskenuje kód fotoaparátem, nebo mu pošli odkaz.</p><p translate="no"><b>'+esc(APP_URL.replace(/^https:\/\//,''))+'</b></p><button class="btn" data-appshare="1">Sdílet odkaz</button></div></div>'+
       '<p class="hint">Pravidla: <a href="https://klubagility.cz/site/assets/files/1076/rad_agility_2023-1.pdf" target="_blank" rel="noopener">Řád agility FCI a ČR (od 2023)</a>.</p>'+
-      '<div class="row"><button class="btn" data-onb="1">Spustit průvodce znovu</button></div></div>';
+      '<div class="row"><button class="btn" data-mgo="fb">Napsat autorovi</button>'+(donateOn()?'<button class="btn" data-mgo="donate">Podpořit aplikaci</button>':'')+'<button class="btn" data-onb="1">Spustit průvodce znovu</button></div></div>';
   }
   $('moreBody').innerHTML=h;
   if(moreTab==='stats'){dogChips('statDogs'); bindChart();}
@@ -6818,10 +7067,21 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
 }
 $('moreTabs').onclick=function(e){var b=e.target.closest('[data-m]'); if(!b) return; moreTab=b.getAttribute('data-m'); moreRender(); try{window.scrollTo(0,0);}catch(er){}};
 $('moreBack').onclick=function(){ moreTab=''; MORE_ARG=null; moreRender(); try{window.scrollTo(0,0);}catch(e){} };
+/* rozepsaná zpráva autorovi se ukládá průběžně (přežije zavření aplikace) */
+$('moreBody').addEventListener('input',function(e){ var id=e.target&&e.target.id; if(id==='fbMsg'){ FB.msg=e.target.value; fbSave(); } else if(id==='fbMail'){ FB.mail=e.target.value; fbSave(); } });
+(function(){ var r=document.querySelector('#moreTabs [data-m="donate"]'); if(r) r.hidden=!donateOn(); })();
 $('moreBody').onclick=function(e){
   var t=e.target.closest('button'); if(!t) return;
   var g=function(a){return t.getAttribute(a);};
   if(g('data-gpre')){ startGen(g('data-gpre')); return; }
+  if(g('data-appshare')){ appShare(); return; }
+  if(g('data-mgo')){ moreOpen(g('data-mgo')); return; }
+  if(g('data-fbs')){ var fs=+g('data-fbs'); FB.stars=FB.stars===fs?0:fs; fbSave(); moreRender(); return; }
+  if(g('data-fbk')){ FB.kind=g('data-fbk'); fbSave(); moreRender(); return; }
+  if(g('data-fbsend')){ fbSend(); return; }
+  if(g('data-fbnew')){ FB_SENT=false; moreRender(); return; }
+  if(g('data-dam')!=null){ DN_AMT=+g('data-dam')||0; moreRender(); return; }
+  if(g('data-dcopy')){ dnCopy(g('data-dcopy')); return; }
   if(g('data-onb')){ onbOpen(); return; }
   if(g('data-lang')){ setLang(g('data-lang')); return; }
   if(g('data-theme')){ setTheme(g('data-theme')); moreRender(); return; }
@@ -8383,10 +8643,26 @@ catSync();
   var ev=null;
   window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); ev=e; pwaInstUI(); });
   window.addEventListener('appinstalled',function(){ ev=null; pwaInstUI(); toast('Aplikace je nainstalovaná, najdeš ji na ploše.'); });
-  window.pwaInstUI=function(){ var el=document.getElementById('pwaInst'); if(!el) return;
-    var inst=window.matchMedia&&matchMedia('(display-mode: standalone)').matches;
-    el.innerHTML=inst||!ev?'':'<div class="panel" style="display:flex;flex-direction:column;gap:8px"><b>Nainstalovat do telefonu</b><p class="hint">Aplikace pak poběží z ikony na ploše přes celou obrazovku, i bez internetu.</p><div class="row"><button class="btn primary" id="pwaInstBtn">Nainstalovat</button></div></div>';
-    var b=document.getElementById('pwaInstBtn'); if(b) b.onclick=function(){ if(!ev) return; ev.prompt(); ev.userChoice.then(function(){ ev=null; pwaInstUI(); }); }; };
+  /* Instalovat: Chrome nabídne vlastní okno (tlačítko na Domů a v O aplikaci); jinde (iPhone, Firefox, okno už odmítnuté) návod */
+  window.pwaInstUI=function(){
+    var inst=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true||IS_APK;
+    var el=document.getElementById('pwaInst');
+    if(el){
+      var ios=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+      el.innerHTML=inst?'':'<div class="panel inst"><b>Nainstalovat do telefonu</b><p class="hint">Aplikace pak poběží z ikony na ploše přes celou obrazovku, i bez internetu.</p>'+
+        (ev?'<div class="row"><button class="btn primary" data-inst="1">Nainstalovat</button></div>'
+          :ios?'<ol class="inst-steps"><li>Otevři stránku v Safari.</li><li>Ťukni na Sdílet (čtvereček se šipkou nahoru).</li><li>Vyber Přidat na plochu.</li></ol>'
+          :'<ol class="inst-steps"><li>Otevři stránku v Chromu.</li><li>Ťukni na ⋮ vpravo nahoře.</li><li>Vyber Instalovat aplikaci (nebo Přidat na plochu).</li></ol>')+'</div>';
+    }
+    var hm=document.getElementById('hmInst');
+    if(hm) hm.innerHTML=inst||!ev||lsGet('agility-instx-v1',0)?'':'<div class="hm-ch hm-inst"><div class="ic">📲</div><div class="tx"><b>Nainstaluj si aplikaci</b><span>Ikona na ploše, celá obrazovka a funguje i bez signálu na cvičišti.</span>'+
+      '<button class="hm-go" data-inst="1">Instalovat</button></div><button class="hm-x" data-instx="1" aria-label="Zavřít">'+IC.x+'</button></div>';
+  };
+  document.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('[data-inst],[data-instx]'); if(!b) return;
+    if(b.hasAttribute('data-instx')){ lsSet('agility-instx-v1',1); pwaInstUI(); return; }
+    if(!ev) return; ev.prompt(); ev.userChoice.then(function(){ ev=null; pwaInstUI(); },function(){ ev=null; pwaInstUI(); });
+  });
   /* plánek poslaný přes Sdílet z galerie: service worker ho uložil, tady se otevře ve čtečce */
   if(/[?&]share=1/.test(location.search)&&window.caches){
     try{ history.replaceState(null,'',location.pathname); }catch(e){}
