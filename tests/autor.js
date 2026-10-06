@@ -126,7 +126,7 @@ module.exports = async function ({ browser, base }) {
     ok(await ev(() => window.__pr === 1) && !(await page.isVisible('#hmInst .hm-inst')), 'Instalovat nespustil okno Chromu');
     await ev(() => { const e = new Event('beforeinstallprompt'); e.prompt = () => {}; e.userChoice = Promise.resolve({}); window.dispatchEvent(e); });
     await page.waitForTimeout(100); await page.click('#hmInst [data-instx]'); await page.waitForTimeout(100);
-    ok(!(await page.isVisible('#hmInst .hm-inst')) && await ev(() => lsGet('agility-instx-v1', 0) === 1), 'zavření karty Instalovat');
+    ok(!(await page.isVisible('#hmInst .hm-inst')) && await ev(() => lsGet('agility-instx-v1', 0) > 1), 'zavření karty Instalovat');
     /* O aplikaci: tlačítko z Chromu, jinak návod; doporučení s QR kódem */
     await more('about');
     ok(await page.isVisible('#pwaInst [data-inst]'), 'v O aplikaci chybí Nainstalovat');
@@ -194,6 +194,40 @@ module.exports = async function ({ browser, base }) {
     ok(a1[0].length === 1 && /^intent:\/\/[^#]+\/\?iabauto&x=1#Intent;scheme=https;package=com\.android\.chrome;S\.browser_fallback_url=/.test(a1[0][0]) && a1[1].length === 0, 'automatické otevření v Chromu: ' + JSON.stringify(a1));
     const a2 = await auto('Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 [FBAN/FBIOS;FBAV/480.0]');
     ok(a2[0].length === 0 && a2[1].length === 0, 'na iPhonu se nemá nic otevírat samo: ' + JSON.stringify(a2));
+  });
+
+  await step('instalace na Androidu bez okna Chromu', async () => {
+    const SAM = 'Mozilla/5.0 (Linux; Android 14; SM-A546B) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/26.0 Chrome/122.0.0.0 Mobile Safari/537.36';
+    const CHR = 'Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36';
+    const WV = 'Mozilla/5.0 (Linux; Android 14; Pixel 7; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/129.0 Mobile Safari/537.36';
+    const open = async (ua) => {
+      const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block', userAgent: ua });
+      await ctx.route(u => !/^http:\/\/(127\.0\.0\.1|localhost)/.test(u.href), r => r.abort());
+      await ctx.addInitScript(() => { localStorage.setItem('agility-onb-v1', JSON.stringify({ done: 1, v: 2 })); window.IAB_OPEN = () => {}; });
+      const p = await ctx.newPage(); await p.goto(base + '/#home'); await p.waitForTimeout(500); await p.evaluate(() => closeSheet()); return { ctx, p };
+    };
+    /* Samsung Internet beforeinstallprompt nepošle: karta s návodem pro jeho menu */
+    let { ctx, p } = await open(SAM);
+    ok(await p.isVisible('#hmInst [data-andgo]'), 'v Samsung Internetu chybí na Domů karta Nainstaluj');
+    await p.click('#hmInst [data-andgo]'); await p.waitForTimeout(100);
+    ok(/Přidat stránku/.test(await p.textContent('#sheet')) && await p.locator('#sheet .inst-steps li').count() === 3, 'návod pro Samsung Internet: ' + await p.textContent('#sheet'));
+    await p.click('#sheet [data-a]');
+    /* zavřená karta se vrátí po 14 dnech */
+    await p.click('#hmInst [data-instx]'); ok(!(await p.isVisible('#hmInst .hm-inst')), 'karta nejde zavřít');
+    await p.evaluate(() => { localStorage.setItem('agility-instx-v1', String(Date.now() - 15 * 864e5)); pwaInstUI(); });
+    ok(await p.isVisible('#hmInst [data-andgo]'), 'karta se po 14 dnech nevrátila');
+    await ctx.close();
+    /* Chrome po odmítnutém okně: karta zůstane a ukáže návod přes ⋮ */
+    ({ ctx, p } = await open(CHR));
+    await p.evaluate(() => { const e = new Event('beforeinstallprompt'); e.prompt = () => {}; e.userChoice = Promise.resolve({ outcome: 'dismissed' }); window.dispatchEvent(e); });
+    await p.waitForTimeout(100); await p.click('#hmInst [data-inst]'); await p.waitForTimeout(150);
+    ok(await p.isVisible('#hmInst [data-andgo]'), 'po odmítnutí okna Chromu zmizel návod');
+    await p.click('#hmInst [data-andgo]'); ok(/Ťukni na ⋮ vpravo nahoře v Chromu/.test(await p.textContent('#sheet')), 'návod pro Chrome');
+    await ctx.close();
+    /* vestavěný prohlížeč jiné aplikace (WebView): pruh Otevřít v Chromu, bez karty */
+    ({ ctx, p } = await open(WV));
+    ok(await p.isVisible('#iabGo') && !(await p.isVisible('#hmInst .hm-inst')), 've WebView jiné aplikace chybí Otevřít v Chromu');
+    await ctx.close();
   });
 
   await step('návod na instalaci na iPhonu', async () => {
