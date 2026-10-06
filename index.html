@@ -1650,6 +1650,17 @@ var I18N_EXTRA={exact:{
 "Přidat na plochu": "Add to Home Screen",
 "Rozumím": "Got it",
 "Ukázat jak": "Show me how",
+"Ťukni na ikonu se šipkou dolů v adresním řádku, nebo na ≡ dole vpravo.": "Tap the down-arrow icon in the address bar, or ≡ at the bottom right.",
+"Vyber Přidat stránku na (Přidat stránku do).": "Choose Add page to.",
+"Zvol Domovská obrazovka a potvrď Přidat.": "Pick Home screen and confirm Add.",
+"Ťukni na ⋮ (vpravo nahoře nebo dole).": "Tap ⋮ (top right or bottom).",
+"Vyber Přidat na domovskou obrazovku (nebo Instalovat).": "Choose Add to Home screen (or Install).",
+"Potvrď Přidat.": "Confirm Add.",
+"Ťukni na menu prohlížeče (⋯ nebo ⋮).": "Tap the browser menu (⋯ or ⋮).",
+"Vyber Přidat na plochu (nebo Instalovat aplikaci).": "Choose Add to Home screen (or Install app).",
+"Ťukni na ⋮ vpravo nahoře v Chromu.": "Tap ⋮ at the top right in Chrome.",
+"Potvrď Instalovat.": "Confirm Install.",
+"Ikona AgiPlan se pak objeví na ploše. Aplikace z ní běží přes celou obrazovku a funguje i bez signálu.": "The AgiPlan icon then appears on your home screen. The app runs from it full screen and works without signal.",
 "Ukázat návod": "Show the guide",
 "Vyber Sdílet": "Choose Share",
 "Ťukni dole vpravo na tři tečky ⋯": "Tap the three dots ⋯ at the bottom right",
@@ -10051,35 +10062,56 @@ catSync();
   var ev=null;
   window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); ev=e; pwaInstUI(); });
   window.addEventListener('appinstalled',function(){ ev=null; pwaInstUI(); toast('Aplikace je nainstalovaná, najdeš ji na ploše.'); });
-  /* Instalovat: Chrome nabídne vlastní okno (tlačítko na Domů a v O aplikaci); jinde (iPhone, Firefox, okno už odmítnuté) návod */
+  /* Instalovat: Chrome nabídne vlastní okno (tlačítko na Domů a v O aplikaci); jinde (iPhone, Samsung Internet, Firefox,
+     Chrome po odmítnutém okně) karta s návodem pro daný prohlížeč. Zavřená karta se vrátí po 14 dnech. */
+  var UA=navigator.userAgent||'', ANDR=/Android/i.test(UA);
+  var INAPP=/FBAN|FBAV|FB_IAB|FBIOS|Instagram|Messenger|BytedanceWebview|musical_ly|LinkedInApp|Snapchat|Line\/|; wv\)/i.test(UA)&&!window.IS_APK;
+  function instSteps(){
+    if(/SamsungBrowser/.test(UA)) return ['Ťukni na ikonu se šipkou dolů v adresním řádku, nebo na ≡ dole vpravo.','Vyber Přidat stránku na (Přidat stránku do).','Zvol Domovská obrazovka a potvrď Přidat.'];
+    if(/Firefox/.test(UA)) return ['Ťukni na ⋮ (vpravo nahoře nebo dole).','Vyber Přidat na domovskou obrazovku (nebo Instalovat).','Potvrď Přidat.'];
+    if(/EdgA|OPR\//.test(UA)) return ['Ťukni na menu prohlížeče (⋯ nebo ⋮).','Vyber Přidat na plochu (nebo Instalovat aplikaci).','Potvrď Přidat.'];
+    return ['Ťukni na ⋮ vpravo nahoře v Chromu.','Vyber Přidat na plochu (nebo Instalovat aplikaci).','Potvrď Instalovat.'];
+  }
+  function instHid(){ var t=+lsGet('agility-instx-v1',0)||0; return t&&Date.now()-t<14*864e5; }
+  window.andGuide=function(){
+    openSheet('<h3>Nainstalovat do telefonu</h3><ol class="inst-steps">'+instSteps().map(function(x){ return '<li>'+x+'</li>'; }).join('')+'</ol>'+
+      '<p class="hint">Ikona AgiPlan se pak objeví na ploše. Aplikace z ní běží přes celou obrazovku a funguje i bez signálu.</p><div class="acts"><button class="btn primary" data-a="x">Rozumím</button></div>',
+      function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
+  };
   window.pwaInstUI=function(){
     var inst=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true||IS_APK;
     var el=document.getElementById('pwaInst');
+    var ios=/iP(hone|ad|od)/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
     if(el){
-      var ios=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
       el.innerHTML=inst?'':'<div class="panel inst"><b>Nainstalovat do telefonu</b><p class="hint">Aplikace pak poběží z ikony na ploše přes celou obrazovku, i bez internetu.</p>'+
         (ev?'<div class="row"><button class="btn primary" data-inst="1">Nainstalovat</button></div>'
           :ios?'<ol class="inst-steps"><li>Otevři stránku v Safari.</li><li>Ťukni na Sdílet (čtvereček se šipkou nahoru).</li><li>Vyber Přidat na plochu.</li></ol><div class="row"><button class="btn primary" data-iosgo="1">Ukázat návod</button></div>'
-          :'<ol class="inst-steps"><li>Otevři stránku v Chromu.</li><li>Ťukni na ⋮ vpravo nahoře.</li><li>Vyber Instalovat aplikaci (nebo Přidat na plochu).</li></ol>')+'</div>';
+          :INAPP?'<ol class="inst-steps"><li>Otevři stránku v Chromu.</li><li>Ťukni na ⋮ vpravo nahoře.</li><li>Vyber Instalovat aplikaci (nebo Přidat na plochu).</li></ol>'
+          :'<ol class="inst-steps">'+instSteps().map(function(x){ return '<li>'+x+'</li>'; }).join('')+'</ol>')+'</div>';
     }
-    var hm=document.getElementById('hmInst');
+    var hm=document.getElementById('hmInst'); if(!hm) return;
+    var card=function(txt,btn){ return '<div class="hm-ch hm-inst"><div class="ic">📲</div><div class="tx"><b>Nainstaluj si aplikaci</b><span>'+txt+'</span>'+btn+'</div><button class="hm-x" data-instx="1" aria-label="Zavřít">'+IC.x+'</button></div>'; };
     /* iPhone v Safari: instalace jen přes Sdílet → Přidat na plochu, tak to ukážeme na Domů */
-    var iosSaf=/iP(hone|ad|od)/.test(navigator.userAgent)&&!/CriOS|FxiOS|EdgiOS|FBAN|FBAV|Instagram/.test(navigator.userAgent);
-    if(hm&&!inst&&!ev&&iosSaf&&!lsGet('agility-instx-v1',0)){ hm.innerHTML='<div class="hm-ch hm-inst"><div class="ic">📲</div><div class="tx"><b>Nainstaluj si aplikaci</b><span>Stačí pár ťuknutí v Safari. Pak aplikace běží z ikony a funguje i bez signálu.</span><button class="hm-go" data-iosgo="1">Ukázat jak</button></div><button class="hm-x" data-instx="1" aria-label="Zavřít">'+IC.x+'</button></div>'; return; }
-    if(hm) hm.innerHTML=inst||!ev||lsGet('agility-instx-v1',0)?'':'<div class="hm-ch hm-inst"><div class="ic">📲</div><div class="tx"><b>Nainstaluj si aplikaci</b><span>Ikona na ploše, celá obrazovka a funguje i bez signálu na cvičišti.</span>'+
-      '<button class="hm-go" data-inst="1">Instalovat</button></div><button class="hm-x" data-instx="1" aria-label="Zavřít">'+IC.x+'</button></div>';
+    var iosSaf=ios&&!/CriOS|FxiOS|EdgiOS|FBAN|FBAV|Instagram/.test(UA);
+    if(inst||instHid()||INAPP) hm.innerHTML='';
+    else if(ev) hm.innerHTML=card('Ikona na ploše, celá obrazovka a funguje i bez signálu na cvičišti.','<button class="hm-go" data-inst="1">Instalovat</button>');
+    else if(iosSaf) hm.innerHTML=card('Stačí pár ťuknutí v Safari. Pak aplikace běží z ikony a funguje i bez signálu.','<button class="hm-go" data-iosgo="1">Ukázat jak</button>');
+    /* Android bez systémového okna (Samsung Internet, Firefox, Chrome po odmítnutí): návod pro daný prohlížeč */
+    else if(ANDR) hm.innerHTML=card('Ikona na ploše, celá obrazovka a funguje i bez signálu na cvičišti.','<button class="hm-go" data-andgo="1">Ukázat jak</button>');
+    else hm.innerHTML='';
   };
   /* Domů se vykreslí dřív, než je tahle funkce hotová (karta pro iPhone nečeká na beforeinstallprompt) */
   pwaInstUI();
   document.addEventListener('click',function(e){
-    var b=e.target.closest&&e.target.closest('[data-inst],[data-instx]'); if(!b) return;
-    if(b.hasAttribute('data-instx')){ lsSet('agility-instx-v1',1); pwaInstUI(); return; }
-    if(!ev) return; ev.prompt(); ev.userChoice.then(function(){ ev=null; pwaInstUI(); },function(){ ev=null; pwaInstUI(); });
+    var b=e.target.closest&&e.target.closest('[data-inst],[data-instx],[data-andgo]'); if(!b) return;
+    if(b.hasAttribute('data-instx')){ lsSet('agility-instx-v1',Date.now()); pwaInstUI(); return; }
+    if(b.hasAttribute('data-andgo')){ andGuide(); return; }
+    if(!ev){ andGuide(); return; }
+    ev.prompt(); ev.userChoice.then(function(){ ev=null; pwaInstUI(); },function(){ ev=null; pwaInstUI(); });
   });
   /* odkaz otevřený ve Facebooku, Messengeru nebo Instagramu: jejich vestavěný prohlížeč aplikaci nainstalovat neumí */
-  var ua=navigator.userAgent||'';
-  if(/FBAN|FBAV|FB_IAB|FBIOS|Instagram|Messenger/i.test(ua)&&!window.IS_APK){
-    var andr=/Android/i.test(ua), bar=document.createElement('div'); bar.className='iabbar'; bar.id='iabBar'; bar.setAttribute('role','status');
+  if(INAPP){
+    var andr=ANDR, bar=document.createElement('div'); bar.className='iabbar'; bar.id='iabBar'; bar.setAttribute('role','status');
     var url=location.href.replace(/#.*$/,''), intent='intent://'+location.host+location.pathname+location.search+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(url)+';end';
     bar.innerHTML=andr
       ?'<span>Pro instalaci aplikace ji otevři v Chromu.</span><a class="btn primary" id="iabGo" href="'+intent+'">Otevřít v Chromu</a><button class="btn" id="iabX" aria-label="Zavřít">×</button>'
