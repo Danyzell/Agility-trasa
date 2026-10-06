@@ -1,5 +1,7 @@
 # Spolupráce na AgiPlan
 
+Aktuální stav, postup a co dál: [PREDANI.md](PREDANI.md).
+
 Na aplikaci pracují souběžně dvě sezení Claude Code. Aby se nepřepisovala:
 
 - **Před prací** si vždy stáhni aktuální `main` (`git fetch origin && git checkout main && git pull`) a stav na něm.
