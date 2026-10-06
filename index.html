@@ -1198,6 +1198,13 @@ function trTree(root){
 }
 /* Překlady nových textů: když přidáš do aplikace český text, sem dopiš jeho anglickou verzi (stejný formát jako i18nAdd). */
 var I18N_EXTRA={exact:{
+"Novinky v AgiPlan 2.4": "What's new in AgiPlan 2.4",
+"iPhone a iPad: AR na place přes Apple AR Quick Look a návod na instalaci na plochu přímo na obrazovce": "iPhone and iPad: AR on the field via Apple AR Quick Look and an on-screen guide to adding the app to the Home Screen",
+"Kolbiště podle GPS (Plán → Nástroje): ulož polohu kolbiště, aplikace tě k němu dovede a jeho natočení použije Stavba v terénu i AR": "Rings by GPS (Plan → Tools): save where the ring is, the app guides you there and Build on the field and AR use its orientation",
+"Stavba: přiblížení dvěma prsty, natočení skoků kolmo na trasu, kopírování překážky a obrácení trasy": "Build: pinch to zoom, align jumps square to the route, copy an obstacle and reverse the route",
+"Nové překážky zeď a dvojitý skok, na plánku Start a Cíl, kontrola hlídá překážky přes sebe": "New obstacles wall and spread jump, Start and Finish on the plan, the check watches for overlapping obstacles",
+"Deník: postup do vyšší třídy počítá i výsledky z kacr.info, u závodu zapíšeš čas, délku trati a video": "Diary: promotion progress also counts kacr.info results, for a competition you can record time, course length and video",
+"Jednotky: metry, nebo stopy a yardy za sekundu (Více → Nastavení)": "Units: metres, or feet and yards per second (More → Settings)",
 "Jednotky": "Units",
 "Metry": "Metres",
 "Stopy (ft, yd/s)": "Feet (ft, yd/s)",
@@ -7948,7 +7955,7 @@ function appShare(){
   dnCopy(APP_URL);
 }
 /* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
-var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='2.3';
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='2.4';
 var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
 function fbSave(){ lsSet(FBK,FB); }
 var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];
@@ -8013,7 +8020,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='fb'){ h=fbHTML(); }
   else if(moreTab==='donate'){ h=donateOn()?donateHTML():'<p class="hint">Podpora zatím není nastavená.</p>'; }
   else {
-    h='<div id="statsBox"></div><div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>AgiPlan 2.3</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
+    h='<div id="statsBox"></div><div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>AgiPlan 2.4</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
       '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
       '<h4>Novinky ve verzi 2.3</h4><ul class="news"><li>Účet: přihlášení přes Google a automatická synchronizace dat mezi telefonem a počítačem</li><li>AR na place: parkur kamerou na skutečném trávníku (Chrome na Androidu)</li><li>Náhled odkazu pro Facebook</li></ul>'+
       '<h4>Novinky ve verzi 2.2</h4><ul class="news"><li>3D parkur a přepínač 2D / 3D v Plánu</li><li>Pes ve 3D kličkuje slalomem podle pravidel FCI</li><li>Délka tunelu 2–6 m (nový tunel 5 m)</li><li>Google Pay, Apple Pay a uložení QR platby do galerie</li><li>Zásady ochrany osobních údajů</li></ul>'+
@@ -9911,10 +9918,10 @@ function onbStart(){
   onbOpen(1);
 }
 function newsCheck(){
-  var seen=lsGet('agility-news-v1',null); if(seen==='2.3') return false; lsSet('agility-news-v1','2.3');
+  var seen=lsGet('agility-news-v1',null); if(seen==='2.4') return false; lsSet('agility-news-v1','2.4');
   /* kdo neviděl novinky 2.1, dozví se i o novém názvu */
-  openSheet('<h3>Novinky v AgiPlan 2.3</h3>'+(seen!=='2.1'&&seen!=='2.2'?'<p>Aplikace se teď jmenuje AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>':'')+
-    '<ul class="news"><li>Účet: přihlas se přes Google ve Více → Účet a parkury, psi i běhy budeš mít na všech zařízeních</li><li>AR na place: ve 3D klepni na AR a parkur se položí na skutečný trávník (Chrome na Androidu)</li><li>3D parkur: v Plánu klepni na 3D a projdi si parkur ze všech stran</li><li>Pes ve 3D skáče, leze po zónách a kličkuje slalomem</li><li>Délka tunelu 2–6 m, nový tunel má 5 m</li><li>Podpořit aplikaci i přes Google Pay a Apple Pay</li></ul>'+
+  openSheet('<h3>Novinky v AgiPlan 2.4</h3>'+(seen!=='2.1'&&seen!=='2.2'&&seen!=='2.3'?'<p>Aplikace se teď jmenuje AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>':'')+
+    '<ul class="news"><li>iPhone a iPad: AR na place přes Apple AR Quick Look a návod na instalaci na plochu přímo na obrazovce</li><li>Kolbiště podle GPS (Plán → Nástroje): ulož polohu kolbiště, aplikace tě k němu dovede a jeho natočení použije Stavba v terénu i AR</li><li>Stavba: přiblížení dvěma prsty, natočení skoků kolmo na trasu, kopírování překážky a obrácení trasy</li><li>Nové překážky zeď a dvojitý skok, na plánku Start a Cíl, kontrola hlídá překážky přes sebe</li><li>Deník: postup do vyšší třídy počítá i výsledky z kacr.info, u závodu zapíšeš čas, délku trati a video</li><li>Jednotky: metry, nebo stopy a yardy za sekundu (Více → Nastavení)</li></ul>'+
     '<div class="acts"><button class="btn primary" data-a="x">Pokračovat</button></div>',function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
   return true;
 }
