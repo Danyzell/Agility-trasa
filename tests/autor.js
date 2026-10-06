@@ -180,6 +180,20 @@ module.exports = async function ({ browser, base }) {
     ok(href && /^intent:\/\/.+#Intent;scheme=https;package=com\.android\.chrome;/.test(href), 've Facebooku chybí Otevřít v Chromu: ' + href);
     await p2.click('#iabX'); ok(!(await p2.isVisible('#iabBar')), 'pruh pro Facebook nejde zavřít');
     await ctx.close();
+    /* Android: poprvé se odkaz sám přepne do Chromu (i s parametry adresy), podruhé už ne; na iPhonu se nic samo neotevírá */
+    const auto = async (ua) => {
+      const c = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block', userAgent: ua });
+      await c.route(u => !/^http:\/\/(127\.0\.0\.1|localhost)/.test(u.href), r => r.abort());
+      await c.addInitScript(() => { window.__iab = []; window.IAB_OPEN = u => window.__iab.push(u); });
+      const p = await c.newPage(); const out = [];
+      for (let i = 0; i < 2; i++) { await p.goto('about:blank'); await p.goto(base + '/?iabauto&x=1#home'); await p.waitForTimeout(700); out.push(await p.evaluate(() => window.__iab.slice())); }
+      await c.close(); return out;
+    };
+    const fbA = 'Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/480.0.0.0;]';
+    const a1 = await auto(fbA);
+    ok(a1[0].length === 1 && /^intent:\/\/[^#]+\/\?iabauto&x=1#Intent;scheme=https;package=com\.android\.chrome;S\.browser_fallback_url=/.test(a1[0][0]) && a1[1].length === 0, 'automatické otevření v Chromu: ' + JSON.stringify(a1));
+    const a2 = await auto('Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 [FBAN/FBIOS;FBAV/480.0]');
+    ok(a2[0].length === 0 && a2[1].length === 0, 'na iPhonu se nemá nic otevírat samo: ' + JSON.stringify(a2));
   });
 
   await step('návod na instalaci na iPhonu', async () => {

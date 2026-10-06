@@ -10080,12 +10080,18 @@ catSync();
   var ua=navigator.userAgent||'';
   if(/FBAN|FBAV|FB_IAB|FBIOS|Instagram|Messenger/i.test(ua)&&!window.IS_APK){
     var andr=/Android/i.test(ua), bar=document.createElement('div'); bar.className='iabbar'; bar.id='iabBar'; bar.setAttribute('role','status');
-    var url=location.href.replace(/#.*$/,'');
+    var url=location.href.replace(/#.*$/,''), intent='intent://'+location.host+location.pathname+location.search+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(url)+';end';
     bar.innerHTML=andr
-      ?'<span>Pro instalaci aplikace ji otevři v Chromu.</span><a class="btn primary" id="iabGo" href="intent://'+location.host+location.pathname+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(url)+';end">Otevřít v Chromu</a><button class="btn" id="iabX" aria-label="Zavřít">×</button>'
+      ?'<span>Pro instalaci aplikace ji otevři v Chromu.</span><a class="btn primary" id="iabGo" href="'+intent+'">Otevřít v Chromu</a><button class="btn" id="iabX" aria-label="Zavřít">×</button>'
       :'<span>Pro instalaci klepni na ⋯ vpravo nahoře a zvol Otevřít v Safari (nebo v prohlížeči).</span><button class="btn" id="iabX" aria-label="Zavřít">×</button>';
     document.body.appendChild(bar);
     $('iabX').onclick=function(){ bar.parentNode.removeChild(bar); };
+    /* Android: poprvé se odkaz sám přepne do Chromu (tam jde aplikace nainstalovat). Jen jednou na zařízení: bez Chromu
+       se vrátí sem (browser_fallback_url) a zůstane pruh s tlačítkem. Automatické testy jen s ?iabauto. */
+    if(andr&&!lsGet('agility-iabgo-v1',0)&&(!navigator.webdriver||/[?&]iabauto\b/.test(location.search))){
+      lsSet('agility-iabgo-v1',1);
+      setTimeout(function(){ (window.IAB_OPEN||function(u){ location.href=u; })(intent); },400);
+    }
   }
   /* plánek poslaný přes Sdílet z galerie: service worker ho uložil, tady se otevře ve čtečce */
   if(/[?&]share=1/.test(location.search)&&window.caches){
