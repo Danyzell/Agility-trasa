@@ -26,6 +26,8 @@ Stavba na telefonu: přiblížení dvěma prsty (100–400 %), klepnutí do voln
 
 Deník a postup (Více → Deník): do postupu A1 → A2 a A2 → A3 se počítají ručně zapsané závody i běhy agility z kacr.info (třída z názvu běhu, hodnocení z trestných bodů podle FCI, stejný běh se nepočítá dvakrát; rozhodčího kacr.info u výsledků neuvádí). U závodu jde zapsat čas, délku trati (ukáže rychlost) a odkaz na video. Jednotky (Více → Nastavení): metry, nebo stopy a yardy za sekundu; parkury se ukládají v metrech. Testy `tests/denik.js`.
 
+Uspořádání (verze 2.4): spodní lišta má 5 záložek (Domů, Plán, Parkury, Běh, Více). Více je ve 3 skupinách: Můj tým (Účet, Psi, Deník a statistiky), Učení (Videa a technika, Začínáme, Rozcvička, Trenéři a plánky) a Aplikace (Nastavení a záloha, O aplikaci a podpora s odkazy Napsat autorovi a Podpořit). Přímé odkazy `moreTab='stats'`, `'backup'`, `'fb'`, `'donate'` dál fungují. Na Domů jsou Parkur týdne, Zahrada týdne, Závody a Výzva dne sbalené pod „Výzvy, žebříčky a závody“ (klíč `agility-hmmore-v1`). Nástroje v Plánu jsou ve skupinách Rozbor a trénink, Venku, Fotka a sdílení. Testy `tests/zjednoduseni.js`.
+
 Délka tunelu: u vybraného tunelu ve Stavbě 2–6 m (nový tunel 5 m, uložené parkury si délku nechají). Kontrola FCI hlásí tunel kratší než 3 m.
 
 Zásady ochrany osobních údajů: [privacy.html](https://danyzell.github.io/Agility-trasa/privacy.html) (česky i anglicky, adresa se hodí i do Google Play).
@@ -42,7 +44,7 @@ Podpořit aplikaci (Více, nebo srdíčko na Domů a v horní liště): platba k
 
 Na aplikaci pracuje víc sezení Claude Code najednou – pravidla jsou v [SPOLUPRACE.md](SPOLUPRACE.md).
 
-3D animace techniky v záložce Videa jsou ve `v3d/src` (three.js); balíček `v3d/v3d.js` se sestaví příkazem `v3d/build.sh` (esbuild).
+3D animace techniky ve Videích (Více → Videa a technika) jsou ve `v3d/src` (three.js); balíček `v3d/v3d.js` se sestaví příkazem `v3d/build.sh` (esbuild).
 
 ## Testy
 

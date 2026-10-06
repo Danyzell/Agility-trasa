@@ -206,7 +206,7 @@ select.btn{padding-right:8px;}
 
 /* spodní navigace */
 .nav{position:fixed; left:0; right:0; bottom:0; z-index:30; background:var(--surface); border-top:1px solid var(--border); padding-bottom:env(safe-area-inset-bottom,0px);}
-.nav-in{max-width:760px; margin:0 auto; display:grid; grid-template-columns:repeat(6,1fr); height:var(--nav-h);}
+.nav-in{max-width:760px; margin:0 auto; display:grid; grid-template-columns:repeat(5,1fr); height:var(--nav-h);}
 .nav button{border:0; background:none; color:var(--muted); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; font-size:12px; font-weight:500;}
 .nav button svg{width:24px; height:24px;}
 .nav button.on{color:var(--accent);}
@@ -736,7 +736,7 @@ select.btn{padding-right:10px;}
 .nav button.on .nic{background:#c6f432; color:#0a2a1c;}
 .nav .nic{width:46px; border-radius:14px;}
 /* na 360 px se šest položek vejde do panelu: sloupce se smí zúžit pod šířku ikony s okraji tlačítka (jinak Více vyčnívá z panelu) */
-.nav-in{grid-template-columns:repeat(6,minmax(0,1fr));} .nav button{min-width:0; padding:0;}
+.nav-in{grid-template-columns:repeat(5,minmax(0,1fr));} .nav button{min-width:0; padding:0;}
 .nav .ndot{box-shadow:0 0 0 2px #0e1611;}
 main{padding-bottom:calc(var(--nav-h) + var(--nav-gap) + 28px + env(safe-area-inset-bottom,0px));}
 .toast{bottom:calc(var(--nav-h) + var(--nav-gap) + 12px + env(safe-area-inset-bottom,0px));}
@@ -863,6 +863,16 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 .mrow{display:flex; align-items:center; gap:12px; min-height:52px; padding:0 12px 0 14px; border:0; background:none; text-align:left; font-size:16px; font-weight:500; color:var(--text);}
 .mrow+.mrow{border-top:1px solid color-mix(in srgb,var(--border) 75%,transparent);}
 .mrow:active{background:var(--sunk);}
+.hm-more{margin:14px 16px 0; background:var(--surface); border:1px solid color-mix(in srgb,var(--border) 75%,transparent); border-radius:20px; overflow:hidden;}
+.hm-more>.hm-sum{list-style:none; display:flex; align-items:center; gap:12px; padding:14px 16px; cursor:pointer; min-height:44px;}
+.hm-more>.hm-sum::-webkit-details-marker{display:none;}
+.hm-sum .tx{flex:1; display:grid; gap:2px; min-width:0;} .hm-sum .tx span{color:var(--muted); font-size:13px;}
+.hm-sum .hm-chev{display:grid; color:var(--muted); transition:transform .15s;} .hm-sum .hm-chev svg{width:18px; height:18px;}
+.hm-more[open] .hm-chev{transform:rotate(90deg);} .hm-more[open]{padding-bottom:12px;}
+.mgrp{padding:12px 14px 4px; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted);}
+.mgrp+.mrow{border-top:0;} .mrow+.mgrp{border-top:1px solid color-mix(in srgb,var(--border) 75%,transparent);}
+.morego{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px;}
+#planTools{flex-wrap:wrap; overflow:visible;} #planTools .tgrp{flex:0 0 100%; grid-column:1/-1; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-top:4px;}
 .mrow .mic{flex:0 0 auto; width:32px; height:32px; border-radius:10px; display:grid; place-items:center; background:color-mix(in srgb,var(--accent) 13%,transparent); color:var(--accent);}
 .mrow .mic svg{width:19px; height:19px;}
 .mrow .ml{flex:1; min-width:0;}
@@ -906,16 +916,19 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       <button class="btn" id="toolsBtn" aria-label="Nástroje" title="Nástroje" aria-expanded="false" aria-controls="planTools" data-ic="dots"><span class="lbl">Nástroje</span></button>
     </div>
     <div class="tools" id="planTools" hidden>
+      <div class="tgrp">Rozbor a trénink</div>
       <button class="tool" data-t="ana" data-ic="gauge">Rozbor</button>
       <button class="tool" data-t="traps" data-ic="alert">Pasti</button>
       <button class="tool" data-t="3d" data-ic="cube">3D průlet</button>
       <button class="tool" data-t="say" data-ic="speak">Předčítat</button>
       <button class="tool" data-t="quiz" data-ic="brain">Trénink paměti</button>
       <button class="tool" data-t="side" data-ic="walk">Dráha psovoda</button>
-      <button class="tool" data-t="imp" data-ic="scan">Plánek z obrázku</button>
-      <button class="tool" data-t="bg" data-ic="photo">Podklad z fotky</button>
+      <div class="tgrp">Venku</div>
       <button class="tool" data-t="fld" data-ic="compass">Stavba v terénu</button>
       <button class="tool" data-t="ring" data-ic="pin">Kolbiště (GPS)</button>
+      <div class="tgrp">Fotka a sdílení</div>
+      <button class="tool" data-t="imp" data-ic="scan">Plánek z obrázku</button>
+      <button class="tool" data-t="bg" data-ic="photo">Podklad z fotky</button>
       <button class="tool" data-t="export" data-ic="file">Export</button>
       <button class="tool" data-t="share" data-ic="share">Sdílet</button>
     </div>
@@ -1033,19 +1046,25 @@ html.onb-open,html.onb-open body{overflow:hidden;}
   <!-- VÍCE -->
   <section class="view" id="v-more" hidden>
     <!-- Více: svislá nabídka sekcí; otevřená sekce má nahoře Zpět a nabídka se schová -->
+    <!-- Více: 3 skupiny po 2–4 řádcích. Statistiky jsou v Deníku, Záloha v Nastavení, Napsat autorovi a Podpořit v O aplikaci
+         (skryté řádky zůstávají kvůli názvu sekce a přímým odkazům moreTab=…) -->
     <div class="mlist" id="moreTabs" role="navigation" aria-label="Více">
+      <div class="mgrp">Můj tým</div>
       <button class="mrow" data-m="acct"><span class="mic" data-ic="user"></span><span class="ml">Účet</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="dogs"><span class="mic" data-ic="paw"></span><span class="ml">Psi</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="diary"><span class="mic" data-ic="log"></span><span class="ml">Deník a statistiky</span><span class="mch" data-ic="chev"></span></button>
+      <div class="mgrp">Učení</div>
+      <button class="mrow" data-m="video"><span class="mic" data-ic="play"></span><span class="ml">Videa a technika</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="start"><span class="mic" data-ic="flag"></span><span class="ml">Začínáme</span><span class="mch" data-ic="chev"></span></button>
-      <button class="mrow" data-m="stats"><span class="mic" data-ic="chart"></span><span class="ml">Statistiky</span><span class="mch" data-ic="chev"></span></button>
-      <button class="mrow" data-m="diary"><span class="mic" data-ic="log"></span><span class="ml">Deník</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="warm"><span class="mic" data-ic="heart"></span><span class="ml">Rozcvička</span><span class="mch" data-ic="chev"></span></button>
-      <button class="mrow" data-m="coach"><span class="mic" data-ic="people"></span><span class="ml">Trenéři</span><span class="mch" data-ic="chev"></span></button>
-      <button class="mrow" data-m="backup"><span class="mic" data-ic="cloud"></span><span class="ml">Záloha</span><span class="mch" data-ic="chev"></span></button>
-      <button class="mrow" data-m="set"><span class="mic" data-ic="sliders"></span><span class="ml">Nastavení</span><span class="mch" data-ic="chev"></span></button>
-      <button class="mrow" data-m="fb"><span class="mic" data-ic="mail"></span><span class="ml">Napsat autorovi</span><span class="mch" data-ic="chev"></span></button>
-      <button class="mrow" data-m="donate" hidden><span class="mic" data-ic="gift"></span><span class="ml">Podpořit aplikaci</span><span class="mch" data-ic="chev"></span></button>
-      <button class="mrow" data-m="about"><span class="mic" data-ic="info"></span><span class="ml">O aplikaci</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="coach"><span class="mic" data-ic="people"></span><span class="ml">Trenéři a plánky</span><span class="mch" data-ic="chev"></span></button>
+      <div class="mgrp">Aplikace</div>
+      <button class="mrow" data-m="set"><span class="mic" data-ic="sliders"></span><span class="ml">Nastavení a záloha</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="about"><span class="mic" data-ic="info"></span><span class="ml">O aplikaci a podpora</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="stats" hidden data-sub="1"><span class="mic" data-ic="chart"></span><span class="ml">Statistiky</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="backup" hidden data-sub="1"><span class="mic" data-ic="cloud"></span><span class="ml">Záloha</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="fb" hidden data-sub="1"><span class="mic" data-ic="mail"></span><span class="ml">Napsat autorovi</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="donate" hidden data-sub="1"><span class="mic" data-ic="gift"></span><span class="ml">Podpořit aplikaci</span><span class="mch" data-ic="chev"></span></button>
     </div>
     <div class="mhead" id="moreHead" hidden><button class="btn ghost" id="moreBack" data-ic="back">Zpět</button><b id="moreTitle"></b></div>
     <div id="moreBody"></div>
@@ -1058,7 +1077,6 @@ html.onb-open,html.onb-open body{overflow:hidden;}
     <button data-v="plan"><span class="nic" data-ic="map"></span><span>Plán</span></button>
     <button data-v="lib"><span class="nic" data-ic="grid"></span><span>Parkury</span><i class="ndot" hidden></i></button>
     <button data-v="run"><span class="nic" data-ic="timer"></span><span>Běh</span></button>
-    <button data-v="video"><span class="nic" data-ic="play"></span><span>Videa</span></button>
     <button data-v="more"><span class="nic" data-ic="dots"></span><span>Více</span></button>
   </div>
 </nav>
@@ -1198,6 +1216,20 @@ function trTree(root){
 }
 /* Překlady nových textů: když přidáš do aplikace český text, sem dopiš jeho anglickou verzi (stejný formát jako i18nAdd). */
 var I18N_EXTRA={exact:{
+"Můj tým": "My team",
+"Učení": "Learning",
+"Aplikace": "App",
+"Deník a statistiky": "Diary and statistics",
+"Videa a technika": "Videos and technique",
+"Trenéři a plánky": "Coaches and course maps",
+"Nastavení a záloha": "Settings and backup",
+"O aplikaci a podpora": "About and support",
+"Rozbor a trénink": "Analysis and training",
+"Venku": "Outdoors",
+"Fotka a sdílení": "Photo and sharing",
+"Výzvy, žebříčky a závody": "Challenges, leaderboards and competitions",
+"Parkur týdne, Zahrada týdne, závody poblíž": "Course of the week, Garden of the week, competitions nearby",
+"Parkur týdne, Zahrada týdne, závody poblíž, výzva dne": "Course of the week, Garden of the week, competitions nearby, daily challenge",
 "Novinky v AgiPlan 2.4": "What's new in AgiPlan 2.4",
 "iPhone a iPad: AR na place přes Apple AR Quick Look a návod na instalaci na plochu přímo na obrazovce": "iPhone and iPad: AR on the field via Apple AR Quick Look and an on-screen guide to adding the app to the Home Screen",
 "Kolbiště podle GPS (Plán → Nástroje): ulož polohu kolbiště, aplikace tě k němu dovede a jeho natočení použije Stavba v terénu i AR": "Rings by GPS (Plan → Tools): save where the ring is, the app guides you there and Build on the field and AR use its orientation",
@@ -5409,6 +5441,7 @@ function homeChallenge(){
   return {c:c,ok:ok};
 }
 var HOME_C=[];
+var HMMORE='agility-hmmore-v1';
 function homeRender(){
   var d=curDog(), cls=homeCls(), runs=allRuns(d&&d.id), ok=runs.filter(function(x){return x.g!=='DIS';});
   var sp=ok.filter(function(x){return x.t>0&&x.len>0;}).map(function(x){return x.len/x.t;}), avg=sp.length?sp.reduce(function(a,v){return a+v;},0)/sp.length:0;
@@ -5443,19 +5476,23 @@ function homeRender(){
   } else h+='<div class="hm-sec"><h3>Trénink doma</h3></div><div class="hm-ch hm-cut"><div class="ic">🏡</div><div class="tx"><b>Úseky ze skutečných parkurů</b><span>'+
     (SET.cut?'Plocha '+SET.cut.W+' × '+SET.cut.H+' m a tvoje vybavení':'Vejdou se na tvou zahradu a postavíš je z toho, co máš')+'</span></div><button class="hm-go" data-h="cut">Vybrat</button></div>';
   h+=drillHomeHTML();
-  h+=wkHomeHTML(cls);
-  h+=wkHomeHTML('Z');
-  h+=compHomeHTML();
-  var ch=homeChallenge();
-  if(ch) h+='<div class="hm-sec"><h3>Výzva dne</h3></div><div class="hm-ch"><div class="ic">🎯</div><div class="tx"><b>Zaběhni čistě pod SČP</b><span>'+esc(ch.c.name)+' · '+ch.c.route.length+' překážek</span></div>'+
-    (ch.ok?'<span class="hm-go ok" style="display:grid;place-items:center">Splněno ✓</span>':'<button class="hm-go" data-h="ch">Start</button>')+'</div>';
   h+=rateHomeHTML();
+  /* výzvy, žebříčky a závody: sbalené pod jedním řádkem (volba se pamatuje), aby Domů nebylo na tři obrazovky */
+  var ch=homeChallenge(), mo='';
+  mo+=wkHomeHTML(cls);
+  mo+=wkHomeHTML('Z');
+  mo+=compHomeHTML();
+  if(ch) mo+='<div class="hm-sec"><h3>Výzva dne</h3></div><div class="hm-ch"><div class="ic">🎯</div><div class="tx"><b>Zaběhni čistě pod SČP</b><span>'+esc(ch.c.name)+' · '+ch.c.route.length+' překážek</span></div>'+
+    (ch.ok?'<span class="hm-go ok" style="display:grid;place-items:center">Splněno ✓</span>':'<button class="hm-go" data-h="ch">Start</button>')+'</div>';
+  var moSum='<summary class="hm-sum"><span class="tx"><b>Výzvy, žebříčky a závody</b><span>Parkur týdne, Zahrada týdne, závody poblíž'+(ch?', výzva dne':'')+'</span></span><span class="hm-chev" aria-hidden="true">'+IC.chev+'</span></summary>';
   /* tento týden (pondělí až neděle) */
   var t=new Date(); t.setHours(12,0,0,0); var mon=new Date(t); mon.setDate(t.getDate()-((t.getDay()+6)%7)), today=localDate(t), wk='';
   ['Po','Út','St','Čt','Pá','So','Ne'].forEach(function(n,i){ var x=new Date(mon); x.setDate(mon.getDate()+i); var k=localDate(x);
     wk+='<div class="'+(k===today?'today':'')+'"><i class="'+(days[k]?'on':'')+'"></i>'+n+'</div>'; });
   h+='<div class="hm-sec"><h3>Tento týden</h3><button data-h="diary">Deník ›</button></div><div class="hm-week">'+wk+'</div>';
+  h+='<details class="hm-more" id="hmMore"'+(lsGet(HMMORE,0)?' open':'')+'>'+moSum+mo+'</details>';
   $('v-home').innerHTML=h;
+  $('hmMore').ontoggle=function(){ lsSet(HMMORE,this.open?1:0); };
   wkRefresh(cls); wkRefresh('Z'); lgRefresh(); compHomeRefresh(); if(window.pwaInstUI) pwaInstUI();
 }
 $('v-home').onclick=function(e){
@@ -8003,7 +8040,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   if(!moreTab){ $('moreBody').innerHTML=''; return; }
   var h='', d=curDog();
   if(moreTab.indexOf('mod:')===0){ var sc=HM.screens[moreTab.slice(4)], el=$('moreBody'); el.innerHTML=''; if(sc){ try{ sc.render(el,MORE_ARG); }catch(e){ if(window.console) console.error(e); } } MORE_ARG=null; return; }
-  if(moreTab==='set'){ $('moreBody').innerHTML=settingsHTML(); return; }
+  if(moreTab==='set'){ $('moreBody').innerHTML=settingsHTML()+'<h2>Záloha</h2>'+backupHTML(); return; }
   if(moreTab==='dogs'){
     h='<div class="list">'+(DOGS.length?DOGS.map(function(x){return '<div class="item'+(d&&d.id===x.id?' cur':'')+'"><div><b>'+esc(x.name)+'</b><span>'+SIZES[x.size].l+' · '+x.cls+(dogAgeM(x)!=null?' · '+ageTxt(dogAgeM(x)):'')+'</span></div><div class="acts">'+(d&&d.id===x.id?'':'<button class="btn" data-dsel="'+esc(x.id)+'">Vybrat</button>')+(x.kacr?'<button class="btn" data-dkacr="'+esc(x.id)+'">Závody</button>':'')+'<button class="btn" data-dedit="'+esc(x.id)+'">Upravit</button><button class="btn danger" data-ddel="'+esc(x.id)+'" aria-label="Smazat psa">×</button></div></div>';}).join('')
       :'<p class="hint">Přidej psa. Aplikace pak ukáže výšky překážek pro jeho kategorii a běhy i statistiky povede zvlášť pro každého psa.</p>')+'</div>'+
@@ -8011,7 +8048,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
     var z=SIZES[d?d.size:'L'];
     h+='<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (kategorie L)')+'</h2><table class="table"><tr><th>Překážka</th><th>Podle FCI</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (střed od země)</td><td>'+z.tire+'</td></tr><tr><td>Skok daleký</td><td>'+z.lj+'</td></tr><tr><td>Áčko, kladina, houpačka</td><td>stejné pro všechny: 170 / 120–130 / 60 cm</td></tr></table>';
   } else if(moreTab==='stats'){ h='<div class="filters" id="statDogs"></div>'+statsHTML()+weakHTML(); }
-  else if(moreTab==='diary'){ h='<div class="filters" id="diaryDogs"></div>'+diaryHTML(); }
+  else if(moreTab==='diary'){ h='<div class="filters" id="diaryDogs"></div>'+diaryHTML()+'<h2>Statistiky</h2>'+statsHTML()+weakHTML(); }
   else if(moreTab==='warm'){ h=warmHTML(); }
   else if(moreTab==='coach'){ h='<p class="hint">Plánky od rozhodčích a trenérů. Parkur podle plánku přeneseš v Plánu přes Plánek z obrázku (překážky se rozpoznají samy) a při ukládání vyplníš, kdo ho stavěl.</p>'+coachHTML()+booksHTML(); }
   else if(moreTab==='backup'){ h=backupHTML(); }
@@ -8020,7 +8057,8 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='fb'){ h=fbHTML(); }
   else if(moreTab==='donate'){ h=donateOn()?donateHTML():'<p class="hint">Podpora zatím není nastavená.</p>'; }
   else {
-    h='<div id="statsBox"></div><div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>AgiPlan 2.4</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
+    h='<div class="morego"><button class="btn" data-mgo="fb">'+IC.mail+'<span>Napsat autorovi</span></button>'+(donateOn()?'<button class="btn primary" data-mgo="donate">'+IC.heartF+'<span>Podpořit aplikaci</span></button>':'')+'</div>'+
+      '<div id="statsBox"></div><div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>AgiPlan 2.4</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
       '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
       '<h4>Novinky ve verzi 2.3</h4><ul class="news"><li>Účet: přihlášení přes Google a automatická synchronizace dat mezi telefonem a počítačem</li><li>AR na place: parkur kamerou na skutečném trávníku (Chrome na Androidu)</li><li>Náhled odkazu pro Facebook</li></ul>'+
       '<h4>Novinky ve verzi 2.2</h4><ul class="news"><li>3D parkur a přepínač 2D / 3D v Plánu</li><li>Pes ve 3D kličkuje slalomem podle pravidel FCI</li><li>Délka tunelu 2–6 m (nový tunel 5 m)</li><li>Google Pay, Apple Pay a uložení QR platby do galerie</li><li>Zásady ochrany osobních údajů</li></ul>'+
@@ -8039,17 +8077,17 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
       '<h4>Doporuč aplikaci kamarádům</h4><div class="share-app"><div class="dn-qr">'+qrSvg(APP_URL,'QR kód s odkazem na aplikaci')+'</div><div><p class="hint">Ať si kamarád naskenuje kód fotoaparátem, nebo mu pošli odkaz.</p><p translate="no"><b>'+esc(APP_URL.replace(/^https:\/\//,''))+'</b></p><button class="btn" data-appshare="1">Sdílet odkaz</button></div></div>'+
       '<p class="hint"><a href="privacy.html" target="_blank" rel="noopener">Zásady ochrany osobních údajů</a></p>'+
       '<p class="hint">Pravidla: <a href="https://klubagility.cz/site/assets/files/1076/rad_agility_2023-1.pdf" target="_blank" rel="noopener">Řád agility FCI a ČR (od 2023)</a>.</p>'+
-      '<div class="row"><button class="btn" data-mgo="fb">Napsat autorovi</button>'+(donateOn()?'<button class="btn" data-mgo="donate">Podpořit aplikaci</button>':'')+'<button class="btn" data-onb="1">Spustit průvodce znovu</button></div></div>';
+      '<div class="row">'+'<button class="btn" data-onb="1">Spustit průvodce znovu</button></div></div>';
   }
   $('moreBody').innerHTML=h;
   if(moreTab==='stats'){dogChips('statDogs'); bindChart();}
-  if(moreTab==='diary') dogChips('diaryDogs');
+  if(moreTab==='diary'){ dogChips('diaryDogs'); bindChart(); }
 }
-$('moreTabs').onclick=function(e){var b=e.target.closest('[data-m]'); if(!b) return; moreTab=b.getAttribute('data-m'); moreRender(); try{window.scrollTo(0,0);}catch(er){}};
+$('moreTabs').onclick=function(e){var b=e.target.closest('[data-m]'); if(!b) return; if(b.getAttribute('data-m')==='video'){ show('video'); return; } moreTab=b.getAttribute('data-m'); moreRender(); try{window.scrollTo(0,0);}catch(er){}};
 $('moreBack').onclick=function(){ moreTab=''; MORE_ARG=null; moreRender(); try{window.scrollTo(0,0);}catch(e){} };
 /* rozepsaná zpráva autorovi se ukládá průběžně (přežije zavření aplikace) */
 $('moreBody').addEventListener('input',function(e){ var id=e.target&&e.target.id; if(id==='fbMsg'){ FB.msg=e.target.value; fbSave(); } else if(id==='fbMail'){ FB.mail=e.target.value; fbSave(); } });
-(function(){ var r=document.querySelector('#moreTabs [data-m="donate"]'); if(r) r.hidden=!donateOn(); })();
+
 (function(){ var b=$('supBtn'); if(!b) return; b.hidden=!donateOn(); b.onclick=function(){ moreOpen('donate'); }; })();
 $('moreBody').onclick=function(e){
   var t=e.target.closest('button'); if(!t) return;
