@@ -27,7 +27,7 @@ module.exports = async function ({ browser, base }) {
     ok(q.n === q.route - 1 && q.still, 'export během tréninku paměti nemá celou trasu: ' + JSON.stringify(q));
 
     T.step('animace ve Videích');
-    await page.click('.nav [data-v="video"]'); await page.click('#vidList button >> nth=0'); await page.waitForTimeout(150);
+    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="video"]'); await page.click('#vidList button >> nth=0'); await page.waitForTimeout(150);
     await page.click('.nav [data-v="plan"]');
     ok(await ev(() => !VID.on), 'animace běží i po odchodu ze záložky Videa');
 
@@ -113,7 +113,7 @@ module.exports = async function ({ browser, base }) {
     await fresh();
     const k0 = await ev(() => cloudKey());
     backup = { app: 'agility-trasa', v: 3, at: new Date().toISOString(), data: {} };
-    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="backup"]'); await page.click('[data-bk="cget"]');
+    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="set"]'); await page.click('[data-bk="cget"]');
     await page.fill('#ckIn', 'jinytelefon1'); await T.sheet('ok'); await page.waitForTimeout(250); await T.sheet('x');
     ok(await ev(k => cloudKey() === k, k0), 'zrušená obnova z cloudu přepnula klíč zálohy');
 

@@ -42,7 +42,7 @@ module.exports = async function ({ browser, base }) {
     await step('vybraná překážka ' + t + ' na 360 px', async () => { await T.ev(t => { mode = 'build'; sel = S.obs.find(o => o.type === t).id; ui(); render(); }, t); T.ok(await page.isVisible('#delBtn'), 'chybí Smazat'); });
   await page.setViewportSize({ width: 390, height: 844 });
   await step('kontrola FCI', async () => { await page.click('#fciBar'); T.ok(await page.isVisible('#sheet .fcilist'), 'kontrola FCI se neotevřela'); });
-  for (const v of ['lib', 'run', 'video', 'more'])
+  for (const v of ['lib', 'run', 'more'])
     await step('záložka ' + v, async () => { await page.click(`.nav [data-v="${v}"]`); T.ok(await page.isVisible('#v-' + v), 'záložka se neukázala'); });
   await step('domů po spuštění', async () => {
     await page.goto(base + '/'); await page.waitForTimeout(300);
@@ -83,7 +83,7 @@ module.exports = async function ({ browser, base }) {
   await step('generátor', async () => { await page.click('.nav [data-v="lib"]'); await page.click('#genBtn'); await page.waitForTimeout(400); });
   await step('náhodný', async () => { await page.click('.nav [data-v="lib"]'); await page.click('#randBtn'); });
   await step('otevřít parkur', async () => { await page.click('.nav [data-v="lib"]'); await page.click('#cards .pick >> nth=3'); T.ok(await T.ev(() => S.meta.id === listFor('A1')[3].id), 'parkur se neotevřel'); });
-  for (const m of ['dogs', 'start', 'stats', 'diary', 'warm', 'coach', 'backup', 'about'])
+  for (const m of ['acct', 'dogs', 'diary', 'start', 'warm', 'coach', 'set', 'about'])
     await step('více ' + m, async () => { await page.click('.nav [data-v="more"]'); await page.click(`#moreTabs [data-m="${m}"]`); });
   /* karta parkuru jen na dva řádky: délka a překážky, pod tím barevná náročnost a SČP */
   await step('krátké karty parkurů', async () => {
@@ -97,10 +97,10 @@ module.exports = async function ({ browser, base }) {
   await step('více jako seznam', async () => {
     await page.click('.nav [data-v="more"]');
     T.ok(await page.isVisible('#moreTabs') && await page.isHidden('#moreHead') && await T.ev(() => moreTab === '' && $('moreBody').innerHTML === ''), 'Více nezačíná nabídkou');
-    const hs = await T.ev(() => [...document.querySelectorAll('#moreTabs [data-m]')].map(b => b.getBoundingClientRect().height));
-    T.ok(hs.length === 12 && hs.every(h => h >= 52), 'řádky nabídky nemají 52 px: ' + hs);
-    await page.click('#moreTabs [data-m="stats"]');
-    T.ok(await page.isHidden('#moreTabs') && await page.isVisible('#moreBack') && await T.ev(() => $('moreTitle').textContent === 'Statistiky' && moreTab === 'stats'), 'sekce se neotevřela se Zpět a názvem');
+    const hs = await T.ev(() => [...document.querySelectorAll('#moreTabs [data-m]:not([hidden])')].map(b => b.getBoundingClientRect().height));
+    T.ok(hs.length === 9 && await T.ev(() => document.querySelectorAll('#moreTabs .mgrp').length === 3) && hs.every(h => h >= 52), 'řádky nabídky nemají 52 px: ' + hs);
+    await page.click('#moreTabs [data-m="diary"]');
+    T.ok(await page.isHidden('#moreTabs') && await page.isVisible('#moreBack') && await T.ev(() => $('moreTitle').textContent === 'Deník a statistiky' && moreTab === 'diary' && /Statistiky/.test($('moreBody').textContent)), 'sekce se neotevřela se Zpět a názvem');
     await page.click('#moreBack');
     T.ok(await page.isVisible('#moreTabs') && await page.isHidden('#moreHead') && await T.ev(() => moreTab === ''), 'Zpět nevrátil nabídku');
     await T.ev(() => { show('home'); moreTab = 'dogs'; show('more'); });
@@ -127,7 +127,7 @@ module.exports = async function ({ browser, base }) {
     await page.setViewportSize({ width: 390, height: 844 });
   });
   await step('video', async () => {
-    await page.click('.nav [data-v="video"]'); await page.click('#vidList button >> nth=0');
+    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="video"]'); await page.click('#vidList button >> nth=0');
     await page.waitForFunction(() => V3D.api || V3D.fail || !V3D.gl, null, { timeout: 20000 }); await page.waitForTimeout(300);
     T.ok(await T.ev(() => V3D.api ? !$('vStage3').hidden : $('vStage').innerHTML.length > 0), 'animace se neukázala');
   });

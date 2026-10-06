@@ -13,7 +13,8 @@ module.exports = async function ({ browser, base }) {
   });
   const step = async (label, fn) => { T.step(label); try { await fn(); } catch (e) { T.errs.push(`[${label}] krok selhal: ${String(e && e.message || e).split('\n')[0]}`); } };
   const fresh = async (hash) => { await page.goto('about:blank'); await page.goto(base + '/' + (hash || '#home')); await page.waitForTimeout(300); await ev(() => { $('toast').hidden = true; }); };
-  const more = async (m) => { await page.click('.nav [data-v="more"]'); await page.click(`#moreTabs [data-m="${m}"]`); await page.waitForTimeout(150); };
+  /* Napsat autorovi a Podpořit jsou v O aplikaci a podpora */
+  const more = async (m) => { await page.click('.nav [data-v="more"]'); if (m === 'fb' || m === 'donate') { await page.click('#moreTabs [data-m="about"]'); await page.click(`#moreBody .morego [data-mgo="${m}"]`); } else await page.click(`#moreTabs [data-m="${m}"]`); await page.waitForTimeout(150); };
   /* QR kód ze SVG přečtený skutečnou čtečkou */
   const readQR = async (sel) => {
     const m = await page.evaluate(sel => { const svg = document.querySelector(sel); if (!svg) return null;
@@ -42,9 +43,9 @@ module.exports = async function ({ browser, base }) {
 
   await step('Podpořit aplikaci', async () => {
     await fresh();
-    await page.click('.nav [data-v="more"]');
-    ok(await page.isVisible('#moreTabs [data-m="donate"]') && await page.isVisible('#moreTabs [data-m="fb"]'), 've Více chybí Podpořit nebo Napsat autorovi');
-    await page.click('#moreTabs [data-m="donate"]'); await page.waitForTimeout(150);
+    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="about"]');
+    ok(await page.isVisible('#moreBody .morego [data-mgo="donate"]') && await page.isVisible('#moreBody .morego [data-mgo="fb"]'), 'v O aplikaci a podpora chybí Podpořit nebo Napsat autorovi');
+    await page.click('#moreBody .morego [data-mgo="donate"]'); await page.waitForTimeout(150);
     const iban = await ev(() => czIban('1220369023/3030'));
     let q = await readQR('#moreBody .dn-qr svg');
     ok(q === 'SPD*1.0*ACC:' + iban + '*AM:100.00*CC:CZK*MSG:Podpora AgiPlan', 'QR platba: ' + q);

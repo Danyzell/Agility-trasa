@@ -12,7 +12,7 @@ module.exports = async function ({ browser, base }) {
     await offline(T.ctx, { get_catalog: { version: 0 } });
     try {
       T.step('start'); await page.goto(base + '/'); await page.waitForTimeout(300);
-      await page.click('.nav [data-v="video"]');
+      await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="video"]');
       const ids = await T.ev(() => TOPICS.filter(t => SC[t.id]).map(t => t.id));
       T.ok(await T.ev(() => V3D.gl), 'prohlížeč v testu nemá WebGL (SwiftShader)');
       T.ok(await page.locator('#vidList .b3d').count() === ids.length, 'u témat s animací chybí štítek 3D');
@@ -41,7 +41,7 @@ module.exports = async function ({ browser, base }) {
       await page.click(`#vidList [data-top="jump"]`); await wait3(page);
       await page.click('.nav [data-v="plan"]'); await page.waitForTimeout(100);
       T.ok(await T.ev(() => V3D.api === null), 'po přepnutí záložky zůstala 3D animace');
-      await page.click('.nav [data-v="video"]'); await wait3(page);
+      await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="video"]'); await wait3(page);
       T.ok(await T.ev(() => !!V3D.api), 'po návratu do Videí se 3D znovu nepřipojilo');
       /* skrytá stránka zastaví přehrávání */
       T.step('skrytá stránka');
@@ -65,7 +65,7 @@ module.exports = async function ({ browser, base }) {
     let asked = false; page.on('request', r => { if (/v3d\.js/.test(r.url())) asked = true; });
     try {
       T.step('bez WebGL'); await page.goto(base + '/'); await page.waitForTimeout(300);
-      await page.click('.nav [data-v="video"]');
+      await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="video"]');
       T.ok(await page.locator('#vidList .b3d').count() === 0, 'štítek 3D bez WebGL');
       await page.click('#vidList [data-top="jump"]'); await page.waitForTimeout(400);
       T.ok(await T.ev(() => !V3D.api && !$('vStage3') && /<g/.test($('vStage').innerHTML)), '2D animace se neukázala');
@@ -80,7 +80,7 @@ module.exports = async function ({ browser, base }) {
     await T.ctx.route(/v3d\/v3d\.js/, r => r.abort());
     try {
       T.step('chyba stažení'); await page.goto(base + '/'); await page.waitForTimeout(300);
-      await page.click('.nav [data-v="video"]'); await page.click('#vidList [data-top="tunnel"]'); await wait3(page); await page.waitForTimeout(200);
+      await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="video"]'); await page.click('#vidList [data-top="tunnel"]'); await wait3(page); await page.waitForTimeout(200);
       T.ok(await T.ev(() => !V3D.api && V3D.fail && $('vStage').style.display !== 'none' && /<path/.test($('vStage').innerHTML)), '2D animace se po chybě nestažení neukázala');
     } catch (e) { T.fail(e); }
     errs.push(...T.errs.filter(e => !/v3d\.js|Failed to fetch dynamically imported module|net::ERR_FAILED/.test(e))); await T.ctx.close();
