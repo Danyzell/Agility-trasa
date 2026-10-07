@@ -106,7 +106,7 @@ module.exports = async function ({ browser, base }) {
     ok(await page.isVisible('#sheet [data-a="share"]'), 'v žebříčku zahrady chybí Sdílet výsledek');
     await page.click('#sheet [data-a="share"]'); await page.waitForFunction(() => window.__del, null, { timeout: 5000 });
     const d = await ev(() => window.__del);
-    ok(d.m === 'image/png' && d.size > 20000 && d.sh === true && d.n === 'zahrada-' + await ev(() => weekKey()) + '.png' && /Zahrada týdne \d+: [\d,]+ s/.test(d.t) && /danyzell\.github\.io/.test(d.t), 'sdílený obrázek: ' + JSON.stringify(d));
+    ok(d.m === 'image/png' && d.size > 20000 && d.sh === true && d.n === 'zahrada-' + await ev(() => weekKey()) + '.png' && /Zahrada týdne \d+: [\d,]+ s/.test(d.t) && /pawkur\.cz/.test(d.t), 'sdílený obrázek: ' + JSON.stringify(d));
     const dim = await ev(() => { const c = shareCanvas(wkShareData('Z')); return [c.width, c.height]; });
     ok(dim[0] === 1080 && dim[1] === 1350, 'rozměr obrázku ' + dim);
     ok(await ev(() => wkShareData('A3') === null), 'bez výsledku nemá být co sdílet');
