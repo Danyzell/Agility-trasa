@@ -74,6 +74,17 @@ module.exports = async function ({ browser, base }) {
     const x = await ev(() => diary().find(e => e.faults));
     ok(x && x.faults.join() === 'zone', 'typ chyby se neuložil: ' + JSON.stringify(x));
     ok(/Zapsané chyby u 1 závodů: Zóna 1×/.test(await page.textContent('#lossBox')) && await page.isVisible('#lossBox [data-gpre="contacts"]'), 'zapsané chyby v rozboru');
+    /* závody z kacr.info v deníku: čipy jen u běhů s trestnými body nebo DIS, ťuknutí se uloží a počítá do rozboru */
+    const kl = await ev(() => ({ n: document.querySelectorAll('.kf-list .kf-item').length, chips: [...document.querySelectorAll('.kf-list [data-kr]')].map(e => e.getAttribute('data-kr')).sort().join(), t: document.querySelector('.kf-list').textContent }));
+    ok(kl.n === 6 && kl.chips === '21,22,32' && /Letní pohár/.test(kl.t) && /5 tr\. b\./.test(kl.t) && /3\. místo z 20/.test(kl.t) && /rozhodčí Eva Svoboda/.test(kl.t), 'závody z kacr.info v deníku: ' + JSON.stringify(kl).slice(0, 300));
+    await page.click('.kf-list [data-kr="21"] [data-kf="weave"]'); await page.waitForTimeout(100);
+    ok((await ev(() => (lsGet('agility-kacrf-v1', {})['1:21'] || []).join())) === 'weave', 'ťuknutý typ chyby u kacr běhu se neuložil');
+    ok(await page.isVisible('.kf-list [data-kr="21"] [data-kf="weave"].on') && /Zapsané chyby u 2 závodů: (Zóna 1×, Slalom 1×|Slalom 1×, Zóna 1×)/.test(await page.textContent('#lossBox')), 'kacr chyba v rozboru: ' + await page.textContent('#lossBox'));
+    await page.click('.kf-list [data-kr="21"] [data-kf="weave"]'); await page.waitForTimeout(100);
+    ok(!(await ev(() => lsGet('agility-kacrf-v1', {})['1:21'])), 'druhé ťuknutí typ chyby neodebralo');
+    /* graf čistých běhů po měsících: závody z kacr.info (6) + ručně zapsané */
+    const ch = await ev(() => { const s = $('cleanSvg'); return s ? { bars: s.querySelectorAll('rect').length, t: s.parentNode.textContent } : null; });
+    ok(ch && ch.bars >= 3 && /Čisté běhy po měsících/.test(ch.t) && /Za posledních 12 měsíců \d+ z \d+ čistě/.test(ch.t), 'graf čistých běhů: ' + JSON.stringify(ch));
     await page.unroute(/\/functions\/v1\/kacr/);
   });
 
@@ -96,6 +107,8 @@ module.exports = async function ({ browser, base }) {
       'Z toho z kacr.info: 2.', 'Z toho z kacr.info: 2. U některých ještě chybí rozhodčí, doplní se po načtení podrobností.', 'Novinky v Pawkuru 2.7',
       'Kde ztrácíš body', 'Posledních 5 závodních běhů z kacr.info', 'Na vítěze běhu ztrácíš v průměru 12 % času.', 'Nejvíc bodů ztrácíš odmítnutím.', 'Podle rozhodčího a povrchu',
       'Co se stalo (nepovinné)', 'Shozená tyčka', 'Špatná překážka', 'Zapsané chyby u 1 závodů: Zóna 1×', 'hala · umělá tráva', 'Sekvence: Vstupy do slalomu',
+      'Závody z kacr.info', 'Čisté běhy po měsících', 'Podíl čistých běhů po měsících', '3. místo z 20', '5 tr. b.', 'Podíl čistých běhů v % a počet čistých z počtu závodů za měsíc. Za posledních 12 měsíců 4 z 7 čistě.',
+      'Výsledky se do deníku berou samy. U běhu s trestnými body ťukni, co se stalo, a rozbor Kde ztrácíš body bude přesnější.',
       ...[...new DOMParser().parseFromString(newsCheck.toString().match(/<ul class="news">.*?<\/ul>/)[0], 'text/html').querySelectorAll('li')].map(l => l.textContent)].filter(t => trLookup(t) == null));
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
   });
