@@ -1650,6 +1650,9 @@ var I18N_EXTRA={exact:{
 "Přidat na plochu": "Add to Home Screen",
 "Rozumím": "Got it",
 "Ukázat jak": "Show me how",
+"Nainstaluj si AgiPlan": "Install AgiPlan",
+"Parkury, běhy a deník budeš mít pod ikonou na ploše. Aplikace se otevře přes celou obrazovku a funguje i bez signálu na cvičišti.": "Your courses, runs and diary will be one tap away on your home screen. The app opens full screen and works without signal at training.",
+"Aplikace na ploše má na iPhonu vlastní úložiště. Přihlas se ve Více → Účet, ať se ti parkury přenesou.": "On iPhone the home screen app has its own storage. Sign in under More → Account so your courses carry over.",
 "Ťukni na ikonu se šipkou dolů v adresním řádku, nebo na ≡ dole vpravo.": "Tap the down-arrow icon in the address bar, or ≡ at the bottom right.",
 "Vyber Přidat stránku na (Přidat stránku do).": "Choose Add page to.",
 "Zvol Domovská obrazovka a potvrď Přidat.": "Pick Home screen and confirm Add.",
@@ -6704,7 +6707,7 @@ function open3d(play){ if(play==null) play=true;
   else go();
 }
 function p3setView(v){ V3.view=v; Array.prototype.forEach.call($('p3view').children,function(c){ c.classList.toggle('on',c.getAttribute('data-v')===v); c.hidden=!C3.api&&c.getAttribute('data-v')==='orbit'; }); }
-function close3d(){ $('ov3d').hidden=true; V3.on=false; cancelAnimationFrame(V3.raf); C3.gen++; close3dGL(); }
+function close3d(){ var was=$('ov3d').hidden===false; $('ov3d').hidden=true; if(was) setTimeout(function(){ HM.emit('3dClosed'); },0); V3.on=false; cancelAnimationFrame(V3.raf); C3.gen++; close3dGL(); }
 $('p3dim').onclick=function(e){ var b=e.target.closest('[data-d]'); if(b&&b.getAttribute('data-d')==='2') close3d(); };
 $('dimBtn').onclick=function(){ open3d(false); };
 /* AR na place (WebXR, Chrome na Androidu): parkur se položí kamerou na skutečný trávník */
@@ -10102,13 +10105,32 @@ catSync();
   };
   /* Domů se vykreslí dřív, než je tahle funkce hotová (karta pro iPhone nečeká na beforeinstallprompt) */
   pwaInstUI();
+  function instPrompt(){ if(!ev){ andGuide(); return; } ev.prompt(); ev.userChoice.then(function(){ ev=null; pwaInstUI(); },function(){ ev=null; pwaInstUI(); }); }
   document.addEventListener('click',function(e){
     var b=e.target.closest&&e.target.closest('[data-inst],[data-instx],[data-andgo]'); if(!b) return;
     if(b.hasAttribute('data-instx')){ lsSet('agility-instx-v1',Date.now()); pwaInstUI(); return; }
     if(b.hasAttribute('data-andgo')){ andGuide(); return; }
-    if(!ev){ andGuide(); return; }
-    ev.prompt(); ev.userChoice.then(function(){ ev=null; pwaInstUI(); },function(){ ev=null; pwaInstUI(); });
+    instPrompt();
   });
+  /* nabídka instalace jednou po první skutečné akci (otevřený nebo uložený parkur, uložený běh, zavřené 3D):
+     teprve teď člověk ví, k čemu aplikace je. Když je zrovna otevřené jiné okno, zkusí to při další akci. */
+  var NUDK='agility-instnudge-v1';
+  function instNudge(){
+    if(lsGet(NUDK,0)||INAPP||instHid()) return;
+    if((window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true||IS_APK) return;
+    var ios=/iP(hone|ad|od)/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1), iosSaf=ios&&!/CriOS|FxiOS|EdgiOS/.test(UA);
+    if(!ev&&!iosSaf&&!ANDR) return; /* počítač bez nabídky Chromu: nic */
+    setTimeout(function(){
+      if(lsGet(NUDK,0)||!$('scrim').hidden||$('ov3d').hidden===false||document.getElementById('iosg')||(document.getElementById('onb')&&!document.getElementById('onb').hidden)) return;
+      lsSet(NUDK,Date.now());
+      openSheet('<h3>Nainstaluj si AgiPlan</h3><p>Parkury, běhy a deník budeš mít pod ikonou na ploše. Aplikace se otevře přes celou obrazovku a funguje i bez signálu na cvičišti.</p>'+
+        (iosSaf?'<p class="hint">Aplikace na ploše má na iPhonu vlastní úložiště. Přihlas se ve Více → Účet, ať se ti parkury přenesou.</p>':'')+
+        '<div class="acts"><button class="btn" data-a="x">Teď ne</button><button class="btn primary" data-a="go">'+(ev?'Instalovat':'Ukázat jak')+'</button></div>',
+        function(e){ var b=e.target.closest('[data-a]'); if(!b) return; closeSheet(); if(b.getAttribute('data-a')!=='go') return;
+          if(ev) instPrompt(); else if(iosSaf) iosGuide(); else andGuide(); });
+    },1200);
+  }
+  ['courseLoaded','courseSaved','runSaved','3dClosed'].forEach(function(n){ HM.on(n,instNudge); });
   /* odkaz otevřený ve Facebooku, Messengeru nebo Instagramu: jejich vestavěný prohlížeč aplikaci nainstalovat neumí */
   if(INAPP){
     var andr=ANDR, bar=document.createElement('div'); bar.className='iabbar'; bar.id='iabBar'; bar.setAttribute('role','status');
