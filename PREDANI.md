@@ -1,6 +1,6 @@
 # Předání práce (pro další sezení Claude Code)
 
-Stav k 6. 10. 2026. Nové sezení: přečti tenhle soubor, `SPOLUPRACE.md` a `README.md`, pak pokračuj podle „Co dál“.
+Stav k 7. 10. 2026. Nové sezení: přečti tenhle soubor, `SPOLUPRACE.md` a `README.md`, pak pokračuj podle „Co dál“.
 
 ## Projekt v kostce
 
@@ -27,6 +27,8 @@ Stav k 6. 10. 2026. Nové sezení: přečti tenhle soubor, `SPOLUPRACE.md` a `RE
 - #40 Novinky 2.4.
 - #41 Zjednodušení: 5 záložek, Více ve 3 skupinách (Můj tým, Učení, Aplikace), sbalené „Výzvy, žebříčky a závody“ na Domů, Nástroje ve skupinách.
 - #42 Facebook/Messenger/Instagram na Androidu se poprvé sám přepne do Chromu (kvůli instalaci).
+- #44 Instalace na Androidu i bez okna Chromu (Samsung Internet, Firefox, Chrome po odmítnutí): karta s návodem pro daný prohlížeč, zavřená se vrátí po 14 dnech; pruh Otevřít v Chromu i pro TikTok, LinkedIn a obecný WebView.
+- #45 Nabídka instalace jednou po první skutečné akci (parkur, běh, 3D).
 
 ## Čísla (Více → O aplikaci → Návštěvnost, vidí jen autor)
 
@@ -35,7 +37,7 @@ Stav k 6. 10. 2026. Nové sezení: přečti tenhle soubor, `SPOLUPRACE.md` a `RE
 
 ## Co dál (navrženo, čeká na rozhodnutí uživatele)
 
-1. **Instalace ve správnou chvíli:** jednou po první skutečné akci (otevřený parkur, uložený běh, 3D) okno „Nainstaluj si AgiPlan“ (Android systémové okno, iPhone náš návod `iosGuide()`).
+1. ~~Instalace ve správnou chvíli~~ hotovo v #45. Za pár dní porovnat podíl instalací (dřív 19 ze 460, 4 %).
 2. **Měřit cestu instalace:** do `app_ping` přidat platformu (Android, iPhone, počítač), prohlížeč Facebooku a jestli se instalační okno ukázalo a bylo přijaté. Potřebuje nové sloupce v `app_open` (SQL spustí uživatel) a úpravu `app_stats`.
 3. Kolbiště (issue #37): sdílení plánu závodiště odkazem; vyzkoušet import na ukázkovém souboru od uživatele, až ho pošle.
 4. Políčka rozhodčí, místo a datum a poznámky u parkuru; galerie parkurů od ostatních.

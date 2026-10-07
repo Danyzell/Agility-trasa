@@ -212,6 +212,14 @@ module.exports = async function ({ browser, base }) {
     await p.click('#hmInst [data-andgo]'); await p.waitForTimeout(100);
     ok(/Přidat stránku/.test(await p.textContent('#sheet')) && await p.locator('#sheet .inst-steps li').count() === 3, 'návod pro Samsung Internet: ' + await p.textContent('#sheet'));
     await p.click('#sheet [data-a]');
+    /* po první skutečné akci jednou nabídne instalaci, podruhé už ne */
+    await p.evaluate(() => HM.emit('courseSaved', { id: 'x' })); await p.waitForTimeout(1500);
+    ok(/Nainstaluj si AgiPlan/.test(await p.textContent('#sheet').catch(() => '')), 'po uložení parkuru se nenabídla instalace');
+    await p.click('#sheet [data-a="go"]'); await p.waitForTimeout(100);
+    ok(/Přidat stránku/.test(await p.textContent('#sheet')), 'Ukázat jak z nabídky neotevřelo návod');
+    await p.click('#sheet [data-a]');
+    await p.evaluate(() => HM.emit('runSaved', {})); await p.waitForTimeout(1500);
+    ok(!(await p.isVisible('#sheet h3')), 'nabídka instalace se ukázala podruhé');
     /* zavřená karta se vrátí po 14 dnech */
     await p.click('#hmInst [data-instx]'); ok(!(await p.isVisible('#hmInst .hm-inst')), 'karta nejde zavřít');
     await p.evaluate(() => { localStorage.setItem('agility-instx-v1', String(Date.now() - 15 * 864e5)); pwaInstUI(); });
