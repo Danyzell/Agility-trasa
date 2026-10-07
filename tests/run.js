@@ -5,7 +5,7 @@ const path = require('path');
 const { chromium } = require('playwright');
 const start = require('./server');
 
-const SUITES = ['smoke', 'flows', 'undo', 'opravy', 'ctecka', 'sw', 'tyden', 'v3d', 'sekvence', 'kacr', 'zahrada', 'pasti', 'pamet', 'zavody', 'pece', 'autor', 'tunel', 'ucet', 'kolbiste', 'stavba', 'denik', 'zjednoduseni'];
+const SUITES = ['smoke', 'flows', 'undo', 'opravy', 'ctecka', 'sw', 'tyden', 'v3d', 'sekvence', 'kacr', 'zahrada', 'pasti', 'pamet', 'zavody', 'pece', 'autor', 'tunel', 'ucet', 'kolbiste', 'stavba', 'denik', 'zjednoduseni', 'hoopers', 'anglictina'];
 
 (async () => {
   const pick = process.argv.slice(2).filter(a => SUITES.includes(a));

@@ -1,6 +1,8 @@
 /* AgiPlan (dříve HandlerMap a Agility trasa): offline a příjem plánku přes Sdílet */
-var CACHE='agility-trasa-2.6', FONTS='agility-fonts';
-var CORE=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable-512.png','hero.webp','v3d/v3d.js'];
+var CACHE='agility-trasa-2.7', FONTS='agility-fonts';
+var CORE=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable-512.png','hero.webp'];
+/* 3D balíček (677 kB) se neukládá při instalaci, ale až při prvním použití 3D; pak funguje i offline */
+var LAZY=/\/v3d\/v3d\.js$/;
 /* na cvičišti bývá slabý signál: když server do 3 s neodpoví, otevře se uložená verze (nová se mezitím stáhne na příště) */
 var NAV_WAIT=3000;
 /* cache:'reload': nová verze se stáhne ze serveru, ne z mezipaměti prohlížeče (GitHub Pages ji drží až 10 minut) */
@@ -36,5 +38,6 @@ self.addEventListener('fetch',function(e){
       net.then(function(r){ clearTimeout(t); send(r); },function(){ clearTimeout(t); caches.match('index.html').then(function(c){ send(c||Response.error()); }); });
     }));
     return; }
+  if(LAZY.test(u.pathname)){ e.respondWith(caches.open(CACHE).then(function(c){ return c.match(e.request).then(function(r){ if(r) return r; return fetch(e.request).then(function(n){ if(n&&n.ok) e.waitUntil(c.put(e.request,n.clone()).catch(function(){})); return n; }); }); })); return; }
   e.respondWith(caches.match(e.request).then(function(r){ return r||fetch(e.request); }));
 });

@@ -6,7 +6,7 @@ Plánovač agility parkurů jako aplikace do telefonu.
 
 Instalace: otevři stránku v Chromu na Androidu a zvol **Instalovat aplikaci** (nebo ⋮ → Přidat na plochu). Aplikace pak běží z ikony na ploše, i offline.
 
-Verze 2.5. Česky i anglicky (Více → Nastavení), světlý i tmavý vzhled.
+Verze 2.6. Česky i anglicky (Více → Nastavení), světlý i tmavý vzhled.
 
 Trénink doma (Domů → Trénink doma, nebo Parkury → Generátor → Z parkurů): aplikace vyřízne ze skutečných parkurů úseky, které se vejdou na tvou plochu a postavíš je z vlastního vybavení. Pořadí, otočky kolem křídla i zadní strany zůstanou jako na parkuru. Úseky jde filtrovat podle toho, co chceš trénovat, otočit zrcadlově (otočky na druhou stranu) a kruh nebo skok daleký nahradit skokem; k úseku se ukládají oblíbené i běhy.
 
@@ -31,6 +31,14 @@ Stavba na telefonu: přiblížení dvěma prsty (100–400 %), klepnutí do voln
 Deník a postup (Více → Deník): do postupu A1 → A2 a A2 → A3 se počítají ručně zapsané závody i běhy agility z kacr.info (třída z názvu běhu, hodnocení z trestných bodů podle FCI, stejný běh se nepočítá dvakrát; rozhodčího kacr.info u výsledků neuvádí). U závodu jde zapsat čas, délku trati (ukáže rychlost) a odkaz na video. Jednotky (Více → Nastavení): metry, nebo stopy a yardy za sekundu; parkury se ukládají v metrech. Testy `tests/denik.js`.
 
 Uspořádání (verze 2.4): spodní lišta má 5 záložek (Domů, Plán, Parkury, Běh, Více). Více je ve 3 skupinách: Můj tým (Účet, Psi, Deník a statistiky), Učení (Videa a technika, Začínáme, Rozcvička, Trenéři a plánky) a Aplikace (Nastavení a záloha, O aplikaci a podpora s odkazy Napsat autorovi a Podpořit). Přímé odkazy `moreTab='stats'`, `'backup'`, `'fb'`, `'donate'` dál fungují. Na Domů jsou Parkur týdne, Zahrada týdne, Závody a Výzva dne sbalené pod „Výzvy, žebříčky a závody“ (klíč `agility-hmmore-v1`). Nástroje v Plánu jsou ve skupinách Rozbor a trénink, Venku, Fotka a sdílení. Testy `tests/zjednoduseni.js`.
+
+Cizinci (angličtina, `CZONLY`): česká specifika se v anglické aplikaci neukazují: Závody a Den závodů z kacr.info, postup A1 → A2 podle KAČR, hledání psa na kacr.info, téma První závody a čeští trenéři. Pes už propojený s kacr.info je vidí dál. Slovenština se počítá jako čeština. Testy `tests/anglictina.js`.
+
+Hlášení chyb a cesta instalace: aplikace si počítá chyby JavaScriptu (jen počet a poslední hláška bez adres, klíč `agility-err-v1`) a s denním pingem (`app_ping`) posílá i platformu, vestavěný prohlížeč, jestli se ukázalo a přijalo instalační okno a počet chyb. Nové sloupce `app_open` a rozšířené `app_ping` a `app_stats` jsou v `supabase/migrations/20261007170000_ping_funnel_errors.sql`; dokud SQL neběží, aplikace spadne na původní čtyřparametrový ping. Autor vidí čísla ve Více → O aplikaci → Návštěvnost.
+
+Serverová funkce `kacr` má limit 60 dotazů za minutu a 1500 za den na adresu (odpověď 429). Service worker neukládá 3D balíček `v3d/v3d.js` při instalaci, ale až při prvním použití 3D (pak funguje i offline); cache `agility-trasa-2.7`.
+
+Hoopers (Parkury → Hoopers): třídy H1–H3 podle FCI Hoopers Regulations. Parkur Hoopers je parkur s třídou `H1`–`H3` (`S.meta.cls`); Plán pak nabízí jen překážky Hoopers (oblouk, sud, plůtek, krátký tunel) a prostor psovoda 2 × 2 m (typ `ha`, není součástí trasy). Kontrola pravidel (`hoopCheck`): počet překážek, start i cíl obloukem, aspoň polovina oblouků, vzdálenost po sobě jdoucích překážek (H1 5–8 m, H2 6–10 m, H3 7–12 m), nesousedící překážky aspoň 2 m od sebe, nejvzdálenější překážka od prostoru psovoda (malí psi XS a S / ostatní: H1 12/15 m, H2 18/20 m, H3 25/30 m) a plocha aspoň 800 m². Bez standardního času, maximální čas 3 minuty; Běh hodnotí chyby (každá 5 bodů). Knihovna má 8 parkurů na třídu z generátoru `hoopGen` (pevné semínko, dráha krouží kolem prostoru psovoda) a tlačítko Nový parkur Hoopers. 3D, AR, Rozbor, Pasti a Stavba v terénu jsou zatím jen pro agility. Testy `tests/hoopers.js`.
 
 Délka tunelu: u vybraného tunelu ve Stavbě 2–6 m (nový tunel 5 m, uložené parkury si délku nechají). Kontrola FCI hlásí tunel kratší než 3 m.
 
