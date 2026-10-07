@@ -7,7 +7,7 @@ Stav k 7. 10. 2026. Nové sezení: přečti tenhle soubor, `SPOLUPRACE.md` a `RE
 - **AgiPlan**, plánovač agility parkurů. Jediný soubor `index.html` (ES5, bez sestavení), service worker `sw.js`, 3D ve `v3d/` (three.js, balíček `v3d/v3d.js` přes `sh v3d/build.sh`).
 - Web: https://danyzell.github.io/Agility-trasa/ (GitHub Pages z větve `main`, repozitář je veřejný).
 - Server: Supabase projekt `wtjyjknaibsamgczvaxy` (účty přes Google, synchronizace `user_data`, žebříčky, kacr.info, zprávy autorovi, návštěvnost `app_open`). Migrace v `supabase/migrations`, funkce v `supabase/functions`.
-- Verze aplikace 2.6 (`APPV`, okno Novinky `newsCheck`, O aplikaci). Cache service workeru `agility-trasa-2.6`.
+- Verze aplikace 2.7 (`APPV`, okno Novinky `newsCheck`, O aplikaci). Cache service workeru `agility-trasa-2.7`.
 
 ## Jak pracovat (osvědčené)
 
@@ -29,6 +29,8 @@ Stav k 7. 10. 2026. Nové sezení: přečti tenhle soubor, `SPOLUPRACE.md` a `RE
 - #42 Facebook/Messenger/Instagram na Androidu se poprvé sám přepne do Chromu (kvůli instalaci).
 - #44 Instalace na Androidu i bez okna Chromu (Samsung Internet, Firefox, Chrome po odmítnutí): karta s návodem pro daný prohlížeč, zavřená se vrátí po 14 dnech; pruh Otevřít v Chromu i pro TikTok, LinkedIn a obecný WebView.
 - #45 Nabídka instalace jednou po první skutečné akci (parkur, běh, 3D).
+- #50 Verze 2.7 (7. 10., dva agenti paralelně ve worktree, sloučeno ručně): Postup se hlídá sám na Domů (`promoState`, `promoHomeHTML`), Kalkulačka SČP a MČP (`courseTimes`, `sctCalcSheet`, Více → Nástroje), Křížení na dráze psovoda (`S.marks`, `MARKT`, vrstva `#hmk`, legenda), Výsledková listina pro pořadatele (`listinaRows/HTML/Text/Page/Print`, Více → Nástroje a tlačítko v Běhu), úvodní stránka `web/` (jazyk se předá přes `?lang=`), SQL `20261007200000_ring_gallery_friends.sql` pro živé pořadí u ringu, galerii a přátele (ověřeno na místním Postgresu, uživatel ho má spustit). Testy `postup`, `listina`. Nové: Více má 4 skupiny (Můj tým, Učení, Nástroje, Aplikace), 11 řádků.
+- Název: AgiPlan se mění (agiplan.com drží od 2003 německá firma, agiplan.cz je zaparkovaná od 5/2025). Kandidáti ověření přes RDAP 7. 10.: Pawkur (cz/app/com/sk/io volné), AgiTrasa, Parkurio. Uživatel kupuje doménu u Wedosu; po koupi: přejmenovat aplikaci, manifest, ikonu, web/, README; úvodní stránka má jít do vlastního repozitáře na kořen domény, aplikace zůstává na github.io (nainstalovaná PWA).
 - #49 Přepínač Agility | Hoopers v horní liště (Domů má vlastní tmavou hlavičku, kde přepínač nahradil nápis AGIPLAN; v ostatních pohledech je v `header.top`, v Plánu a Běhu není). Uživatel: „Lidi chcou právě parkur někde přepínací tlačítko hoopers agility třeba nahoře“ (7. 10.). Záložka Hoopers v Parkurech zmizela, místo ní záložky H1–H3.
 - #48 Pravidla podle země (`RULES`: CZ, SK, AT, DE, PL, UK, FCI), průzkum 45 zdrojů + 2 agenti (PL, UK) v chatu 7. 10. Opravy proti prvnímu přehledu: KC Grade 7 „jen šampionát“ neprošlo, Micro (do 28 cm, 200 mm) až od 2027; v Polsku není třída Master, A0 je neoficiální. Zdroje pravidel: ÖKV Agilityreglement 2026, VDH PO 2026, Pravidlá agility ASKA 2026, ZKwP dodatkowe przepisy 2023, KC H regs 2025 + Course Time Matrix v2.0.
 - #47 Verze 2.6: Hoopers (třídy H1–H3…) a zlepšení z rozboru 7. 10.: angličtina bez českých částí (`CZONLY`), hlášení chyb a cesta instalace v pingu (SQL `20261007170000_ping_funnel_errors.sql` čeká na spuštění uživatelem), limit dotazů ve funkci `kacr` (verze 5), 3D balíček až při použití (cache 2.7).

@@ -98,7 +98,7 @@ module.exports = async function ({ browser, base }) {
     await page.click('.nav [data-v="more"]');
     T.ok(await page.isVisible('#moreTabs') && await page.isHidden('#moreHead') && await T.ev(() => moreTab === '' && $('moreBody').innerHTML === ''), 'Více nezačíná nabídkou');
     const hs = await T.ev(() => [...document.querySelectorAll('#moreTabs [data-m]:not([hidden])')].map(b => b.getBoundingClientRect().height));
-    T.ok(hs.length === 9 && await T.ev(() => document.querySelectorAll('#moreTabs .mgrp').length === 3) && hs.every(h => h >= 52), 'řádky nabídky nemají 52 px: ' + hs);
+    T.ok(hs.length === 11 && await T.ev(() => document.querySelectorAll('#moreTabs .mgrp').length === 4) && hs.every(h => h >= 52), 'řádky nabídky nemají 52 px: ' + hs);
     await page.click('#moreTabs [data-m="diary"]');
     T.ok(await page.isHidden('#moreTabs') && await page.isVisible('#moreBack') && await T.ev(() => $('moreTitle').textContent === 'Deník a statistiky' && moreTab === 'diary' && /Statistiky/.test($('moreBody').textContent)), 'sekce se neotevřela se Zpět a názvem');
     await page.click('#moreBack');
