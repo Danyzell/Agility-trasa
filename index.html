@@ -1179,6 +1179,8 @@ var LANGK='agility-lang-v1', THEMEK='agility-theme-v1';
 /* výchozí jazyk podle telefonu; automatické testy (navigator.webdriver) běží česky */
 var LANG=(function(){ var v=lsGet(LANGK,null); if(v==='cs'||v==='en') return v; if(navigator.webdriver) return 'cs'; var n=((navigator.languages&&navigator.languages[0])||navigator.language||'cs').toLowerCase(); return /^(cs|sk)/.test(n)?'cs':'en'; })();
 var LOC=LANG==='en'?'en-GB':'cs-CZ';
+/* česká specifika (kacr.info, KAČR, závody v ČR, čeští rozhodčí) se cizincům neukazují */
+var CZONLY=LANG==='en';
 var I18N={exact:{},num:{},re:[]};
 function i18nNorm(s){ return String(s).replace(/ /g,' ').replace(/\s+/g,' ').trim(); }
 var I18N_NUM=/\d+(?:[.,]\d+)?/g;
@@ -1677,6 +1679,12 @@ var I18N_EXTRA={exact:{
 "Přidat na plochu": "Add to Home Screen",
 "Rozumím": "Got it",
 "Ukázat jak": "Show me how",
+"Výzvy a žebříčky": "Challenges and leaderboards",
+"Parkur týdne, Zahrada týdne": "Course of the week, Garden of the week",
+"Parkur týdne, Zahrada týdne, výzva dne": "Course of the week, Garden of the week, challenge of the day",
+"TECH": "TECH",
+"Threadle": "Threadle",
+"Language: Czech or English.": "Language: Czech or English.",
 "malé": "small",
 "velké": "large",
 "chyba": "fault",
@@ -5681,7 +5689,7 @@ var COACH=[
   ]}
 ];
 function coachHTML(){
-  return COACH.map(function(g){
+  return COACH.filter(function(g){ return !(CZONLY&&g.h==='Česko a Slovensko'); }).map(function(g){
     return '<h2>'+esc(g.h)+'</h2><div class="coach-list">'+g.items.map(function(c){
       return '<a class="coach" href="'+esc(c[3])+'" target="_blank" rel="noopener"><span class="cc">'+c[0]+'</span><span><b'+(trLookup(c[1])==null?' translate="no"':'')+'>'+esc(c[1])+'</b><span>'+esc(c[2])+'</span></span>'+IC.ext+'</a>';
     }).join('')+'</div>';
@@ -5727,7 +5735,7 @@ function homeRender(){
   h+=S.route.length>1
     ? '<button class="hm-cta" data-h="plan"><span class="hm-play">'+IC.playF+'</span><span class="tx"><small>Pokračovat</small><b>'+esc(S.meta.name)+'</b><span>'+fmt(m.len)+' m · '+nPrek(m.n)+' · SČP '+m.sct+' s</span></span></button>'
     : '<button class="hm-cta" data-h="lib"><span class="hm-play">'+IC.playF+'</span><span class="tx"><small>Začni</small><b>Vyber si parkur</b><span>90 parkurů podle pravidel FCI, nebo si postav vlastní</span></span></button>';
-  h+='<div id="hmInst"></div><div id="hmDay">'+compDayHTML()+'</div>';
+  h+='<div id="hmInst"></div><div id="hmDay">'+(CZONLY?'':compDayHTML())+'</div>';
   /* parkury pro tebe: nové a nezaběhnuté ze třídy psa */
   var L=listFor(cls).filter(function(c){return !getMark(c.id).done&&c.id!==S.meta.id;});
   L.sort(function(a,b){return (isNewC(b.id)?1:0)-(isNewC(a.id)?1:0);}); HOME_C=L.slice(0,6);
@@ -5752,10 +5760,10 @@ function homeRender(){
   var ch=homeChallenge(), mo='';
   mo+=wkHomeHTML(cls);
   mo+=wkHomeHTML('Z');
-  mo+=compHomeHTML();
+  if(!CZONLY) mo+=compHomeHTML(); /* závody z kacr.info jen česky: pro cizince jsou k ničemu */
   if(ch) mo+='<div class="hm-sec"><h3>Výzva dne</h3></div><div class="hm-ch"><div class="ic">🎯</div><div class="tx"><b>Zaběhni čistě pod SČP</b><span>'+esc(ch.c.name)+' · '+ch.c.route.length+' překážek</span></div>'+
     (ch.ok?'<span class="hm-go ok" style="display:grid;place-items:center">Splněno ✓</span>':'<button class="hm-go" data-h="ch">Start</button>')+'</div>';
-  var moSum='<summary class="hm-sum"><span class="tx"><b>Výzvy, žebříčky a závody</b><span>Parkur týdne, Zahrada týdne, závody poblíž'+(ch?', výzva dne':'')+'</span></span><span class="hm-chev" aria-hidden="true">'+IC.chev+'</span></summary>';
+  var moSum='<summary class="hm-sum"><span class="tx"><b>'+(CZONLY?'Výzvy a žebříčky':'Výzvy, žebříčky a závody')+'</b><span>'+(CZONLY?'Parkur týdne, Zahrada týdne':'Parkur týdne, Zahrada týdne, závody poblíž')+(ch?', výzva dne':'')+'</span></span><span class="hm-chev" aria-hidden="true">'+IC.chev+'</span></summary>';
   /* tento týden (pondělí až neděle) */
   var t=new Date(); t.setHours(12,0,0,0); var mon=new Date(t); mon.setDate(t.getDate()-((t.getDay()+6)%7)), today=localDate(t), wk='';
   ['Po','Út','St','Čt','Pá','So','Ne'].forEach(function(n,i){ var x=new Date(mon); x.setDate(mon.getDate()+i); var k=localDate(x);
@@ -6690,7 +6698,7 @@ var TOPICS=[
   steps:['Nauč psa spolehlivě čekat za první překážkou.','Odcházej postupně dál a vracej se odměnit na místo.','Uvolňuj jen povelem, ne pohybem.','Náskok ti dá čas dostat se na dobré místo pro první změnu směru.'],
   tips:['Pes, kterému projde vyběhnutí před povelem, bude vybíhat dál.','Odměnu občas dones na místo, kde pes čeká.'],
   v:[['cz','Doma se psem: velký náskok na startu',ABS,YT('DO7RWtavdgs')]]},
- {id:'comp',g:'Závody',t:'První závody',s:'Co připravit',
+ {id:'comp',g:'Závody',t:'První závody',s:'Co připravit',cz:1,
   steps:['Vyřiď si výkonnostní průkaz (VP) s předstihem, doručení může trvat až 30 dní.','Pes musí být starší 18 měsíců a čipovaný nebo tetovaný.','Přihlášky na závody v ČR jsou na kacr.info, začíná se v A0 (bez zón, slalomu a kruhu) nebo A1.','Nacvič s psem měření u rozhodčího, na prvních závodech se pes měří.','Před během máš čas na prohlídku parkuru bez psa: zapamatuj si pořadí (pomůže Trénink paměti v Plánu).'],
   tips:['Při běhu nesmí mít pes obojek a psovod nic v ruce.','Hodnocení: 0–5,99 trestných bodů Výborně, 6–15,99 Velmi dobře, 16–25,99 Dobře, víc Bez ohodnocení.'],
   v:[['cz','Doma se psem: měření psa na prvních závodech',ABS,YT('oePbfjAmrkY')],['cz','Přes překážky – agility (reportáž)','YouTube',YT('CE6YquH2xQs')],['cz','Kalendář a přihlášky na závody','kacr.info','https://kacr.info/']]}
@@ -6705,7 +6713,7 @@ function topicIcon(id){
 function videoRender(){
   if(VID.id){ showTopic(VID.id); return; }
   $('vidDetail').hidden=true; $('vidList').hidden=false;
-  var groups={}; TOPICS.forEach(function(t){(groups[t.g]=groups[t.g]||[]).push(t);});
+  var groups={}; TOPICS.forEach(function(t){ if(t.cz&&CZONLY) return; (groups[t.g]=groups[t.g]||[]).push(t);});
   $('vidList').innerHTML='<p class="hint">Animace ukazují správnou techniku. U každého tématu je postup nácviku a vybraná videa trenérů, česká i zahraniční.</p>'+
     Object.keys(groups).map(function(g){return '<h2>'+esc(g)+'</h2><div class="topics">'+groups[g].map(function(t){
       return '<button class="topic" data-top="'+t.id+'">'+topicIcon(t.id)+(SC[t.id]&&v3dOK()?'<span class="b3d">3D</span>':'')+'<b>'+esc(t.t)+'</b><span>'+esc(t.s)+'</span></button>';}).join('')+'</div>';}).join('')+
@@ -7479,9 +7487,9 @@ function dogSheet(d){
     '<div class="grid2"><label for="dSize">Velikost<select id="dSize">'+Object.keys(SIZES).map(function(k){return '<option value="'+k+'">'+SIZES[k].l+'</option>';}).join('')+'</select></label>'+
     '<label for="dCls">Výkonnostní třída<select id="dCls"><option>A0</option><option>A1</option><option>A2</option><option>A3</option></select></label></div>'+
     '<label for="dBorn">Narozen/a (měsíc a rok, nepovinné)<input id="dBorn" type="month" value="'+esc(d.born||'')+'" max="'+localDate().slice(0,7)+'"></label>'+
-    '<label for="dKacr">Pes na kacr.info (nepovinné)</label><div class="kc-find"><input id="dKacr" type="text" autocomplete="off" placeholder="jméno psa, psovoda nebo odkaz" value="'+(d.kacr?'https://kacr.info/dogs/'+esc(d.kacr):'')+'"><button class="btn" data-a="ks">Hledat</button></div>'+
+    (CZONLY&&!d.kacr?'<input id="dKacr" type="hidden" value="">':'<label for="dKacr">Pes na kacr.info (nepovinné)</label><div class="kc-find"><input id="dKacr" type="text" autocomplete="off" placeholder="jméno psa, psovoda nebo odkaz" value="'+(d.kacr?'https://kacr.info/dogs/'+esc(d.kacr):'')+'"><button class="btn" data-a="ks">Hledat</button></div>'+
     '<div id="dKres" class="kc-res" aria-live="polite"></div>'+
-    '<p class="hint">Napiš jméno psa nebo své jméno a vyber psa ze seznamu. Výsledky ze závodů se pak načtou do aplikace: rychlost, čisté běhy a odhad času na parkuru.</p>'+
+    '<p class="hint">Napiš jméno psa nebo své jméno a vyber psa ze seznamu. Výsledky ze závodů se pak načtou do aplikace: rychlost, čisté běhy a odhad času na parkuru.</p>')+
     '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="ok">'+(isNew?'Přidat':'Uložit')+'</button></div>',
     function(e){
       var b=e.target.closest('[data-a]'); if(!b) return;
@@ -7499,7 +7507,7 @@ function dogSheet(d){
     });
   $('dSize').value=d.size; $('dCls').value=d.cls;
   $('dKacr').onkeydown=function(e){ if(e.key==='Enter'){ e.preventDefault(); if(!kacrId(this.value)) kacrFind(); } };
-  $('dKres').onclick=function(e){
+  if($('dKres')) $('dKres').onclick=function(e){ /* pole kacr.info se cizincům neukazuje */
     var k=e.target.closest('[data-kd]'), h=e.target.closest('[data-kh]');
     if(h){ kacrFind({handler:h.getAttribute('data-kh')}); return; }
     if(!k) return;
@@ -7868,6 +7876,7 @@ function barRow(l,v,n,warn){ return '<tr><td>'+l+'</td><td style="width:45%"><di
 /* Kde ztrácíš body: rozpad trestných bodů závodních běhů z kacr.info a ručně zapsané typy chyb */
 function lossHTML(dog){
   var L=kxRuns(dog), man=diary().filter(function(x){ return x.kind==='zavod'&&(!dog||x.dog===dog.id)&&x.faults&&x.faults.length; });
+  if(CZONLY&&!(dog&&dog.kacr)) return ''; /* bez kacr.info není z čeho počítat */
   if(!dog||!dog.kacr) return '<div class="chart"><b>Kde ztrácíš body</b><p class="hint">Propoj psa s kacr.info (Více → Psi) a aplikace z výsledků spočítá, kde ztrácíš body a u kterých rozhodčích se ti daří.</p></div>';
   if(!L.length&&!man.length) return '<div class="chart"><b>Kde ztrácíš body</b><p class="hint">'+(KX_BUSY[dog.id]?'Načítám podrobnosti běhů z kacr.info…':KACR[dog.id]?'Podrobnosti běhů z kacr.info zatím nejsou stažené.':'Načti výsledky psa z kacr.info (Více → Psi).')+'</p></div>';
   var n=L.length, c={dis:0,chb:0,odm:0,tbt:0,clean:0}, pts={chb:0,odm:0,tbt:0}, gap=[];
@@ -7924,7 +7933,7 @@ function promoHTML(){
 }
 function diaryHTML(){
   var d=curDog(), L=diary().filter(function(x){return !d||!x.dog||x.dog===d.id;}).sort(function(a,b){return b.date<a.date?-1:1;});
-  return promoHTML()+lossHTML(d)+judgeHTML(d)+'<div class="row"><button class="btn primary" data-dy="trenink">＋ Trénink</button><button class="btn" data-dy="zavod">＋ Závod</button></div>'+
+  return (CZONLY&&!(d&&d.kacr)?'':promoHTML())+lossHTML(d)+judgeHTML(d)+'<div class="row"><button class="btn primary" data-dy="trenink">＋ Trénink</button><button class="btn" data-dy="zavod">＋ Závod</button></div>'+
     '<div class="list">'+(L.length?L.map(function(x){
       var t=x.kind==='zavod'?'<b>Závod'+(x.event?': '+esc(x.event):'')+'</b><span>'+esc(x.cls||'')+' · '+esc(gTxt(x.g||''))+(x.place?' · '+esc(T(x.place+'. místo')):'')+(x.tot!==''&&x.tot!=null?' · '+esc(T(x.tot+' tr. b.')):'')+(x.judge?' · '+esc(T('rozhodčí '+x.judge)):'')+(x.faults&&x.faults.length?' · '+x.faults.filter(function(k){return FAULTS[k];}).map(function(k){return esc(T(FAULTS[k][0]));}).join(', '):'')+(+x.t>0?' · '+esc(fmt(+x.t)+' s')+(+x.len>0?' · '+esc(spdU(+x.len/+x.t)):''):'')+'</span>'+(x.video?'<a class="dy-vid" href="'+esc(x.video)+'" target="_blank" rel="noopener">▶ Video</a>':'') /* části přes T(): celý řádek slovník nepřeloží */
         :'<b>Trénink'+(x.surface?' · '+esc(x.surface):'')+'</b>';
@@ -8232,11 +8241,30 @@ function acctAsk(){
 }
 /* ---------- anonymní návštěvnost: jednou denně náhodné číslo instalace, datum, ikona na ploše a jazyk ---------- */
 var PINGK='agility-ping-v1';
+/* chyby v aplikaci na skutečných telefonech: jen počet a poslední hláška (bez osobních dat), odejdou s denním pingem */
+var ERRK='agility-err-v1', INSTEVK='agility-instev-v1';
+function errNote(msg,src,line){
+  try{
+    msg=String(msg||'').replace(/https?:\/\/\S+/g,'').slice(0,120); if(!msg||/^Script error\.?$/.test(msg)||/ResizeObserver/.test(msg)) return;
+    var e=lsGet(ERRK,{n:0})||{n:0}; e.n=(e.n||0)+1; e.last=(msg+(src?' @'+String(src).split('/').pop().split('?')[0]+':'+(line||0):'')).slice(0,160); e.at=Date.now();
+    localStorage.setItem(ERRK,JSON.stringify(e)); /* bez lsSet: ta při plné paměti hlásí a mohla by chybu zacyklit */
+  }catch(x){}
+}
+window.addEventListener('error',function(e){ errNote(e.message,e.filename,e.lineno); });
+window.addEventListener('unhandledrejection',function(e){ var r=e.reason; errNote('Promise: '+(r&&r.message||r),'',0); });
+function instEv(k){ var o=lsGet(INSTEVK,{})||{}; if(!o[k]){ o[k]=1; lsSet(INSTEVK,o); } }
 function appPing(){
-  if(navigator.webdriver||!IS_SRV||navigator.onLine===false) return;
+  if(navigator.webdriver&&!window.PING_TEST||!IS_SRV||navigator.onLine===false) return;
   var last=lsGet(PINGK,null), today=localDate(); if(last===today) return;
   var inst=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
-  sbCall('app_ping',{p_dev:devId(),p_standalone:!!inst,p_lang:LANG,p_first:!last}).then(function(){ lsSet(PINGK,today); },function(){});
+  var ua=navigator.userAgent||'', plat=/iP(hone|ad|od)/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)?'ios':/Android/i.test(ua)?'android':'desktop';
+  var iab=/FBAN|FBAV|FB_IAB|FBIOS|Instagram|Messenger|BytedanceWebview|musical_ly|LinkedInApp|Snapchat|Line\/|; wv\)/i.test(ua), ie=lsGet(INSTEVK,{})||{}, er=lsGet(ERRK,{n:0})||{n:0};
+  var base={p_dev:devId(),p_standalone:!!inst,p_lang:LANG,p_first:!last};
+  var full={p_plat:plat,p_iab:iab,p_inst_shown:!!ie.shown,p_inst_ok:!!ie.ok,p_err:+er.n||0,p_err_last:er.last||null};
+  for(var k in base) full[k]=base[k];
+  var done=function(){ lsSet(PINGK,today); if(er.n) lsSet(ERRK,{n:0}); };
+  /* rozšířený ping; dokud server nové sloupce nezná (SQL spustí autor), projde ten původní */
+  sbCall('app_ping',full).then(done,function(e){ if(/server 404|function/i.test(e&&e.message||'')) return sbCall('app_ping',base).then(done,function(){}); });
 }
 setTimeout(appPing,4000);
 /* přehled návštěvnosti v O aplikaci: server ho vrátí jen autorovi (přihlášenému e-mailem autora) */
@@ -8249,7 +8277,9 @@ function statsLoad(){
     el2.innerHTML='<div class="panel stats-adm"><b>Návštěvnost (vidíš jen ty)</b><div class="tiles">'+
       tile('Dnes',r.today)+tile('7 dní',r.d7)+tile('30 dní',r.d30)+tile('Noví za 7 dní',r.new7)+tile('S ikonou na ploše',r.icon7)+tile('Účty',r.accounts)+'</div>'+
       '<div class="sbars" aria-label="Lidé za den, 30 dní">'+days.map(function(x){ return '<i style="height:'+Math.max(4,Math.round(x[1]/mx*100))+'%" title="'+esc(x[0])+': '+x[1]+'"></i>'; }).join('')+'</div>'+
-      '<p class="hint">Lidé, kteří aplikaci otevřeli (každé zařízení jednou za den). Celkem od začátku: '+r.total+'. Anglicky: '+r.en7+' za 7 dní.</p></div>';
+      '<p class="hint">Lidé, kteří aplikaci otevřeli (každé zařízení jednou za den). Celkem od začátku: '+r.total+'. Anglicky: '+r.en7+' za 7 dní.</p>'+
+      (r.plat?'<p class="hint" translate="no">7 dní: Android '+(r.plat.android||0)+' · iPhone '+(r.plat.ios||0)+' · počítač '+(r.plat.desktop||0)+' · z Facebooku a spol. '+(r.iab7||0)+'. Instalační okno: ukázáno '+(r.inst_shown7||0)+', přijato '+(r.inst_ok7||0)+'.</p>':'')+
+      (r.err7!=null?'<p class="hint">Chyby v aplikaci za 7 dní: '+r.err7+(r.err_top&&r.err_top.length?'<br>'+r.err_top.map(function(x){ return esc(String(x[1]))+'× <code translate="no">'+esc(String(x[0]))+'</code>'; }).join('<br>'):'')+'</p>':'')+'</div>';
   },function(){});
 }
 function authStart(){
@@ -10468,8 +10498,8 @@ catSync();
   }
   /* tlačítko Instalovat v záložce Více → O aplikaci */
   var ev=null;
-  window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); ev=e; pwaInstUI(); });
-  window.addEventListener('appinstalled',function(){ ev=null; pwaInstUI(); toast('Aplikace je nainstalovaná, najdeš ji na ploše.'); });
+  window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); ev=e; instEv('shown'); pwaInstUI(); });
+  window.addEventListener('appinstalled',function(){ ev=null; instEv('ok'); pwaInstUI(); toast('Aplikace je nainstalovaná, najdeš ji na ploše.'); });
   /* Instalovat: Chrome nabídne vlastní okno (tlačítko na Domů a v O aplikaci); jinde (iPhone, Samsung Internet, Firefox,
      Chrome po odmítnutém okně) karta s návodem pro daný prohlížeč. Zavřená karta se vrátí po 14 dnech. */
   var UA=navigator.userAgent||'', ANDR=/Android/i.test(UA);

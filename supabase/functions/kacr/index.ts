@@ -176,8 +176,18 @@ async function runDetails(ids: number[], dog: number) {
 
 const get = (path: string) => fetch('https://kacr.info' + path, { headers: { 'User-Agent': UA, 'Accept-Language': 'cs' }, redirect: 'manual' });
 
+/* limit dotazů podle adresy: 60 za minutu a 1500 za den na jednu instanci; brání zneužití funkce jako relé na kacr.info */
+const RL = new Map<string, { m: number; mAt: number; d: number; dAt: number }>();
+function limited(req: Request) {
+  const ip = (req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || 'x').split(',')[0].trim(), now = Date.now();
+  let r = RL.get(ip); if (!r) { r = { m: 0, mAt: now, d: 0, dAt: now }; RL.set(ip, r); }
+  if (now - r.mAt > 60_000) { r.m = 0; r.mAt = now; } if (now - r.dAt > 86_400_000) { r.d = 0; r.dAt = now; }
+  r.m++; r.d++; if (RL.size > 5000) RL.clear();
+  return r.m > 60 || r.d > 1500;
+}
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
+  if (limited(req)) return json({ error: 'Příliš mnoho dotazů, zkus to za chvíli.' }, 429);
   try {
     const b = await req.json().catch(() => ({}));
     if (b?.q != null) {
