@@ -320,7 +320,10 @@ select.btn{padding-right:8px;}
 .yflt{border:0; padding:0; margin:0;}
 .yflt legend{font-size:13px; color:var(--muted); padding:0; margin-bottom:6px;}
 .yflt .filters{flex-wrap:wrap;}
-.kf-item .kf{flex-wrap:wrap; margin-top:8px;} .kf-item .chip{min-height:32px; padding:5px 11px; font-size:13px;}
+.kf-item .kf{flex-wrap:wrap; margin-top:8px;}
+.plus-list{list-style:none; padding:0; margin:10px 0 0; display:grid; gap:6px;} .plus-list li{padding-left:26px; position:relative; font-size:14.5px;}
+.plus-list li:before{content:'✓'; position:absolute; left:0; top:0; width:18px; height:18px; border-radius:50%; background:var(--accent); color:var(--on-accent); font-size:12px; font-weight:700; display:grid; place-items:center;}
+.thx-h.plus-h{background:color-mix(in srgb,var(--accent) 18%,transparent); color:var(--accent);} .plus-acts{flex-wrap:wrap;} .plus-teaser{margin-top:10px;} .kf-item .chip{min-height:32px; padding:5px 11px; font-size:13px;}
 .table{width:100%; border-collapse:collapse; font-size:14px;}
 .table th,.table td{text-align:left; padding:6px 4px; border-bottom:1px solid var(--border);}
 .table th{font-size:12px; color:var(--muted); font-weight:600;}
@@ -1134,6 +1137,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       <button class="mrow" data-m="sct"><span class="mic" data-ic="timer"></span><span class="ml">Kalkulačka SČP a MČP</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="listina"><span class="mic" data-ic="trophy"></span><span class="ml">Výsledková listina</span><span class="mch" data-ic="chev"></span></button>
       <div class="mgrp">Aplikace</div>
+      <button class="mrow" data-m="plus"><span class="mic" data-ic="star"></span><span class="ml">Pawkur Plus</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="set"><span class="mic" data-ic="sliders"></span><span class="ml">Nastavení a záloha</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="about"><span class="mic" data-ic="info"></span><span class="ml">O aplikaci a podpora</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="stats" hidden data-sub="1"><span class="mic" data-ic="chart"></span><span class="ml">Statistiky</span><span class="mch" data-ic="chev"></span></button>
@@ -1899,6 +1903,39 @@ var I18N_EXTRA={exact:{
 "Hoopers: přepínač Agility | Hoopers nahoře na Domů a v Parkurech. Parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb": "Hoopers: an Agility | Hoopers switch at the top of Home and Courses. H1–H3 courses following FCI rules, your own builds with hoops, barrels, gates, a chute and the handling area, a rules check and run scoring by faults",
 "Novinky v Pawkuru 2.6": "What's new in Pawkur 2.6",
 "Novinky v Pawkuru 2.7": "What's new in Pawkur 2.7",
+"Pawkur Plus": "Pawkur Plus",
+"99 Kč / rok": "99 CZK / year (about €4)",
+"3D průlet a rozšířená realita": "3D walk-through and augmented reality",
+"Rozbor, pasti a stavba v terénu": "Analysis, traps and building on the field",
+"Kde ztrácíš body a rozhodčí z kacr.info": "Where you lose points and judges from kacr.info",
+"Kalkulačka SČP a výsledková listina": "SCT calculator and results sheet",
+"Neomezené vlastní parkury (zdarma 5)": "Unlimited own courses (5 for free)",
+"je součást Pawkur Plus.": "is part of Pawkur Plus.",
+"Zkušební doba skončila. Základ zůstává zdarma, Plus je za 99 Kč / rok.": "The trial is over. The basics stay free, Plus costs 99 CZK / year (about €4).",
+"Spravovat předplatné": "Manage subscription",
+"Obnovit stav": "Refresh status",
+"Už mám Plus": "I already have Plus",
+"Přihlásit přes Google a pokračovat": "Sign in with Google and continue",
+"Plus se váže k účtu, abys ho měl na všech zařízeních.": "Plus is tied to your account so you have it on every device.",
+"Platba se připravuje, zatím můžeš používat základ zdarma.": "Payment is being set up; the basics stay free meanwhile.",
+"Koupit Plus za 99 Kč / rok": "Buy Plus for 99 CZK / year (about €4)",
+"Podmínky": "Terms",
+"Obchodní podmínky": "Terms of service",
+"Základ aplikace je zdarma napořád: parkury, plán, stopky, trénink doma a deník. Plus přidává:": "The basics are free forever: courses, plan, stopwatch, training at home and the diary. Plus adds:",
+"99 Kč / rok, zrušíš kdykoli. Parkury, stopky, trénink doma a deník zůstávají zdarma.": "99 CZK / year (about €4), cancel any time. Courses, stopwatch, training at home and the diary stay free.",
+"99 Kč / rok, platí se jednou ročně, zrušíš kdykoli a Plus doběhne do konce zaplaceného roku. Platbu zajišťuje Stripe, aplikace číslo karty nevidí.": "99 CZK / year (about €4), billed once a year, cancel any time and Plus runs until the end of the paid year. Payments are handled by Stripe; the app never sees your card number.",
+"Nejdřív se přihlas účtem, se kterým jsi platil.": "First sign in with the account you paid with.",
+"Ověřuji…": "Checking…",
+"Pawkur Plus je aktivní. Díky!": "Pawkur Plus is active. Thank you!",
+"Plus u tohoto účtu zatím není. Po zaplacení to může chvíli trvat, zkus to za minutu.": "No Plus on this account yet. It can take a moment after payment, try again in a minute.",
+"Pawkur Plus je aktivní. Díky za podporu!": "Pawkur Plus is active. Thank you for your support!",
+"Díky! Ověřuji platbu…": "Thanks! Checking the payment…",
+"Platba proběhla, Plus se objeví během pár minut. Zkontroluj ve Více → Pawkur Plus.": "Payment done, Plus will appear within a few minutes. Check More → Pawkur Plus.",
+"Rozšířená realita": "Augmented reality",
+"Rozbor": "Analysis",
+"Stavba v terénu": "Building on the field",
+"Neomezené vlastní parkury": "Unlimited own courses",
+"Kde ztrácíš body": "Where you lose points",
 "Pawkur má novou adresu pawkur.cz. Přenes si data jedním klepnutím a používej aplikaci tam.": "Pawkur has a new address, pawkur.cz. Move your data with one tap and use the app there.",
 "Přenést": "Move",
 "Přenáším…": "Moving…",
@@ -1937,7 +1974,7 @@ var I18N_EXTRA={exact:{
 "Odškrtnout vše": "Uncheck all",
 "Propoj psa s kacr.info ve Více → Psi.": "Link the dog to kacr.info in More → Dogs.",
 "Výsledky na kacr.info ještě nejsou. Zkus to později.": "The results aren't on kacr.info yet. Try again later.",
-"Kde ztrácíš body": "Where you lose points",
+
 "Čistě": "Clear",
 "S chybou": "With a fault",
 "S odmítnutím": "With a refusal",
@@ -2069,6 +2106,9 @@ var I18N_EXTRA={exact:{
 "Letos # z #": "This year # of #",
 "Letos # z # · splněno": "This year # of # · met",
 "# z # zkoušek": "# of # qualifying runs",
+"Zkoušíš všechno zdarma, zbývá # den.": "You are trying everything for free, # day left.",
+"Zkoušíš všechno zdarma, zbývá # dny.": "You are trying everything for free, # days left.",
+"Zkoušíš všechno zdarma, zbývá # dní.": "You are trying everything for free, # days left.",
 "#. místo z #": "#. place of #",
 "Podíl čistých běhů v % a počet čistých z počtu závodů za měsíc. Za posledních # měsíců # z # čistě.": "Share of clean runs in % and clean out of all competition runs per month. Over the last # months # of # clean.",
 "Podíl čistých běhů v % a počet čistých z počtu tréninkových běhů za měsíc. Za posledních # měsíců # z # čistě.": "Share of clean runs in % and clean out of all training runs per month. Over the last # months # of # clean.",
@@ -2678,7 +2718,6 @@ i18nAdd({
 "Upravit název, třídu a autora parkuru": "Edit the course name, class and author",
 "Oblíbený": "Favourite",
 "Zaběhnuto": "Done",
-"Rozbor": "Analysis",
 "3D průlet": "3D flythrough",
 "Předčítat": "Read aloud",
 "Trénink paměti": "Memory training",
@@ -4972,6 +5011,7 @@ function specsHTML(m){
    Počítá courseTimes jako Plán; tabulka všech tříd pro zvolenou velikost (Británie) a disciplínu. Poslední zadání se pamatuje. ---------- */
 var SCTK='agility-sctcalc-v1';
 function sctCalcSheet(){
+  if(!plusGate('Kalkulačka SČP a MČP')) return;
   var d=curDog(), sv=lsGet(SCTK,{})||{}, sizes=RU.heights||SIZES, dsc=RU.uk||!RU.mctK; /* disciplína mění čas jen tam, kde MČP není 1,5× SČP (FCI 2,5 / 3,0 m/s, britská matice) */
   var st={len:+sv.len>0?+sv.len:'', disc:sv.disc==='J'?'J':'A', cls:RU.cls.indexOf(sv.cls)>=0?sv.cls:d&&RU.cls.indexOf(d.cls)>=0?d.cls:RU.cls.indexOf('A1')>=0?'A1':RU.cls[0],
     size:sizes[sv.size]?sv.size:d&&sizes[d.size]?d.size:'L', spd:+sv.spd>0?+sv.spd:0};
@@ -5682,7 +5722,7 @@ $('planTools').onclick=function(e){
   var b=e.target.closest('.tool'); if(!b) return; var t=b.getAttribute('data-t'); toolsOpen(false);
   if(t==='side'||t==='bg'||t==='quiz') setPanel(t);
   else if(t==='ana') anaSheet();
-  else if(t==='traps'){ if(S.route.length<2){ toast('Nejdřív vyznač trasu v režimu Trasa.'); return; } PLANUI.traps=!PLANUI.traps; lsSet('agility-planui-v1',PLANUI); render(); ui();
+  else if(t==='traps'){ if(S.route.length<2){ toast('Nejdřív vyznač trasu v režimu Trasa.'); return; } if(!PLANUI.traps&&!plusGate('Pasti')) return; PLANUI.traps=!PLANUI.traps; lsSet('agility-planui-v1',PLANUI); render(); ui();
     var nt=(flowStats(S.obs,S.route,S.turns).trapL||[]).length; toast(PLANUI.traps?(nt?'Pasti na plánu: '+nt:'Na parkuru nejsou žádné pasti'):'Pasti skryté'); }
   else if(t==='say') saySheet();
   else if(t==='imp') impOpen();
@@ -5856,7 +5896,7 @@ function saveSheet(){
       var name=$('fName').value.trim()||'Můj parkur', cls=$('fCls').value, auth=$('fAuth').value.trim();
       var L=myDB(), rec={name:name,cls:cls,author:auth,W:S.W,H:S.H,obs:JSON.parse(JSON.stringify(S.obs)),route:S.route.slice(),sides:(S.sides||[]).slice(),turns:(S.turns||[]).slice(),hp:(S.hp||[]).slice(),marks:JSON.parse(JSON.stringify(S.marks||[]))};
       if(a==='upd'){rec.id=m.id; L=L.map(function(c){return c.id===m.id?rec:c;});}
-      else {rec.id='my-'+Date.now().toString(36); L.push(rec);}
+      else { if(L.length>=5&&!plusOK()){ setTimeout(function(){ plusSheet('Neomezené vlastní parkury'); },60); return; } rec.id='my-'+Date.now().toString(36); L.push(rec);}
       if(!mySave(L)) return; /* plná paměť: plán zůstane neuložený (hlášku ukáže lsFull) */
       S.meta={id:rec.id,name:name,cls:cls,author:auth,gen:false,dirty:false}; save(); UNDO_SV=planSnap(); HM.emit('courseSaved',{id:rec.id});
       closeSheet(); topbar(); render(); toast(a==='upd'?'Změny uloženy':'Uloženo do Moje');
@@ -7423,6 +7463,7 @@ function open3dGL(){
 }
 function close3dGL(){ if(C3.api){ try{ C3.api.dispose(); }catch(e){} C3.api=null; } var cv=$('c3dgl'); if(cv){ var n=cv.cloneNode(false); n.hidden=true; cv.parentNode.replaceChild(n,cv); } $('c3d').hidden=false; }
 function open3d(play){ if(play==null) play=true;
+  if(!plusGate('3D průlet')) return;
   if(isHoop()){ toast('3D zatím umí jen parkury agility.'); return; }
   if(S.route.length<2&&(play||!v3dOK()||!S.obs.length)){toast(S.obs.length&&!play?'Pro 3D potřebuješ trasu aspoň se 2 překážkami.':'Pro 3D průlet potřebuješ trasu aspoň se 2 překážkami.'); return;}
   var go=function(){ V3.d=0; V3.on=!!play; V3.last=0; $('ov3d').hidden=false; $('p3play').textContent=play?'Pauza':'Přehrát'; p3setView(C3.api?'orbit':'dog'); if(!play) render3d(); cancelAnimationFrame(V3.raf); V3.raf=requestAnimationFrame(loop3d); };
@@ -7449,7 +7490,7 @@ function arHint(s){
   var h=$('arHint'); if(h.getAttribute('data-s')!==s){ h.setAttribute('data-s',s); h.textContent=T(t); }
 }
 function arStart(){
-  if(AR.api) return;
+  if(AR.api) return; if(!plusGate('Rozšířená realita')) return;
   if(!V3D.m||!V3D.m.startAR){ toast(T('AR se ještě načítá, klepni za chvilku znovu.')); v3dLoad().then(function(m){ V3D.m=m; },function(){}); return; }
   if(S.route.length<2){ toast(T('Pro AR potřebuješ trasu aspoň se 2 překážkami.')); return; }
   if(!C3.api) build3d();
@@ -8360,7 +8401,9 @@ function cleanChartHTML(dog){
 function pct(a,n){ return n?Math.round(a/n*100):0; }
 function barRow(l,v,n,warn){ return '<tr><td>'+l+'</td><td style="width:45%"><div class="bar" style="height:10px"><i style="width:'+pct(v,n)+'%'+(warn?';background:var(--bad)':'')+'"></i></div></td><td class="num" style="width:56px">'+pct(v,n)+' %</td></tr>'; }
 /* Kde ztrácíš body: rozpad trestných bodů závodních běhů z kacr.info a ručně zapsané typy chyb */
+function plusTeaser(title){ return '<div class="chart plus-teaser"><b>'+title+'</b><p class="hint">'+plusStatus()+'</p><div class="row"><button class="btn primary" data-plus="sheet">Pawkur Plus</button></div></div>'; }
 function lossHTML(dog){
+  if(!plusOK()&&dog&&dog.kacr) return plusTeaser('Kde ztrácíš body');
   var L=kxRuns(dog), man=diary().filter(function(x){ return x.kind==='zavod'&&(!dog||x.dog===dog.id)&&x.faults&&x.faults.length; }).map(function(x){ return x.faults; });
   if(dog&&dog.kacr&&KACR[dog.id]) kacrRuns(KACR[dog.id]).forEach(function(r){ var f=KF[kfKey(dog,r)]; if(f&&f.length) man.push(f); });
   if(!KACR_OK&&!(dog&&dog.kacr)) return ''; /* bez kacr.info není z čeho počítat */
@@ -8393,6 +8436,7 @@ function lossHTML(dog){
 }
 /* úspěšnost podle rozhodčího a povrchu (jen běhy s podrobnostmi; aspoň 2 běhy na řádek) */
 function judgeHTML(dog){
+  if(!plusOK()) return '';
   var L=kxRuns(dog); if(L.length<3) return '';
   var grp=function(key){ var g={}; L.forEach(function(q){ var k=key(q); if(!k) return; var o=g[k]=g[k]||{n:0,clean:0,dis:0,v:[]}; o.n++; if(q.m.dis) o.dis++; else { if(!(q.m.tb>0)) o.clean++; if(q.m.v>0) o.v.push(q.m.v); } });
     return Object.keys(g).filter(function(k){ return g[k].n>=2; }).sort(function(a,b){ return g[b].n-g[a].n; }).slice(0,6).map(function(k){ return [k,g[k]]; }); };
@@ -8767,6 +8811,68 @@ function acctAsk(){
     function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
   return true;
 }
+/* ---------- Pawkur Plus: základ zdarma napořád, prvních 14 dní všechno, pak 99 Kč/rok (Stripe Payment Link, webhook → tabulka plus, plus_get).
+   Plus se váže k účtu (client_reference_id = id účtu, záložně e-mail z platby). Stav se pamatuje v zařízení a obnovuje nejvýš jednou za 6 h.
+   Zkušební doba běží od prvního otevření (agility-first-v1), server ji podle zařízení (app_open) umí vrátit dál, ať ji přeinstalace nevynuluje.
+   V aplikaci z Google Play se nekupuje (pravidla Play): jen odkaz, že Plus se spravuje na pawkur.cz. ---------- */
+var PLUSK='agility-plus-v1', FIRSTK='agility-first-v1', TRIAL_DAYS=14, PLUS_PRICE='99 Kč / rok';
+var PLUS_LINK='', PLUS_PORTAL=''; /* odkaz Stripe Payment Link a zákaznický portál doplní autor; prázdné = platba se připravuje */
+var PLUS=lsGet(PLUSK,null)||{until:0,at:0,src:''};
+var FIRST=(function(){ var f=+lsGet(FIRSTK,0)||0; if(!f){ f=Date.now(); lsSet(FIRSTK,f); } return f; })();
+var PLUS_FEATS=[['3D průlet a rozšířená realita','cube'],['Rozbor, pasti a stavba v terénu','gauge'],['Kde ztrácíš body a rozhodčí z kacr.info','chart'],['Kalkulačka SČP a výsledková listina','timer'],['Neomezené vlastní parkury (zdarma 5)','star']];
+function trialEnd(){ return FIRST+TRIAL_DAYS*864e5; }
+function plusActive(){ return (+PLUS.until||0)>Date.now(); }
+function plusTrial(){ return !plusActive()&&Date.now()<trialEnd(); }
+function plusOK(){ return plusActive()||Date.now()<trialEnd(); }
+function plusDays(){ return Math.max(0,Math.ceil((trialEnd()-Date.now())/864e5)); }
+function plusRefresh(force){
+  if(!AUTH) return Promise.resolve(plusActive());
+  if(!force&&PLUS.at&&Date.now()-PLUS.at<6*36e5) return Promise.resolve(plusActive());
+  return authTok().then(function(tok){ return sbCall('plus_get',{},tok); }).then(function(r){
+    PLUS={until:r&&r.until?new Date(r.until).getTime():0,at:Date.now(),src:r&&r.src||''}; lsSet(PLUSK,PLUS);
+    if(view==='more'&&moreTab==='plus') moreRender(); return plusActive(); },function(){ return plusActive(); });
+}
+function trialSync(){
+  if(!IS_SRV||(navigator.webdriver&&!window.TRIAL_TEST)) return;
+  sbCall('trial_start',{p_dev:devId()}).then(function(d){ if(d&&/^\d{4}-\d{2}-\d{2}$/.test(String(d))){ var t=new Date(d+'T00:00').getTime(); if(t&&t<FIRST){ FIRST=t; lsSet(FIRSTK,t); } } },function(){});
+}
+/* true = pokračuj; jinak ukáže nabídku Plus a vrátí false */
+function plusGate(feature){ if(plusOK()) return true; plusSheet(feature); return false; }
+function plusStatus(){
+  if(plusActive()) return 'Máš Pawkur Plus do '+new Date(PLUS.until).toLocaleDateString(LOC)+'.';
+  if(plusTrial()) return 'Zkoušíš všechno zdarma, zbývá '+czN(plusDays(),'den','dny','dní')+'.';
+  return 'Zkušební doba skončila. Základ zůstává zdarma, Plus je za '+PLUS_PRICE+'.';
+}
+function plusBuyHTML(){
+  if(plusActive()) return (PLUS_PORTAL?'<a class="btn" href="'+esc(PLUS_PORTAL)+'" target="_blank" rel="noopener">Spravovat předplatné</a>':'')+'<button class="btn" data-plus="refresh">Obnovit stav</button>';
+  if(IS_APK) return '<p class="hint">Plus se kupuje a spravuje na <a href="https://pawkur.cz/" target="_blank" rel="noopener">pawkur.cz</a>. Po zaplacení se přihlas stejným účtem Google i tady.</p><button class="btn" data-plus="refresh">Už mám Plus</button>';
+  if(!AUTH) return '<button class="btn gbtn" data-acct="in">'+GLOGO+'<span>Přihlásit přes Google a pokračovat</span></button><p class="hint">Plus se váže k účtu, abys ho měl na všech zařízeních.</p>';
+  if(!PLUS_LINK) return '<p class="hint">Platba se připravuje, zatím můžeš používat základ zdarma.</p><button class="btn" data-plus="refresh">Už mám Plus</button>';
+  return '<button class="btn primary" data-plus="buy">Koupit Plus za '+PLUS_PRICE+'</button><button class="btn" data-plus="refresh">Už mám Plus</button>';
+}
+function plusFeatsHTML(){ return '<ul class="ticks plus-list">'+PLUS_FEATS.map(function(f){ return '<li>'+esc(T(f[0]))+'</li>'; }).join('')+'</ul>'; }
+function plusSheet(feature){
+  openSheet('<div class="thx"><span class="thx-h plus-h" aria-hidden="true">'+IC.star+'</span><h3>Pawkur Plus</h3><p>'+(feature?esc(T(feature))+' '+T('je součást Pawkur Plus.'):'')+' '+plusStatus()+'</p></div>'+
+    plusFeatsHTML()+'<p class="hint">'+PLUS_PRICE+', zrušíš kdykoli. Parkury, stopky, trénink doma a deník zůstávají zdarma. <a href="terms.html" target="_blank" rel="noopener">Podmínky</a></p>'+
+    '<div class="acts plus-acts">'+plusBuyHTML()+'<button class="btn" data-a="x">Zavřít</button></div>',
+    function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
+}
+function plusHTML(){
+  return '<div class="panel plus-box"><b>'+plusStatus()+'</b><p class="hint">Základ aplikace je zdarma napořád: parkury, plán, stopky, trénink doma a deník. Plus přidává:</p>'+plusFeatsHTML()+
+    '<div class="row plus-acts">'+plusBuyHTML()+'</div>'+
+    '<p class="hint">'+PLUS_PRICE+', platí se jednou ročně, zrušíš kdykoli a Plus doběhne do konce zaplaceného roku. Platbu zajišťuje Stripe, aplikace číslo karty nevidí. <a href="terms.html" target="_blank" rel="noopener">Obchodní podmínky</a> · <a href="privacy.html" target="_blank" rel="noopener">Ochrana soukromí</a></p></div>';
+}
+function plusAct(a){
+  if(a==='sheet') plusSheet('');
+  else if(a==='buy'){ if(!AUTH||!PLUS_LINK) return; var u=PLUS_LINK+(PLUS_LINK.indexOf('?')<0?'?':'&')+'client_reference_id='+encodeURIComponent(AUTH.uid)+(AUTH.email?'&prefilled_email='+encodeURIComponent(AUTH.email):''); (window.PLUS_OPEN||function(x){ location.href=x; })(u); }
+  else if(a==='refresh'){ if(!AUTH){ toast('Nejdřív se přihlas účtem, se kterým jsi platil.'); return; } toast('Ověřuji…'); plusRefresh(true).then(function(ok){ toast(ok?'Pawkur Plus je aktivní. Díky!':'Plus u tohoto účtu zatím není. Po zaplacení to může chvíli trvat, zkus to za minutu.',5000); closeSheet(); if(view==='more') moreRender(); }); }
+}
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-plus]'); if(b) plusAct(b.getAttribute('data-plus')); });
+/* návrat ze Stripe (?plus=ok): poděkovat a chvíli zkoušet, jestli už webhook zapsal Plus */
+(function(){ if(!/[?&]plus=ok\b/.test(location.search)) return; try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){}
+  var n=0; var tick=function(){ plusRefresh(true).then(function(ok){ if(ok){ toast('Pawkur Plus je aktivní. Díky za podporu!',6000); if(view==='more') moreRender(); } else if(++n<6) setTimeout(tick,5000); else toast('Platba proběhla, Plus se objeví během pár minut. Zkontroluj ve Více → Pawkur Plus.',8000); }); };
+  setTimeout(function(){ toast('Díky! Ověřuji platbu…',4000); tick(); },800); })();
+setTimeout(function(){ plusRefresh(); trialSync(); },3000);
 /* ---------- anonymní návštěvnost: jednou denně náhodné číslo instalace, datum, ikona na ploše a jazyk ---------- */
 var PINGK='agility-ping-v1';
 /* chyby v aplikaci na skutečných telefonech: jen počet a poslední hláška (bez osobních dat), odejdou s denním pingem */
@@ -9016,6 +9122,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   if(!moreTab){ $('moreBody').innerHTML=''; return; }
   var h='', d=curDog();
   if(moreTab.indexOf('mod:')===0){ var sc=HM.screens[moreTab.slice(4)], el=$('moreBody'); el.innerHTML=''; if(sc){ try{ sc.render(el,MORE_ARG); }catch(e){ if(window.console) console.error(e); } } MORE_ARG=null; return; }
+  if(moreTab==='plus'){ $('moreBody').innerHTML=plusHTML(); plusRefresh(); return; }
   if(moreTab==='set'){ $('moreBody').innerHTML=settingsHTML()+'<h2>Záloha</h2>'+backupHTML(); return; }
   if(moreTab==='dogs'){
     h='<div class="list">'+(DOGS.length?DOGS.map(function(x){return '<div class="item'+(d&&d.id===x.id?' cur':'')+'"><div><b>'+esc(x.name)+'</b><span>'+SIZES[x.size].l+' · '+x.cls+(dogAgeM(x)!=null?' · '+ageTxt(dogAgeM(x)):'')+'</span></div><div class="acts">'+(d&&d.id===x.id?'':'<button class="btn" data-dsel="'+esc(x.id)+'">Vybrat</button>')+(x.kacr?'<button class="btn" data-dkacr="'+esc(x.id)+'">Závody</button>':'')+'<button class="btn" data-dedit="'+esc(x.id)+'">Upravit</button><button class="btn danger" data-ddel="'+esc(x.id)+'" aria-label="Smazat psa">×</button></div></div>';}).join('')
@@ -9061,7 +9168,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   if(moreTab==='diary'){ dogChips('diaryDogs'); bindChart();
     var kd=curDog(); if(kd&&kd.kacr&&KACR[kd.id]&&!KX_BUSY[kd.id]) kacrDetails(kd).then(function(n){ if(n&&view==='more'&&moreTab==='diary') moreRender(); }); }
 }
-$('moreTabs').onclick=function(e){var b=e.target.closest('[data-m]'); if(!b) return; if(b.getAttribute('data-m')==='video'){ show('video'); return; } if(b.getAttribute('data-m')==='sct'){ sctCalcSheet(); return; } moreTab=b.getAttribute('data-m'); moreRender(); try{window.scrollTo(0,0);}catch(er){}};
+$('moreTabs').onclick=function(e){var b=e.target.closest('[data-m]'); if(!b) return; if(b.getAttribute('data-m')==='video'){ show('video'); return; } if(b.getAttribute('data-m')==='sct'){ sctCalcSheet(); return; } if(b.getAttribute('data-m')==='listina'&&!plusGate('Výsledková listina')) return; moreTab=b.getAttribute('data-m'); moreRender(); try{window.scrollTo(0,0);}catch(er){}};
 $('moreBack').onclick=function(){ moreTab=''; MORE_ARG=null; moreRender(); try{window.scrollTo(0,0);}catch(e){} };
 /* rozepsaná zpráva autorovi se ukládá průběžně (přežije zavření aplikace) */
 $('moreBody').addEventListener('change',function(e){ if(e.target&&e.target.id==='rulesSel'&&RULES[e.target.value]){ lsSet(RULESK,e.target.value); location.reload(); } });
@@ -9107,7 +9214,7 @@ function pathProf(){ return SET.psz&&PROF[SET.psz]?PROF[SET.psz]:null; }
 var TYP={A1:{arc:'40–50 %',cross:'0–1',sharp:'3–6',bent:'1',traps:'0–1'},A2:{arc:'45–55 %',cross:'1–2',sharp:'5–8',bent:'1–2',traps:'0–2'},A3:{arc:'50–60 %',cross:'2–3',sharp:'7–11',bent:'2–3',traps:'1–2'}};
 var ANA_EXTRA=[]; /* další části rozboru (vedení psovoda, odhad času, simulace) se přidávají sem */
 function anaSheet(){
-  if(S.route.length<2){toast('Nejdřív vyznač trasu v režimu Trasa.'); return;}
+  if(S.route.length<2){toast('Nejdřív vyznač trasu v režimu Trasa.'); return;} if(!plusGate('Rozbor')) return;
   var c={id:'cur',obs:S.obs,route:S.route,turns:S.turns,cls:S.meta.cls}, g=calc(), fs=flowStats(S.obs,S.route,S.turns,g), d=diffScore(c,fs), ty=TYP[S.meta.cls]||TYP.A2;
   var row=function(l,v,t){return '<li><span>'+l+'</span><b>'+v+'</b><small>'+(t||'')+'</small></li>';};
   var dg=curDog(), sz=['XS','S','M','I','L'];
@@ -10458,7 +10565,7 @@ function fldOrder(){ /* pořadí stavění: vždy nejbližší další překáž
   return out;
 }
 function fldOpen(){
-  if(!S.obs.length){ toast('Na ploše zatím nejsou žádné překážky.'); return; }
+  if(!S.obs.length){ toast('Na ploše zatím nejsou žádné překážky.'); return; } if(!plusGate('Stavba v terénu')) return;
   fldClose();
   FLD={k:0,ord:fldOrder(),h:null,h0:SET.fldH0==null?null:SET.fldH0,cal:false,step:SET.step||.75};
   /* kolbiště se zaměřeným natočením: směr dlouhé strany je známý, není třeba se podle něj otáčet */
