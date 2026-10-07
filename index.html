@@ -684,6 +684,18 @@ h2{font-size:21px;}
 .apptitle b{font-family:var(--display); font-size:23px; font-weight:700; line-height:1.05; letter-spacing:.005em;}
 .apptitle span{font-size:12.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .apptitle span:empty{display:none;}
+/* přepínač disciplíny v horní liště (Domů, Parkury, Více); v Plánu a Běhu je místo něj název parkuru */
+.sport{display:none; flex:0 0 auto; border-radius:999px;}
+.sport button{padding:7px 12px; font-size:13px; font-weight:600;}
+.hm-tb .hm-sport{display:inline-flex; background:rgba(255,255,255,.14); border-color:transparent; font-family:var(--body); letter-spacing:0; z-index:1; margin-left:2px;}
+.hm-tb .hm-sport button{color:rgba(255,255,255,.8); min-height:34px; padding:0 13px; font-size:13px;}
+.hm-tb .hm-sport button.on{background:#c6f432; color:#0a2a1c;}
+@media (max-width:400px){ .hm-tb .hm-sport button{padding:0 10px; font-size:12px;} .hm-dog{flex:0 1 auto; max-width:130px;} }
+@media (max-width:359px){ .hm-tb .hm-sport button{padding:0 8px;} .hm-dog{max-width:110px;} }
+body[data-view="home"] .sport,body[data-view="lib"] .sport,body[data-view="more"] .sport,body[data-view="video"] .sport{display:inline-flex;}
+/* vedle přepínače se název aplikace na telefonu nevejde; logo zůstává */
+@media (max-width:479px){ body[data-view="lib"] .apptitle,body[data-view="more"] .apptitle,body[data-view="video"] .apptitle{display:none!important;} .top-in .sport{margin-right:auto;} }
+@media (max-width:359px){ body[data-view="more"] .sport,body[data-view="video"] .sport{display:none;} }
 body:not([data-view="plan"]):not([data-view="run"]) .apptitle{display:flex;}
 body:not([data-view="plan"]):not([data-view="run"]) #titleBtn,
 body:not([data-view="plan"]):not([data-view="run"]) #favBtn,
@@ -919,6 +931,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
   <div class="top-in">
     <div class="brand" id="brandMark" aria-hidden="true"></div>
     <div class="apptitle" id="appTitle"><b>AgiPlan</b><span id="appSub"></span></div>
+    <div class="seg sport" id="sportSeg" role="group" aria-label="Disciplína"><button data-sp="agility" class="on">Agility</button><button data-sp="hoopers">Hoopers</button></div>
     <button class="ctitle" id="titleBtn" aria-label="Upravit název, třídu a autora parkuru"><b id="cName" translate="no"></b><span id="cSub"></span></button>
     <button class="iconbtn fav" id="favBtn" aria-pressed="false" aria-label="Oblíbený" data-ic="star"></button>
     <button class="sup" id="supBtn" hidden aria-label="Podpořit aplikaci"><span class="sup-h" data-ic="heartF"></span><span class="sup-t">Podpořit</span></button>
@@ -1013,7 +1026,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
   <section class="view" id="v-lib" hidden>
     <div class="catbar" id="catBar"><span id="catInfo" class="grow"></span><button class="btn" id="catBtn" data-ic="refresh" hidden><span class="lbl">Zkontrolovat nové parkury</span></button></div>
     <div class="seg wide" id="libTabs" role="group" aria-label="Sbírka">
-      <button data-c="A1" class="on">A1</button><button data-c="A2">A2</button><button data-c="A3">A3</button><button data-c="hoop">Hoopers</button><button data-c="tr">Trenéři</button><button data-c="my">Moje</button>
+      <button data-c="A1" class="on">A1</button><button data-c="A2">A2</button><button data-c="A3">A3</button><button data-c="tr">Trenéři</button><button data-c="my">Moje</button>
     </div>
     <div class="filters" id="libFilters">
       <button class="chip on" data-f="all">Vše</button>
@@ -1726,6 +1739,11 @@ var I18N_EXTRA={exact:{
 "Přidat na plochu": "Add to Home Screen",
 "Rozumím": "Got it",
 "Ukázat jak": "Show me how",
+"Disciplína": "Discipline",
+"Hoopers: parkury H1–H3, oblouky, sudy a plůtky. Pes běží sám, ty ho vedeš z prostoru 2 × 2 m.": "Hoopers: H1–H3 courses with hoops, barrels and gates. The dog runs on its own, you guide it from a 2 × 2 m area.",
+"Agility: parkury A1–A3 podle FCI.": "Agility: A1–A3 courses per FCI.",
+"24 parkurů Hoopers H1–H3 podle FCI, nebo si postav vlastní": "24 Hoopers courses H1–H3 per FCI, or build your own",
+"Zatím tu nemáš žádný vlastní parkur Hoopers. Klepni na Nový parkur Hoopers, nebo si otevři některý z H1–H3, uprav ho a ulož.": "You have no Hoopers course of your own yet. Tap New Hoopers course, or open one of H1–H3, change it and save.",
 "Grade 1": "Grade 1",
 "Grade 2": "Grade 2",
 "Grade 3": "Grade 3",
@@ -1824,7 +1842,7 @@ var I18N_EXTRA={exact:{
 "Hoopers: rozhoduje čistý běh, čas jen pro tebe.": "Hoopers: a clear run is what counts, the time is just for you.",
 "překročen maximální čas 3 min": "maximum time of 3 min exceeded",
 "Generátor podle pravidel FCI Hoopers": "Generator following FCI Hoopers rules",
-"Hoopers (Parkury → Hoopers): parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb": "Hoopers (Courses → Hoopers): H1–H3 courses following FCI rules, your own builds with hoops, barrels, gates, a chute and the handling area, a rules check and run scoring by faults",
+"Hoopers: přepínač Agility | Hoopers nahoře na Domů a v Parkurech. Parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb": "Hoopers: an Agility | Hoopers switch at the top of Home and Courses. H1–H3 courses following FCI rules, your own builds with hoops, barrels, gates, a chute and the handling area, a rules check and run scoring by faults",
 "Novinky v AgiPlan 2.6": "What's new in AgiPlan 2.6",
 "Výsledky ze závodu": "Competition results",
 "Načíst z kacr.info": "Load from kacr.info",
@@ -5498,7 +5516,7 @@ function getC(c){
 }
 function listFor(tab){
   if(tab==='hoop') return listFor('H1').concat(listFor('H2'),listFor('H3'));
-  if(tab==='my') return myDB().map(function(c){return {id:c.id,name:c.name,cls:c.cls,author:c.author,gen:false,W:c.W,H:c.H,obs:c.obs,route:c.route,sides:c.sides,hp:c.hp,turns:c.turns,src:c.src};});
+  if(tab==='my') return myDB().filter(function(c){ return isHoopC(c.cls)===isHoopS(); }).map(function(c){return {id:c.id,name:c.name,cls:c.cls,author:c.author,gen:false,W:c.W,H:c.H,obs:c.obs,route:c.route,sides:c.sides,hp:c.hp,turns:c.turns,src:c.src};});
   if(tab==='tr') return (catGroup('tr')||TRC).map(function(c){return {id:c.id,name:c.name,cls:c.cls,author:c.author,gen:false,W:c.W||40,H:c.H||20,obs:c.obs,route:c.route,turns:c.turns,src:c.src};});
   return getC(tab).map(function(c){return {id:c.id||c.name,name:c.name,cls:tab,author:c.author||'',gen:!c.author,W:c.W||40,H:c.H||20,obs:c.obs,route:c.route,turns:c.turns,len:c.len,src:c.src};});
 }
@@ -5519,6 +5537,7 @@ function best(runs){
   return b;
 }
 function libRender(){
+  libTabsRender();
   var L=listFor(libTab);
   Array.prototype.forEach.call(document.querySelectorAll('#libTabs button'),function(b){b.className=b.getAttribute('data-c')===libTab?'on':'';});
   Array.prototype.forEach.call(document.querySelectorAll('#libFilters .chip'),function(b){b.classList.toggle('on',b.getAttribute('data-f')===libF);});
@@ -5532,7 +5551,7 @@ function libRender(){
   var key={easy:function(x){return x.st?x.st.diff:99;},hard:function(x){return x.st?-x.st.diff:99;},flow:function(x){return x.st?-x.st.fs.arc:99;},short:function(x){return x.st?x.st.geo.total:1e4;}}[libSort];
   if(key) F.sort(function(a,b){return key(a)-key(b)||a.i-b.i;});
   $('libSort').value=libSort;
-  $('cards').innerHTML=(libTab==='hoop'?'<button class="btn primary hnew" data-hnew="1">＋ Nový parkur Hoopers</button>':'')+(F.length?F.map(function(x){
+  $('cards').innerHTML=(isHoopS()?'<button class="btn primary hnew" data-hnew="1">＋ Nový parkur Hoopers</button>':'')+(F.length?F.map(function(x){
     var c=x.c, st=x.st, geo=st?st.geo:null, mk=getMark(c.id), m=metrics(c.obs,c.route,c.cls,c.turns,geo), bb=best(mk.runs);
     var srcOk=c.src&&/^https:\/\//.test(c.src);
     /* karta jen na dva řádky: délka a počet překážek, pod tím barevná náročnost a SČP. Podrobná čísla (oblouky, křížení, otočky, MČP) jsou v Plánu v Rozboru */
@@ -5549,10 +5568,10 @@ function libRender(){
       : libTab==='tr'&&!L.length
       ? 'Zatím tu nejsou žádné parkury trenérů. Pošli do chatu s Claudem screenshoty plánků a přepíše je sem i se jménem autora. Nebo v Plánu zvol Plánek z obrázku: aplikace překážky rozpozná, pořadí naklepeš a při ukládání vyplníš, kdo parkur stavěl.'
       : libTab==='my'&&!L.length
-      ? 'Zatím tu nemáš žádný vlastní parkur. Postav ho v Plánu nebo si otevři některý z A1–A3, uprav ho a ulož.'
+      ? (isHoopS()?'Zatím tu nemáš žádný vlastní parkur Hoopers. Klepni na Nový parkur Hoopers, nebo si otevři některý z H1–H3, uprav ho a ulož.':'Zatím tu nemáš žádný vlastní parkur. Postav ho v Plánu nebo si otevři některý z A1–A3, uprav ho a ulož.')
       : 'V tomhle filtru nic není. Zkus jiný filtr nebo třídu.')+'</div>');
   catUI();
-  $('libNote').textContent=libTab==='my'?'':libTab==='hoop'?'Hoopers: pes běží parkur z oblouků, sudů, plůtků a krátkých tunelů sám a psovod ho vede z prostoru 2 × 2 m (žlutý čtverec). Parkury H1–H3 složil generátor podle pravidel FCI Hoopers: start i cíl obloukem, aspoň polovina oblouků, vzdálenosti mezi překážkami a od psovoda podle třídy. Hodnotí se chyby, maximální čas jsou 3 minuty.':libTab==='tr'?'Přepsané plánky trenérů a rozhodčích pro vlastní trénink. Rozmístění překážek je přibližné, zdroj je uvedený u parkuru.':'Parkury A1–A3 složil generátor v aplikaci podle Řádu agility FCI a podle toho, jak stavějí rozhodčí: dráha vede v obloucích a hadech, skoky stojí šikmo, tunely jsou i do oblouku a do U a dráha se kříží (A1 nejvýš jednou, A2 jednou až dvakrát, A3 dvakrát až třikrát). 15–22 překážek, start i cíl skokem, v A1 právě 3 zónové překážky, v A2 a A3 nejvýš 4. Otočky kolem křídla (v A3 aspoň dvě), v A3 vždy i zadní strana skoku.';
+  $('libNote').textContent=libTab==='my'?'':isHoopS()?'Hoopers: pes běží parkur z oblouků, sudů, plůtků a krátkých tunelů sám a psovod ho vede z prostoru 2 × 2 m (žlutý čtverec). Parkury H1–H3 složil generátor podle pravidel FCI Hoopers: start i cíl obloukem, aspoň polovina oblouků, vzdálenosti mezi překážkami a od psovoda podle třídy. Hodnotí se chyby, maximální čas jsou 3 minuty.':libTab==='tr'?'Přepsané plánky trenérů a rozhodčích pro vlastní trénink. Rozmístění překážek je přibližné, zdroj je uvedený u parkuru.':'Parkury A1–A3 složil generátor v aplikaci podle Řádu agility FCI a podle toho, jak stavějí rozhodčí: dráha vede v obloucích a hadech, skoky stojí šikmo, tunely jsou i do oblouku a do U a dráha se kříží (A1 nejvýš jednou, A2 jednou až dvakrát, A3 dvakrát až třikrát). 15–22 překážek, start i cíl skokem, v A1 právě 3 zónové překážky, v A2 a A3 nejvýš 4. Otočky kolem křídla (v A3 aspoň dvě), v A3 vždy i zadní strana skoku.';
 }
 /* nový prázdný parkur Hoopers: plocha podle třídy a prostor psovoda uprostřed */
 function hoopNew(){
@@ -5575,6 +5594,7 @@ function loadCourse(c,quiet){
     S.obs=c.obs.map(function(o){var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.type==='tunnel'&&o.bend) n.bend=o.bend; if(o.type==='tunnel'&&o.len) n.len=o.len; if(o.type==='jump'&&JV[o.v]) n.v=o.v; return n;}); S.route=c.route.slice(); sel=null;
     S.sides=(c.sides||[]).slice(); S.turns=(c.turns||[]).slice(); S.hp=(c.hp||[]).map(function(p){return p.slice();}); if(panel==='quiz'){quizStop(); panel=null;}
     S.meta={id:c.id,name:c.name,cls:c.cls,author:c.author||'',gen:!!c.gen,dirty:false}; S.chk=null;
+    if(isHoopC(c.cls)!==isHoopS()) setSport(isHoopC(c.cls)?'hoopers':'agility',true);
     newSeen(c.id);
     save(); drawGrid(); render(); ui(); topbar(); resetRun(); undoReset();
     if(!quiet) toast('Načteno: '+c.name);
@@ -5635,7 +5655,7 @@ function saveSheet(){
 $('saveBtn').onclick=saveSheet;
 $('titleBtn').onclick=saveSheet;
 $('newBtn').onclick=function(){
-  function go(){planReset(); bgClear(); var hq=HCFG[S.meta.cls]; S.W=hq?hq.W:40; S.H=hq?hq.H:20; setSizeSel(); drawGrid(); S.obs=hq?[{id:1,type:'ha',x:S.W/2,y:S.H/2,rot:0}]:[]; S.route=[]; S.sides=[]; S.turns=[]; S.hp=[]; S.chk=null; sel=null; if(panel==='quiz'){quizStop();} panel=null; S.meta={id:null,name:'Nový parkur',cls:S.meta.cls||'A1',author:'',gen:false,dirty:false}; mode='build'; save(); render(); ui(); topbar(); resetRun(); undoReset();}
+  function go(){planReset(); bgClear(); if(isHoopS()!==isHoopC(S.meta.cls)) S.meta.cls=isHoopS()?'H1':'A1'; var hq=HCFG[S.meta.cls]; S.W=hq?hq.W:40; S.H=hq?hq.H:20; setSizeSel(); drawGrid(); S.obs=hq?[{id:1,type:'ha',x:S.W/2,y:S.H/2,rot:0}]:[]; S.route=[]; S.sides=[]; S.turns=[]; S.hp=[]; S.chk=null; sel=null; if(panel==='quiz'){quizStop();} panel=null; S.meta={id:null,name:'Nový parkur',cls:S.meta.cls||'A1',author:'',gen:false,dirty:false}; mode='build'; save(); render(); ui(); topbar(); resetRun(); undoReset();}
   if(S.obs.length&&(S.meta.dirty||!S.meta.id)) ask('Začít nový parkur?','Plocha se vyčistí a neuložené změny se ztratí.','Začít nový',go,true); else go();
 };
 function needId(){if(!S.meta.id){toast('Nejdřív parkur ulož, pak si ho můžeš označit.'); return true;} return false;}
@@ -5830,7 +5850,7 @@ function streak(days){
   var t=new Date(), n=0; t.setHours(12,0,0,0); if(!days[localDate(t)]) t.setDate(t.getDate()-1);
   while(days[localDate(t)]){ n++; t.setDate(t.getDate()-1); } return n;
 }
-function homeCls(){ var d=curDog(), c=d?courseClsOf(d.cls):null; return ['A1','A2','A3'].indexOf(c)>=0?c:(S.meta.cls||'A1'); }
+function homeCls(){ var d=curDog(), c=d?courseClsOf(d.cls):null; return ['A1','A2','A3'].indexOf(c)>=0?c:['A1','A2','A3'].indexOf(S.meta.cls)>=0?S.meta.cls:'A1'; }
 /* výzva dne: každý den jiný nezaběhnutý parkur třídy psa (stejný celý den) */
 function homeChallenge(){
   var cls=homeCls(), L=listFor(cls), today=localDate();
@@ -5850,20 +5870,21 @@ function homeRender(){
   var clean=runs.length?Math.round(runs.filter(function(x){return x.tot===0&&x.g!=='DIS';}).length/runs.length*100):0;
   var doneN=Object.keys(MK).filter(function(k){return MK[k].done;}).length, days=activeDays(), st=streak(days);
   var wd=['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota'][new Date().getDay()];
-  var h='<div class="hm-head"><div class="hm-tb"><div class="hm-logo">'+IC.brand+'</div><span>AGIPLAN</span>'+
+  var h='<div class="hm-head"><div class="hm-tb"><div class="hm-logo" aria-label="AgiPlan">'+IC.brand+'</div>'+sportSegHTML()+
     '<button class="hm-dog" data-h="dog"><i>🐕</i><span style="overflow:hidden;text-overflow:ellipsis;min-width:0">'+(d?esc(d.name)+' · '+esc(d.cls):'Přidat psa')+'</span></button></div>'+
     '<div class="hm-pic" aria-hidden="true"></div><div class="hm-big">'+(donateOn()?'<button class="hm-sup" data-h="sup" aria-label="Podpořit aplikaci">'+IC.heartF+'<span>Podpořit</span></button>':'')+'<small>'+wd+(st?' · série '+st+(st===1?' den':st<5?' dny':' dní')+' 🔥':'')+'</small><h1>Připraveni<br>na <em>trénink?</em></h1></div>'+
     '<div class="hm-stats"><div><b>'+doneN+'</b><span>zaběhnuto</span></div><div><b>'+(avg?fmt(avg):'–')+'</b><span>m/s průměr</span></div><div><b>'+(runs.length?clean+' %':'–')+'</b><span>čisté běhy</span></div></div></div>';
   var m=curM();
   h+=S.route.length>1
     ? '<button class="hm-cta" data-h="plan"><span class="hm-play">'+IC.playF+'</span><span class="tx"><small>Pokračovat</small><b>'+esc(S.meta.name)+'</b><span>'+fmt(m.len)+' m · '+nPrek(m.n)+' · SČP '+m.sct+' s</span></span></button>'
-    : '<button class="hm-cta" data-h="lib"><span class="hm-play">'+IC.playF+'</span><span class="tx"><small>Začni</small><b>Vyber si parkur</b><span>90 parkurů podle pravidel FCI, nebo si postav vlastní</span></span></button>';
+    : '<button class="hm-cta" data-h="lib"><span class="hm-play">'+IC.playF+'</span><span class="tx"><small>Začni</small><b>Vyber si parkur</b><span>'+(isHoopS()?'24 parkurů Hoopers H1–H3 podle FCI, nebo si postav vlastní':'90 parkurů podle pravidel FCI, nebo si postav vlastní')+'</span></span></button>';
   h+='<div id="hmInst"></div><div id="hmDay">'+(KACR_OK?compDayHTML():'')+'</div>';
   /* parkury pro tebe: nové a nezaběhnuté ze třídy psa */
-  var L=listFor(cls).filter(function(c){return !getMark(c.id).done&&c.id!==S.meta.id;});
+  var L=(isHoopS()?listFor('hoop'):listFor(cls)).filter(function(c){return !getMark(c.id).done&&c.id!==S.meta.id;});
   L.sort(function(a,b){return (isNewC(b.id)?1:0)-(isNewC(a.id)?1:0);}); HOME_C=L.slice(0,6);
   if(HOME_C.length){
     h+='<div class="hm-sec"><h3>Parkury pro tebe</h3><button data-h="lib">Vše ›</button></div><div class="hm-car">'+HOME_C.map(function(c,i){
+      if(isHoopC(c.cls)){ var hm2=metrics(c.obs,c.route,c.cls,c.turns); return '<button class="hm-cc" data-hc="'+i+'"><span class="m">'+thumb(c)+'<span class="hm-tag">'+esc(c.cls)+(isNewC(c.id)?' · NOVÝ':'')+'</span></span><span class="t"><b translate="no">'+esc(c.name)+'</b><span>'+fmt(hm2.len)+' m · '+nPrek(hm2.n)+'</span></span></button>'; }
       var s=cStats(c), tag=isNewC(c.id)?'NOVÝ':s.diff>=(TECHT[cls]||5.4)?'TECH':(s.fs.arc>=52&&s.fs.tight<=10?'PLYNULÝ':diffLabel(s.diff).toUpperCase());
       return '<button class="hm-cc" data-hc="'+i+'"><span class="m">'+thumb(c,s.geo)+'<span class="hm-tag">'+cls+' · '+tag+'</span></span><span class="t"><b>'+esc(c.name)+'</b><span>'+fmt(s.geo.total)+' m · náročnost '+fmt(s.diff)+' · '+diffLabel(s.diff)+'</span></span></button>';
     }).join('')+'</div>';
@@ -5877,7 +5898,7 @@ function homeRender(){
     }).join('')+'</div><p class="hm-note">Plocha '+SET.cut.W+' × '+SET.cut.H+' m a tvoje vybavení</p>';
   } else h+='<div class="hm-sec"><h3>Trénink doma</h3></div><div class="hm-ch hm-cut"><div class="ic">🏡</div><div class="tx"><b>Úseky ze skutečných parkurů</b><span>'+
     (SET.cut?'Plocha '+SET.cut.W+' × '+SET.cut.H+' m a tvoje vybavení':'Vejdou se na tvou zahradu a postavíš je z toho, co máš')+'</span></div><button class="hm-go" data-h="cut">Vybrat</button></div>';
-  h+=drillHomeHTML();
+  if(!isHoopS()) h+=drillHomeHTML(); /* sekvence a cvičení jsou pro agility */
   h+=rateHomeHTML();
   /* výzvy, žebříčky a závody: sbalené pod jedním řádkem (volba se pamatuje), aby Domů nebylo na tři obrazovky */
   var ch=homeChallenge(), mo='';
@@ -5892,12 +5913,13 @@ function homeRender(){
   ['Po','Út','St','Čt','Pá','So','Ne'].forEach(function(n,i){ var x=new Date(mon); x.setDate(mon.getDate()+i); var k=localDate(x);
     wk+='<div class="'+(k===today?'today':'')+'"><i class="'+(days[k]?'on':'')+'"></i>'+n+'</div>'; });
   h+='<div class="hm-sec"><h3>Tento týden</h3><button data-h="diary">Deník ›</button></div><div class="hm-week">'+wk+'</div>';
-  h+='<details class="hm-more" id="hmMore"'+(lsGet(HMMORE,0)?' open':'')+'>'+moSum+mo+'</details>';
+  if(!isHoopS()) h+='<details class="hm-more" id="hmMore"'+(lsGet(HMMORE,0)?' open':'')+'>'+moSum+mo+'</details>'; /* týdenní výzvy a liga jsou agility */
   $('v-home').innerHTML=h;
-  $('hmMore').ontoggle=function(){ lsSet(HMMORE,this.open?1:0); };
+  if($('hmMore')) $('hmMore').ontoggle=function(){ lsSet(HMMORE,this.open?1:0); };
   wkRefresh(cls); wkRefresh('Z'); lgRefresh(); compHomeRefresh(); if(window.pwaInstUI) pwaInstUI();
 }
 $('v-home').onclick=function(e){
+  var sb=e.target.closest('[data-sp]'); if(sb){ setSport(sb.getAttribute('data-sp')); return; }
   var c=e.target.closest('[data-hc]'); if(c){ var x=HOME_C[+c.getAttribute('data-hc')]; if(x) loadCourse(x); return; }
   var hc=e.target.closest('[data-hcut]'); if(hc){ var y=HOME_CUT[+hc.getAttribute('data-hcut')]; if(y) loadCourse(y); return; }
   var hr=e.target.closest('[data-hrate]'); if(hr){ FB.stars=+hr.getAttribute('data-hrate'); if(FB.stars>=5&&FB.kind==='idea') FB.kind='praise'; fbSave(); FB_SENT=false; moreOpen('fb'); return; }
@@ -6340,7 +6362,26 @@ function catCheck(){ /* tlačítko Zkontrolovat nové parkury */
    dostane štítek Nový, dokud parkur neotevřeš, nejdéle 30 dní. */
 var SEENK='agility-cat-seen-v1', NEWK='agility-cat-new-v1', NEWC=lsGet(NEWK,{})||{}, NEW_DAYS=30;
 var CAT_NEW0=['tr-pupik-sx18-a1']; /* přibylo po verzi 1.6: při prvním spuštění 1.7 se ukáže jako nové */
-var LIBT={A1:'A1',A2:'A2',A3:'A3',hoop:'Hoopers',tr:'Trenéři',my:'Moje'};
+var LIBT={A1:'A1',A2:'A2',A3:'A3',H1:'H1',H2:'H2',H3:'H3',hoop:'Hoopers',tr:'Trenéři',my:'Moje'};
+/* ---------- disciplína: Agility, nebo Hoopers (přepínač v horní liště); Parkury, Nový parkur a Domů se podle ní přepnou ---------- */
+var SPORTK='agility-sport-v1', SPORT=lsGet(SPORTK,'agility')==='hoopers'?'hoopers':'agility';
+function isHoopS(){ return SPORT==='hoopers'; }
+function libTabsRender(){
+  var tabs=isHoopS()?['H1','H2','H3','my']:['A1','A2','A3','tr','my'];
+  if(tabs.indexOf(libTab)<0) libTab=isHoopS()?'H1':homeCls();
+  $('libTabs').innerHTML=tabs.map(function(t){ return '<button data-c="'+t+'" class="'+(t===libTab?'on':'')+'">'+esc(LIBT[t])+'</button>'; }).join('');
+}
+function sportSegHTML(){ return '<div class="seg sport hm-sport" role="group" aria-label="Disciplína"><button data-sp="agility" class="'+(isHoopS()?'':'on')+'">Agility</button><button data-sp="hoopers" class="'+(isHoopS()?'on':'')+'">Hoopers</button></div>'; }
+function setSport(sp,quiet){
+  sp=sp==='hoopers'?'hoopers':'agility'; var ch=sp!==SPORT; SPORT=sp; lsSet(SPORTK,sp);
+  Array.prototype.forEach.call(document.querySelectorAll('.sport button'),function(b){ b.classList.toggle('on',b.getAttribute('data-sp')===sp); });
+  if(!ch||quiet) return;
+  libTab=isHoopS()?'H1':homeCls(); libF='all';
+  if(view==='home') homeRender(); else if(view==='lib') libRender();
+  toast(isHoopS()?'Hoopers: parkury H1–H3, oblouky, sudy a plůtky. Pes běží sám, ty ho vedeš z prostoru 2 × 2 m.':'Agility: parkury A1–A3 podle FCI.');
+}
+document.getElementById('sportSeg').onclick=function(e){ var b=e.target.closest('[data-sp]'); if(b) setSport(b.getAttribute('data-sp')); };
+setSport(SPORT,true);
 function catTabOf(id){ return id.indexOf('my-')===0?'my':id.indexOf('tr-')===0?'tr':id.slice(0,2); }
 function catAllIds(){ var ids=[]; ['A1','A2','A3','tr'].forEach(function(g){ listFor(g).forEach(function(c){ ids.push(c.id); }); }); return ids; }
 function catScan(){
@@ -6365,7 +6406,8 @@ function catUI(){
     b.innerHTML=esc(LIBT[t]||t)+(n?'<i class="tdot" title="Nové: '+n+'"></i><span class="sr">, nové: '+n+'</span>':''); });
   var ch=document.querySelector('#libFilters [data-f=new]'); if(ch){ ch.hidden=!any; if(!any&&libF==='new') libF='all'; }
   var info=$('catInfo'), btn=$('catBtn'); if(!info) return;
-  var total=catAllIds().length;
+  var total=isHoopS()?listFor('hoop').length:catAllIds().length;
+  if($('genBtn')) $('genBtn').hidden=isHoopS(); /* generátor dělá agility sekvence */
   if(IS_SRV){ info.textContent=(CAT&&CAT.version?'Katalog verze '+CAT.version+' · '+total+' parkurů · ověřeno '+whenTxt(CAT.chk||CAT.at):'Vestavěný katalog · '+total+' parkurů'); if(btn) btn.hidden=false; }
   else { info.textContent=total+' parkurů. Nové přibývají s novou verzí stránky, v aplikaci pro Android tlačítkem.'; if(btn) btn.hidden=true; }
 }
@@ -10542,7 +10584,7 @@ function newsCheck(){
   var seen=lsGet('agility-news-v1',null); if(seen==='2.6') return false; lsSet('agility-news-v1','2.6');
   /* kdo neviděl novinky 2.1, dozví se i o novém názvu */
   openSheet('<h3>Novinky v AgiPlan 2.6</h3>'+(seen!=='2.1'&&seen!=='2.2'&&seen!=='2.3'&&seen!=='2.4'&&seen!=='2.5'?'<p>Aplikace se teď jmenuje AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>':'')+
-    '<ul class="news"><li>Hoopers (Parkury → Hoopers): parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb</li>'+(seen==='2.5'?'':'<li>Deník: Kde ztrácíš body. Z výsledků na kacr.info aplikace spočítá diskvalifikace, chyby, odmítnutí a čas a doporučí sekvenci na trénink</li><li>Úspěšnost podle rozhodčího a povrchu; rozhodčí z kacr.info se počítají do postupu</li><li>Den závodů na Domů: den předem a během závodu navigace, rozhodčí, počet týmů v kategorii, seznam věcí s sebou a zápis výsledku</li><li>U závodu v deníku jde zaškrtnout, co se stalo (tyčka, zóna, slalom…)</li>')+'</ul>'+
+    '<ul class="news"><li>Hoopers: přepínač Agility | Hoopers nahoře na Domů a v Parkurech. Parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb</li>'+(seen==='2.5'?'':'<li>Deník: Kde ztrácíš body. Z výsledků na kacr.info aplikace spočítá diskvalifikace, chyby, odmítnutí a čas a doporučí sekvenci na trénink</li><li>Úspěšnost podle rozhodčího a povrchu; rozhodčí z kacr.info se počítají do postupu</li><li>Den závodů na Domů: den předem a během závodu navigace, rozhodčí, počet týmů v kategorii, seznam věcí s sebou a zápis výsledku</li><li>U závodu v deníku jde zaškrtnout, co se stalo (tyčka, zóna, slalom…)</li>')+'</ul>'+
     '<div class="acts"><button class="btn primary" data-a="x">Pokračovat</button></div>',function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
   return true;
 }
