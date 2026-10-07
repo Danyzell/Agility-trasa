@@ -930,6 +930,32 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 
 @media (prefers-reduced-motion: reduce){ .view.enter,.sheet,.scrim,.toast,.onb,.onb-body{animation:none!important;} }
 
+/* značky křížení na dráze psovoda: volba druhu v liště Dráha psovoda, legenda pod plochou */
+.mkrow{flex-wrap:wrap;} .mkseg{flex:1 1 240px; min-width:0;} .mkseg button{padding:8px 2px; font-size:13px; white-space:nowrap; min-height:44px; min-width:0;}
+.mkseg button b{font-family:var(--display); font-size:15px; margin-right:2px;}
+.mkseg button[data-mk="warn"] b{color:var(--bad);} .mkseg button.on[data-mk="warn"] b{color:inherit;}
+#mkClear{white-space:nowrap; margin-left:auto;} @media (max-width:430px){ .mkseg button{font-size:12px;} }
+#field.side.mk{cursor:copy;}
+.mklegend{text-align:center; font-weight:500;}
+/* výsledková listina pro pořadatele */
+.listina .lhead{display:flex; flex-direction:column; gap:2px;} .listina .lhead b{font-family:var(--display); font-size:20px;} .listina .lhead span{color:var(--muted); font-size:13.5px;}
+.listina h3{margin:12px 0 4px; font-size:16px; font-weight:600;}
+.listina .ltab{overflow-x:auto; margin:0 -8px;} .listina table{width:100%; border-collapse:collapse; font-size:12.5px;}
+.listina .c-sm{display:none;}
+@media (max-width:480px){ .listina .c-sz,.listina .c-lg{display:none;} .listina .c-sm{display:inline;} .listina td.dog{max-width:88px;} .listina .ltab{margin:0 -14px;} .listina th,.listina td{padding:6px 2px;} .listina tr>:first-child{padding-left:8px;} .listina tr>:last-child{padding-right:8px;} } /* velikost je v nadpisu kategorie, na úzkém displeji se sloupec schová a tabulka využije celou šířku panelu */
+.listina th,.listina td{text-align:left; padding:6px 3px; border-bottom:1px solid var(--border); white-space:nowrap;} .listina th{font-size:10.5px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.02em; white-space:normal; vertical-align:bottom;}
+.listina td.n,.listina th.n{text-align:right; font-variant-numeric:tabular-nums;} .listina td.pl{font-weight:700;} .listina td.dog{white-space:normal; min-width:70px; max-width:120px;} .listina td.dog small{display:block; color:var(--muted); font-size:11px;}
+@media (min-width:600px){ .listina table{font-size:14px;} .listina th{font-size:12px;} .listina th,.listina td{padding:7px 6px;} }
+.listina .g{display:inline-block; font-weight:700; border-radius:7px; padding:1px 7px; color:#fff; background:var(--muted);} .listina .g.V{background:var(--g-v);} .listina .g.VD{background:var(--g-vd);} .listina .g.D{background:var(--g-d);} .listina .g.BO,.listina .g.DIS{background:var(--bad);}
+.listina .lfoot{color:var(--muted); font-size:12.5px; margin-top:8px;}
+.prlist{display:none;}
+@media print{
+  body.pr-listina>*:not(#prListina){display:none!important;}
+  body.pr-listina #prListina{display:block!important; position:static; color:#000; background:#fff; font-family:sans-serif; padding:0;}
+  #prListina .listina table{min-width:0;} #prListina .listina th,#prListina .listina td{border-bottom:1px solid #bbb; color:#000;} #prListina .listina .g{color:#000; background:none; padding:0; font-weight:700;}
+  #prListina .listina .lhead span,#prListina .listina .lfoot,#prListina .listina th{color:#444;}
+}
+
 </style>
 
 <header class="top">
@@ -978,6 +1004,9 @@ html.onb-open,html.onb-open body{overflow:hidden;}
     <div class="modebar" id="sideBar" hidden>
       <div class="row"><b id="sideInfo" class="grow"></b><button class="btn" id="hpClear">Smazat čáru</button><button class="btn primary" id="sideDone">Hotovo</button></div>
       <p class="hint">U každé překážky v seznamu níže nastav, na které straně psovoda pes běží (L / P). Tahem prstem po ploše nakreslíš svoji dráhu.</p>
+      <!-- značky křížení: vyber druh a klepni na plochu; klepnutí na značku ji smaže -->
+      <div class="row mkrow"><div class="seg wide mkseg" id="mkSeg" role="group" aria-label="Značky křížení"><button data-mk="front" aria-label="Přední křížení" title="Přední křížení"><b>P</b> přední</button><button data-mk="rear" aria-label="Zadní křížení" title="Zadní křížení"><b>Z</b> zadní</button><button data-mk="blind" aria-label="Slepé křížení" title="Slepé křížení"><b>S</b> slepé</button><button data-mk="warn" aria-label="Pozor" title="Pozor"><b>!</b> pozor</button></div><button class="btn" id="mkClear">Smazat značky</button></div>
+      <p class="hint" id="mkHint">Vyber druh značky a klepni na plochu, kam ji chceš dát. Klepnutím na značku ji smažeš.</p>
     </div>
     <div class="modebar" id="bgBar" hidden>
       <div class="row"><span>Podklad</span><input type="range" id="bgOp" min="10" max="100" step="5" aria-label="Průhlednost podkladu" class="grow"><button class="btn" id="bgPick">Vybrat fotku</button><button class="btn" id="bgFit">Roztáhnout</button><button class="btn danger" id="bgDel">Odebrat</button><button class="btn primary" id="bgDone">Hotovo</button></div>
@@ -1007,10 +1036,11 @@ html.onb-open,html.onb-open body{overflow:hidden;}
     <div id="wrap" tabindex="0" aria-label="Plocha parkuru, posouvá se šipkami">
       <svg id="field" class="build" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plocha parkuru">
         <defs><marker id="arr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth=".8" markerHeight=".8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--zone)"/></marker></defs>
-        <g id="fieldbg"></g><g id="bgimg"></g><g id="grid"></g><g id="hp"></g><g id="obs"></g><g id="pth"></g><g id="bdg"></g><g id="marks"></g>
+        <g id="fieldbg"></g><g id="bgimg"></g><g id="grid"></g><g id="hp"></g><g id="obs"></g><g id="pth"></g><g id="hmk"></g><g id="bdg"></g><g id="marks"></g>
       </svg>
     </div>
     </div>
+    <p class="hint mklegend" id="mkLegend" hidden>P přední, Z zadní, S slepé křížení, ! pozor</p>
     <div class="row">
       <button class="btn primary" id="saveBtn" data-ic="save">Uložit</button>
       <button class="btn" id="newBtn" data-ic="plus">Nový</button>
@@ -1073,7 +1103,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       <label class="check"><input type="checkbox" id="disChk"> Diskvalifikace</label>
     </div>
     <div class="panel result" id="result"></div>
-    <div class="row"><button class="btn primary" id="saveRun" data-ic="check">Uložit běh</button></div>
+    <div class="row"><button class="btn primary" id="saveRun" data-ic="check">Uložit běh</button><button class="btn" id="listinaBtn" data-ic="trophy">Výsledková listina</button></div>
     <h2>Historie běhů</h2>
     <ul class="hist" id="hist"></ul>
   </section>
@@ -1099,7 +1129,9 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       <button class="mrow" data-m="start"><span class="mic" data-ic="flag"></span><span class="ml">Začínáme</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="warm"><span class="mic" data-ic="heart"></span><span class="ml">Rozcvička</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="coach"><span class="mic" data-ic="people"></span><span class="ml">Trenéři a plánky</span><span class="mch" data-ic="chev"></span></button>
+      <div class="mgrp">Nástroje</div>
       <button class="mrow" data-m="sct"><span class="mic" data-ic="timer"></span><span class="ml">Kalkulačka SČP a MČP</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="listina"><span class="mic" data-ic="trophy"></span><span class="ml">Výsledková listina</span><span class="mch" data-ic="chev"></span></button>
       <div class="mgrp">Aplikace</div>
       <button class="mrow" data-m="set"><span class="mic" data-ic="sliders"></span><span class="ml">Nastavení a záloha</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="about"><span class="mic" data-ic="info"></span><span class="ml">O aplikaci a podpora</span><span class="mch" data-ic="chev"></span></button>
@@ -1146,6 +1178,8 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 </div>
 <div class="scrim" id="scrim" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
 <div class="toast" id="toast" hidden></div>
+<!-- výsledková listina pro tisk: při tisku je vidět jen tenhle blok -->
+<div class="prlist" id="prListina" hidden></div>
 <input type="file" id="jsonFile" accept="application/json,.json,text/plain" hidden>
 <script>
 var $=function(i){return document.getElementById(i);};
@@ -1975,6 +2009,44 @@ var I18N_EXTRA={exact:{
 "Co šlo, co ne, na čem zapracovat": "What went well, what didn't, what to work on",
 "Zkontroluj podle plánku": "Check against the course map",
 "Náhled parkuru": "Course preview",
+/* křížení a výsledková listina */
+"Značky křížení": "Crossing marks",
+"Přední křížení": "Front cross",
+"Zadní křížení": "Rear cross",
+"Slepé křížení": "Blind cross",
+"Pozor": "Watch out",
+"přední": "front",
+"zadní": "rear",
+"slepé": "blind",
+"pozor": "watch out",
+"Smazat značky": "Clear marks",
+"Vyber druh značky a klepni na plochu, kam ji chceš dát. Klepnutím na značku ji smažeš.": "Pick a mark type and tap the field where you want it. Tap a mark to remove it.",
+"P přední, Z zadní, S slepé křížení, ! pozor": "P front, Z rear, S blind cross, ! watch out",
+"Víc značek se na plánek nevejde.": "No more marks fit on the course map.",
+"Na plánku nejsou žádné značky.": "There are no marks on the course map.",
+"Výsledková listina": "Results sheet",
+"Listina z běhů uložených k načtenému parkuru: všichni psi, kategorie podle třídy parkuru a velikosti psa, pořadí podle FCI. Hodí se na klubové závody a zkoušky.": "A sheet from the runs saved for the loaded course: all dogs, categories by course class and dog size, placings per FCI. Handy for club competitions and exams.",
+"Které běhy": "Which runs",
+"Poslední běh psa": "Dog's latest run",
+"Všechny běhy": "All runs",
+"Tisk / PDF": "Print / PDF",
+"Kopírovat jako text": "Copy as text",
+"Listina se dělá z běhů uložených k parkuru. Nejdřív parkur ulož nebo načti z Parkurů.": "The sheet is made from runs saved for a course. Save the course first or load one from Courses.",
+"K tomuhle parkuru zatím nejsou uložené běhy. Změř je v Běhu a ulož ke psům.": "No runs are saved for this course yet. Time them in Run and save them to the dogs.",
+"Stavěl/a:": "Built by:",
+"Hoopers · max. čas": "Hoopers · max. time",
+"Délka": "Length",
+"Bez psa": "No dog",
+"Místo": "Place",
+"Vel.": "Size",
+"Ch.": "F",
+"Odm.": "R",
+"Za čas": "Time faults",
+"Hodn.": "Grade",
+"Všechny uložené běhy.": "All saved runs.",
+"Počítá se poslední uložený běh každého psa.": "The latest saved run of each dog counts.",
+"Řazení podle FCI: méně trestných bodů, pak rychlejší čas, diskvalifikace na konci.": "Order per FCI: fewer penalty points first, then the faster time, disqualifications last.",
+"Tisk tady nejde otevřít. Zkopíruj listinu jako text.": "Printing can't be opened here. Copy the sheet as text instead.",
 },num:{
 "# mm": "# mm",
 "Jumping: # z #": "Jumping: # of #",
@@ -4741,8 +4813,13 @@ function courseClean(d){
     route.push(o.id); sides.push(sd[i]==='L'||sd[i]==='P'?sd[i]:null); turns.push(tuValid(tu[i],o.type)); });
   var hp=(Array.isArray(d.hp)?d.hp:[]).filter(function(p){return Array.isArray(p)&&isFinite(+p[0])&&isFinite(+p[1]);})
     .map(function(p){return [cl(+p[0],0,W),cl(+p[1],0,H)];});
-  return {W:W,H:H,obs:obs,route:route,sides:sides,turns:turns,hp:hp};
+  /* značky křížení na dráze psovoda: jen známé druhy, uvnitř plochy, nejvýš 40 */
+  var marks=(Array.isArray(d.marks)?d.marks:[]).filter(function(m){ return m&&typeof m==='object'&&MARKT.hasOwnProperty(m.t)&&isFinite(+m.x)&&isFinite(+m.y)&&+m.x>=0&&+m.x<=W&&+m.y>=0&&+m.y<=H; })
+    .slice(0,40).map(function(m){return {t:m.t,x:r1(+m.x),y:r1(+m.y)};});
+  return {W:W,H:H,obs:obs,route:route,sides:sides,turns:turns,hp:hp,marks:marks};
 }
+/* druhy značek křížení: písmeno na plánku a název */
+var MARKT={front:{c:'P',l:'Přední křížení'},rear:{c:'Z',l:'Zadní křížení'},blind:{c:'S',l:'Slepé křížení'},warn:{c:'!',l:'Pozor'}};
 function clsClean(c){return ['A1','A2','A3','H1','H2','H3'].indexOf(c)>=0?c:'A1';}
 
 /* dnešní datum v místním čase (toISOString dává UTC, v noci by to byl včerejšek) */
@@ -4765,7 +4842,7 @@ if(!S||typeof S!=='object') S={};
 if(!S.meta||typeof S.meta!=='object') S.meta={id:null,name:S.obs.length?'Rozpracovaný plán':'Nový parkur',cls:'A1',author:'',gen:false,dirty:S.obs.length>0};
 S.meta.cls=clsClean(S.meta.cls); S.meta.name=String(S.meta.name||'Nový parkur'); S.meta.author=String(S.meta.author||'');
 if(typeof S.meta.id!=='string') S.meta.id=null;
-var BG=lsGet('agility-bg-v1',null), panel=null, QZ=null, hpDraw=null;
+var BG=lsGet('agility-bg-v1',null), panel=null, QZ=null, hpDraw=null, MKT=null; /* MKT: vybraný druh značky křížení (front/rear/blind/warn) */
 var SET=lsGet(SETK,{spd:{A1:3.0,A2:3.5,A3:4.0}});
 var MK=lsGet(MKK,{});
 var mode='view', tool='jump', sel=null, zoom=(window.innerWidth<600?2:1), drag=null, tap=null, view='plan';
@@ -4776,7 +4853,7 @@ function save(){lsSet(KEY,S);}
 /* Zpět: před každou změnou plánu (touch) se zapamatuje předchozí stav. Změny se stejnou skupinou g jdou za sebou
    jako jedna (tah posuvníkem otočení). Načtení jiného parkuru, Nový a plánek z obrázku historii smažou. */
 var UNDO=[], UNDO_CUR=null, UNDO_G=null, UNDO_SV=null; /* UNDO_SV: plán, jak je uložený (null = neznámo) */
-function planSnap(){ syncSides(); return JSON.stringify({W:S.W,H:S.H,obs:S.obs,route:S.route,sides:S.sides,turns:S.turns,hp:S.hp,chk:S.chk||null}); }
+function planSnap(){ syncSides(); return JSON.stringify({W:S.W,H:S.H,obs:S.obs,route:S.route,sides:S.sides,turns:S.turns,hp:S.hp,marks:S.marks||[],chk:S.chk||null}); }
 function undoUI(){ $('undoAll').disabled=!UNDO.length; }
 function undoReset(){ UNDO=[]; UNDO_G=null; UNDO_CUR=planSnap(); UNDO_SV=S.meta.dirty?null:UNDO_CUR; undoUI(); }
 function touch(g){
@@ -4789,7 +4866,7 @@ function touch(g){
 function undo(){
   if(!UNDO.length) return;
   var st=JSON.parse(UNDO.pop()), sz=st.W!==S.W||st.H!==S.H;
-  S.W=st.W; S.H=st.H; S.obs=st.obs; S.route=st.route; S.sides=st.sides; S.turns=st.turns; S.hp=st.hp; S.chk=st.chk;
+  S.W=st.W; S.H=st.H; S.obs=st.obs; S.route=st.route; S.sides=st.sides; S.turns=st.turns; S.hp=st.hp; S.marks=st.marks||[]; S.chk=st.chk;
   UNDO_CUR=planSnap(); UNDO_G=null;
   if(sel!=null&&!getO(sel)) sel=null;
   S.meta.dirty=UNDO_CUR!==UNDO_SV;
@@ -5067,6 +5144,14 @@ function render(){
   $('bdg').innerHTML=b;
   var hp=S.hp&&S.hp.length>1?'<polyline points="'+S.hp.map(function(p){return p[0]+','+p[1];}).join(' ')+'" fill="none" stroke="var(--accent)" stroke-width=".22" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>':'';
   $('hp').innerHTML=(panel==='side'||hp&&!quiz)?hp:'';
+  /* značky křížení: P / Z / S v kroužku, Pozor jako červený čárkovaný kroužek s vykřičníkem; nad dráhou, pod čísly překážek */
+  var hm='', showMk=!quiz&&!!(S.marks&&S.marks.length);
+  if(showMk) S.marks.forEach(function(m,i){ var d=MARKT[m.t]; if(!d) return;
+    hm+='<g class="hmk hmk-'+m.t+'" data-mi="'+i+'" transform="translate('+r(m.x)+','+r(m.y)+')">'+
+      (m.t==='warn'?'<circle r=".78" fill="var(--field)" stroke="#d12f2f" stroke-width=".16" stroke-dasharray=".3 .2"/><text y=".34" font-size=".95" text-anchor="middle" font-weight="700" fill="#d12f2f">!</text>'
+        :'<circle r=".72" fill="var(--accent)" stroke="var(--field)" stroke-width=".12"/><text y=".3" font-size=".85" text-anchor="middle" font-weight="700" fill="var(--on-accent)">'+d.c+'</text>')+'</g>'; });
+  $('hmk').innerHTML=hm;
+  $('mkLegend').hidden=!showMk;
   var mk='';
   if(panel==='side') sideChanges().forEach(function(i){var m=c.segs[i]&&c.segs[i].m; if(m) mk+='<g transform="translate('+r(m.x)+','+r(m.y-.9)+')"><circle r=".55" fill="var(--accent)"/><path d="M-.25,-.25L.25,.25M.25,-.25L-.25,.25" stroke="var(--on-accent)" stroke-width=".12"/></g>';});
   if(PLANUI.traps&&!quiz&&!drag&&panel!=='side'&&S.route.length>1) mk+=trapMarks(cs);
@@ -5096,6 +5181,8 @@ function ui(){
   $('buildTools').hidden=mode!=='build'||special; $('routeTools').hidden=mode!=='route'||special;
   $('sideBar').hidden=panel!=='side'; $('quizBar').hidden=panel!=='quiz'; $('bgBar').hidden=panel!=='bg';
   svg.setAttribute('class',special?panel:mode==='view'?'look':mode);
+  if(panel==='side'&&MKT) svg.classList.add('mk');
+  Array.prototype.forEach.call(document.querySelectorAll('#mkSeg button'),function(b){b.classList.toggle('on',b.getAttribute('data-mk')===MKT);});
   Array.prototype.forEach.call(document.querySelectorAll('.ob-btn'),function(b){b.classList.toggle('on',b.getAttribute('data-type')===tool);});
   Array.prototype.forEach.call(document.querySelectorAll('#planTools .tool'),function(b){var t=b.getAttribute('data-t'); b.classList.toggle('on',t===panel||(t==='traps'&&!!PLANUI.traps));});
   var o=sel!=null?getO(sel):null;
@@ -5124,6 +5211,7 @@ svg.addEventListener('pointerdown',function(e){
   tap={x:e.clientX,y:e.clientY,id:id};
   if(panel==='side'){
     var p=pt(e), last=S.hp&&S.hp[S.hp.length-1];
+    if(MKT||markAt(p)>=0) return; /* pokládání a mazání značek: řeší se při puštění prstu, čára se nekreslí */
     hpDraw=(last&&Math.hypot(last[0]-p.x,last[1]-p.y)<2)?S.hp.slice():[[r1(p.x),r1(p.y)]];
     try{svg.setPointerCapture(e.pointerId);}catch(x){}
     return;
@@ -5151,6 +5239,7 @@ svg.addEventListener('pointermove',function(e){
 svg.addEventListener('pointerup',function(e){
   var still=tap&&Math.hypot(e.clientX-tap.x,e.clientY-tap.y)<=6;
   if(hpDraw){ if(hpDraw.length>1){S.hp=hpDraw; touch();} hpDraw=null; render(); tap=null; return; }
+  if(panel==='side'){ if(tap&&still) markTap(pt(e)); tap=null; return; }
   if(panel==='quiz'){ if(tap&&still&&tap.id!=null) quizTap(tap.id); tap=null; return; }
   if(drag){
     var mv=drag.moved; drag=null; if(mv) touch(); render(); ui();
@@ -5408,11 +5497,25 @@ $('specs').onclick=function(e){ var b=e.target.closest('[data-sp]'); if(!b) retu
 $('fciBar').onclick=function(){ if(S.route.length<2){ toast('Kontrola pravidel potřebuje trasu aspoň se 2 překážkami.'); return; } fciSheet(); };
 function setPanel(p){
   if(panel==='quiz'&&p!=='quiz') quizStop();
-  panel=(panel===p)?null:p; sel=null;
+  panel=(panel===p)?null:p; sel=null; MKT=null;
   if(panel==='quiz') quizStart();
   ui(); render();
 }
 $('hpClear').onclick=function(){S.hp=[]; touch(); render();};
+/* ---------- značky křížení na dráze psovoda ----------
+   Psovod si na plánku označí, kde dělá přední (P), zadní (Z) nebo slepé (S) křížení, a vykřičníkem místa, kde si dát pozor.
+   Značky jsou součást parkuru (S.marks, ukládají se s ním i sdílí kódem) a jdou vrátit tlačítkem Zpět. */
+function markAt(p){ var best=-1, bd=1.1; (S.marks||[]).forEach(function(m,i){ var d=Math.hypot(m.x-p.x,m.y-p.y); if(d<bd){bd=d; best=i;} }); return best; }
+function markTap(p){
+  var i=markAt(p);
+  if(i>=0){ S.marks.splice(i,1); touch(); render(); return; }
+  if(!MKT) return;
+  if(!S.marks) S.marks=[];
+  if(S.marks.length>=40){ toast('Víc značek se na plánek nevejde.'); return; }
+  S.marks.push({t:MKT,x:r1(cl(p.x,0,S.W)),y:r1(cl(p.y,0,S.H))}); touch(); render();
+}
+$('mkSeg').onclick=function(e){ var b=e.target.closest('[data-mk]'); if(!b) return; var t=b.getAttribute('data-mk'); MKT=MKT===t?null:t; ui(); };
+$('mkClear').onclick=function(){ if(!(S.marks||[]).length){ toast('Na plánku nejsou žádné značky.'); return; } S.marks=[]; touch(); render(); };
 $('sideDone').onclick=function(){setPanel(null);};
 $('bgDone').onclick=function(){setPanel(null);};
 $('bgPick').onclick=function(){ if(APK_LITE){toast('Fotku jako podklad vložíš ve webové verzi aplikace.'); return;} $('bgFile').click(); };
@@ -5422,7 +5525,7 @@ function bgClear(){ BG=null; try{localStorage.removeItem('agility-bg-v1');}catch
 function planReset(){
   sayStop(); simStop();
   if(QZ) quizStop(); panel=null;
-  sel=null; drag=null; tap=null; hpDraw=null; mode='view'; toolsOpen(false);
+  sel=null; drag=null; tap=null; hpDraw=null; MKT=null; mode='view'; toolsOpen(false);
   ANA={};
   if(SET.psz){ SET.psz=null; lsSet(SETK,SET); }
   var w=$('wrap'); if(w){ w.scrollLeft=0; w.scrollTop=0; w.classList.remove('flash-bad'); }
@@ -5605,7 +5708,7 @@ function getC(c){
 }
 function listFor(tab){
   if(tab==='hoop') return listFor('H1').concat(listFor('H2'),listFor('H3'));
-  if(tab==='my') return myDB().filter(function(c){ return isHoopC(c.cls)===isHoopS(); }).map(function(c){return {id:c.id,name:c.name,cls:c.cls,author:c.author,gen:false,W:c.W,H:c.H,obs:c.obs,route:c.route,sides:c.sides,hp:c.hp,turns:c.turns,src:c.src};});
+  if(tab==='my') return myDB().filter(function(c){ return isHoopC(c.cls)===isHoopS(); }).map(function(c){return {id:c.id,name:c.name,cls:c.cls,author:c.author,gen:false,W:c.W,H:c.H,obs:c.obs,route:c.route,sides:c.sides,hp:c.hp,marks:c.marks,turns:c.turns,src:c.src};});
   if(tab==='tr') return (catGroup('tr')||TRC).map(function(c){return {id:c.id,name:c.name,cls:c.cls,author:c.author,gen:false,W:c.W||40,H:c.H||20,obs:c.obs,route:c.route,turns:c.turns,src:c.src};});
   return getC(tab).map(function(c){return {id:c.id||c.name,name:c.name,cls:tab,author:c.author||'',gen:!c.author,W:c.W||40,H:c.H||20,obs:c.obs,route:c.route,turns:c.turns,len:c.len,src:c.src};});
 }
@@ -5681,7 +5784,7 @@ function loadCourse(c,quiet){
     planReset(); bgClear();
     S.W=c.W||40; S.H=c.H||20; setSizeSel();
     S.obs=c.obs.map(function(o){var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.type==='tunnel'&&o.bend) n.bend=o.bend; if(o.type==='tunnel'&&o.len) n.len=o.len; if(o.type==='jump'&&JV[o.v]) n.v=o.v; return n;}); S.route=c.route.slice(); sel=null;
-    S.sides=(c.sides||[]).slice(); S.turns=(c.turns||[]).slice(); S.hp=(c.hp||[]).map(function(p){return p.slice();}); if(panel==='quiz'){quizStop(); panel=null;}
+    S.sides=(c.sides||[]).slice(); S.turns=(c.turns||[]).slice(); S.hp=(c.hp||[]).map(function(p){return p.slice();}); S.marks=(c.marks||[]).map(function(m){return {t:m.t,x:m.x,y:m.y};}); if(panel==='quiz'){quizStop(); panel=null;}
     S.meta={id:c.id,name:c.name,cls:c.cls,author:c.author||'',gen:!!c.gen,dirty:false}; S.chk=null;
     if(isHoopC(c.cls)!==isHoopS()) setSport(isHoopC(c.cls)?'hoopers':'agility',true);
     newSeen(c.id);
@@ -5732,7 +5835,7 @@ function saveSheet(){
       var b=e.target.closest('[data-a]'); if(!b) return; var a=b.getAttribute('data-a');
       if(a==='x'){closeSheet(); return;}
       var name=$('fName').value.trim()||'Můj parkur', cls=$('fCls').value, auth=$('fAuth').value.trim();
-      var L=myDB(), rec={name:name,cls:cls,author:auth,W:S.W,H:S.H,obs:JSON.parse(JSON.stringify(S.obs)),route:S.route.slice(),sides:(S.sides||[]).slice(),turns:(S.turns||[]).slice(),hp:(S.hp||[]).slice()};
+      var L=myDB(), rec={name:name,cls:cls,author:auth,W:S.W,H:S.H,obs:JSON.parse(JSON.stringify(S.obs)),route:S.route.slice(),sides:(S.sides||[]).slice(),turns:(S.turns||[]).slice(),hp:(S.hp||[]).slice(),marks:JSON.parse(JSON.stringify(S.marks||[]))};
       if(a==='upd'){rec.id=m.id; L=L.map(function(c){return c.id===m.id?rec:c;});}
       else {rec.id='my-'+Date.now().toString(36); L.push(rec);}
       if(!mySave(L)) return; /* plná paměť: plán zůstane neuložený (hlášku ukáže lsFull) */
@@ -5744,7 +5847,7 @@ function saveSheet(){
 $('saveBtn').onclick=saveSheet;
 $('titleBtn').onclick=saveSheet;
 $('newBtn').onclick=function(){
-  function go(){planReset(); bgClear(); if(isHoopS()!==isHoopC(S.meta.cls)) S.meta.cls=isHoopS()?'H1':'A1'; var hq=HCFG[S.meta.cls]; S.W=hq?hq.W:40; S.H=hq?hq.H:20; setSizeSel(); drawGrid(); S.obs=hq?[{id:1,type:'ha',x:S.W/2,y:S.H/2,rot:0}]:[]; S.route=[]; S.sides=[]; S.turns=[]; S.hp=[]; S.chk=null; sel=null; if(panel==='quiz'){quizStop();} panel=null; S.meta={id:null,name:'Nový parkur',cls:S.meta.cls||'A1',author:'',gen:false,dirty:false}; mode='build'; save(); render(); ui(); topbar(); resetRun(); undoReset();}
+  function go(){planReset(); bgClear(); if(isHoopS()!==isHoopC(S.meta.cls)) S.meta.cls=isHoopS()?'H1':'A1'; var hq=HCFG[S.meta.cls]; S.W=hq?hq.W:40; S.H=hq?hq.H:20; setSizeSel(); drawGrid(); S.obs=hq?[{id:1,type:'ha',x:S.W/2,y:S.H/2,rot:0}]:[]; S.route=[]; S.sides=[]; S.turns=[]; S.hp=[]; S.marks=[]; S.chk=null; sel=null; if(panel==='quiz'){quizStop();} panel=null; S.meta={id:null,name:'Nový parkur',cls:S.meta.cls||'A1',author:'',gen:false,dirty:false}; mode='build'; save(); render(); ui(); topbar(); resetRun(); undoReset();}
   if(S.obs.length&&(S.meta.dirty||!S.meta.id)) ask('Začít nový parkur?','Plocha se vyčistí a neuložené změny se ztratí.','Začít nový',go,true); else go();
 };
 function needId(){if(!S.meta.id){toast('Nejdřív parkur ulož, pak si ho můžeš označit.'); return true;} return false;}
@@ -5898,6 +6001,81 @@ function vidSheet(i){
       closeSheet();
     });
 }
+
+/* ---------- výsledková listina pro pořadatele ----------
+   Z běhů uložených k načtenému parkuru (všichni psi) udělá listinu po kategoriích (třída parkuru × velikost psa).
+   Pořadí podle FCI: méně trestných bodů, pak rychlejší čas, diskvalifikace na konec. Počítá se poslední běh psa,
+   nebo všechny běhy. Tisk přes window.print() (při tisku je vidět jen #prListina), text s tabulátory pro Excel. */
+var LST={all:false};
+function dogOf(id){ for(var i=0;i<DOGS.length;i++) if(DOGS[i].id===id) return DOGS[i]; return null; }
+function listinaRows(all){
+  var runs=S.meta.id?(getMark(S.meta.id).runs||[]):[], pick;
+  if(all) pick=runs.slice();
+  else { var last={}; runs.forEach(function(x){ var k=x.dog||'_'; if(!last[k]||(+x.d||0)>=(+last[k].d||0)) last[k]=x; }); pick=Object.keys(last).map(function(k){return last[k];}); }
+  var cats={}, order=[], szOrd=['XS','S','M','I','L',''];
+  pick.forEach(function(x){
+    var d=dogOf(x.dog), sz=d?d.size:'', key=sz||'_';
+    if(!cats[key]){ cats[key]={size:sz,rows:[]}; order.push(key); }
+    var tp=Math.max(0,Math.round(((+x.tot||0)-5*(+x.f||0)-5*(+x.r||0))*100)/100);
+    cats[key].rows.push({dog:d?d.name:(x.dog?'Pes':'Bez psa'),handler:d&&d.handler?String(d.handler):'',size:sz,t:+x.t||0,f:+x.f||0,r:+x.r||0,tp:tp,tot:+x.tot||0,g:x.g||'BO',d:+x.d||0,dis:x.g==='DIS'});
+  });
+  order.sort(function(a,b){ return szOrd.indexOf(cats[a].size)-szOrd.indexOf(cats[b].size); });
+  return order.map(function(k){ var c=cats[k];
+    c.rows.sort(function(a,b){ if(a.dis!==b.dis) return a.dis?1:-1; if(a.tot!==b.tot) return a.tot-b.tot; return a.t-b.t; });
+    c.rows.forEach(function(r,i){ var q=c.rows[i-1]; r.place=r.dis?0:(q&&!q.dis&&q.tot===r.tot&&q.t===r.t)?q.place:i+1; }); /* shodný výsledek = stejné místo */
+    return c; });
+}
+function listinaHTML(){
+  var m=curM(), cats=listinaRows(LST.all), n=cats.reduce(function(s,c){return s+c.rows.length;},0);
+  var h='<div class="listina"><div class="lhead"><b translate="no">'+esc(S.meta.name)+'</b><span><span translate="no">'+esc(S.meta.cls)+'</span>'+(S.meta.author?' · <span>Stavěl/a:</span> <span translate="no">'+esc(S.meta.author)+'</span>':'')+' · <span translate="no">'+new Date().toLocaleDateString(LOC)+'</span></span>'+
+    (S.route.length>1?'<span>'+(m.hoop?'<span>Hoopers · max. čas</span> <b>3 min</b>':'<span>Délka</span> <b>'+fmt(m.len)+' m</b> · <span>SČP</span> <b>'+(m.sct||'–')+' s</b> · <span>MČP</span> <b>'+(m.mct||'–')+' s</b>')+'</span>':'')+'</div>';
+  if(!S.meta.id) return h+'<p class="hint">Listina se dělá z běhů uložených k parkuru. Nejdřív parkur ulož nebo načti z Parkurů.</p></div>';
+  if(!n) return h+'<p class="hint">K tomuhle parkuru zatím nejsou uložené běhy. Změř je v Běhu a ulož ke psům.</p></div>';
+  cats.forEach(function(c){
+    h+='<h3><span translate="no">'+esc(S.meta.cls)+'</span> · '+(c.size?'<span>Velikost</span> <span translate="no">'+esc(c.size)+'</span>':'<span>Bez psa</span>')+'</h3>'+
+      '<div class="ltab"><table><tr><th>Místo</th><th>Pes</th><th class="c-sz">Vel.</th><th class="n">Čas</th><th class="n">Ch.</th><th class="n">Odm.</th><th class="n">Za čas</th><th class="n">Celkem</th><th><span class="c-lg">Hodnocení</span><span class="c-sm">Hodn.</span></th></tr>'+
+      c.rows.map(function(x){ return '<tr><td class="pl">'+(x.dis?'–':x.place+'.')+'</td><td class="dog" translate="no">'+esc(x.dog)+(x.handler?'<small>'+esc(x.handler)+'</small>':'')+'</td><td class="c-sz" translate="no">'+esc(x.size||'–')+'</td><td class="n">'+(x.dis&&!x.t?'–':fmt2(x.t))+'</td><td class="n">'+x.f+'</td><td class="n">'+x.r+'</td><td class="n">'+fmt2(x.tp)+'</td><td class="n">'+fmt2(x.tot)+'</td><td><span class="g '+x.g+'" translate="no">'+gTxt(x.g)+'</span></td></tr>'; }).join('')+
+      '</table></div>';
+  });
+  h+='<p class="lfoot"><span>'+(LST.all?'Všechny uložené běhy.':'Počítá se poslední uložený běh každého psa.')+'</span> <span>Řazení podle FCI: méně trestných bodů, pak rychlejší čas, diskvalifikace na konci.</span> <span translate="no">AgiPlan</span></p></div>';
+  return h;
+}
+/* text s tabulátory: vložíš do Excelu nebo Tabulek Google */
+function listinaText(){
+  var m=curM(), cats=listinaRows(LST.all), L=[];
+  L.push(T('Výsledková listina')+': '+S.meta.name+' ('+S.meta.cls+') · '+new Date().toLocaleDateString(LOC));
+  if(S.route.length>1&&!m.hoop) L.push(T('Délka')+' '+fmt(m.len)+' m · '+T('SČP')+' '+(m.sct||'–')+' s · '+T('MČP')+' '+(m.mct||'–')+' s');
+  cats.forEach(function(c){
+    L.push(''); L.push(S.meta.cls+' · '+(c.size?T('Velikost')+' '+c.size:T('Bez psa')));
+    L.push([T('Místo'),T('Pes'),T('Psovod'),T('Velikost'),T('Čas'),T('Chyby'),T('Odmítnutí'),T('Za čas'),T('Celkem'),T('Hodnocení')].join('\t'));
+    c.rows.forEach(function(x){ L.push([x.dis?'–':x.place,x.dog,x.handler,x.size||'–',x.dis&&!x.t?'–':fmt2(x.t),x.f,x.r,fmt2(x.tp),fmt2(x.tot),gTxt(x.g)].join('\t')); });
+  });
+  return L.join('\n');
+}
+function listinaPage(){
+  return '<p class="hint">Listina z běhů uložených k načtenému parkuru: všichni psi, kategorie podle třídy parkuru a velikosti psa, pořadí podle FCI. Hodí se na klubové závody a zkoušky.</p>'+
+    '<div class="row"><div class="seg" role="group" aria-label="Které běhy"><button data-ls="last"'+(LST.all?'':' class="on"')+'>Poslední běh psa</button><button data-ls="all"'+(LST.all?' class="on"':'')+'>Všechny běhy</button></div></div>'+
+    '<div class="panel" id="listinaBox">'+listinaHTML()+'</div>'+
+    '<div class="row"><button class="btn primary" data-ls="print">Tisk / PDF</button><button class="btn" data-ls="copy">Kopírovat jako text</button><button class="btn" data-ls="share">Sdílet</button></div>';
+}
+function listinaPrint(){
+  var el=$('prListina'); el.innerHTML=listinaHTML(); if(LANG==='en') trTree(el); el.hidden=false; document.body.classList.add('pr-listina');
+  var done=function(){ document.body.classList.remove('pr-listina'); el.hidden=true; el.innerHTML=''; window.removeEventListener('afterprint',done); };
+  window.addEventListener('afterprint',done); setTimeout(done,90000);
+  try{ window.print(); }catch(e){ done(); toast('Tisk tady nejde otevřít. Zkopíruj listinu jako text.'); }
+}
+function listinaAct(a){
+  if(a==='all'||a==='last'){ LST.all=a==='all'; moreRender(); return; }
+  if(a==='print'){ listinaPrint(); return; }
+  var tx=listinaText();
+  if(a==='copy'){ copyText(tx); return; }
+  if(a==='share'){
+    if(NATIVE&&NATIVE.shareText){ if(String(NATIVE.shareText(tx))!=='ok') copyText(tx); return; }
+    try{ if(navigator.share){ navigator.share({title:T('Výsledková listina')+' '+S.meta.name,text:tx}).catch(function(){}); return; } }catch(e){}
+    copyText(tx);
+  }
+}
+$('listinaBtn').onclick=function(){ moreOpen('listina'); };
 
 /* ---------- trenéři a rozhodčí ---------- */
 var AN='https://www.agilitynow.eu/course-plans/';
@@ -6717,7 +6895,7 @@ function shareSheet(){
       if(a==='exp'){closeSheet(); exportSheet(); return;}
       if(a==='mk'){
         b.disabled=true;
-        var data={W:S.W,H:S.H,obs:S.obs,route:S.route,sides:S.sides||[],turns:S.turns||[],hp:(S.hp||[]).slice(0,400)};
+        var data={W:S.W,H:S.H,obs:S.obs,route:S.route,sides:S.sides||[],turns:S.turns||[],hp:(S.hp||[]).slice(0,400),marks:(S.marks||[]).slice(0,40)};
         sbCall('share_course',{p_name:S.meta.name,p_cls:S.meta.cls,p_author:S.meta.author||'',p_data:data}).then(function(code){
           code=String(code==null?'':code).trim(); if(!/^[A-Za-z0-9]{4,12}$/.test(code)){ toast('Server vrátil neplatný kód, zkus to znovu.'); b.disabled=false; return; }
           var out=$('shOut'); if(!out) return;
@@ -6740,7 +6918,7 @@ function shareSheet(){
           done();
           var c=Array.isArray(rows)&&rows[0]; if(!c||typeof c!=='object'){toast('Parkur s kódem '+code+' neexistuje.'); return;}
           var d=courseClean(c.data); if(d.route.length<2){toast('Parkur s kódem '+code+' je poškozený, načíst nejde.'); return;}
-          var nm=String(c.name||'Parkur '+code).slice(0,60), rec={id:'my-'+Date.now().toString(36),name:nm,cls:clsClean(c.cls),author:String(c.author||'').slice(0,60),W:d.W,H:d.H,obs:d.obs,route:d.route,sides:d.sides,turns:d.turns,hp:d.hp.slice(0,400),src:'kód '+code};
+          var nm=String(c.name||'Parkur '+code).slice(0,60), rec={id:'my-'+Date.now().toString(36),name:nm,cls:clsClean(c.cls),author:String(c.author||'').slice(0,60),W:d.W,H:d.H,obs:d.obs,route:d.route,sides:d.sides,turns:d.turns,hp:d.hp.slice(0,400),marks:d.marks,src:'kód '+code};
           var L=myDB(); L.push(rec); if(!mySave(L)) return; closeSheet(); loadCourse(rec,true); toast('Parkur '+nm+' uložen do Moje');
         },function(err){done(); toast('Načtení se nepovedlo: '+err.message);});
       }
@@ -8797,6 +8975,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='start'){ h=startHTML(); }
   else if(moreTab==='fb'){ h=fbHTML(); }
   else if(moreTab==='donate'){ h=donateOn()?donateHTML():'<p class="hint">Podpora zatím není nastavená.</p>'; }
+  else if(moreTab==='listina'){ h=listinaPage(); }
   else {
     h='<div class="morego"><button class="btn" data-mgo="fb">'+IC.mail+'<span>Napsat autorovi</span></button>'+(donateOn()?'<button class="btn primary" data-mgo="donate">'+IC.heartF+'<span>Podpořit aplikaci</span></button>':'')+'</div>'+
       '<div id="statsBox"></div><div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>AgiPlan 2.6</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
@@ -8836,6 +9015,7 @@ $('moreBody').onclick=function(e){
   var t=e.target.closest('button'); if(!t) return;
   var g=function(a){return t.getAttribute(a);};
   if(g('data-gpre')){ startGen(g('data-gpre')); return; }
+  if(g('data-ls')){ listinaAct(g('data-ls')); return; }
   if(g('data-appshare')){ appShare(); return; }
   if(g('data-mgo')){ moreOpen(g('data-mgo')); return; }
   if(g('data-fbs')){ var fs=+g('data-fbs'); FB.stars=FB.stars===fs?0:fs; fbSave(); moreRender(); return; }
@@ -10192,7 +10372,7 @@ function impApply(){
     planReset();
     S.W=W; S.H=H; setSizeSel();
     S.obs=obs.map(function(o){ var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.bend) n.bend=o.bend; return n; });
-    S.sides=[]; S.hp=[]; sel=null;
+    S.sides=[]; S.hp=[]; S.marks=[]; sel=null;
     if(R){ S.route=R.route.slice(); S.turns=R.turns.map(function(t,i){return tuValid(t||null,getO(S.route[i]).type);});
       var bad={}; R.issues.forEach(function(q){ if(q.n!=null) bad[q.n]=1; }); S.chk=R.nn.map(function(n){return bad[n]?1:0;}); }
     else { S.route=[]; S.turns=[]; S.chk=null; }

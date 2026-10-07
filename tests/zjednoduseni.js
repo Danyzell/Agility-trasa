@@ -19,7 +19,7 @@ module.exports = async function ({ browser, base }) {
   await step('více ve třech skupinách', async () => {
     await page.click('.nav [data-v="more"]');
     const r = await ev(() => ({ g: [...document.querySelectorAll('#moreTabs .mgrp')].map(x => x.textContent).join(), rows: [...document.querySelectorAll('#moreTabs .mrow:not([hidden])')].map(x => x.getAttribute('data-m')).join() }));
-    ok(r.g === 'Můj tým,Učení,Aplikace' && r.rows === 'acct,dogs,diary,video,start,warm,coach,sct,set,about', 'Více: ' + JSON.stringify(r));
+    ok(r.g === 'Můj tým,Učení,Nástroje,Aplikace' && r.rows === 'acct,dogs,diary,video,start,warm,coach,sct,listina,set,about', 'Více: ' + JSON.stringify(r));
     await page.click('#moreTabs [data-m="diary"]');
     ok(/Postup A1/.test(await page.textContent('#moreBody')) && /Statistiky/.test(await page.textContent('#moreBody h2')), 'Deník bez statistik');
     await page.click('#moreBack'); await page.click('#moreTabs [data-m="set"]');
