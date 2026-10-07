@@ -1190,7 +1190,7 @@ for(var q=0;q<12;q++) WV+='<circle cx="'+r(-3.3+q*.6)+'" r=".1" fill="currentCol
    Uživatelská data se nepřekládají: prvek s atributem translate="no" (nebo data-nt). */
 var LANGK='agility-lang-v1', THEMEK='agility-theme-v1';
 /* výchozí jazyk podle telefonu; automatické testy (navigator.webdriver) běží česky */
-var LANG=(function(){ var v=lsGet(LANGK,null); if(v==='cs'||v==='en') return v; if(navigator.webdriver) return 'cs'; var n=((navigator.languages&&navigator.languages[0])||navigator.language||'cs').toLowerCase(); return /^(cs|sk)/.test(n)?'cs':'en'; })();
+var LANG=(function(){ var q=location.search.match(/[?&]lang=(cs|en)\b/); if(q){ lsSet(LANGK,q[1]); return q[1]; } /* z úvodní stránky (web/) */ var v=lsGet(LANGK,null); if(v==='cs'||v==='en') return v; if(navigator.webdriver) return 'cs'; var n=((navigator.languages&&navigator.languages[0])||navigator.language||'cs').toLowerCase(); return /^(cs|sk)/.test(n)?'cs':'en'; })();
 var LOC=LANG==='en'?'en-GB':'cs-CZ';
 /* česká specifika (kacr.info, KAČR, závody v ČR, čeští rozhodčí) se cizincům neukazují */
 var CZONLY=LANG==='en';

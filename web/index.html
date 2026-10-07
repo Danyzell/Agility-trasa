@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AgiPlan – agility parkury v telefonu</title>
+<meta name="description" content="AgiPlan: plánovač agility a hoopers parkurů v telefonu. Parkury podle pravidel FCI a národních svazů, 3D průlet, stopky s hodnocením, trénink doma, deník a výsledky. Zdarma, bez reklam.">
+<link rel="canonical" href="https://danyzell.github.io/Agility-trasa/web/">
+<link rel="alternate" hreflang="cs" href="https://danyzell.github.io/Agility-trasa/web/">
+<link rel="alternate" hreflang="en" href="https://danyzell.github.io/Agility-trasa/web/?lang=en">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AgiPlan">
+<meta property="og:url" content="https://danyzell.github.io/Agility-trasa/web/">
+<meta property="og:title" content="AgiPlan – agility parkury v telefonu">
+<meta property="og:description" content="Parkury podle FCI, 3D průlet, stopky s hodnocením, trénink doma a deník. Zdarma, bez reklam.">
+<meta property="og:image" content="https://danyzell.github.io/Agility-trasa/og.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0a2a1c">
+<link rel="icon" type="image/png" href="../icon-192.png">
+<link rel="apple-touch-icon" href="../icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a2a1c; --ink2:#14553a; --lime:#c6f432; --bg:#f2f4ee; --surface:#fff; --text:#17201a; --muted:#55625a; --border:#dde3d6; --accent:#1f6b45;
+  --display:'Barlow Condensed','Arial Narrow',system-ui,sans-serif; --body:'Barlow',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0; background:var(--bg); color:var(--text); font-family:var(--body); font-size:17px; line-height:1.5; -webkit-font-smoothing:antialiased;}
+img{max-width:100%; display:block;}
+a{color:var(--accent);}
+.wrap{max-width:1080px; margin:0 auto; padding:0 20px;}
+h1,h2,h3{font-family:var(--display); font-weight:700; line-height:1; margin:0; text-transform:uppercase; letter-spacing:.3px; text-wrap:balance;}
+h2{font-size:clamp(30px,5vw,44px); margin-bottom:10px;}
+h3{font-size:24px; text-transform:none; letter-spacing:0; line-height:1.1;}
+p{margin:0;}
+.lead{color:var(--muted); font-size:18px; max-width:620px;}
+section{padding:64px 0;}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:52px; padding:0 24px; border-radius:999px; font-weight:600; font-size:17px; text-decoration:none; border:1px solid transparent; cursor:pointer; font-family:var(--body);}
+.btn.lime{background:var(--lime); color:var(--ink);}
+.btn.ghost{background:rgba(255,255,255,.1); color:#fff; border-color:rgba(255,255,255,.25);}
+.btn.dark{background:var(--ink); color:#fff;}
+.btn.light{background:var(--surface); color:var(--text); border-color:var(--border);}
+.btn svg{width:20px; height:20px;}
+
+/* top bar */
+.top{position:sticky; top:0; z-index:10; background:rgba(10,42,28,.92); backdrop-filter:blur(12px); color:#fff;}
+.top .wrap{display:flex; align-items:center; gap:12px; min-height:64px;}
+.logo{display:flex; align-items:center; gap:10px; color:#fff; text-decoration:none; font-family:var(--display); font-weight:700; font-size:22px; letter-spacing:.5px;}
+.logo i{width:36px; height:36px; border-radius:10px; background:var(--lime); display:grid; place-items:center;}
+.logo svg{width:24px; height:24px; color:var(--ink);}
+.top nav{margin-left:auto; display:flex; gap:4px; align-items:center;}
+.top nav a{color:rgba(255,255,255,.85); text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:500;}
+.top nav a:hover{background:rgba(255,255,255,.1);}
+.top nav .hide-s{display:none;}
+.lang{background:none; border:1px solid rgba(255,255,255,.3); color:#fff; border-radius:999px; padding:6px 12px; font:600 13px var(--body); cursor:pointer;}
+.top .btn{min-height:40px; padding:0 16px; font-size:15px;}
+
+/* hero */
+.hero{background:radial-gradient(120% 90% at 100% 0%,#2f9e62 0%,#14553a 45%,#0a2a1c 100%); color:#fff; padding:56px 0 0; overflow:hidden; position:relative;}
+.hero .wrap{display:grid; gap:36px; align-items:center;}
+.hero small{display:inline-block; background:rgba(255,255,255,.12); border-radius:999px; padding:6px 12px; font-weight:600; font-size:13px; letter-spacing:1px; text-transform:uppercase;}
+.hero h1{font-size:clamp(44px,9vw,84px); margin:16px 0 14px;}
+.hero h1 em{font-style:normal; color:var(--lime);}
+.hero .lead{color:rgba(255,255,255,.82); font-size:19px;}
+.cta{display:flex; flex-wrap:wrap; gap:12px; margin-top:28px;}
+.hero .note{margin-top:14px; font-size:14px; color:rgba(255,255,255,.65);}
+.phones{display:flex; justify-content:center; gap:18px; align-items:flex-end; padding-top:10px;}
+.phone{width:min(46%,250px); border-radius:34px; border:7px solid #0b1a11; background:#0b1a11; box-shadow:0 30px 60px rgba(0,0,0,.45); overflow:hidden; aspect-ratio:390/844;}
+.phone img{width:100%; height:100%; object-fit:cover;}
+.phone.back{transform:translateY(40px) scale(.94); opacity:.9;}
+.hero-pic{position:absolute; inset:0; pointer-events:none; opacity:.22; background:url(../hero.webp) 70% 30%/cover no-repeat; mix-blend-mode:luminosity;}
+.hero .wrap{position:relative;}
+
+/* stats bar */
+.bar{background:var(--ink); color:#fff; padding:18px 0;}
+.bar .wrap{display:flex; flex-wrap:wrap; gap:10px 28px; justify-content:center; font-weight:600;}
+.bar span{display:flex; align-items:center; gap:8px; color:rgba(255,255,255,.9);}
+.bar b{color:var(--lime);}
+
+/* features */
+.grid{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); margin-top:28px;}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:22px; padding:22px;}
+.card .ic{width:48px; height:48px; border-radius:14px; background:#e6f3ea; color:var(--accent); display:grid; place-items:center; font-size:24px; margin-bottom:14px;}
+.card h3{margin-bottom:6px;}
+.card p{color:var(--muted); font-size:16px;}
+
+/* screenshots */
+.shots{display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); margin-top:28px;}
+.shot{text-align:center;}
+.shot .phone{width:100%; max-width:260px; margin:0 auto 12px;}
+.shot b{display:block; font-family:var(--display); font-size:22px;}
+.shot span{color:var(--muted); font-size:15px;}
+
+/* split sections */
+.split{display:grid; gap:28px; align-items:center;}
+.split .phone{max-width:280px; margin:0 auto;}
+.pill{display:inline-block; background:#e6f3ea; color:var(--accent); font-weight:600; font-size:13px; letter-spacing:1px; text-transform:uppercase; border-radius:999px; padding:5px 11px; margin-bottom:12px;}
+.flags{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px;}
+.flags span{background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:7px 13px; font-weight:600; font-size:15px;}
+ul.ticks{list-style:none; padding:0; margin:16px 0 0; display:grid; gap:10px;}
+ul.ticks li{padding-left:30px; position:relative; color:var(--text);}
+ul.ticks li:before{content:''; position:absolute; left:0; top:4px; width:20px; height:20px; border-radius:50%; background:var(--lime); background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a2a1c' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); background-size:14px; background-repeat:no-repeat; background-position:center;}
+
+/* install */
+.install{background:var(--ink); color:#fff;}
+.install .lead{color:rgba(255,255,255,.8);}
+.steps{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); margin-top:28px;}
+.step{background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); border-radius:22px; padding:22px;}
+.step h3{color:var(--lime); margin-bottom:10px;}
+.step ol{margin:0; padding-left:20px; display:grid; gap:6px; color:rgba(255,255,255,.9);}
+.step p{color:rgba(255,255,255,.7); font-size:15px; margin-top:10px;}
+.install .cta{justify-content:center;}
+
+/* faq */
+details{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:0 18px;}
+details+details{margin-top:10px;}
+summary{cursor:pointer; font-weight:600; padding:16px 0; list-style:none; display:flex; justify-content:space-between; gap:12px;}
+summary::-webkit-details-marker{display:none;}
+summary:after{content:'+'; font-family:var(--display); font-size:26px; line-height:1; color:var(--accent); flex:0 0 auto;}
+details[open] summary:after{content:'–';}
+details p{padding:0 0 16px; color:var(--muted);}
+
+footer{padding:36px 0 48px; color:var(--muted); font-size:15px;}
+footer .wrap{display:flex; flex-wrap:wrap; gap:10px 24px; align-items:center;}
+footer a{color:var(--muted);}
+footer .sp{flex:1;}
+
+@media (min-width:760px){
+  .hero{padding:72px 0 0;}
+  .hero .wrap{grid-template-columns:1.1fr .9fr;}
+  .split{grid-template-columns:1fr 1fr;}
+  .split.rev .phone{order:-1;}
+  .top nav .hide-s{display:inline-block;}
+}
+@media (max-width:759px){ .phones{padding-bottom:0;} .phone.back{display:none;} .phone{width:min(70%,260px);}
+  .shots{grid-template-columns:repeat(3,minmax(200px,1fr)); overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:8px; margin-left:-20px; margin-right:-20px; padding-left:20px; padding-right:20px;} .shot{scroll-snap-align:start;} .shot .phone{width:100%; max-width:200px;} }
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="./" aria-label="AgiPlan"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.6 20.6L12 9.2l6.4 11.4" fill="none" stroke="currentColor" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.6 16.6h6.8" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></i>AgiPlan</a>
+    <nav>
+      <a class="hide-s" href="#funkce" data-en="Features">Co umí</a>
+      <a class="hide-s" href="#hoopers">Hoopers</a>
+      <a class="hide-s" href="#instalace" data-en="Install">Instalace</a>
+      <a class="hide-s" href="#faq" data-en="FAQ">Otázky</a>
+      <button class="lang" id="langBtn" type="button" aria-label="Switch language">EN</button>
+      <a class="btn lime" href="../" data-en="Open app">Otevřít aplikaci</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-pic" aria-hidden="true"></div>
+  <div class="wrap">
+    <div>
+      <small data-en="Free · no ads · works offline">Zdarma · bez reklam · funguje offline</small>
+      <h1 data-en-html="Agility courses<br>in your <em>pocket</em>">Agility parkury<br>v <em>kapse</em></h1>
+      <p class="lead" data-en="Plan courses by FCI and national rules, walk them in 3D, time runs with grading, train at home and keep a diary. In Czech and English, on any phone.">Plánuj parkury podle pravidel FCI i národních svazů, projdi si je ve 3D, měř běhy s hodnocením, trénuj doma a veď si deník. Česky i anglicky, na jakémkoli telefonu.</p>
+      <div class="cta">
+        <a class="btn lime" href="../" data-en="Open app">Otevřít aplikaci</a>
+        <a class="btn ghost" href="#instalace" data-en="Install on phone">Nainstalovat do telefonu</a>
+      </div>
+      <p class="note" data-en="No registration. Opens in the browser and installs to the home screen like a regular app.">Bez registrace. Otevře se v prohlížeči a nainstaluje na plochu jako běžná aplikace.</p>
+    </div>
+    <div class="phones">
+      <div class="phone back"><img src="img/plan.jpg" alt="" loading="eager" width="390" height="844"></div>
+      <div class="phone"><img src="img/domu.jpg" alt="AgiPlan: úvodní obrazovka s parkury pro tebe" width="390" height="844"></div>
+    </div>
+  </div>
+</section>
+
+<div class="bar">
+  <div class="wrap">
+    <span><b>90+</b> <span data-en="courses A1–A3">parkurů A1–A3</span></span>
+    <span><b>24</b> <span data-en="Hoopers courses">parkurů Hoopers</span></span>
+    <span><b>6</b> <span data-en="countries with their rules">zemí s vlastními pravidly</span></span>
+    <span><b>3D</b> <span data-en="course walk-through">průlet parkurem</span></span>
+    <span><b>0 Kč</b> <span data-en="forever, no ads">napořád, bez reklam</span></span>
+  </div>
+</div>
+
+<section id="funkce">
+  <div class="wrap">
+    <h2 data-en="What it does">Co umí</h2>
+    <p class="lead" data-en="Everything a handler needs between training and the start line.">Všechno, co psovod potřebuje mezi tréninkem a startem.</p>
+    <div class="grid">
+      <div class="card"><div class="ic">📐</div><h3 data-en="Courses by the rules">Parkury podle pravidel</h3><p data-en="Over 90 A1–A3 courses plus your own builds. Automatic check of distances, angles, obstacle counts and standard time by the rules of your country.">Přes 90 parkurů A1–A3 a vlastní stavba. Automatická kontrola vzdáleností, úhlů, počtu překážek a standardního času podle pravidel tvé země.</p></div>
+      <div class="card"><div class="ic">📷</div><h3 data-en="Read a course map from a photo">Plánek z fotky</h3><p data-en="Photograph the course map at the competition, the app recognises obstacles and the route. Then walk it on the phone before the course walk.">Vyfoť plánek na závodech, aplikace rozpozná překážky a trasu. Pak si ho projdeš v telefonu ještě před prohlídkou.</p></div>
+      <div class="card"><div class="ic">🧊</div><h3 data-en="3D walk-through and AR">3D průlet a rozšířená realita</h3><p data-en="Run through the course from the dog's view, check lines and traps, or place the course onto a real field with the camera.">Proleť parkur pohledem psa, zkontroluj linie a pasti, nebo si parkur promítni kamerou na skutečné kolbiště.</p></div>
+      <div class="card"><div class="ic">⏱️</div><h3 data-en="Stopwatch with grading">Stopky s hodnocením</h3><p data-en="Time, faults and refusals; the app grades the run (Excellent to Disqualified) and compares with the standard time. Split times live or from video.">Čas, chyby a odmítnutí; aplikace běh ohodnotí (výborně až diskvalifikace) a porovná se SČP. Mezičasy naživo i z videa.</p></div>
+      <div class="card"><div class="ic">🏡</div><h3 data-en="Training at home">Trénink doma</h3><p data-en="Sequences cut from real courses that fit your garden and the equipment you own. Drills by skill: serpentine, threadle, wrap, weave entry.">Úseky ze skutečných parkurů, které se vejdou na tvou zahradu a postavíš je z toho, co máš. Cvičení podle dovednosti: serpentina, threadle, obrat, nájezd do slalomu.</p></div>
+      <div class="card"><div class="ic">📓</div><h3 data-en="Diary and promotion">Deník a postup</h3><p data-en="Runs, results and fault types per dog. Where you lose points, success by judge, and the app watches your promotion to the next class.">Běhy, výsledky a typy chyb pro každého psa. Kde ztrácíš body, úspěšnost podle rozhodčího a hlídání postupu do vyšší třídy.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="shots">
+      <div class="shot"><div class="phone"><img src="img/plan.jpg" alt="Plán parkuru s trasou a kontrolou FCI" loading="lazy" width="390" height="844"></div><b data-en="Plan">Plán</b><span data-en="Route, distances, SCT and the FCI check">Trasa, vzdálenosti, SČP a kontrola FCI</span></div>
+      <div class="shot"><div class="phone"><img src="img/beh.jpg" alt="Stopky s hodnocením běhu" loading="lazy" width="390" height="844"></div><b data-en="Run">Běh</b><span data-en="Stopwatch, faults, refusals, grading">Stopky, chyby, odmítnutí, hodnocení</span></div>
+      <div class="shot"><div class="phone"><img src="img/parkury.jpg" alt="Knihovna parkurů" loading="lazy" width="390" height="844"></div><b data-en="Courses">Parkury</b><span data-en="Library by class, favourites, your own">Knihovna podle tříd, oblíbené, vlastní</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="hoopers" style="background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="wrap split">
+    <div>
+      <span class="pill">Hoopers</span>
+      <h2 data-en="Hoopers too">I Hoopers</h2>
+      <p class="lead" data-en="Switch Agility | Hoopers at the top. H1–H3 courses by FCI Hoopers rules, hoops, barrels, gates and the handler area, rule check and run grading by faults.">Přepínač Agility | Hoopers nahoře. Parkury H1–H3 podle pravidel FCI Hoopers, oblouky, sudy, plůtky a prostor psovoda, kontrola pravidel a hodnocení běhu podle chyb.</p>
+      <ul class="ticks">
+        <li data-en="24 courses from the generator, 8 per class">24 parkurů z generátoru, 8 na třídu</li>
+        <li data-en="Your own builds with the distance-to-handler check">Vlastní stavba s kontrolou vzdálenosti od psovoda</li>
+        <li data-en="Clean run decides, time is just for you">Rozhoduje čistý běh, čas jen pro tebe</li>
+      </ul>
+    </div>
+    <div>
+      <span class="pill" data-en="Rules by country">Pravidla podle země</span>
+      <h2 data-en="Your country's rules">Pravidla tvé země</h2>
+      <p class="lead" data-en="Classes, heights, speeds for the standard time and promotion rules switch with the country. Built from the current rulebooks.">Třídy, výšky, rychlosti pro SČP i podmínky postupu se přepnou podle země. Postaveno z aktuálních řádů.</p>
+      <div class="flags">
+        <span>🇨🇿 Česko</span><span>🇸🇰 Slovensko</span><span>🇦🇹 Rakousko</span><span>🇩🇪 Německo</span><span>🇵🇱 Polsko</span><span>🇬🇧 Británie</span><span>🌍 FCI</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="install" id="instalace">
+  <div class="wrap">
+    <h2 data-en="Install on your phone">Nainstaluj do telefonu</h2>
+    <p class="lead" data-en="AgiPlan is a web app: no store, no registration. Open the link, add it to the home screen and it works like any other app, offline too.">AgiPlan je webová aplikace: žádný obchod, žádná registrace. Otevři odkaz, přidej na plochu a funguje jako každá jiná aplikace, i bez signálu.</p>
+    <div class="steps">
+      <div class="step"><h3>Android (Chrome)</h3><ol>
+        <li data-en="Open the app in Chrome.">Otevři aplikaci v Chromu.</li>
+        <li data-en="Tap the install card, or the ⋮ menu → Install app / Add to home screen.">Klepni na kartu Nainstalovat, nebo na menu ⋮ → Nainstalovat aplikaci / Přidat na plochu.</li>
+        <li data-en="Confirm. The icon appears on the home screen.">Potvrď. Ikona se objeví na ploše.</li></ol>
+        <p data-en="Opened from Facebook, Instagram or Messenger? Tap „Open in Chrome“ first; installation does not work inside those apps.">Otevřel se ti odkaz ve Facebooku, Instagramu nebo Messengeru? Nejdřív klepni na „Otevřít v Chromu“, uvnitř těch aplikací instalace nejde.</p></div>
+      <div class="step"><h3>iPhone, iPad (Safari)</h3><ol>
+        <li data-en="Open the app in Safari.">Otevři aplikaci v Safari.</li>
+        <li data-en="Tap Share (the square with an arrow).">Klepni na Sdílet (čtverec se šipkou).</li>
+        <li data-en="Choose „Add to Home Screen“ and confirm.">Vyber „Přidat na plochu“ a potvrď.</li></ol>
+        <p data-en="Samsung Internet, Firefox and others: the app shows the right steps for your browser.">Samsung Internet, Firefox a další: aplikace ti ukáže postup pro tvůj prohlížeč.</p></div>
+    </div>
+    <div class="cta" style="margin-top:32px">
+      <a class="btn lime" href="../" data-en="Open app and install">Otevřít aplikaci a nainstalovat</a>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2 data-en="Questions">Otázky</h2>
+    <div style="margin-top:24px">
+      <details><summary data-en="Is it really free?">Je to opravdu zdarma?</summary><p data-en="Yes. No ads, no subscription. If you want to support development, there is a „Support“ button in the app.">Ano. Bez reklam, bez předplatného. Kdo chce vývoj podpořit, má v aplikaci tlačítko „Podpořit“.</p></details>
+      <details><summary data-en="Does it work without internet?">Funguje bez internetu?</summary><p data-en="Yes. Courses, planning, 3D and the stopwatch work offline after the first opening. Only results from kacr.info and the shared gallery need a connection.">Ano. Parkury, plánování, 3D i stopky fungují po prvním otevření offline. Připojení potřebují jen výsledky z kacr.info a sdílení.</p></details>
+      <details><summary data-en="Where is my data?">Kde jsou moje data?</summary><p data-en-html="On your phone. Optionally sign in with Google to sync between devices; the data stays yours and can be deleted any time. Details in the <a href='../privacy.html'>privacy policy</a>.">V tvém telefonu. Volitelně se přihlásíš přes Google a data se synchronizují mezi zařízeními; zůstávají tvoje a kdykoli je smažeš. Podrobnosti v <a href="../privacy.html">zásadách ochrany soukromí</a>.</p></details>
+      <details><summary data-en="Which rules does it follow?">Podle jakých pravidel počítá?</summary><p data-en="FCI Agility Regulations and the national rulebooks of the Czech Republic (KAČR), Slovakia (ASKA), Austria (ÖKV), Germany (VDH), Poland (ZKwP) and Great Britain (The Kennel Club), plus FCI Hoopers Regulations. You choose the country in Settings.">Řád FCI a národní řády Česka (KAČR), Slovenska (ASKA), Rakouska (ÖKV), Německa (VDH), Polska (ZKwP) a Británie (The Kennel Club), plus FCI Hoopers Regulations. Zemi si vybereš v Nastavení.</p></details>
+      <details><summary data-en="I found a bug or have an idea.">Našel jsem chybu, mám nápad.</summary><p data-en="Great. In the app go to More → Feedback; it arrives directly to the author. Or open an issue on GitHub.">Super. V aplikaci Více → Zpětná vazba; dorazí přímo autorovi. Nebo založ issue na GitHubu.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr">2026</span> AgiPlan</span>
+    <a href="../privacy.html" data-en="Privacy policy">Ochrana soukromí</a>
+    <a href="https://github.com/Danyzell/Agility-trasa" rel="noopener">GitHub</a>
+    <span class="sp"></span>
+    <a href="../" data-en="Open app">Otevřít aplikaci</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var q=location.search.match(/[?&]lang=(cs|en)/), nav=(navigator.language||'').toLowerCase();
+  var lang=q?q[1]:(/^(cs|sk)/.test(nav)?'cs':'en');
+  var CS={}; /* původní české texty, aby šlo přepnout zpět */
+  function apply(l){
+    document.documentElement.lang=l;
+    document.querySelectorAll('[data-en],[data-en-html]').forEach(function(el,i){
+      var html=el.hasAttribute('data-en-html');
+      if(CS[i]===undefined) CS[i]=html?el.innerHTML:el.textContent;
+      if(l==='en'){ if(html) el.innerHTML=el.getAttribute('data-en-html'); else el.textContent=el.getAttribute('data-en'); }
+      else { if(html) el.innerHTML=CS[i]; else el.textContent=CS[i]; }
+    });
+    document.title=l==='en'?'AgiPlan – agility courses in your pocket':'AgiPlan – agility parkury v telefonu';
+    document.getElementById('langBtn').textContent=l==='en'?'CS':'EN';
+    /* odkazy do aplikace nesou jazyk, aplikace si ho pamatuje */
+    document.querySelectorAll('a[href="../"]').forEach(function(a){ a.setAttribute('href', l==='en'?'../?lang=en':'../'); });
+  }
+  apply(lang);
+  document.getElementById('langBtn').onclick=function(){ lang=lang==='en'?'cs':'en'; apply(lang); try{ history.replaceState(null,'','?lang='+lang); }catch(e){} };
+  document.getElementById('yr').textContent=new Date().getFullYear();
+})();
+</script>
+</body>
+</html>

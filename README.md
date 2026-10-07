@@ -44,6 +44,8 @@ Hoopers (přepínač Agility | Hoopers nahoře na Domů, v Parkurech, Více a Vi
 
 Délka tunelu: u vybraného tunelu ve Stavbě 2–6 m (nový tunel 5 m, uložené parkury si délku nechají). Kontrola FCI hlásí tunel kratší než 3 m.
 
+Úvodní stránka pro lidi, kteří aplikaci neznají: [web/](https://danyzell.github.io/Agility-trasa/web/) (česky, s `?lang=en` anglicky; snímky v `web/img`, odkazy vedou do aplikace a předají jazyk přes `?lang=`). Adresa aplikace se nemění; stránka je mimo mezipaměť service workeru. Až bude vlastní doména, stránka se přesune na její kořen a aplikace zůstane, kde je.
+
 Zásady ochrany osobních údajů: [privacy.html](https://danyzell.github.io/Agility-trasa/privacy.html) (česky i anglicky, adresa se hodí i do Google Play).
 
 Účet a synchronizace (Více → Účet): přihlášení přes Google (Supabase Auth). Data aplikace (stejná jako v záloze) se po každé změně a při otevření aplikace synchronizují se serverem, slučují se třícestně proti stavu z poslední synchronizace, takže změny i smazání z více zařízení se zachovají. Na serveru tabulka `user_data` a funkce `sync_get`, `sync_put`, `sync_delete` (`supabase/migrations/20261005100000_user_data.sql`). Zapnutí: v Supabase → Authentication → Providers → Google vložit klíč z Google Cloud a v URL Configuration nastavit Site URL na adresu aplikace.
