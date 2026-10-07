@@ -133,7 +133,7 @@ module.exports = async function ({ browser, base }) {
     await ev(() => { window.dispatchEvent(new Event('appinstalled')); });
     await page.waitForTimeout(100);
     ok(/Ťukni na ⋮|Sdílet/.test(await page.textContent('#pwaInst')), 'bez okna Chromu chybí návod: ' + await page.textContent('#pwaInst'));
-    ok(await readQR('#moreBody .share-app svg') === 'https://danyzell.github.io/Agility-trasa/', 'QR kód s odkazem na aplikaci');
+    ok(await readQR('#moreBody .share-app svg') === 'https://pawkur.cz/', 'QR kód s odkazem na aplikaci');
     ok(await page.isVisible('#moreBody [data-mgo="fb"]') && await page.isVisible('#moreBody [data-mgo="donate"]'), 'v O aplikaci chybí Napsat autorovi nebo Podpořit');
   });
 
@@ -169,7 +169,7 @@ module.exports = async function ({ browser, base }) {
   await step('odkaz z Facebooku', async () => {
     /* náhled odkazu (Open Graph) a obrázek */
     const html = await (await page.request.get(base + '/')).text();
-    ok(/property="og:title"/.test(html) && /property="og:image" content="https:\/\/danyzell\.github\.io\/Agility-trasa\/og\.jpg"/.test(html), 'chybí náhled odkazu pro Facebook');
+    ok(/property="og:title"/.test(html) && /property="og:image" content="https:\/\/pawkur\.cz\/og\.jpg"/.test(html), 'chybí náhled odkazu pro Facebook');
     ok((await page.request.get(base + '/og.jpg')).ok(), 'chybí obrázek og.jpg');
     /* ve vestavěném prohlížeči Facebooku na Androidu nabídne otevření v Chromu, jinde nic */
     ok(!(await page.isVisible('#iabBar')), 'pruh pro Facebook v běžném prohlížeči');
