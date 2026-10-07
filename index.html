@@ -1204,13 +1204,30 @@ var RULES={
       {from:'A1',to:'A2',need:3,ok:okTop3,judges:2,l:'3× 0,00 do 3. místa u 2 rozhodčích'},
       {from:'A2',to:'A3',need:5,ok:okTop3,judges:2,l:'5× 0,00 do 3. místa u 2 rozhodčích (z toho 3× v Agility)'}],
     keep:{cls:'A3',need:3,ok:okV0,l:'Udržení v A3: každý kalendářní rok aspoň 3× bez trestných bodů (z toho 1× v Agility)'}},
+  PL:{l:'Polsko (ZKwP)',cls:['A0','A1','A2','A3'],body:'řádu FCI a dodatkových předpisů ZKwP (2023)',src:'https://www.zkwp-szkolenia.pl/',
+    promo:[{from:'A1',to:'A2',need:3,ok:okV0,judges:2,l:'3× bez trestných bodů u 2 rozhodčích'},{from:'A2',to:'A3',need:3,ok:okTop3,judges:2,l:'3× bez trestných bodů do 3. místa u 2 rozhodčích'}],
+    note:'A0 je neoficiální třída. XS do 30 cm je volitelná (jde běhat v S). Veteráni od 8 let: snížené skoky, bez houpačky.'},
+  UK:{l:'Británie (Royal Kennel Club)',cls:['G1','G2','G3','G4','G5','G6','G7'],clsL:{G1:'Grade 1',G2:'Grade 2',G3:'Grade 3',G4:'Grade 4',G5:'Grade 5',G6:'Grade 6',G7:'Grade 7'},
+    body:'pravidel Royal Kennel Club (Regulation H)',src:'https://www.royalkennelclub.com/',uk:1,
+    heights:{S:{l:'Small – do 35 cm',jump:'300 mm',wall:'300 mm',tire:'spread 300/200 mm',lj:'long jump (spread) max. 300 mm'},M:{l:'Medium – 35 až 43 cm',jump:'400 mm',wall:'400 mm',tire:'spread 400/300 mm',lj:'spread max. 400 mm'},
+      I:{l:'Intermediate – 43 až 50 cm',jump:'500 mm',wall:'500 mm',tire:'spread 500/300 mm',lj:'spread max. 475 mm'},L:{l:'Large – od 50 cm',jump:'600 mm',wall:'600 mm',tire:'spread 600/400 mm',lj:'spread max. 550 mm'}},
+    promo:[{from:'G1',to:'G2',need:2,ok:okWin,l:'2 výhry (1. místo čistě v čase), z toho aspoň 1 v agility'},{from:'G2',to:'G3',need:2,ok:okWin,l:'2 výhry, z toho aspoň 1 v agility'},
+      {from:'G3',to:'G4',need:3,ok:okWin,l:'3 výhry, z toho aspoň 2 v agility'},{from:'G4',to:'G5',need:4,ok:okWin,l:'4 výhry, z toho aspoň 2 v agility'},
+      {from:'G5',to:'G6',need:4,ok:okWin,l:'4 výhry, z toho aspoň 2 v agility'},{from:'G6',to:'G7',need:5,ok:okWin,l:'5 výher, z toho aspoň 3 v agility'}],
+    note:'Do Grade 4 jde postoupit i na body (100 bodů ve třídě). Po výhře zůstáváš ve třídě ještě 25 dní (od 2026 18 dní). Micro do 28 cm se skoky 200 mm platí od 1. 1. 2027. Časové chyby: 1 bod za každou započatou sekundu nad čas; standardní čas vychází z Course Time Matrix (průměr + 10 s).'},
   FCI:{l:'Jen FCI (bez národních pravidel)',cls:['A1','A2','A3'],mctK:1.5,promo:[]}
 };
-function rulesDefault(){ var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase(); if(LANG==='cs') return /^sk/.test(n)?'SK':'CZ'; return /^de-at/.test(n)?'AT':/^de/.test(n)?'DE':'FCI'; }
+function okWin(x){ return okV0(x)&&+x.place===1; }
+/* standardní čas v Británii: rychlost podle Course Time Matrix (v2.0, 2025) pro velikost a grade, plus 10 s; mezi Grade 1 a 7 lineárně */
+var UKV={L:{A:[3.7,4.5],J:[4.17,4.7]},I:{A:[3.6,4.45],J:[4.2,4.8]},M:{A:[3.57,4.35],J:[4.0,4.5]},S:{A:[3.25,4.1],J:[3.6,4.2]}};
+function ukSct(len,cls,size,disc){ var v=UKV[size]||UKV.L, r=v[disc==='J'?'J':'A'], g=Math.max(1,Math.min(7,+String(cls).replace(/\D/g,'')||1)), spd=r[0]+(r[1]-r[0])*(g-1)/6; return len?Math.ceil(Math.round(len*10)/10/spd-1e-9)+10:0; }
+function rulesDefault(){ var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase(); if(LANG==='cs') return /^sk/.test(n)?'SK':'CZ'; return /^de-at/.test(n)?'AT':/^de/.test(n)?'DE':/^pl/.test(n)?'PL':/^en-gb/.test(n)?'UK':'FCI'; }
 var RCC=(function(){ var v=lsGet(RULESK,null); return RULES[v]?v:rulesDefault(); })(), RU=RULES[RCC]; RU.cc=RCC;
 var KACR_OK=!!RU.kacr; /* kacr.info má smysl pro Česko a Slovensko */
 function clsL(c){ return (RU.clsL&&RU.clsL[c])||c; }
-function clsOpts(cur){ var L=RU.cls.slice(); if(cur&&L.indexOf(cur)<0&&/^A[0-3]$/.test(cur)) L.push(cur); return L.map(function(k){ return '<option value="'+k+'"'+(k===cur?' selected':'')+'>'+clsL(k)+'</option>'; }).join(''); }
+/* třída parkuru v knihovně pro třídu psa (britské gradey: 1–2 → A1, 3–5 → A2, 6–7 → A3) */
+function courseClsOf(c){ var m=/^G(\d)$/.exec(c||''); if(m) return +m[1]<=2?'A1':+m[1]<=5?'A2':'A3'; return c; }
+function clsOpts(cur){ var L=RU.cls.slice(); if(cur&&L.indexOf(cur)<0&&/^(A[0-3]|G[1-7])$/.test(cur)) L.push(cur); return L.map(function(k){ return '<option value="'+k+'"'+(k===cur?' selected':'')+'>'+clsL(k)+'</option>'; }).join(''); }
 var I18N={exact:{},num:{},re:[]};
 function i18nNorm(s){ return String(s).replace(/ /g,' ').replace(/\s+/g,' ').trim(); }
 var I18N_NUM=/\d+(?:[.,]\d+)?/g;
@@ -1709,6 +1726,41 @@ var I18N_EXTRA={exact:{
 "Přidat na plochu": "Add to Home Screen",
 "Rozumím": "Got it",
 "Ukázat jak": "Show me how",
+"Grade 1": "Grade 1",
+"Grade 2": "Grade 2",
+"Grade 3": "Grade 3",
+"Grade 4": "Grade 4",
+"Grade 5": "Grade 5",
+"Grade 6": "Grade 6",
+"Grade 7": "Grade 7",
+"Polsko (ZKwP)": "Poland (ZKwP)",
+"Británie (Royal Kennel Club)": "Britain (Royal Kennel Club)",
+"řádu FCI a dodatkových předpisů ZKwP (2023)": "the FCI regulations and the ZKwP additional provisions (2023)",
+"pravidel Royal Kennel Club (Regulation H)": "the Royal Kennel Club regulations (Regulation H)",
+"3× bez trestných bodů u 2 rozhodčích": "3× clear round under 2 judges",
+"3× bez trestných bodů do 3. místa u 2 rozhodčích": "3× clear round in the top 3 under 2 judges",
+"A0 je neoficiální třída. XS do 30 cm je volitelná (jde běhat v S). Veteráni od 8 let: snížené skoky, bez houpačky.": "A0 is an unofficial class. XS up to 30 cm is optional (can run in S). Veterans from 8 years: lower jumps, no seesaw.",
+"2 výhry (1. místo čistě v čase), z toho aspoň 1 v agility": "2 wins (1st place, clear and in time), at least 1 in agility",
+"2 výhry, z toho aspoň 1 v agility": "2 wins, at least 1 in agility",
+"3 výhry, z toho aspoň 2 v agility": "3 wins, at least 2 in agility",
+"4 výhry, z toho aspoň 2 v agility": "4 wins, at least 2 in agility",
+"5 výher, z toho aspoň 3 v agility": "5 wins, at least 3 in agility",
+"Do Grade 4 jde postoupit i na body (100 bodů ve třídě). Po výhře zůstáváš ve třídě ještě 25 dní (od 2026 18 dní). Micro do 28 cm se skoky 200 mm platí od 1. 1. 2027. Časové chyby: 1 bod za každou započatou sekundu nad čas; standardní čas vychází z Course Time Matrix (průměr + 10 s).": "Up to Grade 4 you can also progress on points (100 points per grade). After a win you stay in the grade for another 25 days (18 days from 2026). Micro up to 28 cm with 200 mm jumps applies from 1 Jan 2027. Time faults: 1 per second or part over the time; the course time comes from the Course Time Matrix (average + 10 s).",
+"Small – do 35 cm": "Small – up to 35 cm",
+"Medium – 35 až 43 cm": "Medium – 35 to 43 cm",
+"Intermediate – 43 až 50 cm": "Intermediate – 43 to 50 cm",
+"Large – od 50 cm": "Large – from 50 cm",
+"long jump (spread) max. 300 mm": "long jump (spread) max. 300 mm",
+"spread 300/200 mm": "spread 300/200 mm",
+"spread 400/300 mm": "spread 400/300 mm",
+"spread 500/300 mm": "spread 500/300 mm",
+"spread 600/400 mm": "spread 600/400 mm",
+"spread max. 400 mm": "spread max. 400 mm",
+"spread max. 475 mm": "spread max. 475 mm",
+"spread max. 550 mm": "spread max. 550 mm",
+"Čas": "Time",
+"Matrix": "Matrix",
+"průměr podle Course Time Matrix + 10 s": "average from the Course Time Matrix + 10 s",
 "Pravidla": "Rules",
 "Česko (KAČR)": "Czech Republic (KAČR)",
 "Slovensko (ASKA)": "Slovakia (ASKA)",
@@ -1887,6 +1939,7 @@ var I18N_EXTRA={exact:{
 "Zkontroluj podle plánku": "Check against the course map",
 "Náhled parkuru": "Course preview",
 },num:{
+"# mm": "# mm",
 "Jumping: # z #": "Jumping: # of #",
 "Letos # z #": "This year # of #",
 "Letos # z # · splněno": "This year # of # · met",
@@ -4718,6 +4771,8 @@ function metrics(obs,route,cls,turns,geo){
   if(isHoopC(cls)) return {len:len,n:route.length,disc:'Hoopers',mcs:0,spd:0,cls:cls,sct:0,mct:180,hoop:true,far:route.length?hoopFar(obs,route):null};
   var zones=route.some(function(id){return by[id]&&ZN.indexOf(by[id].type)>=0;});
   var mcs=zones?2.5:3.0, spd=spdOf(cls);
+  if(RU.uk){ var dg=typeof curDog==='function'?curDog():null, us=ukSct(len,dg?dg.cls:'G3',dg?dg.size:'L',zones?'A':'J');
+    return {len:len,n:route.length,disc:zones?'Agility':'Jumping',mcs:0,spd:len?Math.round(len/Math.max(1,us-10)*10)/10:0,cls:cls,sct:us,mct:0,uk:true}; }
   return {len:len,n:route.length,disc:zones?'Agility':'Jumping',mcs:mcs,spd:spd,cls:cls,
     /* časy z délky zaokrouhlené na desetiny, jak ji aplikace ukazuje (130,0 m / 2,5 m/s = 52 s, ne 53 s) */
     sct:len?Math.ceil(Math.round(len*10)/10/spd-1e-9):0, mct:len?(RU.mctK?Math.ceil(Math.ceil(Math.round(len*10)/10/spd-1e-9)*RU.mctK-1e-9):Math.ceil(Math.round(len*10)/10/mcs-1e-9)):0};
@@ -4742,7 +4797,7 @@ function specsHTML(m){
   return '<div class="spec"><small>Délka trati</small><b>'+(m.len?lenU(m.len):dash)+'</b><i>'+nPrek(m.n)+'</i></div>'+
     '<div class="spec"><small>Disciplína</small><b>'+m.disc+'</b><i>třída '+m.cls+'</i></div>'+
     '<div class="spec"><small>SČP</small><b>'+(m.sct?m.sct+' s':dash)+'</b><i>'+spdU(m.spd)+'</i></div>'+
-    '<div class="spec mct"><small>MČP (max.)</small><b>'+(m.mct?m.mct+' s':dash)+'</b><i>'+(RU.mctK?fmt(RU.mctK)+'× SČP':spdU(m.mcs)+' dle FCI')+'</i></div>'+kacrEstHTML(m);
+    (m.uk?'<div class="spec mct"><small>Čas</small><b>Matrix</b><i>průměr podle Course Time Matrix + 10 s</i></div>':'<div class="spec mct"><small>MČP (max.)</small><b>'+(m.mct?m.mct+' s':dash)+'</b><i>'+(RU.mctK?fmt(RU.mctK)+'× SČP':spdU(m.mcs)+' dle FCI')+'</i></div>')+kacrEstHTML(m);
 }
 
 /* ---------- horní lišta ---------- */
@@ -5596,6 +5651,7 @@ function evalRun(t,f,r,dis,m){
   /* Hoopers: každá chyba i odmítnutí 5 bodů, čas se nepočítá; diskvalifikace i za překročení 3 minut */
   if(m&&m.hoop){ var hc=5*f+5*r, hw=dis?'diskvalifikace':(t>180?'překročen maximální čas 3 min':''); return {tp:0,cf:hc,tot:hc,why:hw,g:hw?'DIS':(hc===0?'V':'BO'),hoop:true}; }
   var tp=Math.max(0,Math.round((t-m.sct)*100)/100), cf=5*f+5*r, tot=Math.round((cf+tp)*100)/100;
+  if(m&&m.uk){ tp=Math.max(0,Math.ceil(t-m.sct-1e-9)); tot=cf+tp; } /* Británie: 1 bod za každou započatou sekundu */
   var why=dis?'diskvalifikace':(r>=3?'3 odmítnutí':(m.mct&&t>m.mct?'překročen MČP':''));
   return {tp:tp,cf:cf,tot:tot,why:why,g:why?'DIS':(tot<6?'V':tot<16?'VD':tot<26?'D':'BO')};
 }
@@ -5774,7 +5830,7 @@ function streak(days){
   var t=new Date(), n=0; t.setHours(12,0,0,0); if(!days[localDate(t)]) t.setDate(t.getDate()-1);
   while(days[localDate(t)]){ n++; t.setDate(t.getDate()-1); } return n;
 }
-function homeCls(){ var d=curDog(); return d&&['A1','A2','A3'].indexOf(d.cls)>=0?d.cls:(S.meta.cls||'A1'); }
+function homeCls(){ var d=curDog(), c=d?courseClsOf(d.cls):null; return ['A1','A2','A3'].indexOf(c)>=0?c:(S.meta.cls||'A1'); }
 /* výzva dne: každý den jiný nezaběhnutý parkur třídy psa (stejný celý den) */
 function homeChallenge(){
   var cls=homeCls(), L=listFor(cls), today=localDate();
@@ -7533,7 +7589,7 @@ var SIZES={
   L:{l:'L – od 48 cm',jump:'55–60 cm',wall:'55–60 cm',tire:'80 cm',lj:'120–150 cm (4 díly)'}
 };
 DOGS=(Array.isArray(DOGS)?DOGS:[]).filter(function(d){return d&&typeof d==='object'&&typeof d.id==='string';});
-DOGS.forEach(function(d){ if(!SIZES.hasOwnProperty(d.size)) d.size='L'; if(['A0','A1','A2','A3'].indexOf(d.cls)<0) d.cls='A1'; d.name=String(d.name||'Pes'); });
+DOGS.forEach(function(d){ if(!SIZES.hasOwnProperty(d.size)) d.size='L'; if(!/^(A[0-3]|G[1-7])$/.test(d.cls)) d.cls='A1'; d.name=String(d.name||'Pes'); });
 function curDog(){for(var i=0;i<DOGS.length;i++) if(DOGS[i].id===DOGC) return DOGS[i]; return DOGS[0]||null;}
 function dogName(id){for(var i=0;i<DOGS.length;i++) if(DOGS[i].id===id) return DOGS[i].name; return '';}
 function saveDogs(){lsSet(DOGK,DOGS); lsSet(DOGCUR,DOGC); HM.emit('dogChanged',{id:DOGC});}
@@ -7548,10 +7604,10 @@ function dogChips(el){
   };
 }
 function dogSheet(d){
-  var isNew=!d; d=d||{id:'dog-'+Date.now().toString(36),name:'',size:'L',cls:'A1'};
+  var isNew=!d; d=d||{id:'dog-'+Date.now().toString(36),name:'',size:'L',cls:RU.cls.indexOf('A1')>=0?'A1':RU.cls[0]};
   openSheet('<h3>'+(isNew?'Nový pes':'Upravit psa')+'</h3>'+
     '<label for="dName">Jméno<input id="dName" type="text" maxlength="40" value="'+esc(d.name)+'"></label>'+
-    '<div class="grid2"><label for="dSize">Velikost<select id="dSize">'+Object.keys(SIZES).map(function(k){return '<option value="'+k+'">'+SIZES[k].l+'</option>';}).join('')+'</select></label>'+
+    '<div class="grid2"><label for="dSize">Velikost<select id="dSize">'+Object.keys(RU.heights||SIZES).map(function(k){return '<option value="'+k+'">'+(RU.heights||SIZES)[k].l+'</option>';}).join('')+'</select></label>'+
     '<label for="dCls">Výkonnostní třída<select id="dCls">'+clsOpts(d.cls)+'</select></label></div>'+
     '<label for="dBorn">Narozen/a (měsíc a rok, nepovinné)<input id="dBorn" type="month" value="'+esc(d.born||'')+'" max="'+localDate().slice(0,7)+'"></label>'+
     (!KACR_OK&&!d.kacr?'<input id="dKacr" type="hidden" value="">':'<label for="dKacr">Pes na kacr.info (nepovinné)</label><div class="kc-find"><input id="dKacr" type="text" autocomplete="off" placeholder="jméno psa, psovoda nebo odkaz" value="'+(d.kacr?'https://kacr.info/dogs/'+esc(d.kacr):'')+'"><button class="btn" data-a="ks">Hledat</button></div>'+
@@ -8568,7 +8624,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
     h='<div class="list">'+(DOGS.length?DOGS.map(function(x){return '<div class="item'+(d&&d.id===x.id?' cur':'')+'"><div><b>'+esc(x.name)+'</b><span>'+SIZES[x.size].l+' · '+x.cls+(dogAgeM(x)!=null?' · '+ageTxt(dogAgeM(x)):'')+'</span></div><div class="acts">'+(d&&d.id===x.id?'':'<button class="btn" data-dsel="'+esc(x.id)+'">Vybrat</button>')+(x.kacr?'<button class="btn" data-dkacr="'+esc(x.id)+'">Závody</button>':'')+'<button class="btn" data-dedit="'+esc(x.id)+'">Upravit</button><button class="btn danger" data-ddel="'+esc(x.id)+'" aria-label="Smazat psa">×</button></div></div>';}).join('')
       :'<p class="hint">Přidej psa. Aplikace pak ukáže výšky překážek pro jeho kategorii a běhy i statistiky povede zvlášť pro každého psa.</p>')+'</div>'+
       '<div class="row"><button class="btn primary" data-dadd="1">＋ Přidat psa</button></div>';
-    var z=SIZES[d?d.size:'L'];
+    var z=(RU.heights&&RU.heights[d?d.size:'L'])||SIZES[d?d.size:'L'];
     h+='<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (kategorie L)')+'</h2><table class="table"><tr><th>Překážka</th><th>Podle FCI</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (střed od země)</td><td>'+z.tire+'</td></tr><tr><td>Skok daleký</td><td>'+z.lj+'</td></tr><tr><td>Áčko, kladina, houpačka</td><td>stejné pro všechny: 170 / 120–130 / 60 cm</td></tr></table>'+(RU.note?'<p class="hint">'+RU.note+'</p>':'');
   } else if(moreTab==='stats'){ h='<div class="filters" id="statDogs"></div>'+statsHTML()+weakHTML(); }
   else if(moreTab==='diary'){ h='<div class="filters" id="diaryDogs"></div>'+diaryHTML()+'<h2>Statistiky</h2>'+statsHTML()+weakHTML(); }
@@ -10505,7 +10561,7 @@ function onbRender(){
     if(!AUTH&&IS_SRV) h+='<div class="onb-acct"><button class="btn gbtn" data-acct="in" data-o="acct">'+GLOGO+'<span>Přihlásit přes Google</span></button><p class="hint">Parkury, psi a běhy pak budeš mít na všech svých zařízeních. Jde to i bez přihlášení, stačí Pokračovat.</p></div>';
     h+='</div><div class="onb-foot"><button class="btn primary" data-o="next">Pokračovat</button></div>';
   } else if(s===2){
-    var d=curDog()||{name:'',size:'L',cls:'A1'};
+    var d=curDog()||{name:'',size:'L',cls:RU.cls.indexOf('A1')>=0?'A1':RU.cls[0]};
     h+='<h1>Tvůj pes</h1><p class="lead">Podle velikosti a třídy aplikace nastaví výšky překážek, čas SČP a povede statistiky zvlášť pro každého psa.</p>'+
       '<label for="oName">Jméno<input id="oName" type="text" maxlength="40" autocomplete="off" value="'+esc(d.name)+'" placeholder="např. Aris"></label>'+
       '<div class="grid2"><label for="oSize">Velikost<select id="oSize">'+Object.keys(SIZES).map(function(k){return '<option value="'+k+'"'+(k===d.size?' selected':'')+'>'+SIZES[k].l+'</option>';}).join('')+'</select></label>'+

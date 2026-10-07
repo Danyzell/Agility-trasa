@@ -29,7 +29,7 @@ Stav k 7. 10. 2026. Nové sezení: přečti tenhle soubor, `SPOLUPRACE.md` a `RE
 - #42 Facebook/Messenger/Instagram na Androidu se poprvé sám přepne do Chromu (kvůli instalaci).
 - #44 Instalace na Androidu i bez okna Chromu (Samsung Internet, Firefox, Chrome po odmítnutí): karta s návodem pro daný prohlížeč, zavřená se vrátí po 14 dnech; pruh Otevřít v Chromu i pro TikTok, LinkedIn a obecný WebView.
 - #45 Nabídka instalace jednou po první skutečné akci (parkur, běh, 3D).
-- #48 Pravidla podle země (`RULES`: CZ, SK, AT, DE, FCI; Británie a Polsko po doplnění podkladů), průzkum 45 zdrojů v chatu 7. 10.
+- #48 Pravidla podle země (`RULES`: CZ, SK, AT, DE, PL, UK, FCI), průzkum 45 zdrojů + 2 agenti (PL, UK) v chatu 7. 10. Opravy proti prvnímu přehledu: KC Grade 7 „jen šampionát“ neprošlo, Micro (do 28 cm, 200 mm) až od 2027; v Polsku není třída Master, A0 je neoficiální. Zdroje pravidel: ÖKV Agilityreglement 2026, VDH PO 2026, Pravidlá agility ASKA 2026, ZKwP dodatkowe przepisy 2023, KC H regs 2025 + Course Time Matrix v2.0.
 - #47 Verze 2.6: Hoopers (třídy H1–H3…) a zlepšení z rozboru 7. 10.: angličtina bez českých částí (`CZONLY`), hlášení chyb a cesta instalace v pingu (SQL `20261007170000_ping_funnel_errors.sql` čeká na spuštění uživatelem), limit dotazů ve funkci `kacr` (verze 5), 3D balíček až při použití (cache 2.7).
 - (původně) #47 Verze 2.6: Hoopers (třídy H1–H3, paleta, prostor psovoda, kontrola pravidel FCI Hoopers, generátor, hodnocení podle chyb).
 - #46 Verze 2.5: Kde ztrácíš body a rozhodčí z kacr.info v deníku, Den závodů na Domů. Serverová funkce `kacr` (verze 4) umí `{runs, dog}`; nasazená přes MCP `deploy_edge_function` (nasazení funkcí přes MCP funguje, SQL zápisy ne).
