@@ -20,3 +20,26 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Testy v prohlížeči
         run: node tests/run.js
+
+  nasazeni:
+    needs: testy
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TOK: ${{ secrets.PAWKUR_WEB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Nasadit na pawkur.cz (repozitář Danyzell/pawkur-web)
+        if: env.TOK != ''
+        run: |
+          set -e
+          git clone --depth 1 "https://x-access-token:${TOK}@github.com/Danyzell/pawkur-web.git" /tmp/web
+          (cd /tmp/web && git rm -rq --ignore-unmatch . >/dev/null 2>&1 || true)
+          cp index.html sw.js manifest.webmanifest privacy.html og.jpg hero.webp icon-192.png icon-512.png icon-maskable-512.png /tmp/web/
+          mkdir -p /tmp/web/v3d && cp v3d/v3d.js /tmp/web/v3d/
+          cp -r web /tmp/web/web
+          printf 'pawkur.cz\n' > /tmp/web/CNAME
+          touch /tmp/web/.nojekyll
+          printf '# pawkur.cz\n\nNasazeno automaticky z Danyzell/Agility-trasa (%s). Neupravovat ručně, změny patří do repozitáře aplikace.\n' "$GITHUB_SHA" > /tmp/web/README.md
+          cd /tmp/web && git add -A && (git -c user.name=pawkur-bot -c user.email=noreply@pawkur.cz commit -qm "Nasazení $GITHUB_SHA" && git push) || echo "beze změn"

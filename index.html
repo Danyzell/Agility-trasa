@@ -1,4 +1,4 @@
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1f6b45"><meta name="description" content="Plánovač agility parkurů v telefonu: parkury podle FCI, 3D průlet, stopky, trénink doma a výsledky z kacr.info. Zdarma a bez reklam."><meta property="og:type" content="website"><meta property="og:site_name" content="Pawkur"><meta property="og:locale" content="cs_CZ"><meta property="og:url" content="https://danyzell.github.io/Agility-trasa/"><meta property="og:title" content="Pawkur – plánovač agility parkurů v telefonu"><meta property="og:description" content="Parkury podle FCI, 3D průlet, stopky s hodnocením, trénink doma a výsledky z kacr.info. Zdarma, bez reklam. Otevři odkaz a nainstaluj na plochu."><meta property="og:image" content="https://danyzell.github.io/Agility-trasa/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Pawkur – plánovač agility parkurů"><meta name="twitter:card" content="summary_large_image"><meta name="mobile-web-app-capable" content="yes"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>window.AGILITY_PWA=1;</script></head><body>
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1f6b45"><meta name="description" content="Plánovač agility parkurů v telefonu: parkury podle FCI, 3D průlet, stopky, trénink doma a výsledky z kacr.info. Zdarma a bez reklam."><meta property="og:type" content="website"><meta property="og:site_name" content="Pawkur"><meta property="og:locale" content="cs_CZ"><meta property="og:url" content="https://pawkur.cz/"><meta property="og:title" content="Pawkur – plánovač agility parkurů v telefonu"><meta property="og:description" content="Parkury podle FCI, 3D průlet, stopky s hodnocením, trénink doma a výsledky z kacr.info. Zdarma, bez reklam. Otevři odkaz a nainstaluj na plochu."><meta property="og:image" content="https://pawkur.cz/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Pawkur – plánovač agility parkurů"><meta name="twitter:card" content="summary_large_image"><meta name="mobile-web-app-capable" content="yes"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>window.AGILITY_PWA=1;</script></head><body>
 <title>Pawkur</title>
 <script>try{var t0=JSON.parse(localStorage.getItem('agility-theme-v1'));if(t0==='light'||t0==='dark')document.documentElement.setAttribute('data-theme',t0);}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1899,6 +1899,11 @@ var I18N_EXTRA={exact:{
 "Hoopers: přepínač Agility | Hoopers nahoře na Domů a v Parkurech. Parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb": "Hoopers: an Agility | Hoopers switch at the top of Home and Courses. H1–H3 courses following FCI rules, your own builds with hoops, barrels, gates, a chute and the handling area, a rules check and run scoring by faults",
 "Novinky v Pawkuru 2.6": "What's new in Pawkur 2.6",
 "Novinky v Pawkuru 2.7": "What's new in Pawkur 2.7",
+"Pawkur má novou adresu pawkur.cz. Přenes si data jedním klepnutím a používej aplikaci tam.": "Pawkur has a new address, pawkur.cz. Move your data with one tap and use the app there.",
+"Přenést": "Move",
+"Přenáším…": "Moving…",
+"Zálohu pod tímhle klíčem jsem nenašel.": "No backup found under this key.",
+"Data jsou přenesená na novou adresu. Nainstaluj si Pawkur odsud a starou ikonu smaž.": "Your data has moved to the new address. Install Pawkur from here and delete the old icon.",
 "Závody z kacr.info": "Competitions from kacr.info",
 "Výsledky se do deníku berou samy. U běhu s trestnými body ťukni, co se stalo, a rozbor Kde ztrácíš body bude přesnější.": "Results come into the diary on their own. On a run with faults, tap what happened and the Where you lose points analysis gets more precise.",
 "Čisté běhy po měsících": "Clean runs by month",
@@ -6428,7 +6433,7 @@ function lgLoad(){
   });
 }
 /* ---------- obrázek výsledku ke sdílení (Facebook, Instagram): 1080 × 1350, parkur, čas, umístění ---------- */
-var SHARE_URL='https://danyzell.github.io/Agility-trasa/';
+var SHARE_URL='https://pawkur.cz/';
 function shareCanvas(o){
   var W=1080, H=1350, cv=document.createElement('canvas'); cv.width=W; cv.height=H;
   var x=cv.getContext('2d'), disp=(getComputedStyle(document.documentElement).getPropertyValue('--display')||'').trim()||'sans-serif', body='system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
@@ -8545,7 +8550,11 @@ function backupData(){
 function restoreData(o){
   if(!o||o.app!=='agility-trasa'||!o.data||typeof o.data!=='object'){toast('Tohle není záloha z aplikace Pawkur.'); return;}
   var at=new Date(o.at), keys=Object.keys(o.data).filter(function(k){return k.indexOf('agility-')===0&&k.indexOf('agility-db-')!==0&&!SYNC_OWN[k]&&typeof o.data[k]==='string';});
-  ask('Obnovit zálohu?','Současná data v aplikaci se nahradí zálohou'+(isNaN(at)?'':' z '+at.toLocaleString(LOC))+'.','Obnovit',function(){
+  ask('Obnovit zálohu?','Současná data v aplikaci se nahradí zálohou'+(isNaN(at)?'':' z '+at.toLocaleString(LOC))+'.','Obnovit',function(){ restoreApply(o); });
+}
+function restoreApply(o){
+  var keys=Object.keys(o.data).filter(function(k){return k.indexOf('agility-')===0&&k.indexOf('agility-db-')!==0&&!SYNC_OWN[k]&&typeof o.data[k]==='string';});
+  (function(){
     var old={};
     try{
       for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i); if(k.indexOf('agility-')===0&&k.indexOf('agility-db-')!==0&&!SYNC_OWN[k]) old[k]=localStorage.getItem(k);}
@@ -8556,7 +8565,7 @@ function restoreData(o){
       toast('Zálohu se nepodařilo zapsat ('+e.message+'). Data zůstala, jak byla.',6000); return;
     }
     location.reload();
-  });
+  })();
 }
 function cloudKey(){var k=lsGet('agility-cloudkey-v1',null); if(!k){k=''; var a='abcdefghijkmnpqrstuvwxyz23456789'; for(var i=0;i<12;i++) k+=a[Math.floor(Math.random()*a.length)]; lsSet('agility-cloudkey-v1',k);} return k;}
 function backupHTML(){
@@ -8952,7 +8961,7 @@ function dnCopy(s){
   try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(s).then(done,function(){ toast(s,5000); }); return; } }catch(e){}
   toast(s,5000);
 }
-var APP_URL='https://danyzell.github.io/Agility-trasa/';
+var APP_URL='https://pawkur.cz/';
 function appShare(){
   var txt=T('Pawkur – plánovač agility parkurů, stopky a trénink. Zdarma v telefonu:');
   try{ if(navigator.share){ navigator.share({title:'Pawkur',text:txt,url:APP_URL}).catch(function(){}); return; } }catch(e){}
@@ -11107,6 +11116,24 @@ catSync();
       lsSet('agility-iabgo-v1',1);
       setTimeout(function(){ (window.IAB_OPEN||function(u){ location.href=u; })(intent); },400);
     }
+  }
+  /* přesun na novou adresu pawkur.cz: stará adresa (github.io) nabídne přenos dat (záloha do cloudu pod klíčem), nová adresa
+     si zálohu podle ?obnova=KLÍČ sama načte. Obě adresy běží dál, nikomu nic nezmizí. Testy: ?oldhost */
+  var ON_OLD=/\.github\.io$/.test(location.host)||/[?&]oldhost\b/.test(location.search);
+  (function(){ var m=location.search.match(/[?&]obnova=([a-z0-9]{12})\b/); if(!m) return;
+    try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){}
+    sbCall('backup_get',{p_key:m[1]}).then(function(o){ if(!o||!o.data||typeof o.data!=='object'){ toast('Zálohu pod tímhle klíčem jsem nenašel.',6000); return; }
+      o.data['agility-cloudkey-v1']=JSON.stringify(m[1]); try{ sessionStorage.setItem('agility-moved','1'); }catch(e){}
+      if(myDB().length||diary().length||DOGS.length) restoreData(o); else restoreApply(o); },function(e){ toast('Přenos dat nevyšel: '+e.message,6000); }); })();
+  try{ if(sessionStorage.getItem('agility-moved')){ sessionStorage.removeItem('agility-moved'); setTimeout(function(){ toast('Data jsou přenesená na novou adresu. Nainstaluj si Pawkur odsud a starou ikonu smaž.',8000); },800); } }catch(e){}
+  if(ON_OLD&&!INAPP&&!THX&&(+lsGet('agility-move-v1',0)||0)<Date.now()-7*864e5){
+    var mb=document.createElement('div'); mb.className='iabbar movebar'; mb.id='moveBar'; mb.setAttribute('role','status');
+    mb.innerHTML='<span>Pawkur má novou adresu pawkur.cz. Přenes si data jedním klepnutím a používej aplikaci tam.</span><button class="btn primary" id="moveGo">Přenést</button><button class="btn" id="moveX" aria-label="Zavřít">×</button>';
+    document.body.appendChild(mb);
+    $('moveX').onclick=function(){ lsSet('agility-move-v1',Date.now()); mb.parentNode.removeChild(mb); };
+    $('moveGo').onclick=function(){ var g=$('moveGo'); g.disabled=true; g.textContent=T('Přenáším…'); var k=cloudKey();
+      sbCall('backup_put',{p_key:k,p_data:backupData()}).then(function(){ lsSet('agility-move-v1',Date.now()); (window.MOVE_OPEN||function(u){ location.href=u; })(APP_URL+'?obnova='+k); },
+        function(e){ g.disabled=false; g.textContent=T('Přenést'); toast('Přenos nevyšel: '+e.message+'. Zkus to s připojením k internetu.',6000); }); };
   }
   /* plánek poslaný přes Sdílet z galerie: service worker ho uložil, tady se otevře ve čtečce */
   if(/[?&]share=1/.test(location.search)&&window.caches){
