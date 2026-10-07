@@ -552,6 +552,11 @@ body.at-home .top{display:none;}
 .hm-ch .ic{width:50px; height:50px; border-radius:16px; background:color-mix(in srgb,var(--zone) 22%,transparent); display:grid; place-items:center; font-size:24px; flex:0 0 auto;}
 .hm-ch .tx{flex:1; min-width:0;} .hm-ch b{display:block;} .hm-ch span{font-size:13px; color:var(--muted);}
 .hm-go{margin-left:auto; background:var(--text); color:var(--bg); border:0; border-radius:999px; padding:0 16px; min-height:40px; font-weight:700; font-size:14px; flex:0 0 auto;}
+/* postup do vyšší třídy na Domů a kalkulačka SČP */
+.hm-promo{margin-top:12px; cursor:pointer;} .hm-promo .bar{height:6px; margin-top:8px;} .hm-promo b{font-size:15px; line-height:1.3;}
+.sc-out{display:flex; align-items:baseline; justify-content:center; gap:14px; flex-wrap:wrap; padding:12px; border-radius:14px; background:var(--sunk);}
+.sc-out div{display:flex; flex-direction:column; align-items:center;} .sc-out small{font-size:12px; color:var(--muted); font-weight:600;} .sc-out b{font-family:var(--display); font-size:30px; line-height:1.1; font-variant-numeric:tabular-nums;}
+.sc-out .sp b{font-size:20px;} .sc-tab th.num,.sc-tab td.num{text-align:right;} .sc-tab tr.cur td{font-weight:700;}
 .hm-go.ok{background:var(--good); color:#fff;}
 .hm-week{display:flex; gap:6px; margin:0 16px 24px;}
 .hm-week div{flex:1; text-align:center; font-size:11px; color:var(--muted);}
@@ -1094,6 +1099,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       <button class="mrow" data-m="start"><span class="mic" data-ic="flag"></span><span class="ml">Začínáme</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="warm"><span class="mic" data-ic="heart"></span><span class="ml">Rozcvička</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="coach"><span class="mic" data-ic="people"></span><span class="ml">Trenéři a plánky</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="sct"><span class="mic" data-ic="timer"></span><span class="ml">Kalkulačka SČP a MČP</span><span class="mch" data-ic="chev"></span></button>
       <div class="mgrp">Aplikace</div>
       <button class="mrow" data-m="set"><span class="mic" data-ic="sliders"></span><span class="ml">Nastavení a záloha</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="about"><span class="mic" data-ic="info"></span><span class="ml">O aplikaci a podpora</span><span class="mch" data-ic="chev"></span></button>
@@ -1233,7 +1239,8 @@ var RULES={
 function okWin(x){ return okV0(x)&&+x.place===1; }
 /* standardní čas v Británii: rychlost podle Course Time Matrix (v2.0, 2025) pro velikost a grade, plus 10 s; mezi Grade 1 a 7 lineárně */
 var UKV={L:{A:[3.7,4.5],J:[4.17,4.7]},I:{A:[3.6,4.45],J:[4.2,4.8]},M:{A:[3.57,4.35],J:[4.0,4.5]},S:{A:[3.25,4.1],J:[3.6,4.2]}};
-function ukSct(len,cls,size,disc){ var v=UKV[size]||UKV.L, r=v[disc==='J'?'J':'A'], g=Math.max(1,Math.min(7,+String(cls).replace(/\D/g,'')||1)), spd=r[0]+(r[1]-r[0])*(g-1)/6; return len?Math.ceil(Math.round(len*10)/10/spd-1e-9)+10:0; }
+function ukSpd(cls,size,disc){ var v=UKV[size]||UKV.L, r=v[disc==='J'?'J':'A'], g=Math.max(1,Math.min(7,+String(cls).replace(/\D/g,'')||1)); return r[0]+(r[1]-r[0])*(g-1)/6; }
+function ukSct(len,cls,size,disc){ return len?Math.ceil(Math.round(len*10)/10/ukSpd(cls,size,disc)-1e-9)+10:0; }
 function rulesDefault(){ var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase(); if(LANG==='cs') return /^sk/.test(n)?'SK':'CZ'; return /^de-at/.test(n)?'AT':/^de/.test(n)?'DE':/^pl/.test(n)?'PL':/^en-gb/.test(n)?'UK':'FCI'; }
 var RCC=(function(){ var v=lsGet(RULESK,null); return RULES[v]?v:rulesDefault(); })(), RU=RULES[RCC]; RU.cc=RCC;
 var KACR_OK=!!RU.kacr; /* kacr.info má smysl pro Česko a Slovensko */
@@ -1302,6 +1309,18 @@ function trTree(root){
 /* Překlady nových textů: když přidáš do aplikace český text, sem dopiš jeho anglickou verzi (stejný formát jako i18nAdd). */
 var I18N_EXTRA={exact:{
 "Můj tým": "My team",
+/* postup a kalkulačka */
+"Kalkulačka SČP a MČP": "SCT and MCT calculator",
+"Standardní a maximální čas parkuru z délky trati, bez kreslení parkuru. Rychlost je z nastavení v Běhu (Rychlost pro SČP), můžeš ji přepsat.": "Standard and maximum course time from the course length, without drawing a course. The speed comes from the Run settings (Speed for SCT); you can override it.",
+"Standardní čas podle Course Time Matrix: průměrná rychlost pro velikost psa a grade + 10 s. Maximální čas se v Británii neurčuje.": "Standard course time per the Course Time Matrix: average speed for the dog's size and grade + 10 s. No maximum course time is set in Britain.",
+"Rychlost (m/s)": "Speed (m/s)",
+"Všechny třídy": "All classes",
+"Pro zvolenou velikost a disciplínu, rychlost podle matice.": "For the chosen size and discipline, speed per the matrix.",
+"Rychlosti podle nastavení v Běhu.": "Speeds per the Run settings.",
+"Rychlost": "Speed",
+"Zadej délku trati.": "Enter the course length.",
+"Postup se hlídá sám": "Promotion is tracked for you",
+"Deník": "Training log",
 "Učení": "Learning",
 "Aplikace": "App",
 "Deník a statistiky": "Diary and statistics",
@@ -2119,8 +2138,36 @@ var I18N_EXTRA={exact:{
 ["^(.+?) · (A\\d) · zbývá (\\d+) (?:dny|dní)$","$1 · $2 · $3 days left"],
 ["^(.+?) · (A\\d) · zbývá poslední den$","$1 · $2 · last day left"],
 ]};
+/* postup a kalkulačka: texty s čísly (karta na Domů a kalkulačka SČP) */
+var I18N_POSTUP={num:{
+"# zkouška": "# qualifying run",
+"# zkoušky": "# qualifying runs",
+"# zkoušek": "# qualifying runs",
+"# zkouška u jiného rozhodčího": "# qualifying run under another judge",
+"# zkoušky u jiného rozhodčího": "# qualifying runs under another judge",
+"# zkoušek u jiného rozhodčího": "# qualifying runs under another judge",
+"#× Jumping": "#× Jumping",
+"# zkouška a #× Jumping": "# qualifying run and #× Jumping",
+"# zkoušky a #× Jumping": "# qualifying runs and #× Jumping",
+"# zkoušek a #× Jumping": "# qualifying runs and #× Jumping",
+"# zkouška u jiného rozhodčího a #× Jumping": "# qualifying run under another judge and #× Jumping",
+"# zkoušky u jiného rozhodčího a #× Jumping": "# qualifying runs under another judge and #× Jumping",
+"# zkoušek u jiného rozhodčího a #× Jumping": "# qualifying runs under another judge and #× Jumping",
+"Udržení v A#: do konce roku ještě # čistý běh": "Staying in A#: # more clean run by the end of the year",
+"Udržení v A#: do konce roku ještě # čisté běhy": "Staying in A#: # more clean runs by the end of the year",
+"Udržení v A#: do konce roku ještě # čistých běhů": "Staying in A#: # more clean runs by the end of the year",
+"Udržení v A#: letos splněno": "Staying in A#: done for this year",
+"# m/s": "# m/s",
+"SČP # s · MČP # s": "SCT # s · MCT # s",
+"SČP # s": "SCT # s",
+"MČP #× SČP": "MCT #× SCT",
+"MČP # m/s (Agility) a # m/s (Jumping) podle FCI": "MCT # m/s (Agility) and # m/s (Jumping) per FCI"
+},re:[
+["^Ještě (.+?) a můžeš do (.+)$","To move up to $2 you still need @1"],
+["^Máš splněno: můžeš postoupit do (.+)$","All done: you can move up to $1"]
+]};
 function i18nStart(){
-  i18nAdd(I18N_EXTRA);
+  i18nAdd(I18N_EXTRA); i18nAdd(I18N_POSTUP);
   document.documentElement.lang=LANG==='en'?'en':'cs';
   if(LANG!=='en'||!window.MutationObserver) return;
   trTree(document.body);
@@ -4781,19 +4828,26 @@ function UFT(){ return typeof SET==='object'&&SET&&SET.unit==='ft'; }
 function lenU(m){ return UFT()?fmt(m*3.28084)+' ft':fmt(m)+' m'; }
 function gridU(m){ return UFT()?Math.round(m*3.28084)+' ft':m+' m'; }
 function spdU(v){ return UFT()?fmt(v*1.09361)+' yd/s':fmt(v)+' m/s'; }
-function spdOf(cls){return (SET.spd&&SET.spd[cls])||3.5;}
+function spdOf(cls){return (SET.spd&&SET.spd[cls])||(cls==='A0'?2.5:3.5);}
 function metrics(obs,route,cls,turns,geo){
   var by={}; obs.forEach(function(o){by[o.id]=o;});
   var len=route.length>1?(geo||calc(obs,route,turns||null)).total:0;
   /* Hoopers: bez standardního času, rozhoduje čistý běh; maximální čas 3 minuty */
   if(isHoopC(cls)) return {len:len,n:route.length,disc:'Hoopers',mcs:0,spd:0,cls:cls,sct:0,mct:180,hoop:true,far:route.length?hoopFar(obs,route):null};
-  var zones=route.some(function(id){return by[id]&&ZN.indexOf(by[id].type)>=0;});
-  var mcs=zones?2.5:3.0, spd=spdOf(cls);
-  if(RU.uk){ var dg=typeof curDog==='function'?curDog():null, us=ukSct(len,dg?dg.cls:'G3',dg?dg.size:'L',zones?'A':'J');
-    return {len:len,n:route.length,disc:zones?'Agility':'Jumping',mcs:0,spd:len?Math.round(len/Math.max(1,us-10)*10)/10:0,cls:cls,sct:us,mct:0,uk:true}; }
-  return {len:len,n:route.length,disc:zones?'Agility':'Jumping',mcs:mcs,spd:spd,cls:cls,
-    /* časy z délky zaokrouhlené na desetiny, jak ji aplikace ukazuje (130,0 m / 2,5 m/s = 52 s, ne 53 s) */
-    sct:len?Math.ceil(Math.round(len*10)/10/spd-1e-9):0, mct:len?(RU.mctK?Math.ceil(Math.ceil(Math.round(len*10)/10/spd-1e-9)*RU.mctK-1e-9):Math.ceil(Math.round(len*10)/10/mcs-1e-9)):0};
+  var zones=route.some(function(id){return by[id]&&ZN.indexOf(by[id].type)>=0;}), disc=zones?'A':'J';
+  /* v Británii čas podle velikosti a grade vybraného psa, jinde podle třídy parkuru */
+  var dg=RU.uk&&typeof curDog==='function'?curDog():null, ct=RU.uk?courseTimes(len,dg?dg.cls:'G3',disc,dg?dg.size:'L'):courseTimes(len,cls,disc);
+  var m={len:len,n:route.length,disc:zones?'Agility':'Jumping',mcs:ct.mcs,spd:ct.spd,cls:cls,sct:ct.sct,mct:ct.mct}; if(ct.uk) m.uk=true;
+  return m;
+}
+/* SČP a MČP z délky trati (m) podle pravidel vybrané země: rychlost pro třídu (SET.spd), MČP 1,5× SČP (RU.mctK), nebo 2,5 / 3,0 m/s pro agility / jumping podle FCI;
+   Británie podle Course Time Matrix (velikost psa a grade) + 10 s, bez MČP. Časy z délky zaokrouhlené na desetiny, jak ji aplikace ukazuje (130,0 m / 2,5 m/s = 52 s, ne 53 s).
+   Stejný výpočet používá Plán (metrics) i Kalkulačka SČP ve Více. */
+function courseTimes(len,cls,disc,size,spd){
+  var L=len>0?Math.round(len*10)/10:0;
+  if(RU.uk){ var us=spd?Math.ceil(L/spd-1e-9)+10:ukSct(L,cls,size||'L',disc); return {sct:L?us:0,mct:0,spd:L?Math.round((spd||ukSpd(cls,size||'L',disc))*100)/100:0,mcs:0,uk:true}; }
+  var v=spd||spdOf(cls), mcs=disc==='A'?2.5:3.0, sct=L?Math.ceil(L/v-1e-9):0;
+  return {sct:sct,mct:L?(RU.mctK?Math.ceil(sct*RU.mctK-1e-9):Math.ceil(L/mcs-1e-9)):0,spd:v,mcs:mcs};
 }
 function curM(){return metrics(S.obs,S.route,S.meta.cls,S.turns);}
 /* Plán: čísla parkuru v jednom řádku, klepnutím se rozbalí do dlaždic (volba se pamatuje) */
@@ -4816,6 +4870,41 @@ function specsHTML(m){
     '<div class="spec"><small>Disciplína</small><b>'+m.disc+'</b><i>třída '+m.cls+'</i></div>'+
     '<div class="spec"><small>SČP</small><b>'+(m.sct?m.sct+' s':dash)+'</b><i>'+spdU(m.spd)+'</i></div>'+
     (m.uk?'<div class="spec mct"><small>Čas</small><b>Matrix</b><i>průměr podle Course Time Matrix + 10 s</i></div>':'<div class="spec mct"><small>MČP (max.)</small><b>'+(m.mct?m.mct+' s':dash)+'</b><i>'+(RU.mctK?fmt(RU.mctK)+'× SČP':spdU(m.mcs)+' dle FCI')+'</i></div>')+kacrEstHTML(m);
+}
+
+/* ---------- Kalkulačka SČP a MČP (Více): čas z délky trati bez kreslení parkuru, pro rozhodčí a pořadatele.
+   Počítá courseTimes jako Plán; tabulka všech tříd pro zvolenou velikost (Británie) a disciplínu. Poslední zadání se pamatuje. ---------- */
+var SCTK='agility-sctcalc-v1';
+function sctCalcSheet(){
+  var d=curDog(), sv=lsGet(SCTK,{})||{}, sizes=RU.heights||SIZES, dsc=RU.uk||!RU.mctK; /* disciplína mění čas jen tam, kde MČP není 1,5× SČP (FCI 2,5 / 3,0 m/s, britská matice) */
+  var st={len:+sv.len>0?+sv.len:'', disc:sv.disc==='J'?'J':'A', cls:RU.cls.indexOf(sv.cls)>=0?sv.cls:d&&RU.cls.indexOf(d.cls)>=0?d.cls:RU.cls.indexOf('A1')>=0?'A1':RU.cls[0],
+    size:sizes[sv.size]?sv.size:d&&sizes[d.size]?d.size:'L', spd:+sv.spd>0?+sv.spd:0};
+  function defSpd(){ return RU.uk?Math.round(ukSpd(st.cls,st.size,st.disc)*100)/100:spdOf(st.cls); }
+  function spdTxt(v,uk){ return (uk?fmt2(v):fmt(v))+' m/s'; }
+  function out(){
+    var L=+st.len; if(!(L>0)) return '<p class="hint">Zadej délku trati.</p>';
+    var ct=courseTimes(L,st.cls,st.disc,st.size,st.spd||0);
+    var h='<div class="sc-out"><div><small>SČP</small><b>'+ct.sct+' s</b></div>'+(ct.uk?'':'<div><small>MČP</small><b>'+ct.mct+' s</b></div>')+'<div class="sp"><small>Rychlost</small><b>'+spdTxt(ct.spd,ct.uk)+'</b></div></div>';
+    h+='<h4>Všechny třídy</h4><table class="table sc-tab"><tr><th>Třída</th><th class="num">Rychlost</th><th class="num">SČP</th>'+(RU.uk?'':'<th class="num">MČP</th>')+'</tr>'+RU.cls.map(function(c){
+      var t=courseTimes(L,c,st.disc,st.size); return '<tr'+(c===st.cls?' class="cur"':'')+'><td>'+clsL(c)+'</td><td class="num">'+spdTxt(t.spd,t.uk)+'</td><td class="num">'+t.sct+' s</td>'+(RU.uk?'':'<td class="num">'+t.mct+' s</td>')+'</tr>'; }).join('')+'</table>';
+    return h+'<p class="hint">'+(RU.uk?'Pro zvolenou velikost a disciplínu, rychlost podle matice.':'Rychlosti podle nastavení v Běhu.')+'</p>'+(RU.uk?'':'<p class="hint">'+(RU.mctK?'MČP '+fmt(RU.mctK)+'× SČP':'MČP 2,5 m/s (Agility) a 3,0 m/s (Jumping) podle FCI')+'</p>');
+  }
+  var sel=function(id,label,opts){ return '<label for="'+id+'">'+label+'<select id="'+id+'">'+opts+'</select></label>'; };
+  openSheet('<h3>Kalkulačka SČP a MČP</h3><p class="hint">'+(RU.uk?'Standardní čas podle Course Time Matrix: průměrná rychlost pro velikost psa a grade + 10 s. Maximální čas se v Británii neurčuje.':'Standardní a maximální čas parkuru z délky trati, bez kreslení parkuru. Rychlost je z nastavení v Běhu (Rychlost pro SČP), můžeš ji přepsat.')+'</p>'+
+    '<div class="grid2"><label for="scLen">Délka trati (m)<input id="scLen" type="number" inputmode="decimal" min="1" max="999" step="0.1" value="'+(st.len||'')+'" placeholder="150"></label>'+
+    '<label for="scSpd">Rychlost (m/s)<input id="scSpd" type="number" inputmode="decimal" min="1" max="9" step="0.01" value="'+(st.spd||defSpd())+'"></label></div>'+
+    '<div class="grid2">'+sel('scCls','Třída',clsOpts(st.cls))+(RU.uk?sel('scSize','Velikost',Object.keys(sizes).map(function(k){ return '<option value="'+k+'"'+(k===st.size?' selected':'')+'>'+sizes[k].l+'</option>'; }).join('')):'')+
+    (dsc?sel('scDisc','Disciplína','<option value="A"'+(st.disc==='A'?' selected':'')+'>Agility</option><option value="J"'+(st.disc==='J'?' selected':'')+'>Jumping</option>'):'')+'</div>'+
+    '<div id="scOut">'+out()+'</div><div class="acts"><button class="btn" data-a="x">Zavřít</button></div>',
+    function(e){ if(e.target.closest('[data-a]')){ $('sheet').oninput=null; closeSheet(); } });
+  $('sheet').oninput=function(e){
+    var id=e.target&&e.target.id, o=$('scOut'); if(!o) return;
+    if(id==='scLen') st.len=e.target.value;
+    else if(id==='scSpd') st.spd=+e.target.value>0?+e.target.value:0;
+    else if(id==='scCls'||id==='scSize'||id==='scDisc'){ st[{scCls:'cls',scSize:'size',scDisc:'disc'}[id]]=e.target.value; if(id!=='scDisc'||RU.uk){ st.spd=0; $('scSpd').value=defSpd(); } }
+    else return;
+    lsSet(SCTK,{len:st.len,disc:st.disc,cls:st.cls,size:st.size,spd:st.spd}); o.innerHTML=out();
+  };
 }
 
 /* ---------- horní lišta ---------- */
@@ -5879,6 +5968,7 @@ function homeRender(){
     ? '<button class="hm-cta" data-h="plan"><span class="hm-play">'+IC.playF+'</span><span class="tx"><small>Pokračovat</small><b>'+esc(S.meta.name)+'</b><span>'+fmt(m.len)+' m · '+nPrek(m.n)+' · SČP '+m.sct+' s</span></span></button>'
     : '<button class="hm-cta" data-h="lib"><span class="hm-play">'+IC.playF+'</span><span class="tx"><small>Začni</small><b>Vyber si parkur</b><span>'+(isHoopS()?'24 parkurů Hoopers H1–H3 podle FCI, nebo si postav vlastní':'90 parkurů podle pravidel FCI, nebo si postav vlastní')+'</span></span></button>';
   h+='<div id="hmInst"></div><div id="hmDay">'+(KACR_OK?compDayHTML():'')+'</div>';
+  h+=promoHomeHTML(); /* postup se hlídá sám: kolik zbývá do vyšší třídy */
   /* parkury pro tebe: nové a nezaběhnuté ze třídy psa */
   var L=(isHoopS()?listFor('hoop'):listFor(cls)).filter(function(c){return !getMark(c.id).done&&c.id!==S.meta.id;});
   L.sort(function(a,b){return (isNewC(b.id)?1:0)-(isNewC(a.id)?1:0);}); HOME_C=L.slice(0,6);
@@ -5929,6 +6019,7 @@ $('v-home').onclick=function(e){
   else if(a==='lib'){ libTab=homeCls(); show('lib'); }
   else if(a==='dog'){ moreTab='dogs'; show('more'); if(!DOGS.length) dogSheet(null); }
   else if(a==='diary'){ moreTab='diary'; show('more'); }
+  else if(a==='promo') moreOpen('diary'); /* postup je rozepsaný v Deníku */
   else if(a==='ch'){ var ch=homeChallenge(); if(ch) loadCourse(ch.c); }
   else if(a==='wkopen'){ var wc=weekCourse(b.getAttribute('data-wc')||homeCls()); if(wc) loadCourse(wc); }
   else if(a==='wkboard') wkBoard(null,b.getAttribute('data-wc')||homeCls());
@@ -8080,28 +8171,57 @@ function judgeHTML(dog){
   if(!J.length&&!P.length) return '';
   return '<div class="chart"><b>Podle rozhodčího a povrchu</b>'+tab('Rozhodčí',J,1)+tab('Povrch',P)+'<p class="hint">Rychlost je medián dokončených běhů. Řádek se ukáže od 2 běhů.</p></div>';
 }
-function promoHTML(){
-  var d=curDog(), L=diary().filter(function(x){return x.kind==='zavod'&&(!d||x.dog===d.id);});
+/* Postup do vyšší třídy podle pravidel země (RU.promo, u VDH i udržení v A3): jeden výpočet pro Deník (promoHTML) i kartu na Domů (promoHomeHTML).
+   Vrací kroky {st, n, jn, nk, noJudge, jump:{n,need}, alt:{n,ok}, done}, keep {n, done}, krok pro třídu psa (cur) a krátké shrnutí (text, sub, n, need). */
+function promoState(d){
+  d=d||curDog(); var L=diary().filter(function(x){return x.kind==='zavod'&&(!d||x.dog===d.id);});
   /* výsledky z kacr.info se přičtou, když stejný běh (den, třída, body, umístění) není zapsaný ručně */
   var key=function(x){ return [x.date,x.cls,String(x.tot==null?'':x.tot).replace(',','.'),x.place||''].join('|'); }, have={};
   L.forEach(function(x){ have[key(x)]=1; });
   var K=kacrDiary(d).filter(function(x){ return !have[key(x)]; }); L=L.concat(K);
   var jcount=function(xs){ var j={}; xs.forEach(function(x){ if(x.judge) j[x.judge.trim().toLowerCase()]=1; }); return Object.keys(j).length; };
-  var bar=function(n,need){ return '<div class="bar"><i style="width:'+Math.round(Math.min(n,need)/need*100)+'%"></i></div>'; };
-  function part(st){
-    var ok=L.filter(function(x){return x.cls===st.from&&st.ok(x);}), jn=jcount(ok), nk=ok.filter(function(x){return x.src==='kacr';}).length;
-    var done=ok.length>=st.need&&jn>=(st.judges||0), h='<div class="prog"><b>'+'Postup '+clsL(st.from)+' → '+clsL(st.to)+': '+st.l+'</b>'+bar(ok.length,st.need)+
-      '<span class="hint">'+ok.length+' z '+st.need+' zkoušek'+(st.judges?' · rozhodčích: '+jn+' (potřeba aspoň '+st.judges+')':'')+'</span>';
-    if(st.jump){ var jj=L.filter(function(x){return x.cls==='Jumping'&&st.jump.ok(x);}); done=done&&jj.length>=st.jump.need; h+=bar(jj.length,st.jump.need)+'<span class="hint">Jumping: '+jj.length+' z '+st.jump.need+'</span>'; }
-    if(st.alt){ var aa=L.filter(function(x){return x.cls===st.from&&st.alt.ok(x);}), a0=st.alt.min0?L.filter(function(x){return x.cls===st.from&&okV0(x);}).length:0, altOk=aa.length>=st.alt.need&&a0>=(st.alt.min0||0);
-      if(altOk) done=true; h+='<span class="hint">Nebo: '+st.alt.l+' ('+aa.length+' z '+st.alt.need+')</span>'; }
-    if(done) h+='<span class="hint">podmínka splněna</span>';
-    if(nk) h+='<span class="hint">Z toho z kacr.info: '+nk+'.'+(ok.some(function(x){return x.src==='kacr'&&!x.judge;})?' U některých ještě chybí rozhodčí, doplní se po načtení podrobností.':'')+'</span>';
+  var steps=RU.promo.map(function(st){
+    var ok=L.filter(function(x){return x.cls===st.from&&st.ok(x);}), jn=jcount(ok);
+    var s={st:st,n:ok.length,jn:jn,nk:ok.filter(function(x){return x.src==='kacr';}).length,noJudge:ok.some(function(x){return x.src==='kacr'&&!x.judge;}),done:ok.length>=st.need&&jn>=(st.judges||0)};
+    if(st.jump){ var jj=L.filter(function(x){return x.cls==='Jumping'&&st.jump.ok(x);}); s.jump={n:jj.length,need:st.jump.need}; s.done=s.done&&jj.length>=st.jump.need; }
+    if(st.alt){ var aa=L.filter(function(x){return x.cls===st.from&&st.alt.ok(x);}), a0=st.alt.min0?L.filter(function(x){return x.cls===st.from&&okV0(x);}).length:0;
+      s.alt={n:aa.length,ok:aa.length>=st.alt.need&&a0>=(st.alt.min0||0)}; if(s.alt.ok) s.done=true; }
+    return s;
+  });
+  var keep=null;
+  if(RU.keep&&d&&d.cls===RU.keep.cls){ var y=String(new Date().getFullYear()), kk=L.filter(function(x){return x.cls===RU.keep.cls&&String(x.date||'').slice(0,4)===y&&RU.keep.ok(x);}); keep={n:kk.length,done:kk.length>=RU.keep.need}; }
+  var cur=null, i; if(d) for(i=0;i<steps.length;i++) if(steps[i].st.from===d.cls) cur=steps[i];
+  var ps={dog:d,runs:L,steps:steps,keep:keep,cur:cur,text:'',sub:'',n:0,need:0};
+  /* shrnutí pro kartu: co ještě zbývá (zkoušky, jiný rozhodčí, jumping), nebo splněno; v nejvyšší třídě u VDH udržení */
+  if(cur){ var st=cur.st, to=clsL(st.to); ps.n=cur.n; ps.need=st.need; ps.sub='Postup '+clsL(st.from)+' → '+to+': '+st.l;
+    if(cur.done) ps.text='Máš splněno: můžeš postoupit do '+to;
+    else { var r=Math.max(st.need-cur.n,st.judges?st.judges-cur.jn:0), parts=[];
+      if(r>0) parts.push(czN(r,'zkouška','zkoušky','zkoušek')+(st.judges&&cur.jn<st.judges?' u jiného rozhodčího':''));
+      if(cur.jump&&cur.jump.n<cur.jump.need) parts.push((cur.jump.need-cur.jump.n)+'× Jumping');
+      ps.text=parts.length?'Ještě '+parts.join(' a ')+' a můžeš do '+to:'Máš splněno: můžeš postoupit do '+to; }
+  } else if(keep){ var rk=RU.keep.need-keep.n; ps.n=keep.n; ps.need=RU.keep.need; ps.sub=RU.keep.l;
+    ps.text='Udržení v '+clsL(RU.keep.cls)+': '+(keep.done?'letos splněno':'do konce roku ještě '+czN(rk,'čistý běh','čisté běhy','čistých běhů')); }
+  return ps;
+}
+/* karta na Domů (jen agility, pes s aspoň jedním během a mimo nejvyšší třídu); klepnutí otevře Deník s rozepsaným postupem */
+function promoHomeHTML(){
+  var d=curDog(); if(!d||isHoopS()||(!RU.promo.length&&!RU.keep)) return '';
+  var ps=promoState(d); if(!ps.text||(!ps.runs.length&&!allRuns(d.id).length)) return '';
+  return '<div class="hm-ch hm-promo" data-h="promo"><div class="ic">🏅</div><div class="tx"><b>'+ps.text+'</b><span>'+ps.sub+'</span>'+
+    '<div class="bar"><i style="width:'+Math.round(Math.min(ps.n,ps.need)/Math.max(1,ps.need)*100)+'%"></i></div></div><button class="hm-go" data-h="promo">Deník</button></div>';
+}
+function promoHTML(){
+  var ps=promoState(curDog()), bar=function(n,need){ return '<div class="bar"><i style="width:'+Math.round(Math.min(n,need)/need*100)+'%"></i></div>'; };
+  var h=ps.steps.map(function(s){
+    var st=s.st, h='<div class="prog"><b>'+'Postup '+clsL(st.from)+' → '+clsL(st.to)+': '+st.l+'</b>'+bar(s.n,st.need)+
+      '<span class="hint">'+s.n+' z '+st.need+' zkoušek'+(st.judges?' · rozhodčích: '+s.jn+' (potřeba aspoň '+st.judges+')':'')+'</span>';
+    if(s.jump) h+=bar(s.jump.n,s.jump.need)+'<span class="hint">Jumping: '+s.jump.n+' z '+s.jump.need+'</span>';
+    if(s.alt) h+='<span class="hint">Nebo: '+st.alt.l+' ('+s.alt.n+' z '+st.alt.need+')</span>';
+    if(s.done) h+='<span class="hint">podmínka splněna</span>';
+    if(s.nk) h+='<span class="hint">Z toho z kacr.info: '+s.nk+'.'+(s.noJudge?' U některých ještě chybí rozhodčí, doplní se po načtení podrobností.':'')+'</span>';
     return h+'</div>';
-  }
-  var h=RU.promo.map(part).join('');
-  if(RU.keep&&d&&d.cls===RU.keep.cls){ var y=String(new Date().getFullYear()), kk=L.filter(function(x){return x.cls===RU.keep.cls&&String(x.date||'').slice(0,4)===y&&RU.keep.ok(x);});
-    h+='<div class="prog"><b>'+RU.keep.l+'</b>'+bar(kk.length,RU.keep.need)+'<span class="hint">Letos '+kk.length+' z '+RU.keep.need+(kk.length>=RU.keep.need?' · splněno':'')+'</span></div>'; }
+  }).join('');
+  if(ps.keep) h+='<div class="prog"><b>'+RU.keep.l+'</b>'+bar(ps.keep.n,RU.keep.need)+'<span class="hint">Letos '+ps.keep.n+' z '+RU.keep.need+(ps.keep.done?' · splněno':'')+'</span></div>';
   return h+'<p class="hint">Podle '+RU.body+(RU.src?' (znění může být novější, ověř na <a href="'+RU.src+'" target="_blank" rel="noopener">'+RU.src.replace(/^https?:\/\/(www\.)?/,'').replace(/\/.*$/,'')+'</a>)':'')+'. Počítají se závody zapsané v deníku u vybraného psa. Pravidla jiné země přepneš ve Více → Nastavení.</p>';
 }
 function diaryHTML(){
@@ -8705,7 +8825,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   if(moreTab==='diary'){ dogChips('diaryDogs'); bindChart();
     var kd=curDog(); if(kd&&kd.kacr&&KACR[kd.id]&&!KX_BUSY[kd.id]) kacrDetails(kd).then(function(n){ if(n&&view==='more'&&moreTab==='diary') moreRender(); }); }
 }
-$('moreTabs').onclick=function(e){var b=e.target.closest('[data-m]'); if(!b) return; if(b.getAttribute('data-m')==='video'){ show('video'); return; } moreTab=b.getAttribute('data-m'); moreRender(); try{window.scrollTo(0,0);}catch(er){}};
+$('moreTabs').onclick=function(e){var b=e.target.closest('[data-m]'); if(!b) return; if(b.getAttribute('data-m')==='video'){ show('video'); return; } if(b.getAttribute('data-m')==='sct'){ sctCalcSheet(); return; } moreTab=b.getAttribute('data-m'); moreRender(); try{window.scrollTo(0,0);}catch(er){}};
 $('moreBack').onclick=function(){ moreTab=''; MORE_ARG=null; moreRender(); try{window.scrollTo(0,0);}catch(e){} };
 /* rozepsaná zpráva autorovi se ukládá průběžně (přežije zavření aplikace) */
 $('moreBody').addEventListener('change',function(e){ if(e.target&&e.target.id==='rulesSel'&&RULES[e.target.value]){ lsSet(RULESK,e.target.value); location.reload(); } });
