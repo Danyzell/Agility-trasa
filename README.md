@@ -6,13 +6,17 @@ Plánovač agility parkurů jako aplikace do telefonu.
 
 Instalace: otevři stránku v Chromu na Androidu a zvol **Instalovat aplikaci** (nebo ⋮ → Přidat na plochu). Aplikace pak běží z ikony na ploše, i offline.
 
-Verze 2.4. Česky i anglicky (Více → Nastavení), světlý i tmavý vzhled.
+Verze 2.5. Česky i anglicky (Více → Nastavení), světlý i tmavý vzhled.
 
 Trénink doma (Domů → Trénink doma, nebo Parkury → Generátor → Z parkurů): aplikace vyřízne ze skutečných parkurů úseky, které se vejdou na tvou plochu a postavíš je z vlastního vybavení. Pořadí, otočky kolem křídla i zadní strany zůstanou jako na parkuru. Úseky jde filtrovat podle toho, co chceš trénovat, otočit zrcadlově (otočky na druhou stranu) a kruh nebo skok daleký nahradit skokem; k úseku se ukládají oblíbené i běhy.
 
 Výsledky ze závodů: v profilu psa (Více → Psi) najdi psa na kacr.info podle jeho jména nebo podle jména psovoda (nebo vlož odkaz). Aplikace stáhne jeho výsledky (serverová funkce `supabase/functions/kacr`), ukáže statistiky a graf rychlosti a v Plánu odhadne čas psa na parkuru vůči SČP.
 
 Závody (Domů): kalendář z kacr.info na 60 dní dopředu se vzdáleností od tvé polohy, rozhodčími, uzávěrkou přihlášek a značkou, když je tvůj pes přihlášený. Serverová funkce `kacr` kalendář ukládá do tabulky `kacr_cache` a stahuje ho nejvýš dvakrát denně.
+
+Den závodů (Domů): den před závodem, na který je tvůj pes podle kacr.info přihlášený, a během něj se nahoře na Domů ukáže karta s navigací, rozhodčím, povrchem, počtem týmů v kategorii psa, seznamem Co s sebou (zaškrtnutí se pamatuje, klíč `agility-compck-v1`), rozcvičkou a zápisem výsledku do deníku (předvyplněný závod a rozhodčí). Po závodu (3 dny) karta načte výsledky přihlášených psů. Pořadí na startu kacr.info nezveřejňuje. Klíč `agility-compday-v1`.
+
+Kde ztrácíš body (Více → Deník): serverová funkce `kacr` vrací na dotaz `{runs:[…], dog}` podrobnosti posledních běhů psa ze stránek kacr.info/runs (rozhodčí, standardní čas, délka, povrch závodu, počet týmů, nejlepší čas a řádek psa: chyby, odmítnutí, trestné body za čas). Hotové běhy si server ukládá do `kacr_cache` natrvalo (`run:<id>`, `comp:<id>`), aplikace v telefonu pod klíčem `agility-kacrx-v1`. Deník z nich ukáže podíl čistých běhů, diskvalifikací, chyb, odmítnutí a přetažení času, ztrátu na vítěze a podle hlavní příčiny doporučí sekvence. Tabulka Podle rozhodčího a povrchu ukazuje čisté běhy, DIS a rychlost. Rozhodčí z kacr.info se počítají do postupu. U ručně zapsaného závodu jde zaškrtnout typ chyby (tyčka, zóna, slalom, odmítnutí, špatná překážka, čas). Testy `tests/denik.js`, `tests/zavody.js`.
 
 Zahrada týdne a Zahradní liga (Domů): každé pondělí se všem vygeneruje stejný parkur 20 × 15 m z domácího vybavení (6 skoků, tunel, slalom) – semínko je číslo týdne, takže parkur nepotřebuje server. Výsledky jdou do týdenního žebříčku podle velikosti psa a za umístění se sbírají body do ligy na celou sezónu (10-8-6-5-4-3-2, za každý další odeslaný týden 1 bod). Žebříčky počítá Supabase (`supabase/migrations`, funkce `week_submit`, `week_board`, `league_board`).
 

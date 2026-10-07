@@ -65,8 +65,36 @@ module.exports = async function ({ browser, base }) {
     ok(true, ''); await ev(() => closeSheet());
   });
 
+  await step('den závodů', async () => {
+    /* závod zítra s přihlášeným psem: karta nad ostatním obsahem Domů */
+    DATA.comps.push(C(6, 'Zítra Čerčany', day(1), day(2), 49.85, 14.7, { 777: 'IA2', 1: 'IA2', 2: 'IA2', 3: 'LA1' }));
+    await ev(() => { localStorage.removeItem('agility-comps-v1'); localStorage.removeItem('agility-compday-v1'); localStorage.removeItem('agility-compck-v1'); });
+    await home(); await page.waitForSelector('#hmDay .hm-day', { timeout: 5000 });
+    let t = await page.textContent('#hmDay');
+    ok(/Zítra závodíš/.test(t) && /Zítra Čerčany/.test(t) && /IA2/.test(t) && /v kategorii 3 týmů/.test(t) && /Jan Novák/.test(t), 'karta den závodů: ' + t);
+    ok(await page.getAttribute('#hmDay a.hm-go', 'href') === 'https://mapy.cz/zakladni?source=coor&id=14.7%2C49.85', 'navigace');
+    /* co s sebou: zaškrtnutí se pamatuje */
+    await page.click('#hmDay [data-h="cdcheck"]'); await page.click('#sheet [data-ck="0"]'); await page.click('#sheet [data-ck="4"]'); await page.click('#sheet [data-a="x"]');
+    ok(/Co s sebou 2\/11/.test(await page.textContent('#hmDay')), 'počet zabalených věcí');
+    await page.click('#hmDay [data-h="cdcheck"]'); ok(await page.isChecked('#sheet [data-ck="4"]'), 'zaškrtnutí se nepamatuje'); await ev(() => closeSheet());
+    /* zapsat výsledek: deník s předvyplněným závodem a rozhodčím */
+    await page.click('#hmDay [data-h="cdnote"]'); await page.waitForTimeout(150);
+    ok(await page.inputValue('#yEv') === 'Zítra Čerčany' && await page.inputValue('#yJudge') === 'Jan Novák', 'předvyplněný zápis do deníku');
+    await ev(() => closeSheet());
+    /* po závodu: karta s výsledky (závod už v kalendáři není) */
+    await ev(() => { const st = lsGet(CDK, null); st.c.from = st.c.to = localDate(new Date(Date.now() - 86400000)); lsSet(CDK, st); });
+    DATA.comps.pop(); await ev(() => localStorage.removeItem('agility-comps-v1'));
+    await home(); await page.waitForSelector('#hmDay .hm-day', { timeout: 5000 });
+    ok(/Výsledky ze závodu/.test(await page.textContent('#hmDay')), 'karta po závodu');
+    /* zavření křížkem */
+    await page.click('#hmDay [data-h="cdx"]'); ok(!(await page.isVisible('#hmDay .hm-day')), 'kartu nejde zavřít');
+  });
+
   await step('angličtina', async () => {
     ok(await ev(() => trLookup('Závody') === 'Competitions' && trLookup('Do 100 km') === 'Within 100 km' && trLookup('přihlášky uzavřené') === 'entries closed'), 'chybí překlad');
+    const miss = await ev(() => ['Zítra závodíš', 'Závodíš, 2. den', '· v kategorii 3 týmů', 'Co s sebou 2/11', 'Navigovat', 'Zapsat výsledek', 'Výsledky ze závodu', 'Načíst z kacr.info',
+      'Pořadí na startu najdeš u pořadatele, kacr.info ho nezveřejňuje.', ...CHECK].filter(t => trLookup(t) == null));
+    ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
   });
 
   await T.ctx.close();
