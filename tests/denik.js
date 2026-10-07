@@ -93,7 +93,7 @@ module.exports = async function ({ browser, base }) {
 
   await step('angličtina', async () => {
     const miss = await ev(() => ['Jednotky', 'Metry', 'Stopy (ft, yd/s)', 'Čas (s)', 'Délka trati (ft)', 'Odkaz na video (nepovinné)', '413,1 ft', '4,4 yd/s', '4,4 yd/s dle FCI',
-      'Z toho z kacr.info: 2.', 'Z toho z kacr.info: 2. U některých ještě chybí rozhodčí, doplní se po načtení podrobností.', 'Novinky v AgiPlan 2.5',
+      'Z toho z kacr.info: 2.', 'Z toho z kacr.info: 2. U některých ještě chybí rozhodčí, doplní se po načtení podrobností.', 'Novinky v AgiPlan 2.6',
       'Kde ztrácíš body', 'Posledních 5 závodních běhů z kacr.info', 'Na vítěze běhu ztrácíš v průměru 12 % času.', 'Nejvíc bodů ztrácíš odmítnutím.', 'Podle rozhodčího a povrchu',
       'Co se stalo (nepovinné)', 'Shozená tyčka', 'Špatná překážka', 'Zapsané chyby u 1 závodů: Zóna 1×', 'hala · umělá tráva', 'Sekvence: Vstupy do slalomu',
       ...[...new DOMParser().parseFromString(newsCheck.toString().match(/<ul class="news">.*?<\/ul>/)[0], 'text/html').querySelectorAll('li')].map(l => l.textContent)].filter(t => trLookup(t) == null));
