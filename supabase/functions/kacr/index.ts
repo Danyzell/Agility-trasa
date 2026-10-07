@@ -2,7 +2,9 @@
    Vstup: { dog: "14756" } nebo odkaz https://kacr.info/dogs/14756 → pes (jméno, plemeno, velikost, narození) a jeho běhy po závodech;
    { q: "Wampi" } → hledání psů a psovodů podle jména (kacr.info/search/<text>);
    { handler: "6625" } → psi psovoda (jeho průkazy);
-   { comps: 1 } → kalendář závodů na 60 dní dopředu (datum, GPS, rozhodčí, povrch, uzávěrka, přihlášení psi).
+   { comps: 1 } → kalendář závodů na 60 dní dopředu (datum, GPS, rozhodčí, povrch, uzávěrka, přihlášení psi);
+   { runs: [id…], dog: "14756" } → podrobnosti nejvýš 12 běhů: rozhodčí, standardní čas, délka, počet překážek, povrch závodu,
+     počet týmů, nejlepší čas a řádek psa (chyby, odmítnutí, trestné body za čas). Hotové běhy se ukládají do kacr_cache natrvalo.
    Kalendář je asi 50 stránek, proto se ukládá do tabulky kacr_cache a stahuje se nejvýš jednou za 12 hodin.
    Stahuje jen tyhle druhy stránek kacr.info, nic jiného (žádný otevřený proxy). */
 const UA = 'AgiPlan/2.1 (+https://danyzell.github.io/Agility-trasa/)';
@@ -116,6 +118,62 @@ async function scrapeComps() {
   return { at: Date.now(), days: DAYS, comps: out };
 }
 
+/* ---------- podrobnosti běhu (kacr.info/runs/<id>) ---------- */
+function parseRun(id: number, html: string) {
+  const info: Record<string, string> = {};
+  const sum = (html.match(/<div class='summary'>([\s\S]*?)<\/div>/) || [])[1] || '';
+  for (const m of sum.matchAll(/<span>([^<]+?):\s*<\/span><span>([\s\S]*?)<\/span>/g)) info[text(m[1])] = m[2];
+  const val = (k: string) => text(info[k] || '');
+  const n = (k: string) => { const m = val(k).match(/[\d.,]+/); return m ? num(m[0]) : null; };
+  const compId = +((info['Závod'] || '').match(/competitions\/(\d+)/) || [])[1] || null;
+  /* řádky výsledků: [pes, chyby, odmítnutí, TB za čas, TB, čas, m/s, umístění, DIS] */
+  const rows: (number | null)[][] = [];
+  const tab = (html.split(/<h2>\s*Výsledky\s*<\/h2>/)[1] || '').split('</table>')[0];
+  for (const tr of tab.split(/<tr[\s>]/).slice(2)) {
+    const td = [...tr.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((m) => m[1]);
+    const dog = +((tr.match(/kacr\.info\/dogs\/(\d+)/) || [])[1] || 0); if (!dog || td.length < 10) continue;
+    const c = td.map(text), dis = /DIS/i.test(c[0]) || /DIS/i.test(c[4]);
+    rows.push([dog, dis ? null : num(c[4]), dis ? null : num(c[5]), dis ? null : num(c[6]), dis ? null : num(c[7]), dis ? null : num(c[8]), dis ? null : num(c[9]), dis ? 0 : (+c[0] || 0), dis ? 1 : 0]);
+    if (rows.length >= 200) break;
+  }
+  return { id, name: text((html.match(/<h1>([\s\S]*?)<\/h1>/) || [])[1] || ''), date: isoDate(val('Datum')), compId, comp: val('Závod') || null,
+    judge: val('Rozhodčí') || null, type: val('Typ') || null, sct: n('Standardní čas'), mct: n('Maximální čas'), len: n('Délka'), obs: n('Počet překážek'), size: val('Velikost') || null, rows };
+}
+async function runDetails(ids: number[], dog: number) {
+  const today = ymd(new Date());
+  const runs: ReturnType<typeof parseRun>[] = [];
+  for (let i = 0; i < ids.length; i += 4) {
+    const part = await Promise.all(ids.slice(i, i + 4).map(async (id) => {
+      const c = await cacheGet('run:' + id); if (c && c.data && Array.isArray(c.data.rows)) return c.data as ReturnType<typeof parseRun>;
+      try {
+        const r = await get('/runs/' + id); if (!r.ok) return null;
+        const d = parseRun(id, await r.text());
+        if (d.date && d.date < today && d.rows.length) await cachePut('run:' + id, d); /* hotový běh se už nezmění */
+        return d;
+      } catch (_) { return null; }
+    }));
+    part.forEach((d) => { if (d) runs.push(d); });
+  }
+  /* povrch a hala ze stránky závodu (jedna stránka na závod) */
+  const terr: Record<number, { terrain: string | null; indoor: boolean }> = {};
+  const cids = [...new Set(runs.map((r) => r.compId).filter((x): x is number => !!x))].slice(0, 8);
+  await Promise.all(cids.map(async (cid) => {
+    const c = await cacheGet('comp:' + cid); if (c && c.data) { terr[cid] = c.data; return; }
+    try {
+      const r = await get('/competitions/' + cid); if (!r.ok) return;
+      const p = parseComp(cid, await r.text()), t = { terrain: p.terrain, indoor: p.indoor }; terr[cid] = t;
+      if ((p.to || p.from) && (p.to || p.from)! < today) await cachePut('comp:' + cid, t);
+    } catch (_) { /* bez povrchu */ }
+  }));
+  return { runs: runs.map((r) => {
+    const fin = r.rows.filter((x) => !x[8] && x[5] != null), me = r.rows.find((x) => x[0] === dog) || null;
+    return { id: r.id, judge: r.judge, type: r.type, sct: r.sct, len: r.len, obs: r.obs, compId: r.compId,
+      terrain: r.compId && terr[r.compId] ? terr[r.compId].terrain : null, indoor: r.compId && terr[r.compId] ? terr[r.compId].indoor : null,
+      n: r.rows.length, best: fin.length ? Math.min(...fin.map((x) => x[5] as number)) : null,
+      me: me ? { chb: me[1], odm: me[2], tbt: me[3], tb: me[4], t: me[5], v: me[6], place: me[7] || null, dis: !!me[8] } : null };
+  }) };
+}
+
 const get = (path: string) => fetch('https://kacr.info' + path, { headers: { 'User-Agent': UA, 'Accept-Language': 'cs' }, redirect: 'manual' });
 
 Deno.serve(async (req: Request) => {
@@ -136,6 +194,12 @@ Deno.serve(async (req: Request) => {
       if (!d.comps.length) { if (c && c.data) return json(c.data); return json({ error: 'Kalendář závodů se nepodařilo načíst.' }, 502); }
       await cachePut('comps', d);
       return json(d);
+    }
+    if (Array.isArray(b?.runs)) {
+      const ids = [...new Set((b.runs as unknown[]).map(Number).filter((x) => Number.isInteger(x) && x > 0 && x < 1e7))].slice(0, 12);
+      const dog = Number(String(b.dog ?? '').match(/\d{1,7}/)?.[0] || 0);
+      if (!ids.length) return json({ error: 'Chybí čísla běhů.' }, 400);
+      return json(await runDetails(ids, dog));
     }
     if (b?.handler != null) {
       const h = String(b.handler).match(/^(?:https?:\/\/(?:www\.)?kacr\.info\/handlers\/)?(\d{1,7})\/?$/);

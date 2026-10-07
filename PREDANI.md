@@ -7,7 +7,7 @@ Stav k 7. 10. 2026. Nové sezení: přečti tenhle soubor, `SPOLUPRACE.md` a `RE
 - **AgiPlan**, plánovač agility parkurů. Jediný soubor `index.html` (ES5, bez sestavení), service worker `sw.js`, 3D ve `v3d/` (three.js, balíček `v3d/v3d.js` přes `sh v3d/build.sh`).
 - Web: https://danyzell.github.io/Agility-trasa/ (GitHub Pages z větve `main`, repozitář je veřejný).
 - Server: Supabase projekt `wtjyjknaibsamgczvaxy` (účty přes Google, synchronizace `user_data`, žebříčky, kacr.info, zprávy autorovi, návštěvnost `app_open`). Migrace v `supabase/migrations`, funkce v `supabase/functions`.
-- Verze aplikace 2.4 (`APPV`, okno Novinky `newsCheck`, O aplikaci). Cache service workeru `agility-trasa-2.6`.
+- Verze aplikace 2.5 (`APPV`, okno Novinky `newsCheck`, O aplikaci). Cache service workeru `agility-trasa-2.6`.
 
 ## Jak pracovat (osvědčené)
 
@@ -17,7 +17,7 @@ Stav k 7. 10. 2026. Nové sezení: přečti tenhle soubor, `SPOLUPRACE.md` a `RE
 - Když se změní `v3d/v3d.js` (služba ho drží v mezipaměti), zvýšit `CACHE` v `sw.js`.
 - Zápisy do Supabase přes MCP (migrace, DELETE…) se ruší. SQL pošli uživateli po malých blocích do https://supabase.com/dashboard/project/wtjyjknaibsamgczvaxy/sql/new. Čtení (SELECT, logy, advisors) přes MCP funguje.
 - Uživatel píše česky a stručně. U změn vzhledu chce nejdřív návrh (snímky), pokud výslovně neřekne „udělej“.
-- Hoopers zatím **nedělat** (uživatel výslovně odmítl).
+- Hoopers: uživatel ho 7. 10. 2026 zadal jako samostatný režim v aplikaci (dřív odmítal).
 
 ## Co je hotové (poslední PR)
 
@@ -29,6 +29,7 @@ Stav k 7. 10. 2026. Nové sezení: přečti tenhle soubor, `SPOLUPRACE.md` a `RE
 - #42 Facebook/Messenger/Instagram na Androidu se poprvé sám přepne do Chromu (kvůli instalaci).
 - #44 Instalace na Androidu i bez okna Chromu (Samsung Internet, Firefox, Chrome po odmítnutí): karta s návodem pro daný prohlížeč, zavřená se vrátí po 14 dnech; pruh Otevřít v Chromu i pro TikTok, LinkedIn a obecný WebView.
 - #45 Nabídka instalace jednou po první skutečné akci (parkur, běh, 3D).
+- #46 Verze 2.5: Kde ztrácíš body a rozhodčí z kacr.info v deníku, Den závodů na Domů. Serverová funkce `kacr` (verze 4) umí `{runs, dog}`; nasazená přes MCP `deploy_edge_function` (nasazení funkcí přes MCP funguje, SQL zápisy ne).
 
 ## Čísla (Více → O aplikaci → Návštěvnost, vidí jen autor)
 
@@ -41,9 +42,10 @@ Stav k 7. 10. 2026. Nové sezení: přečti tenhle soubor, `SPOLUPRACE.md` a `RE
 2. **Měřit cestu instalace:** do `app_ping` přidat platformu (Android, iPhone, počítač), prohlížeč Facebooku a jestli se instalační okno ukázalo a bylo přijaté. Potřebuje nové sloupce v `app_open` (SQL spustí uživatel) a úpravu `app_stats`.
 3. Kolbiště (issue #37): sdílení plánu závodiště odkazem; vyzkoušet import na ukázkovém souboru od uživatele, až ho pošle.
 4. Políčka rozhodčí, místo a datum a poznámky u parkuru; galerie parkurů od ostatních.
-5. Pravidla AKC/UKI pro anglicky mluvící (jen s přesnými podklady).
-6. 3D: psovod a pohyb psa (starší rozpracovaný úkol).
-7. Provoz: vyměnit klíč Resend (byl vložený do chatu), Google Play (vlastní doména, 25 $, 12 testerů na 14 dní).
+5. Hoopers jako samostatný režim (uživatel ho 7. 10. chtěl, po bodech 1–3).
+6. Pravidla AKC/UKI pro anglicky mluvící (jen s přesnými podklady).
+7. 3D: psovod a pohyb psa (starší rozpracovaný úkol).
+8. Provoz: vyměnit klíč Resend (byl vložený do chatu), Google Play (vlastní doména, 25 $, 12 testerů na 14 dní).
 
 ## K ověření na skutečném telefonu
 
