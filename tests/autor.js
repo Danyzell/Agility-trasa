@@ -48,7 +48,7 @@ module.exports = async function ({ browser, base }) {
     await page.click('#moreBody .morego [data-mgo="donate"]'); await page.waitForTimeout(150);
     const iban = await ev(() => czIban('1220369023/3030'));
     let q = await readQR('#moreBody .dn-qr svg');
-    ok(q === 'SPD*1.0*ACC:' + iban + '*AM:100.00*CC:CZK*MSG:Podpora AgiPlan', 'QR platba: ' + q);
+    ok(q === 'SPD*1.0*ACC:' + iban + '*AM:100.00*CC:CZK*MSG:Podpora Pawkur', 'QR platba: ' + q);
     await page.click('#moreBody [data-dam="200"]'); await page.waitForTimeout(100);
     q = await readQR('#moreBody .dn-qr svg'); ok(/\*AM:200\.00\*/.test(q || ''), 'částka 200 Kč: ' + q);
     await page.click('#moreBody [data-dam="0"]'); await page.waitForTimeout(100);
@@ -62,10 +62,10 @@ module.exports = async function ({ browser, base }) {
     await ev(() => { window.__del = null; window.deliverFile = function (b, m, n, sh) { window.__del = { size: b.size, m, n, sh }; return Promise.resolve(); }; });
     await page.click('#moreBody [data-dqr]'); await page.waitForFunction(() => window.__del, null, { timeout: 5000 });
     const d = await ev(() => window.__del);
-    ok(d.m === 'image/png' && d.n === 'agiplan-qr-platba-200.png' && d.size > 5000, 'uložený QR: ' + JSON.stringify(d));
+    ok(d.m === 'image/png' && d.n === 'pawkur-qr-platba-200.png' && d.size > 5000, 'uložený QR: ' + JSON.stringify(d));
     const img = await ev(() => { const c = dnQrCanvas(200), x = c.getContext('2d'); return { w: c.width, h: c.height, px: Array.from(x.getImageData(0, 0, c.width, c.height).data) }; });
     const r = jsQR(new Uint8ClampedArray(img.px), img.w, img.h);
-    ok(r && r.data === 'SPD*1.0*ACC:' + iban + '*AM:200.00*CC:CZK*MSG:Podpora AgiPlan', 'QR v uloženém obrázku: ' + (r && r.data));
+    ok(r && r.data === 'SPD*1.0*ACC:' + iban + '*AM:200.00*CC:CZK*MSG:Podpora Pawkur', 'QR v uloženém obrázku: ' + (r && r.data));
     /* platba kartou až s odkazem ze Stripe */
     ok(await page.getAttribute('#moreBody .dn-card', 'href') === 'https://buy.stripe.com/aFa3cvh1x7wKbAub7U4ko03' && /Google Pay \/ Apple Pay \/ karta/.test(await page.textContent('#moreBody .dn-card')), 'tlačítko Google Pay / Apple Pay');
     const url0 = await ev(() => { const u = DONATE.url; DONATE.url = ''; moreRender(); return u; });
@@ -214,7 +214,7 @@ module.exports = async function ({ browser, base }) {
     await p.click('#sheet [data-a]');
     /* po první skutečné akci jednou nabídne instalaci, podruhé už ne */
     await p.evaluate(() => HM.emit('courseSaved', { id: 'x' })); await p.waitForTimeout(1500);
-    ok(/Nainstaluj si AgiPlan/.test(await p.textContent('#sheet').catch(() => '')), 'po uložení parkuru se nenabídla instalace');
+    ok(/Nainstaluj si Pawkur/.test(await p.textContent('#sheet').catch(() => '')), 'po uložení parkuru se nenabídla instalace');
     await p.click('#sheet [data-a="go"]'); await p.waitForTimeout(100);
     ok(/Přidat stránku/.test(await p.textContent('#sheet')), 'Ukázat jak z nabídky neotevřelo návod');
     await p.click('#sheet [data-a]');
@@ -293,8 +293,8 @@ module.exports = async function ({ browser, base }) {
   });
 
   await step('angličtina', async () => {
-    const miss = await ev(() => ['Napsat autorovi', 'Podpořit aplikaci', 'Jiná částka', '200 Kč', 'Díky, zpráva odešla!', 'Jak se ti AgiPlan líbí?', 'Napiš, co máš na srdci', 'E-mail pro odpověď (nepovinné)',
-      'Nainstaluj si aplikaci', 'Doporuč aplikaci kamarádům', 'Ťukni na ⋮ vpravo nahoře.', 'Sdílet odkaz', 'Instalovat', 'Podpořit', 'Uložit QR do galerie', 'Google Pay / Apple Pay / karta', 'Zásady ochrany osobních údajů', 'E-mail použijeme jen k odpovědi.', '3 z 5', 'Díky za podporu!', 'Doporučit kamarádům', 'Otevřít v Chromu', 'Pro instalaci aplikace ji otevři v Chromu.', 'Nainstaluj AgiPlan na plochu', 'Sjeď níž a vyber Přidat na plochu', 'Ťukni dole vpravo na tři tečky ⋯', 'Vpravo nahoře ťukni na Přidat. Ikona AgiPlan je pak na ploše.', 'Ukázat jak', 'Rozumím',
+    const miss = await ev(() => ['Napsat autorovi', 'Podpořit aplikaci', 'Jiná částka', '200 Kč', 'Díky, zpráva odešla!', 'Jak se ti Pawkur líbí?', 'Napiš, co máš na srdci', 'E-mail pro odpověď (nepovinné)',
+      'Nainstaluj si aplikaci', 'Doporuč aplikaci kamarádům', 'Ťukni na ⋮ vpravo nahoře.', 'Sdílet odkaz', 'Instalovat', 'Podpořit', 'Uložit QR do galerie', 'Google Pay / Apple Pay / karta', 'Zásady ochrany osobních údajů', 'E-mail použijeme jen k odpovědi.', '3 z 5', 'Díky za podporu!', 'Doporučit kamarádům', 'Otevřít v Chromu', 'Pro instalaci aplikace ji otevři v Chromu.', 'Nainstaluj Pawkur na plochu', 'Sjeď níž a vyber Přidat na plochu', 'Ťukni dole vpravo na tři tečky ⋯', 'Vpravo nahoře ťukni na Přidat. Ikona Pawkur je pak na ploše.', 'Ukázat jak', 'Rozumím',
       'Tvůj příspěvek pomůže s provozem serveru a dalším vývojem aplikace. Ať se vám s pejskem daří!', 'Zprávu se nepodařilo poslat', 'Dnes už jsi poslal(a) dost zpráv, zkus to zítra.']
       .filter(s => trLookup(s) == null));
     ok(!miss.length, 'chybí překlad: ' + miss.join(' | '));

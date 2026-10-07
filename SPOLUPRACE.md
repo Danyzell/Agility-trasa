@@ -1,4 +1,4 @@
-# Spolupráce na AgiPlan
+# Spolupráce na Pawkuru (dříve AgiPlan)
 
 Aktuální stav, postup a co dál: [PREDANI.md](PREDANI.md).
 

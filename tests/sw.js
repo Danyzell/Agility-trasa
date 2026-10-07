@@ -22,7 +22,7 @@ module.exports = async function ({ browser, base }) {
   /* ani jiná stránka HTML (zásady ochrany údajů otevřené z aplikace) */
   await page.goto(base + '/privacy.html'); await page.waitForTimeout(400);
   const ti = await page.evaluate(async () => { const r = await caches.match(location.origin + '/index.html'); return r ? ((await r.text()).match(/<title>([^<]*)/) || [])[1] : ''; });
-  ok(ti === 'AgiPlan', 'jako aplikace se uložila stránka „' + ti + '“');
+  ok(ti === 'Pawkur', 'jako aplikace se uložila stránka „' + ti + '“');
   await page.goto('about:blank'); await page.goto(base + '/#plan'); await page.waitForTimeout(400);
 
   await ctx.setOffline(true);
