@@ -968,8 +968,12 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 #catBar{justify-content:center; text-align:center; font-size:12.5px; margin-top:4px;}
 #catBar .grow{flex:0 1 auto;}
 #catBar .btn{min-height:40px; padding:4px 10px; border-color:transparent; background:none; box-shadow:none; color:var(--accent); font-size:13px;}
-/* vybraný čip má barvu výběru jako přepínače (dřív skoro černý) */
+/* jedna barva výběru a hlavní akce: vybraný čip, tlačítka na Domů a odkazy mají barvu výběru jako přepínače (dřív skoro černé);
+   limetková zůstává jen na tmavých plochách (spodní lišta, karty Parkur týdne a Zahrada týdne) */
 .chip.on{background:var(--accent); color:var(--on-accent); border-color:var(--accent);}
+.hm-go{background:var(--accent); color:var(--on-accent);}
+.hm-week i.on{background:var(--accent);}
+:where(a:not(.btn)){color:var(--accent);}
 
 @media (prefers-reduced-motion: reduce){ .view.enter,.sheet,.scrim,.toast,.onb,.onb-body{animation:none!important;} }
 
