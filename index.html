@@ -967,7 +967,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 .librow .btn{flex:1 1 0; justify-content:center; min-width:0; padding-left:10px; padding-right:10px; white-space:nowrap;}
 #catBar{justify-content:center; text-align:center; font-size:12.5px; margin-top:4px;}
 #catBar .grow{flex:0 1 auto;}
-#catBar .btn{min-height:40px; padding:4px 10px; border-color:transparent; background:none; box-shadow:none; color:var(--accent); font-size:13px;}
+#catBar .btn{min-height:44px; padding:4px 10px; border-color:transparent; background:none; box-shadow:none; color:var(--accent); font-size:13px;}
 /* jedna barva výběru a hlavní akce: vybraný čip, tlačítka na Domů a odkazy mají barvu výběru jako přepínače (dřív skoro černé);
    limetková zůstává jen na tmavých plochách (spodní lišta, karty Parkur týdne a Zahrada týdne) */
 .chip.on{background:var(--accent); color:var(--on-accent); border-color:var(--accent);}
@@ -979,6 +979,31 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 .brand,.hm-logo,.about-ic,.onb-logo,.about-h .about-ic{background:var(--brand-tile); color:var(--lime);} /* .about-h span by tlapku jinak zašedil */
 .brand{box-shadow:0 3px 10px rgba(10,42,28,.28);}
 .onb-logo{box-shadow:0 10px 30px rgba(10,42,28,.35);}
+/* cíle pro palec aspoň 44 px na dotykové obrazovce: přepínače, Podpořit, odkazy sekcí na Domů, tlačítka na Domů, pes, Vynulovat, Čas ručně,
+   otočky v seznamu trasy a malé čipy. Mění se výška a okraje, písmo zůstává; lišty mají menší okraje, ať nenarostou */
+@media (pointer:coarse){
+  .seg{padding:2px; gap:2px;}
+  .seg button{min-height:44px;}
+  .top-in{padding-top:5px; padding-bottom:5px;}
+  .sup{height:auto; min-height:44px;}
+  .hm-top{padding-top:calc(6px + env(safe-area-inset-top,0px));}
+  .hm-logo{width:40px; height:40px; border-radius:12px;}
+  .hm-tb .hm-sport button{min-height:44px;}
+  .hm-dog{min-height:44px;}
+  .hm-sup{height:auto; min-height:44px;}
+  .hm-sec button{min-height:44px; min-width:44px;}
+  .hm-go,.cd-acts .hm-go,.hm-wk .wk-go{min-height:44px;}
+  #resetClock{flex:0 0 44px; min-width:44px; padding:0; justify-content:center;}
+  .field-row input[type=text],.field-row input[type=number]{min-height:44px;}
+  .order li .tu{min-height:44px;}
+  .order li .sd button{height:44px;}
+  .chip,.kf-item .chip,.hm-ask .chip{min-height:44px;}
+  .smini{min-height:44px;}
+  #undoAll,#toolsBtn{min-width:44px; justify-content:center;}
+  .speed button{width:44px; height:44px;}
+  .libmeta .sortrow select{min-height:44px;}
+  .older summary{min-height:44px; display:flex; align-items:center;}
+}
 
 @media (prefers-reduced-motion: reduce){ .view.enter,.sheet,.scrim,.toast,.onb,.onb-body{animation:none!important;} }
 
