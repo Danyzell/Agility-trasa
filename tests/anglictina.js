@@ -84,7 +84,7 @@ module.exports = async function ({ browser, base }) {
   await step('3D balíček až při použití', async () => {
     const sw = fs.readFileSync(path.join(__dirname, '..', 'sw.js'), 'utf8');
     const core = sw.match(/var CORE=\[([^\]]*)\]/)[1];
-    ok(!/v3d/.test(core) && /LAZY=\/.*v3d/.test(sw) && /agility-trasa-2\.7/.test(sw), 'sw.js: 3D nemá být v CORE, má se ukládat při prvním použití');
+    ok(!/v3d/.test(core) && /LAZY=\/.*v3d/.test(sw) && /agility-trasa-\d+\.\d+/.test(sw), 'sw.js: 3D nemá být v CORE, má se ukládat při prvním použití');
   });
 
   await step('angličtina slovník', async () => {

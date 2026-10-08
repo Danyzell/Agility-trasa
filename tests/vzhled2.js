@@ -1,5 +1,5 @@
 /* Vzhled 2 (skupina A): Parkury nad ohybem (pořadí a první karta), jedna barva výběru (čipy, tlačítka na Domů, odkazy),
-   jedna značka (horní lišta, Domů, O aplikaci, úvodní stránka), cíle pro palec 44 px, dlouhá okna s tlačítky dole,
+   jedna značka (fotka otisku tlapky v horní liště, na Domů, v O aplikaci a na úvodní stránce), cíle pro palec 44 px, dlouhá okna s tlačítky dole,
    prázdné Moje s tlačítky, tmavá spodní lišta odlišná od stránky a drobnosti (stín souhrnu, SČP a MČP, hodnocení v Deníku,
    prázdné dny v týdnu, název obrazovky v liště, Zpět ve Videích, kontrast hlavičky úvodní stránky). */
 const { phone, offline } = require('./helpers');
@@ -57,16 +57,19 @@ module.exports = async function ({ browser, base }) {
     await theme(null);
   });
 
-  await step('jedna značka: tlapka na tmavě zeleném přechodu', async () => {
+  await step('jedna značka: fotka otisku tlapky jako ikona aplikace', async () => {
     await fresh('#lib');
-    const look = async (sel) => ev(s => { const e = document.querySelector(s); if (!e) return null; const cs = getComputedStyle(e); return { c: cs.color, bg: cs.backgroundImage, paw: e.querySelectorAll('svg ellipse').length }; }, sel);
+    const look = async (sel) => ev(s => { const e = document.querySelector(s), i = e && e.querySelector('img'); if (!i) return null; return { src: i.src.replace(/^.*\//, ''), loaded: i.naturalWidth > 0, fit: getComputedStyle(i).objectFit, ov: getComputedStyle(e).overflow, svg: e.querySelectorAll('svg').length, w: Math.round(i.getBoundingClientRect().width), h: Math.round(e.getBoundingClientRect().height) }; }, sel);
     const top = await look('.top .brand'); await ev(() => show('home')); const home = await look('#v-home .hm-logo');
     await ev(() => { moreTab = 'about'; show('more'); }); await page.waitForTimeout(100); const about = await look('.about-h .about-ic');
-    [['horní lišta', top], ['Domů', home], ['O aplikaci', about]].forEach(([n, x]) => ok(x && x.c === 'rgb(198, 244, 50)' && /linear-gradient\(135deg, rgb\(47, 158, 98\), rgb\(10, 42, 28\)\)/.test(x.bg) && x.paw === 4, n + ': značka má být limetková tlapka na tmavě zeleném přechodu: ' + JSON.stringify(x)));
+    [['horní lišta', top], ['Domů', home], ['O aplikaci', about]].forEach(([n, x]) => ok(x && x.src === 'icon-192.png' && x.loaded && x.fit === 'cover' && x.ov === 'hidden' && x.svg === 0 && x.w >= 30 && x.w === x.h, n + ': značka má být fotka otisku tlapky (icon-192.png) vyplňující dlaždici: ' + JSON.stringify(x)));
+    /* soubory ikon: stejná fotka ve třech velikostech (PNG, rozměr z hlavičky IHDR) */
+    const png = (f) => { const b = fs.readFileSync(path.join(__dirname, '..', f)); return b.slice(1, 4).toString() === 'PNG' ? [b.readUInt32BE(16), b.readUInt32BE(20)] : null; };
+    ok(String(png('icon-192.png')) === '192,192' && String(png('icon-512.png')) === '512,512' && String(png('icon-maskable-512.png')) === '512,512', 'ikony aplikace mají být PNG 192, 512 a 512 (maskable)');
     const web = fs.readFileSync(path.join(__dirname, '..', 'web', 'index.html'), 'utf8');
     const logo = (web.match(/<a class="logo"[\s\S]*?<\/a>/) || [''])[0];
-    ok((logo.match(/<ellipse /g) || []).length === 4 && !/M5\.6 20\.6L12 9\.2/.test(web), 'úvodní stránka: v hlavičce má být tlapka místo písmene A');
-    ok(/\.logo i\{[^}]*linear-gradient\(135deg,#2f9e62,#0a2a1c\)/.test(web) && /\.logo svg\{[^}]*color:var\(--lime\)/.test(web), 'úvodní stránka: tlapka limetková na tmavě zeleném přechodu');
+    ok(/<img src="\.\.\/icon-192\.png"/.test(logo) && !/<svg/.test(logo), 'úvodní stránka: v hlavičce má být stejná fotka otisku jako ikona aplikace');
+    ok(/\.logo i\{[^}]*overflow:hidden/.test(web) && /\.logo i img\{[^}]*object-fit:cover/.test(web), 'úvodní stránka: fotka má vyplnit dlaždici loga');
     const ics = [...web.matchAll(/<div class="ic">([\s\S]*?)<\/div>/g)].map(m => m[1]);
     ok(ics.length === 6 && ics.every(s => /^<svg /.test(s) && !/[\u{1F300}-\u{1FAFF}☀-➿]/u.test(s)), 'úvodní stránka: ikony funkcí mají být čárové SVG, ne emoji');
   });

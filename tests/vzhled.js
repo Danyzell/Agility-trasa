@@ -1,4 +1,4 @@
-/* Vzhled: horní blok Domů od kraje ke kraji s limetkovou tlapkou a karuselem zarovnaným s nadpisem, mezery 12 px v sekcích Více,
+/* Vzhled: horní blok Domů od kraje ke kraji se značkou (fotka otisku tlapky) a karuselem zarovnaným s nadpisem, mezery 12 px v sekcích Více,
    verze v O aplikaci z APPV, anglické formáty čísel na Domů (57%, 6-day streak), překlad první věty Novinek 2.7,
    tmavé písmo štítků hodnocení v listině ve tmavém vzhledu a tmavší přechod karet Parkur týdne / Zahrada týdne. */
 const { phone, offline } = require('./helpers');
@@ -18,14 +18,14 @@ module.exports = async function ({ browser, base }) {
       const r = await ev(() => {
         const b = s => document.querySelector(s).getBoundingClientRect(), m = getComputedStyle(document.querySelector('main')), car = document.querySelector('.hm-car');
         return { top: [b('.hm-top').left, b('.hm-top').right], vw: document.documentElement.clientWidth, sw: document.documentElement.scrollWidth, sec: b('.hm-sec').left, card: b('.hm-cc').left,
-          main: [m.paddingLeft, m.paddingRight, m.paddingTop, parseFloat(m.paddingBottom)], sp: car && getComputedStyle(car).scrollPaddingInlineStart, logo: getComputedStyle(document.querySelector('.hm-logo')).color };
+          main: [m.paddingLeft, m.paddingRight, m.paddingTop, parseFloat(m.paddingBottom)], sp: car && getComputedStyle(car).scrollPaddingInlineStart, logo: (function () { const i = document.querySelector('.hm-logo img'); return !!i && /icon-192\.png$/.test(i.src) && i.naturalWidth > 0; })() };
       });
       ok(r.top[0] === 0 && r.top[1] === r.vw, w + ' px: horní blok Domů nejde od kraje ke kraji: ' + r.top + ' / ' + r.vw);
       ok(r.sec === 16 && r.card === 16, w + ' px: nadpis sekce a první karta mají být 16 px od kraje: ' + r.sec + ' / ' + r.card);
       ok(r.main[0] === '0px' && r.main[1] === '0px' && r.main[2] === '0px' && r.main[3] > 60, w + ' px: main na Domů má mít nulové boční okraje a spodní okraj kvůli liště: ' + r.main);
       ok(r.sp === '16px', w + ' px: karusel se má přichytávat 16 px od kraje: ' + r.sp);
       ok(r.sw <= r.vw, w + ' px: Domů přetéká do strany');
-      ok(r.logo === 'rgb(198, 244, 50)', w + ' px: tlapka v logu má být limetková: ' + r.logo);
+      ok(r.logo === true, w + ' px: značka na Domů má být fotka otisku tlapky (icon-192.png): ' + r.logo);
     }
     await size(390);
     /* mimo Domů má main okraje jako dřív */
