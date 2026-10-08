@@ -984,6 +984,13 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 .brand,.hm-logo,.about-ic,.onb-logo,.about-h .about-ic{background:var(--brand-tile); color:var(--lime);} /* .about-h span by tlapku jinak zašedil */
 .brand{box-shadow:0 3px 10px rgba(10,42,28,.28);}
 .onb-logo{box-shadow:0 10px 30px rgba(10,42,28,.35);}
+/* tmavý vzhled: spodní lišta má světlejší tmavou plochu a jemný okraj, ať nesplývá se stránkou (popisky #a9b5a7 mají kontrast 7:1) */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .nav{background:color-mix(in srgb,#1f2823 95%,transparent); border-color:rgba(255,255,255,.13); box-shadow:0 14px 34px rgba(0,0,0,.55);}
+  :root:not([data-theme="light"]) .nav .ndot{box-shadow:0 0 0 2px #1f2823;}
+}
+:root[data-theme="dark"] .nav{background:color-mix(in srgb,#1f2823 95%,transparent); border-color:rgba(255,255,255,.13); box-shadow:0 14px 34px rgba(0,0,0,.55);}
+:root[data-theme="dark"] .nav .ndot{box-shadow:0 0 0 2px #1f2823;}
 /* dlouhá okna (Novinky, Rozbor, Export…): poslední řádek tlačítek zůstává dole v okně a je vidět bez posouvání;
    okno dostane fokus kvůli čtečce obrazovky, zelený rámeček kolem celého okna ale nepatří */
 .sheet:focus{outline:none;}
