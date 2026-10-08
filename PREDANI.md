@@ -52,7 +52,7 @@ Stav k 8. 10. 2026. Nové sezení: přečti tenhle soubor, `SPOLUPRACE.md` a `RE
 ## Co dál (navrženo, čeká na rozhodnutí uživatele)
 
 1. ~~Instalace ve správnou chvíli~~ hotovo v #45. Za pár dní porovnat podíl instalací (dřív 19 ze 460, 4 %).
-1b. **Spustit SQL** `supabase/migrations/20261007170000_ping_funnel_errors.sql` (uživatel, celý obsah souboru z odkazu raw.githubusercontent.com, ne jeho název; editor se zeptá na potvrzení kvůli `drop function`), pak ve statistice přibudou platformy, Facebook, instalační okno, chyby, časová pásma a odpovědi na otázku Co chybí. Pokus 7. 10. 22:08 skončil chybou syntaxe, vložil se název souboru.
+1b. ~~Spustit SQL `20261007170000_ping_funnel_errors.sql`~~ hotovo 8. 10.: uživatel ho spustil po třech kouscích z chatu (dlouhý text z telefonu se do editoru nevložil, osvědčilo se posílat SQL po kouscích v blocích kódu). Ověřeno: sloupce `app_open` včetně `tz`, `app_ping` se 4 a 11 parametry (10parametrová nevznikla), nové `app_stats`; volání se 4, 10 a 11 parametry přes REST vrací 204. Data z rozšířeného pingu chodí od dalšího dne každého zařízení (ping jednou denně). Zbývá SQL `20261007200000_ring_gallery_friends.sql` a `20261007210000_plus.sql` (s platbou).
 1c. První zážitek: po průvodci rovnou otevřít parkur a 3D nebo Běh (návrh, čeká na snímky). Sdílení parkuru přímo u názvu (0 sdílení za 3 dny).
 2. ~~Měřit cestu instalace~~ v #47, viz 1b. Původně: do `app_ping` přidat platformu (Android, iPhone, počítač), prohlížeč Facebooku a jestli se instalační okno ukázalo a bylo přijaté. Potřebuje nové sloupce v `app_open` (SQL spustí uživatel) a úpravu `app_stats`.
 3. Kolbiště (issue #37): sdílení plánu závodiště odkazem; vyzkoušet import na ukázkovém souboru od uživatele, až ho pošle.
