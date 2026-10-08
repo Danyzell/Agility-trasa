@@ -92,20 +92,34 @@ h2{font-family:var(--display); font-size:20px; font-weight:600; margin:4px 0 0; 
 .btn svg{width:17px; height:17px;}
 .zoom{display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px;}
 #undoAll{padding:8px 11px;}
-@media (max-width:379px){ #zLbl{display:none;} }
 select.btn{padding-right:8px;}
 
 .palette{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 4px; scrollbar-width:thin;}
 .ob-btn{flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 8px; min-width:62px; border-radius:10px; border:2px solid var(--border); background:var(--surface); font-size:11px; color:var(--text);}
 .ob-btn svg{width:26px; height:26px;}
 .ob-btn.on{border-color:var(--accent); background:color-mix(in srgb,var(--accent) 12%,var(--surface));}
-.selrow{display:flex; align-items:center; gap:8px 10px; flex-wrap:wrap; font-size:13.5px; color:var(--muted);}
-.selrow input{flex:1 1 110px; min-width:110px; accent-color:var(--accent);}
-.selacts{display:flex; flex-wrap:wrap; gap:8px; margin-left:auto; max-width:100%;}
-.selacts select{max-width:100%;}
+/* Stavba: panel vybrané překážky plave dole nad spodní lištou, mimo tok stránky – plocha při výběru ani zrušení výběru neposkočí
+   (dřív se panel vkládal nad plochu a posunul ji až o 200 px, takže „click“ téhož klepnutí trefil tlačítko, které se objevilo pod prstem) */
+.selrow{position:fixed; z-index:25; left:12px; right:12px; max-width:560px; margin:0 auto; bottom:calc(var(--nav-h) + var(--nav-gap) + 8px + env(safe-area-inset-bottom,0px));
+  display:flex; flex-direction:column; gap:8px; padding:10px 12px; background:var(--surface); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow-l); font-size:13.5px; color:var(--muted);}
+.sr-a{display:flex; align-items:center; gap:10px;}
+.sr-a input{flex:1; min-width:0; accent-color:var(--accent);}
+.sr-a .num{min-width:38px; text-align:right; color:var(--text); font-variant-numeric:tabular-nums;}
+.sr-b{display:flex; align-items:center; gap:8px;}
+.sr-b .sp{flex:1;}
+.sr-b .btn{min-width:44px; min-height:44px; justify-content:center; padding:8px 10px;}
+.sr-b .ico{width:44px; padding:0;}
+.sr-b .ico svg{width:20px; height:20px;}
+.sr-c{display:flex; gap:8px;}
+.sr-c select{flex:1 1 0; min-width:0; min-height:44px;}
+/* pojistka: klepnutí, které překážku vybralo, pošle ještě „click“ na to, co je právě pod prstem – nový panel ho 0,45 s nepřijímá */
+@keyframes srGuard{0%,99%{pointer-events:none;} 100%{pointer-events:auto;}}
+.selrow:not([hidden]){animation:srGuard .45s step-end;}
+/* v režimu Stavba má stránka dole místo, aby panel nezakryl spodek plochy; nápověda má vždy dva řádky, ať se plocha nehýbe */
+#v-plan.bld{padding-bottom:160px;}
+#v-plan.bld #hint{display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; min-height:2.9em;}
 
 #wrap{overflow:auto; max-height:70vh; border:1px solid var(--border); border-radius:12px; background:var(--field); touch-action:pan-x pan-y;}
-.rotq{display:inline-flex; gap:4px;} .rotq .btn{min-width:44px; padding:6px 8px; justify-content:center;}
 #field{display:block; height:auto; user-select:none; -webkit-user-select:none;}
 #field.build .ob{touch-action:none; cursor:grab;}
 #field.route .ob{cursor:pointer;}
@@ -242,9 +256,10 @@ select.btn{padding-right:8px;}
 .ov3d{position:fixed; inset:0; z-index:70; background:#0d1410; display:flex; flex-direction:column;}
 .ov3d canvas{flex:1; width:100%; min-height:0; display:block; touch-action:none;}
 .ov3d canvas[hidden]{display:none;}
-.fieldbox .dimbtn{position:absolute; left:6px; bottom:6px; z-index:2; display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:0 14px 0 10px; border-radius:14px; border:1px solid var(--border); background:color-mix(in srgb,var(--surface) 88%,transparent); color:var(--text); font:800 15px var(--body); box-shadow:var(--shadow);}
+/* 3D a AR v liště pod plochou (ne přes ni, zakrývaly překážky v levém dolním rohu) */
+.fieldbox .dimbtn{display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:0 14px 0 10px; border-radius:14px; border:1px solid var(--border); background:var(--surface); color:var(--text); font:800 15px var(--body); box-shadow:var(--shadow);}
 .fieldbox .dimbtn[hidden]{display:none;}
-.fieldbox .arbtn{left:auto; right:6px; background:var(--accent); color:var(--on-accent); border-color:var(--accent);} .fieldbox .arbtn svg{color:currentColor;}
+.fieldbox .arbtn{background:var(--accent); color:var(--on-accent); border-color:var(--accent);} .fieldbox .arbtn svg{color:currentColor;}
 .fieldbox .dimbtn svg{width:20px; height:20px; color:var(--accent);}
 .ov3d-hint{position:absolute; left:50%; top:calc(12px + env(safe-area-inset-top,0px)); transform:translateX(-50%); background:rgba(13,20,16,.72); color:#e5ebe2; padding:7px 14px; border-radius:999px; font-size:13px; pointer-events:none;}
 .ov3d-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)); background:#18201a; color:#e5ebe2; font-size:13px;}
@@ -483,6 +498,11 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 .plansum .fcibar{width:auto; flex:0 0 auto; padding:6px 10px; font-weight:600;}
 .specs.mini{display:flex; flex-direction:column; background:none; border:0; border-radius:0; overflow:visible; gap:6px;}
 .smini{display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 12px; width:100%; text-align:left; border:1px solid var(--border); background:var(--surface); border-radius:12px; padding:9px 12px; font-size:13.5px; color:var(--muted);}
+/* souhrn plánu má pevně dva řádky (délka + překážky, SČP + MČP): šířka tlačítka FCI („FCI“ / „FCI · 3“) ho dřív zalomila a plocha poskočila o 24 px */
+.plansum .smini{display:grid; grid-template-columns:max-content max-content 1fr; align-items:baseline; white-space:nowrap; overflow:hidden;}
+.plansum .smini>*{min-width:0; overflow:hidden; text-overflow:ellipsis;}
+.plansum .smini>:nth-child(1){grid-area:1/1;} .plansum .smini>:nth-child(2){grid-area:1/2;} .plansum .smini>:nth-child(3){grid-area:2/1;} .plansum .smini>:nth-child(4){grid-area:2/2;}
+.plansum .smini>i{grid-area:1/3/3/4; justify-self:end; align-self:center; margin:0;}
 .smini b{color:var(--text); font-size:15px; font-variant-numeric:tabular-nums;}
 .smini i{margin-left:auto; font-style:normal;}
 .specs.mini .spec.est{border:1px solid var(--border); border-radius:12px;}
@@ -497,8 +517,11 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 #modeRow{flex-wrap:nowrap;} #modeRow .seg button{padding-left:12px; padding-right:12px;}
 @media (max-width:430px){ #toolsBtn .lbl{display:none;} #toolsBtn{padding:8px 11px;} }
 .fieldbox{position:relative;}
-.fieldbox .zoom{position:absolute; right:8px; top:8px; z-index:2; background:color-mix(in srgb,var(--surface) 88%,transparent); border:1px solid var(--border); border-radius:14px; padding:3px; box-shadow:var(--shadow);}
-.fieldbox .zoom .btn{border:0; background:none; min-height:36px; width:36px;}
+/* přiblížení a 3D v úzké liště pod plochou: nic nepřekrývá hrací plochu (rohy zůstanou volné pro klepání, čísla trasy jsou vidět) */
+.fieldbar{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:8px;}
+.fieldbox .zoom{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:0; gap:0; box-shadow:var(--shadow);}
+.fieldbox .zoom .btn{border:0; background:none; min-height:44px; width:44px;}
+.fieldbox .zoom .num{min-width:44px; text-align:center;}
 #field.look .ob{cursor:default;}
 .fcilist{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px; font-size:14px;}
 .fcilist li{display:grid; grid-template-columns:22px 1fr; gap:6px; align-items:start;}
@@ -929,8 +952,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 .mhead b{font-family:var(--display); font-size:22px; font-weight:600; line-height:1.1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 #v-lib .filters .chip,#v-more .filters .chip{min-height:44px;}
 #modeRow .seg button{min-height:44px;}
-/* zoom: tlačítka 44 px, ale rámeček bez vnitřního okraje a blíž k rohu, aby z plochy nezakryl víc než dřív (klepání překážek u horního okraje) */
-.fieldbox .zoom{top:6px; right:6px; padding:0; gap:0;}
+/* zoom: tlačítka 44 px (lišta pod plochou) */
 .fieldbox .zoom .btn{min-height:44px; width:44px;}
 .field-row .check{min-height:44px; padding:0 8px; margin:0 -8px; cursor:pointer;}
 
@@ -1021,12 +1043,12 @@ html.onb-open,html.onb-open body{overflow:hidden;}
     </div>
     <div id="buildTools">
       <div class="palette" id="palette"></div>
-      <div class="selrow" id="selRow" hidden>
-        <span>Otočení</span><input type="range" id="rot" min="0" max="355" step="5" aria-label="Otočení překážky"><span id="rotLbl" class="num"></span>
-        <span class="rotq"><button class="btn" id="rotL" aria-label="Otočit o 15° doleva">↺15°</button><button class="btn" id="rotR" aria-label="Otočit o 15° doprava">↻15°</button><button class="btn" id="rotP" title="Natočit kolmo na trasu (podle předchozí a další překážky)">⟂ trasa</button></span>
-        <span class="selacts"><select class="btn" id="bendSel" aria-label="Tvar tunelu" hidden><option value="0">Rovný</option><option value="90">Oblouk 90° ↶</option><option value="-90">Oblouk 90° ↷</option><option value="135">Oblouk 135° ↶</option><option value="-135">Oblouk 135° ↷</option><option value="180">Do U ↶</option><option value="-180">Do U ↷</option></select>
-        <select class="btn" id="lenSel" aria-label="Délka tunelu" hidden><option value="2">2 m (trénink)</option><option value="3">3 m</option><option value="4">4 m</option><option value="4.5">4,5 m</option><option value="5">5 m</option><option value="6">6 m</option></select>
-        <button class="btn" id="dupBtn">Kopírovat</button><button class="btn danger" id="delBtn">Smazat</button></span>
+      <!-- vybraná překážka: panel plave dole nad spodní lištou (position:fixed), takže se plocha při výběru nehýbe -->
+      <div class="selrow" id="selRow" role="group" aria-label="Vybraná překážka" hidden>
+        <div class="sr-a"><span>Otočení</span><input type="range" id="rot" min="0" max="355" step="5" aria-label="Otočení překážky"><span id="rotLbl" class="num"></span></div>
+        <div class="sr-b"><button class="btn" id="rotL" aria-label="Otočit o 15° doleva">↺15°</button><button class="btn" id="rotR" aria-label="Otočit o 15° doprava">↻15°</button><button class="btn" id="rotP" title="Natočit kolmo na trasu (podle předchozí a další překážky)">⟂ trasa</button><span class="sp"></span><button class="btn ico" id="dupBtn" aria-label="Kopírovat" title="Kopírovat" data-ic="copy"></button><button class="btn ico danger" id="delBtn" aria-label="Smazat" title="Smazat" data-ic="trash"></button></div>
+        <div class="sr-c" id="tunRow" hidden><select class="btn" id="bendSel" aria-label="Tvar tunelu" hidden><option value="0">Rovný</option><option value="90">Oblouk 90° ↶</option><option value="-90">Oblouk 90° ↷</option><option value="135">Oblouk 135° ↶</option><option value="-135">Oblouk 135° ↷</option><option value="180">Do U ↶</option><option value="-180">Do U ↷</option></select>
+        <select class="btn" id="lenSel" aria-label="Délka tunelu" hidden><option value="2">2 m (trénink)</option><option value="3">3 m</option><option value="4">4 m</option><option value="4.5">4,5 m</option><option value="5">5 m</option><option value="6">6 m</option></select></div>
       </div>
     </div>
     <div class="row" id="routeTools" hidden>
@@ -1036,14 +1058,18 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       <button class="btn danger" id="clrRoute">Smazat trasu</button>
     </div>
     <div class="fieldbox">
-    <button class="dimbtn" id="dimBtn" title="Zobrazit parkur ve 3D" aria-label="Zobrazit parkur ve 3D"><span data-ic="cube"></span>3D</button>
-    <button class="dimbtn arbtn" id="arBtn" hidden title="Postavit parkur kamerou na skutečném place" aria-label="AR na place">📷 AR na place</button>
-    <div class="zoom"><button class="btn" id="zOut" aria-label="Oddálit">−</button><span id="zLbl" class="num"></span><button class="btn" id="zIn" aria-label="Přiblížit">+</button></div>
     <div id="wrap" tabindex="0" aria-label="Plocha parkuru, posouvá se šipkami">
       <svg id="field" class="build" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plocha parkuru">
         <defs><marker id="arr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth=".8" markerHeight=".8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--zone)"/></marker></defs>
         <g id="fieldbg"></g><g id="bgimg"></g><g id="grid"></g><g id="hp"></g><g id="obs"></g><g id="pth"></g><g id="hmk"></g><g id="bdg"></g><g id="marks"></g>
       </svg>
+    </div>
+    <!-- přiblížení vlevo a 3D vpravo v liště pod plochou: nic nezakrývá hrací plochu -->
+    <div class="fieldbar">
+      <div class="zoom"><button class="btn" id="zOut" aria-label="Oddálit">−</button><span id="zLbl" class="num"></span><button class="btn" id="zIn" aria-label="Přiblížit">+</button></div>
+      <span class="grow"></span>
+      <button class="dimbtn" id="dimBtn" title="Zobrazit parkur ve 3D" aria-label="Zobrazit parkur ve 3D"><span data-ic="cube"></span>3D</button>
+      <button class="dimbtn arbtn" id="arBtn" hidden title="Postavit parkur kamerou na skutečném place" aria-label="AR na place">📷 AR na place</button>
     </div>
     </div>
     <p class="hint mklegend" id="mkLegend" hidden>P přední, Z zadní, S slepé křížení, ! pozor</p>
@@ -1315,9 +1341,16 @@ function trLookup(s,depth){
     var m=k.match(R[0]);
     if(m){ return R[1].replace(/([$@])([1-9])/g,function(x,t,d){ var g=m[+d]; if(g==null) return '';
         if(/^\d+(?:[.,]\d+)?$/.test(g)) return i18nNumOut(g);
-        if(t==='@'&&(depth||0)<2){ var tg=trLookup(g,(depth||0)+1); if(tg==null) trMiss(g); return tg==null?g:tg; } return g; }); }
+        if(t==='@'&&(depth||0)<2){ var tg=trList(g,(depth||0)+1); if(tg==null) trMiss(g); return tg==null?g:tg; } return g; }); }
   }
   return null;
+}
+/* seznam oddělený „; “ (třeba rozestupy v kontrole FCI) se překládá po položkách; jinak by pravidlo jedné položky spolklo celý seznam */
+function trList(g,depth){
+  if(g.indexOf('; ')>0){ var parts=g.split('; '), out=[], i, tp;
+    for(i=0;i<parts.length;i++){ tp=trLookup(parts[i],depth); if(tp==null) break; out.push(tp); }
+    if(i===parts.length) return out.join('; '); }
+  return trLookup(g,depth);
 }
 /* T('česky') → text v aktuálním jazyce (pro plátno, řeč, PDF, nativní dialogy) */
 function T(s){ if(LANG==='cs'||s==null||s==='') return s; var r=trLookup(String(s)); return r==null?s:r; }
@@ -1408,7 +1441,7 @@ var I18N_EXTRA={exact:{
 "Natočit kolmo na trasu (podle předchozí a další překážky)": "Turn square to the route (by the previous and next obstacle)",
 "⟂ trasa": "⟂ route",
 "⟂ Natočit skoky podle trasy": "⟂ Align jumps to the route",
-"Klepnutím do volného místa zrušíš výběr. Tažením překážku přesuneš, tlačítky otočíš, dvěma prsty přiblížíš.": "Tap an empty spot to deselect. Drag to move the obstacle, use the buttons to rotate it, pinch with two fingers to zoom.",
+"Klepnutím do volného místa zrušíš výběr. Tažením překážku přesuneš, tlačítky otočíš, dvěma prsty přiblížíš.": "Tap an empty spot to deselect. Drag to move the obstacle, rotate with the buttons, pinch to zoom.",
 "Vyber překážku v nabídce, nebo klepni na překážku na ploše.": "Pick an obstacle in the menu, or tap an obstacle on the field.",
 "Překážka není v trase. Nejdřív vyznač trasu v režimu Trasa.": "The obstacle isn't in the route. Mark the route in Route mode first.",
 "Skoky už jsou natočené podle trasy": "The jumps are already aligned to the route",
@@ -1914,7 +1947,9 @@ var I18N_EXTRA={exact:{
 "čisté": "clean",
 "m/s": "m/s",
 "Změř první běh ve stopkách a tady uvidíš rychlost a čisté běhy.": "Time your first run with the stopwatch and you will see speed and clean runs here.",
-"Domů: nahoře rozpracovaný parkur s mapou a tlačítka Nový parkur, Plánek z fotky a Knihovna; úvodní fotka je pryč": "Home: the course in progress with its map at the top plus New course, Course map from photo and Library; the intro photo is gone",
+"Stavba: panel výběru dole nad lištou, plocha už neposkakuje; přiblížení a 3D vedle plochy; přetažení prstem funguje": "Build: the selection panel sits above the bottom bar and the field no longer jumps; zoom and 3D next to the field; dragging with a finger works",
+"Vybraná překážka": "Selected obstacle",
+"Domů: nahoře rozpracovaný parkur s mapou a tlačítka Nový parkur, Plánek z fotky a Knihovna; úvodní fotka je pryč": "Home:the course in progress with its map at the top plus New course, Course map from photo and Library; the intro photo is gone",
 "Pawkur Plus": "Pawkur Plus",
 "Co ti v Pawkuru chybí?": "What is Pawkur missing for you?",
 "Stačí jedno klepnutí. Pomůže to rozhodnout, co dělat dál.": "One tap is enough. It helps decide what to build next.",
@@ -2278,7 +2313,12 @@ var I18N_EXTRA={exact:{
 ["^Zapsané chyby u (\\d+) závodů: (.+)$","Faults recorded at $1 competitions: $2"],
 ["^Sekvence: (.+)$","Sequence: @1"],
 ["^hala · (.+)$","indoor · @1"],
-["^Překážky přes sebe: (.+)$","Obstacles overlapping: $1"],
+["^Překážky přes sebe: (.+)$","Obstacles overlapping: @1"],
+/* dvojice překážek přes sebe: „skok č. 1 a kladina č. 2“, „skok č. 1 a zeď“, „skok a zeď“ (bez čísla = mimo trasu) */
+["^(.+?) č\\. (\\d+) a (.+?) č\\. (\\d+)$","@1 no. $2 and @3 no. $4"],
+["^(.+?) č\\. (\\d+) a ([^.]+?)$","@1 no. $2 and @3"],
+["^([^.]+?) a (.+?) č\\. (\\d+)$","@1 and @2 no. $3"],
+["^([a-záčďéěíňóřšťúůýž][a-záčďéěíňóřšťúůýž -]{1,20}) a ([a-záčďéěíňóřšťúůýž][a-záčďéěíňóřšťúůýž -]{1,20})$","@1 and @2"],
 ["^Překážka přesahuje plochu: (.+)$","Obstacle sticks out of the field: $1"],
 ["^Trasa obrácená, start je teď u překážky (.+)$","Route reversed, the start is now at the @1"],
 ["^Klepnutím polož (.+) na plochu\\. Překážku přesuneš tažením, plochu přiblížíš dvěma prsty\\.$","Tap to place the @1 on the field. Drag to move an obstacle, pinch with two fingers to zoom."],
@@ -2302,6 +2342,9 @@ var I18N_EXTRA={exact:{
 ["^(.+?) Nejde u posledního skoku\\.$","@1 Not possible on the last jump."],
 ["^(.+?) · (A\\d) · zbývá (\\d+) (?:dny|dní)$","$1 · $2 · $3 days left"],
 ["^(.+?) · (A\\d) · zbývá poslední den$","$1 · $2 · last day left"],
+/* okno otočky se stranou psovoda: „Otočka doleva · venkem“ */
+["^(.+?) · vnitřkem$","@1 · inside"],
+["^(.+?) · venkem$","@1 · outside"],
 ]};
 /* postup a kalkulačka: texty s čísly (karta na Domů a kalkulačka SČP) */
 var I18N_POSTUP={num:{
@@ -3301,16 +3344,16 @@ i18nAdd({
 "Course length @1 m (FCI: 100–220 m)"
 ],
 [
-"^(.+?) po dráze jen (.+?) m$",
-"@1 only @2 m along the path"
+"^(\\d+→\\d+) po dráze jen (.+?) m$",
+"$1 only $2 m along the path"
 ],
 [
-"^(.+?) vzdušnou čarou (.+?) m$",
-"@1 @2 m in a straight line"
+"^(\\d+→\\d+) vzdušnou čarou (.+?) m$",
+"$1 $2 m in a straight line"
 ],
 [
-"^(.+?) po dráze (.+?) m$",
-"@1 @2 m along the path"
+"^(\\d+→\\d+) po dráze (.+?) m$",
+"$1 $2 m along the path"
 ],
 [
 "^Rozestupy \\(FCI: po dráze 5–9 m, vzdušnou čarou nejvýš 7 m\\): (.+?)$",
@@ -3333,12 +3376,12 @@ i18nAdd({
 "Handler side changes @1 (FCI: at least 2)"
 ],
 [
-"^(.+?)→(.+?) přes (.+?) č\\. (.+?)$",
-"@1→@2 over @3 no. @4"
+"^(\\d+)→(\\d+) přes (.+?) č\\. (\\d+)$",
+"$1→$2 over @3 no. $4"
 ],
 [
-"^(.+?)→(.+?) přes (.+?)$",
-"@1→@2 over @3"
+"^(\\d+)→(\\d+) přes (.+?)$",
+"$1→$2 over @3"
 ],
 [
 "^Dráha psa nevede přes jinou překážku: (.+?)$",
@@ -4863,6 +4906,8 @@ var IC={
   compass:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>',
   back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
   undo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>',
+  copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>',
+  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>',
   sliders:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>',
   info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.6v.2"/></svg>',
   book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h9a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/></svg>',
@@ -5280,10 +5325,11 @@ function ui(){
   Array.prototype.forEach.call(document.querySelectorAll('#mkSeg button'),function(b){b.classList.toggle('on',b.getAttribute('data-mk')===MKT);});
   Array.prototype.forEach.call(document.querySelectorAll('.ob-btn'),function(b){b.classList.toggle('on',b.getAttribute('data-type')===tool);});
   Array.prototype.forEach.call(document.querySelectorAll('#planTools .tool'),function(b){var t=b.getAttribute('data-t'); b.classList.toggle('on',t===panel||(t==='traps'&&!!PLANUI.traps));});
-  var o=sel!=null?getO(sel):null;
-  $('selRow').hidden=!o||special;
+  var o=sel!=null?getO(sel):null, tun=!!o&&o.type==='tunnel';
+  $('selRow').hidden=!o||special||mode!=='build';
+  $('v-plan').classList.toggle('bld',mode==='build'&&!special); /* místo dole pro plovoucí panel výběru */
   if(o){$('rot').value=o.rot; $('rotLbl').textContent=o.rot+'°';}
-  $('bendSel').hidden=!o||o.type!=='tunnel'; $('lenSel').hidden=!o||o.type!=='tunnel';
+  $('tunRow').hidden=!tun; $('bendSel').hidden=!tun; $('lenSel').hidden=!tun;
   if(o&&o.type==='tunnel'){ var lsv=String(Math.round(tunLen(o)*10)/10), ls=$('lenSel'); if(!Array.prototype.some.call(ls.options,function(x){return x.value===lsv;})){ var lo2=document.createElement('option'); lo2.value=lsv; lo2.textContent=fmt(+lsv)+' m'; ls.appendChild(lo2); } ls.value=lsv; }
   if(o&&o.type==='tunnel'){ var bs=$('bendSel'), bv=String(o.bend||0);
     if(!Array.prototype.some.call(bs.options,function(x){return x.value===bv;})){ var op=document.createElement('option'); op.value=bv; op.textContent=(Math.abs(o.bend)>=180?'Do U ':'Oblouk '+Math.abs(o.bend)+'° ')+(o.bend>0?'↶':'↷'); bs.appendChild(op); }
@@ -5353,7 +5399,17 @@ svg.addEventListener('pointerup',function(e){
   }
   tap=null;
 });
-svg.addEventListener('pointercancel',function(){drag=null;tap=null;hpDraw=null;});
+/* prohlížeč tah přerušil (posun stránky, druhý prst, systémové gesto): rozjeté přesunutí se vrátí, ať překážka nezůstane napůl cesty */
+svg.addEventListener('pointercancel',function(){
+  if(drag){ var o=getO(drag.id); if(o&&drag.moved&&drag.x0!=null){ o.x=drag.x0; o.y=drag.y0; } drag=null; render(); ui(); }
+  tap=null; hpDraw=null;
+});
+/* tažení prstem: touch-action na <g> v SVG prohlížeč nebere a #wrap má pan-x pan-y, takže by si po ~1 m tah vzal na posun stránky.
+   Když jeden prst začne na překážce v režimu Stavba, posun se vypne tady; dva prsty (přiblížení) a prst na volné ploše (posun) fungují dál. */
+svg.addEventListener('touchstart',function(e){
+  if(e.touches.length!==1||mode!=='build'||panel||PINCH||SIMA||$('simG')) return;
+  var t=e.target; if(t&&t.closest&&t.closest('.ob')) e.preventDefault();
+},{passive:false});
 
 $('palette').addEventListener('click',function(e){
   var b=e.target.closest('.ob-btn'); if(!b) return;
@@ -11148,7 +11204,7 @@ function newsCheck(){
   var seen=lsGet('agility-news-v1',null); if(seen==='2.7') return false; lsSet('agility-news-v1','2.7');
   /* kdo neviděl novinky 2.1, dozví se i o novém názvu */
   openSheet('<h3>Novinky v Pawkuru 2.7</h3>'+'<p>Aplikace se teď jmenuje Pawkur, dřív AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>'+
-    '<ul class="news"><li>Domů: nahoře rozpracovaný parkur s mapou a tlačítka Nový parkur, Plánek z fotky a Knihovna; úvodní fotka je pryč</li><li>Postup se hlídá sám: na Domů vidíš, kolik ti zbývá do vyšší třídy podle pravidel tvé země</li><li>Kalkulačka SČP a MČP (Více → Nástroje): časy podle délky trati bez kreslení parkuru</li><li>Křížení na dráze psovoda: do plánku si označíš přední, zadní a slepé křížení a místa, kde si dát pozor</li><li>Výsledková listina pro pořadatele (Více → Nástroje a v Běhu): pořadí podle FCI, tisk, PDF a kopírování do Excelu</li>'+(seen==='2.6'?'':'<li>Hoopers: přepínač Agility | Hoopers nahoře na Domů a v Parkurech. Parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb</li>')+(seen==='2.5'||seen==='2.6'?'':'<li>Deník: Kde ztrácíš body. Z výsledků na kacr.info aplikace spočítá diskvalifikace, chyby, odmítnutí a čas a doporučí sekvenci na trénink</li><li>Úspěšnost podle rozhodčího a povrchu; rozhodčí z kacr.info se počítají do postupu</li><li>Den závodů na Domů: den předem a během závodu navigace, rozhodčí, počet týmů v kategorii, seznam věcí s sebou a zápis výsledku</li><li>U závodu v deníku jde zaškrtnout, co se stalo (tyčka, zóna, slalom…)</li>')+'</ul>'+
+    '<ul class="news"><li>Stavba: panel výběru dole nad lištou, plocha už neposkakuje; přiblížení a 3D vedle plochy; přetažení prstem funguje</li><li>Domů: nahoře rozpracovaný parkur s mapou a tlačítka Nový parkur, Plánek z fotky a Knihovna; úvodní fotka je pryč</li><li>Postup se hlídá sám: na Domů vidíš, kolik ti zbývá do vyšší třídy podle pravidel tvé země</li><li>Kalkulačka SČP a MČP (Více → Nástroje): časy podle délky trati bez kreslení parkuru</li><li>Křížení na dráze psovoda: do plánku si označíš přední, zadní a slepé křížení a místa, kde si dát pozor</li><li>Výsledková listina pro pořadatele (Více → Nástroje a v Běhu): pořadí podle FCI, tisk, PDF a kopírování do Excelu</li>'+(seen==='2.6'?'':'<li>Hoopers: přepínač Agility | Hoopers nahoře na Domů a v Parkurech. Parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb</li>')+(seen==='2.5'||seen==='2.6'?'':'<li>Deník: Kde ztrácíš body. Z výsledků na kacr.info aplikace spočítá diskvalifikace, chyby, odmítnutí a čas a doporučí sekvenci na trénink</li><li>Úspěšnost podle rozhodčího a povrchu; rozhodčí z kacr.info se počítají do postupu</li><li>Den závodů na Domů: den předem a během závodu navigace, rozhodčí, počet týmů v kategorii, seznam věcí s sebou a zápis výsledku</li><li>U závodu v deníku jde zaškrtnout, co se stalo (tyčka, zóna, slalom…)</li>')+'</ul>'+
     '<div class="acts"><button class="btn primary" data-a="x">Pokračovat</button></div>',function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
   return true;
 }
