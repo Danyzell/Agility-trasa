@@ -21,6 +21,10 @@ module.exports = async function ({ browser, base }) {
       ok(await ev(() => zoom) === 1 && svg.w <= wrap.w + 1 && svg.h <= wrap.h + 1, 'celá plocha se má vejít při 100 %: ' + JSON.stringify(svg));
       ok(pal.l >= wrap.r && pal.b <= H && ttl.l >= wrap.r && ttl.t < 60, 'paleta a název parkuru mají být v pravém sloupci nahoře: ' + JSON.stringify([pal, ttl]));
       ok(await ev(() => document.documentElement.scrollWidth <= innerWidth), 'stránka přetéká do strany');
+      /* Zpět a Znovu pod plochou vedle přiblížení, režimy v pravém sloupci v jednom řádku */
+      const ur = await rect('#undoAll'), rd = await rect('#redoAll'), mr = await rect('#modeRow');
+      ok(ur && rd && ur.t >= wrap.b - 1 && rd.b <= H && rd.r <= wrap.r + 1 && ur.h >= 44, 'Zpět a Znovu mají být na šířku pod plochou: ' + JSON.stringify([ur, rd]));
+      ok(mr.h < 60, 'režimy se mají vejít do jednoho řádku: ' + JSON.stringify(mr));
       /* výběr překážky: panel vpravo dole, plocha se nehne a paleta zůstane vidět */
       const pt = await ev(() => { const r = document.querySelector('#obs .ob').getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
       await page.touchscreen.tap(pt.x, pt.y); await page.waitForTimeout(600);
@@ -64,6 +68,7 @@ module.exports = async function ({ browser, base }) {
     await page.setViewportSize({ width: 390, height: 844 }); await page.waitForTimeout(300);
     const z2 = await ev(() => zoom);
     ok(z1 === 1 && z2 === 2, 'přiblížení po otočení: ' + z1 + ' / ' + z2);
+    ok(await ev(() => !!$('undoAll').closest('#modeRow') && !!$('redoAll').closest('#modeRow')), 'na výšku mají být Zpět a Znovu zase v řádku režimů');
     const nav = await rect('.nav');
     ok(nav.w > 300 && nav.b > 780, 'na výšku má být lišta zase dole: ' + JSON.stringify(nav));
   });

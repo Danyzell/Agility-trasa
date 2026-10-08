@@ -62,6 +62,8 @@ module.exports = async function ({ browser, base }) {
   T.step('velikost plochy');
   await page.click('#mBuild');
   await page.selectOption('#sizeSelect', '15x10');
+  /* překážky by byly mimo plochu: aplikace se zeptá (Posunout dovnitř, Zmenšit poměrně, Zrušit) */
+  if (await page.isVisible('#scrim')) await T.sheet('in');
   ok(await ev(() => S.W === 15 && S.obs.every(o => o.x <= 15)), 'plocha se nezmenšila');
   await page.click('#undoAll');
   ok(await plan() === start && await ev(() => $('sizeSelect').value === '40x20'), 'Zpět nevrátil velikost plochy');
