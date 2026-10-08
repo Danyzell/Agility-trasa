@@ -328,6 +328,37 @@ module.exports = async function ({ browser, base }) {
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
   });
 
+  await step('změna plochy s překážkami mimo', async () => {
+    await fresh();
+    await setCourse([{ id: 1, type: 'jump', x: 5, y: 5, rot: 0 }, { id: 2, type: 'jump', x: 11, y: 5, rot: 0 }, { id: 3, type: 'dogwalk', x: 30, y: 15, rot: 0 }, { id: 4, type: 'jump', x: 36, y: 3, rot: 90 }], [1, 2, 3, 4]);
+    await ev(() => { S.marks = [{ t: 'warn', x: 35, y: 18 }]; S.hp = [[2, 2], [38, 18]]; touch(); undoReset(); });
+    const snap = () => ev(() => JSON.stringify({ W: S.W, H: S.H, obs: S.obs, hp: S.hp, marks: S.marks }));
+    const s0 = await snap();
+    const inside = () => ev(() => S.obs.every(o => opoly(o).every(q => q.x >= -.05 && q.y >= -.05 && q.x <= S.W + .05 && q.y <= S.H + .05)) && S.marks.every(m => m.x <= S.W && m.y <= S.H) && S.hp.every(p => p[0] <= S.W && p[1] <= S.H));
+    /* zmenšení: otázka, nabídka zůstane na původní ploše; Zrušit nic nezmění */
+    await page.selectOption('#sizeSelect', '20x15'); await page.waitForTimeout(100);
+    let r = await ev(() => ({ open: !$('scrim').hidden, t: $('sheet').textContent, sel: $('sizeSelect').value, acts: [...document.querySelectorAll('#sheet [data-a]')].map(b => b.getAttribute('data-a')).join() }));
+    ok(r.open && /Na ploše 20 × 15 m by byly mimo: 2 překážky\./.test(r.t) && r.sel === '40x20' && r.acts === 'in,scale,x', 'otázka při zmenšení plochy: ' + JSON.stringify(r));
+    await T.sheet('x'); ok((await snap()) === s0, 'Zrušit změnilo plochu');
+    /* Posunout dovnitř: překážky uvnitř zůstanou, kde jsou; Zpět vrátí plochu i polohy */
+    await page.selectOption('#sizeSelect', '20x15'); await T.sheet('in');
+    r = await ev(() => ({ W: S.W, H: S.H, sel: $('sizeSelect').value, p1: [getO(1).x, getO(1).y], p2: [getO(2).x, getO(2).y], und: UNDO.length }));
+    ok(r.W === 20 && r.H === 15 && r.sel === '20x15' && r.p1.join() === '5,5' && r.p2.join() === '11,5' && await inside(), 'Posunout dovnitř: ' + JSON.stringify(r));
+    await page.click('#undoAll');
+    ok((await snap()) === s0 && await ev(() => $('sizeSelect').value === '40x20'), 'Zpět po posunutí dovnitř nevrátil plochu a polohy');
+    /* Zmenšit poměrně: vzdálenosti se zkrátí stejným poměrem (min(20/40, 15/20) = 0,5) */
+    await page.selectOption('#sizeSelect', '20x15'); await T.sheet('scale');
+    r = await ev(() => ({ W: S.W, d12: Math.hypot(getO(1).x - getO(2).x, getO(1).y - getO(2).y) }));
+    ok(r.W === 20 && Math.abs(r.d12 - 3) < .15 && await inside(), 'Zmenšit poměrně: ' + JSON.stringify(r));
+    await page.click('#undoAll'); ok((await snap()) === s0, 'Zpět po zmenšení');
+    /* zvětšení bez otázky */
+    await page.selectOption('#sizeSelect', '40x24'); await page.waitForTimeout(80);
+    ok(await ev(() => $('scrim').hidden && S.W === 40 && S.H === 24 && getO(1).x === 5), 'zvětšení plochy se ptá nebo mění polohy');
+    const miss = await missEn(['Překážky by byly mimo plochu', 'Na ploše 20 × 15 m by byly mimo: 2 překážky.', 'Na ploše 15 × 10 m by byly mimo: 1 překážka.', 'Posunout dovnitř', 'Zmenšit poměrně',
+      'Překážky mimo plochu se posunou ke kraji, ostatní zůstanou, kde jsou.', 'Celý parkur se zmenší, aby se vešel. Rozestupy se úměrně zkrátí, překážky zůstanou stejně velké.']);
+    ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
+  });
+
   await T.ctx.close();
   return T.errs;
 };
