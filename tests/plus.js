@@ -16,7 +16,7 @@ module.exports = async function ({ browser, base }) {
 
   await step('bez odkazu na platbu se nic nezamyká', async () => {
     await prep(20);
-    ok(await ev(() => !PLUS_LINK || /^\d{4}-\d{2}-\d{2}$/.test(PLUS_FROM)), 'k odkazu na platbu patří PLUS_FROM (den spuštění platby)');
+    ok(await ev(() => !PLUS_LINK || plusFrom() > 0), 'k odkazu na platbu patří platné PLUS_FROM (den spuštění platby): ' + await ev(() => PLUS_FROM));
     await ev(() => { PLUS_LINK = ''; PLUS_FROM = ''; });
     const r = await ev(() => ({ ok: plusOK(), trial: plusTrial(), st: plusStatus() }));
     ok(r.ok && !r.trial && /Teď máš všechno zdarma\. Až půjde Plus koupit, dostaneš ještě 14 dní/.test(r.st), 'bez platby: ' + JSON.stringify(r));
@@ -47,6 +47,9 @@ module.exports = async function ({ browser, base }) {
     ok(r.ok && r.trial && r.days === 11, 'uživatel 20 dní, platba 3 dny: ' + JSON.stringify(r));
     await ready(ymd(16));
     ok(await ev(() => !plusOK() && !plusTrial()), 'po 14 dnech od spuštění platby zkušební doba končí');
+    /* překlep v datu spuštění (13. měsíc) nesmí nikomu nic zamknout */
+    await ready('2026-13-01');
+    ok(await ev(() => !plusReady() && plusOK() && !plusTrial()), 'neplatné datum spuštění platby: nic se nezamyká');
   });
 
   await step('po zkušební době: nabídka Plus u placených funkcí', async () => {

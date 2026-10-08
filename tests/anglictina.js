@@ -5,7 +5,8 @@ const { phone } = require('./helpers');
 const fs = require('fs'), path = require('path');
 
 module.exports = async function ({ browser, base }) {
-  const T = await phone(browser); const { page, ok, ev } = T;
+  /* pevné časové pásmo mimo Česko a Slovensko: anglický telefon v Česku má česká pravidla (krok níž), test nesmí záviset na pásmu počítače */
+  const T = await phone(browser, { timezoneId: 'Europe/London' }); const { page, ok, ev } = T;
   const pings = []; let known = false;
   await T.ctx.route(u => !/^http:\/\/(127\.0\.0\.1|localhost)/.test(u.href), r => {
     const u = r.request().url();
@@ -27,8 +28,9 @@ module.exports = async function ({ browser, base }) {
     ok(!(await page.isVisible('#moreBody .prog')) && !/kacr/.test(await page.textContent('#moreBody')), 'Deník nemá ukazovat postup KAČR ani kacr.info');
     await ev(() => { moreTab = 'coach'; show('more'); }); await w(100);
     ok(!/Czech|Česko/.test(await page.textContent('#moreBody')), 'Trenéři: česká skupina se má schovat');
-    await ev(() => { moreTab = 'start'; show('more'); }); await w(100);
-    ok(!/First competitions|První závody/.test(await page.textContent('#moreBody')), 'Začínáme: téma První závody (VP, kacr.info) jen česky');
+    /* témata jsou ve Videích (Začínáme je nemá) */
+    await ev(() => { VID.id = null; show('video'); }); await w(100);
+    ok(/Jump/.test(await page.textContent('#vidList')) && !/First competitions|První závody/.test(await page.textContent('#vidList')), 'Videa: téma První závody (VP, kacr.info) jen česky');
     await ev(() => { moreTab = 'dogs'; show('more'); dogSheet(null); }); await w(100);
     ok(!(await page.isVisible('#sheet .kc-find')) && await page.isVisible('#sheet #dName'), 'okno psa bez hledání na kacr.info');
     await page.fill('#sheet #dName', 'Rex'); await T.sheet('ok');
@@ -73,8 +75,8 @@ module.exports = async function ({ browser, base }) {
       const r = await C.ev(() => ({ lang: LANG, tz: TZ, rules: RU.cc, kacr: KACR_OK, cz: CZONLY, comps: !!$('hmComps') }));
       const cz = cc !== 'FCI';
       ok(r.lang === 'en' && r.tz === tz && r.rules === cc && r.kacr === cz && r.cz === !cz && r.comps === cz, tz + ': ' + JSON.stringify(r));
-      if (cz) { await C.ev(() => { moreTab = 'start'; show('more'); }); await C.page.waitForTimeout(100);
-        ok(/First competitions/.test(await C.page.textContent('#moreBody')), tz + ': téma První závody má být vidět i anglicky'); }
+      await C.ev(() => { VID.id = null; show('video'); }); await C.page.waitForTimeout(100);
+      ok(/First competitions/.test(await C.page.textContent('#vidList')) === cz, tz + ': téma První závody ve Videích ' + (cz ? 'má' : 'nemá') + ' být vidět');
       T.errs.push(...C.errs); await C.ctx.close();
     }
   });

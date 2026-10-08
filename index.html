@@ -847,7 +847,7 @@ body[data-view="plan"] #supBtn,body[data-view="run"] #supBtn{display:none!import
 .hm-rate{align-items:flex-start;}
 .hm-rate .fb-stars{margin-top:4px;}
 .hm-x{flex:0 0 auto; width:44px; height:44px; margin:-8px -8px 0 0; border:0; background:none; color:var(--muted); display:grid; place-items:center;}
-.hm-ask{align-items:flex-start; flex-wrap:wrap; row-gap:4px; margin-top:12px;} .hm-ask .filters{flex:1 0 100%; flex-wrap:wrap; overflow:visible; margin-top:6px;} .hm-ask .chip{min-height:40px; padding:8px 12px;}
+.hm-ask{align-items:flex-start; flex-wrap:wrap; row-gap:4px; margin-top:12px;} .hm-ask .filters{flex:1 0 100%; flex-wrap:wrap; overflow:visible; margin-top:6px;} .hm-ask .chip{min-height:40px; padding:8px 12px; max-width:100%; white-space:normal; text-align:left;}
 .hm-ask.busy .chip{opacity:.5; pointer-events:none;} .hm-ask-ok{align-items:center; flex-wrap:nowrap;} .hm-ask-ok .hm-x{margin:0 -8px 0 0;}
 .hm-x svg{width:20px; height:20px;}
 .dn p{margin:0;}
@@ -1917,6 +1917,7 @@ var I18N_EXTRA={exact:{
 "Sdílení s klubem a kamarády": "Sharing with my club and friends",
 "Připomínky na telefonu": "Reminders on my phone",
 "Aplikace z Google Play": "App from Google Play",
+"Aplikace z App Storu": "App from the App Store",
 "Nic, je to super": "Nothing, it's great",
 "Něco jiného…": "Something else…",
 "Díky, pomůže to!": "Thanks, that helps!",
@@ -3729,6 +3730,8 @@ i18nAdd({
 "Hodnocení běhů": "Run grades",
 "Podle soutěžního řádu KAČR (znění může být novější, ověř na": "According to the KAČR competition rules (the wording may be newer, check at",
 "). Počítají se závody zapsané v deníku u vybraného psa.": "). Competitions recorded in the training log for the selected dog count.",
+"). Počítají se závody zapsané v deníku u vybraného psa. Pravidla jiné země přepneš ve Více → Nastavení.": "). Competitions recorded in the training log for the selected dog count. Switch to another country's rules in More → Settings.",
+"Podle pravidel agility ASKA (znění může být novější, ověř na": "According to the ASKA agility rules (the wording may be newer, check at",
 "＋ Trénink": "＋ Training",
 "＋ Závod": "＋ Competition",
 "Zatím žádné záznamy. Zapiš si trénink nebo výsledek ze závodů.": "No entries yet. Record a training session or a competition result.",
@@ -8852,14 +8855,16 @@ function acctAsk(){
    V aplikaci z Google Play se nekupuje (pravidla Play): jen odkaz, že Plus se spravuje na pawkur.cz. ---------- */
 var PLUSK='agility-plus-v1', FIRSTK='agility-first-v1', TRIAL_DAYS=14, PLUS_PRICE='99 Kč / rok';
 /* odkaz Stripe Payment Link, zákaznický portál a den spuštění platby (RRRR-MM-DD) doplní autor; PLUS_FROM patří k odkazu vždy.
-   Bez odkazu se nic nezamyká: dokud Plus nejde koupit, je všechno zdarma. */
+   Bez odkazu nebo bez platného PLUS_FROM se nic nezamyká: dokud Plus nejde koupit, je všechno zdarma. */
 var PLUS_LINK='', PLUS_PORTAL='', PLUS_FROM='';
 var PLUS=lsGet(PLUSK,null)||{until:0,at:0,src:''};
 var FIRST=(function(){ var f=+lsGet(FIRSTK,0)||0; if(!f){ f=Date.now(); lsSet(FIRSTK,f); } return f; })();
 var PLUS_FEATS=[['3D průlet a rozšířená realita','cube'],['Rozbor, pasti a stavba v terénu','gauge'],['Kde ztrácíš body a rozhodčí z kacr.info','chart'],['Kalkulačka SČP a výsledková listina','timer'],['Neomezené vlastní parkury (zdarma 5)','star']];
-function plusReady(){ return !!PLUS_LINK; }
+/* den spuštění platby jako místní půlnoc; neplatné datum (např. 2026-13-01) = 0, a pak se nic nezamyká */
+function plusFrom(){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(PLUS_FROM||''); if(!m) return 0; var d=new Date(+m[1],+m[2]-1,+m[3]); return d.getMonth()===+m[2]-1&&d.getDate()===+m[3]?d.getTime():0; }
+function plusReady(){ return !!PLUS_LINK&&plusFrom()>0; }
 /* 14 dní od prvního otevření, nejdřív ale ode dne, kdy jde Plus koupit: nikdo nepřijde o funkce dřív, než má jak zaplatit */
-function trialEnd(){ var s=/^\d{4}-\d{2}-\d{2}$/.test(PLUS_FROM)?new Date(PLUS_FROM+'T00:00').getTime():0; return Math.max(FIRST,s||0)+TRIAL_DAYS*864e5; }
+function trialEnd(){ return Math.max(FIRST,plusFrom())+TRIAL_DAYS*864e5; }
 function plusActive(){ return (+PLUS.until||0)>Date.now(); }
 function plusTrial(){ return plusReady()&&!plusActive()&&Date.now()<trialEnd(); }
 function plusOK(){ return !plusReady()||plusActive()||Date.now()<trialEnd(); }
@@ -8885,14 +8890,14 @@ function plusStatus(){
 }
 function plusBuyHTML(){
   if(plusActive()) return (PLUS_PORTAL?'<a class="btn" href="'+esc(PLUS_PORTAL)+'" target="_blank" rel="noopener">Spravovat předplatné</a>':'')+'<button class="btn" data-plus="refresh">Obnovit stav</button>';
-  if(!PLUS_LINK) return '<p class="hint">Platba se připravuje.</p>'+(AUTH?'<button class="btn" data-plus="refresh">Už mám Plus</button>':'');
+  if(!plusReady()){ var rf=AUTH?'<button class="btn" data-plus="refresh">Už mám Plus</button>':''; return IS_APK?rf:'<p class="hint">Platba se připravuje.</p>'+rf; }
   if(IS_APK) return '<p class="hint">Plus se kupuje a spravuje na <a href="https://pawkur.cz/" target="_blank" rel="noopener">pawkur.cz</a>. Po zaplacení se přihlas stejným účtem Google i tady.</p><button class="btn" data-plus="refresh">Už mám Plus</button>';
   if(!AUTH) return '<button class="btn gbtn" data-acct="in">'+GLOGO+'<span>Přihlásit přes Google a pokračovat</span></button><p class="hint">Plus se váže k účtu, abys ho měl na všech zařízeních.</p>';
   return '<button class="btn primary" data-plus="buy">Koupit Plus za '+PLUS_PRICE+'</button><button class="btn" data-plus="refresh">Už mám Plus</button>';
 }
 function plusFeatsHTML(){ return '<ul class="ticks plus-list">'+PLUS_FEATS.map(function(f){ return '<li>'+esc(T(f[0]))+'</li>'; }).join('')+'</ul>'; }
 function plusSheet(feature){
-  openSheet('<div class="thx"><span class="thx-h plus-h" aria-hidden="true">'+IC.star+'</span><h3>Pawkur Plus</h3><p>'+(feature?esc(T(feature))+' '+T('je součást Pawkur Plus.'):'')+' '+plusStatus()+'</p></div>'+
+  openSheet('<div class="thx"><span class="thx-h plus-h" aria-hidden="true">'+IC.star+'</span><h3>Pawkur Plus</h3><p>'+(feature?esc(T(feature))+' '+T('je součást Pawkur Plus.'):'')+' '+T(plusStatus())+'</p></div>'+
     plusFeatsHTML()+'<p class="hint">'+PLUS_PRICE+', zrušíš kdykoli. Parkury, stopky, trénink doma a deník zůstávají zdarma. <a href="terms.html" target="_blank" rel="noopener">Podmínky</a></p>'+
     '<div class="acts plus-acts">'+plusBuyHTML()+'<button class="btn" data-a="x">Zavřít</button></div>',
     function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
@@ -8904,7 +8909,7 @@ function plusHTML(){
 }
 function plusAct(a){
   if(a==='sheet') plusSheet('');
-  else if(a==='buy'){ if(!AUTH||!PLUS_LINK) return; var u=PLUS_LINK+(PLUS_LINK.indexOf('?')<0?'?':'&')+'client_reference_id='+encodeURIComponent(AUTH.uid)+(AUTH.email?'&prefilled_email='+encodeURIComponent(AUTH.email):''); (window.PLUS_OPEN||function(x){ location.href=x; })(u); }
+  else if(a==='buy'){ if(!AUTH||!plusReady()) return; var u=PLUS_LINK+(PLUS_LINK.indexOf('?')<0?'?':'&')+'client_reference_id='+encodeURIComponent(AUTH.uid)+(AUTH.email?'&prefilled_email='+encodeURIComponent(AUTH.email):''); (window.PLUS_OPEN||function(x){ location.href=x; })(u); }
   else if(a==='refresh'){ if(!AUTH){ toast('Nejdřív se přihlas účtem, se kterým jsi platil.'); return; } toast('Ověřuji…'); plusRefresh(true).then(function(ok){ toast(ok?'Pawkur Plus je aktivní. Díky!':'Plus u tohoto účtu zatím není. Po zaplacení to může chvíli trvat, zkus to za minutu.',5000); closeSheet(); if(view==='more') moreRender(); }); }
 }
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-plus]'); if(b) plusAct(b.getAttribute('data-plus')); });
@@ -9163,8 +9168,14 @@ function rateHomeHTML(){
    Odpověď jde přes funkci feedback s příznakem quick: uloží se, autorovi nechodí e-mailem, souhrn je ve Více → O aplikaci → Návštěvnost.
    Zpráva je vždy česky („Co chybí: …“), ať se odpovědi z obou jazyků sečtou. ---------- */
 var VISK='agility-visits-v1', ASKK='agility-ask-v1';
-var VISITS=(function(){ var v=lsGet(VISK,null)||{n:0,at:0}; if(Date.now()-(+v.at||0)>30*6e4){ v={n:(+v.n||0)+1,at:Date.now()}; lsSet(VISK,v); } return v; })();
-var ASK_OPTS=[['parkury','Víc parkurů'],['snaz','Jednodušší ovládání'],['klub','Sdílení s klubem a kamarády'],['upoz','Připomínky na telefonu'],['play','Aplikace z Google Play'],['nic','Nic, je to super'],['jine','Něco jiného…']], ASK_BUSY=false;
+/* návštěva = otevření aspoň 30 minut po začátku předchozí; čas v budoucnu (špatně nastavené hodiny) se bere jako nová návštěva */
+function visitTick(){ var v=lsGet(VISK,null)||{n:0,at:0}, d=Date.now()-(+v.at||0); if(d>30*6e4||d<0){ v={n:(+v.n||0)+1,at:Date.now()}; lsSet(VISK,v); } return v; }
+var VISITS=visitTick();
+/* na Androidu aplikace zůstává v paměti: návrat po 30 minutách je taky návštěva (karta se ukáže při dalším vykreslení Domů) */
+document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') VISITS=visitTick(); });
+var ASK_IOS=/iP(hone|ad|od)/.test(navigator.userAgent||'')||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+var ASK_OPTS=[['parkury','Víc parkurů'],['snaz','Jednodušší ovládání'],['klub','Sdílení s klubem a kamarády'],['upoz','Připomínky na telefonu']]
+  .concat(IS_APK?[]:[['play',ASK_IOS?'Aplikace z App Storu':'Aplikace z Google Play']]).concat([['nic','Nic, je to super'],['jine','Něco jiného…']]), ASK_BUSY=false;
 function askHomeHTML(){
   if(!VISITS||VISITS.n<2||!IS_SRV||lsGet(ASKK,null)) return '';
   /* nadpis a křížek v řádku, odpovědi pod nimi přes celou šířku karty */
@@ -9172,19 +9183,24 @@ function askHomeHTML(){
     '<button class="hm-x" data-h="askx" aria-label="Zavřít">'+IC.x+'</button>'+
     '<div class="filters" role="group" aria-label="Co ti v Pawkuru chybí?">'+ASK_OPTS.map(function(o){ return '<button class="chip" data-ask="'+o[0]+'">'+o[1]+'</button>'; }).join('')+'</div></div>';
 }
+/* rychlá odpověď na server (funkce feedback, quick: uloží se bez e-mailu) */
+function askPost(k,label){
+  var ac=window.AbortController?new AbortController():null, to=setTimeout(function(){ if(ac) ac.abort(); },15000);
+  return fetch(SB_URL+'/functions/v1/feedback',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify({kind:k==='nic'?'praise':'idea',msg:'Co chybí: '+label,quick:true,lang:LANG,ver:APPV,device:devId()}),signal:ac?ac.signal:undefined})
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ clearTimeout(to); if(!r.ok||!j||!j.ok) throw new Error(j&&j.error||('HTTP '+r.status)); return j; }); },
+      function(e){ clearTimeout(to); throw e; });
+}
 function askSend(k){
   var o=ASK_OPTS.filter(function(x){ return x[0]===k; })[0]; if(!o||ASK_BUSY) return;
-  /* Něco jiného: rovnou formulář Napsat autorovi */
-  if(k==='jine'){ lsSet(ASKK,{k:k,at:Date.now()}); var cj=$('hmAsk'); if(cj) cj.remove(); FB.kind='idea'; fbSave(); FB_SENT=false; moreOpen('fb'); return; }
+  /* Něco jiného: započítá se do souhrnu (bez čekání) a hned se otevře formulář Napsat autorovi */
+  if(k==='jine'){ askPost(k,o[1]).then(null,function(){}); lsSet(ASKK,{k:k,at:Date.now()}); var cj=$('hmAsk'); if(cj) cj.remove(); FB.kind='idea'; fbSave(); FB_SENT=false; moreOpen('fb'); return; }
   ASK_BUSY=true; var card=$('hmAsk'); if(card) card.classList.add('busy');
-  var ac=window.AbortController?new AbortController():null, to=setTimeout(function(){ if(ac) ac.abort(); },15000);
-  fetch(SB_URL+'/functions/v1/feedback',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
-    body:JSON.stringify({kind:k==='nic'?'praise':'idea',msg:'Co chybí: '+o[1],quick:true,lang:LANG,ver:APPV,device:devId()}),signal:ac?ac.signal:undefined})
-    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if(!r.ok||!j||!j.ok) throw new Error(j&&j.error||('HTTP '+r.status)); return j; }); })
-    .then(function(){ clearTimeout(to); ASK_BUSY=false; lsSet(ASKK,{k:k,at:Date.now()});
+  askPost(k,o[1])
+    .then(function(){ ASK_BUSY=false; lsSet(ASKK,{k:k,at:Date.now()});
         var c=$('hmAsk'); if(c) c.outerHTML='<div class="hm-ch hm-ask hm-ask-ok" id="hmAsk"><div class="tx"><b>Díky, pomůže to!</b><span>Chceš k tomu něco napsat?</span></div>'+
           '<button class="hm-go" data-h="askmore">Napsat</button><button class="hm-x" data-h="askx" aria-label="Zavřít">'+IC.x+'</button></div>'; },
-      function(e){ clearTimeout(to); ASK_BUSY=false; var c=$('hmAsk'); if(c) c.classList.remove('busy');
+      function(){ ASK_BUSY=false; var c=$('hmAsk'); if(c) c.classList.remove('busy');
         toast(navigator.onLine===false?T('Bez připojení odpověď nejde poslat. Zkus to později.'):T('Odpověď se nepodařilo poslat. Zkus to později.'),4500); });
 }
 function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); if(moreTab==='about') statsLoad(); },0);

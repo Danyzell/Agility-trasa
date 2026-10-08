@@ -1,7 +1,8 @@
 /* Otázka „Co ti v Pawkuru chybí?“ na Domů: od druhé návštěvy (otevření aspoň 30 minut po předchozím), jen ve verzi se serverem
    a jen dokud ji člověk nezodpoví nebo nezavře. Odpověď jedním klepnutím jde přes funkci feedback (quick: true, zpráva vždy česky),
    pak poděkování s tlačítkem Napsat (formulář Napsat autorovi). Chyba serveru nebo bez připojení: hláška, karta zůstane
-   a otázka se nepočítá za zodpovězenou. Něco jiného… otevře rovnou formulář, křížek kartu schová natrvalo. Angličtina: všechny texty karty mají překlad. */
+   a otázka se nepočítá za zodpovězenou. Něco jiného… se započítá (rychlá odpověď na pozadí) a otevře rovnou formulář, křížek kartu schová natrvalo.
+   Návrat do aplikace po 30 minutách (visibilitychange) je taky návštěva, hodiny v budoucnu návštěvy nezastaví. Angličtina: všechny texty karty mají překlad. */
 const { phone, offline } = require('./helpers');
 
 module.exports = async function ({ browser, base }) {
@@ -9,7 +10,7 @@ module.exports = async function ({ browser, base }) {
   const T = await phone(browser, { timezoneId: 'Europe/London' }); const { page, ok, ev } = T;
   await offline(T.ctx, { get_catalog: { version: 0 } });
   /* funkce feedback: odpověď si krok nastaví (stav a tělo, nebo 'abort' = přerušené spojení); hold pozdrží odpověď, dokud ji test nepustí */
-  const sent = []; let reply = { status: 200, body: { ok: true, mailed: false } }, hold = null;
+  const OK = { status: 200, body: { ok: true, mailed: false } }, sent = []; let reply = OK, hold = null;
   await T.ctx.route(/\/functions\/v1\/feedback$/, async r => {
     const q = r.request(); let b; try { b = JSON.parse(q.postData() || ''); } catch (e) { b = { neplatne: q.postData() }; }
     sent.push({ method: q.method(), headers: q.headers(), b });
@@ -17,7 +18,6 @@ module.exports = async function ({ browser, base }) {
     if (reply === 'abort') return r.abort('internetdisconnected');
     await r.fulfill({ status: reply.status, contentType: 'application/json', body: JSON.stringify(reply.body) });
   });
-  const OK = { status: 200, body: { ok: true, mailed: false } };
   const step = async (label, fn) => { T.step(label); try { await fn(); } catch (e) { T.errs.push(`[${label}] krok selhal: ${String(e && e.message || e).split('\n')[0]}`); } };
   const w = (ms) => page.waitForTimeout(ms);
   /* počká, až podmínka platí (nejvýš ms) */
@@ -62,7 +62,7 @@ module.exports = async function ({ browser, base }) {
     ok(c && !c.ok && !c.busy && c.chips === 7 && /Co ti v Pawkuru chybí\?/.test(c.txt) && /Víc parkurů/.test(c.txt) && /Něco jiného…/.test(c.txt), 'karta s otázkou: ' + JSON.stringify(c));
     ok(await page.isVisible('#hmAsk [data-ask="parkury"]') && await page.isVisible('#hmAsk [data-h="askx"]'), 'karta nemá viditelné volby nebo křížek');
     /* pod hlavičkou a dnem závodů, před Parkury pro tebe */
-    ok(await ev(() => { const c = $('hmAsk'), sec = document.querySelector('#v-home .hm-sec'); return !!sec && !!(c.compareDocumentPosition(sec) & 4) && !!($('hmDay').compareDocumentPosition(c) & 4); }), 'karta má být mezi dnem závodů a Parkury pro tebe');
+    ok(await ev(() => { const c = $('hmAsk'), sec = document.querySelector('#v-home > .hm-sec'); return !!sec && !!(c.compareDocumentPosition(sec) & 4) && !!($('hmDay').compareDocumentPosition(c) & 4); }), 'karta má být mezi dnem závodů a Parkury pro tebe');
     ok(sent.length === 0, 'samotné zobrazení karty nemá nic posílat');
   });
 
@@ -160,7 +160,9 @@ module.exports = async function ({ browser, base }) {
     await ev(() => { FB.kind = 'bug'; fbSave(); FB_SENT = true; });
     await tap('#hmAsk [data-ask="jine"]'); await w(200);
     ok(await ev(() => view === 'more' && moreTab === 'fb') && await page.isVisible('#moreBody #fbMsg') && await page.isVisible('#moreBody [data-fbk="idea"].on'), 'Něco jiného… má otevřít formulář Napsat autorovi s druhem Nápad');
-    ok(sent.length === 0 && ((await saved()).ask || {}).k === 'jine', 'Něco jiného… nemá nic posílat a otázka se má zapamatovat: ' + JSON.stringify((await saved()).ask));
+    await until(async () => sent.length > 0, 1500);
+    ok(sent.length === 1 && sent[0].b.quick === true && sent[0].b.msg === 'Co chybí: Něco jiného…' && sent[0].b.kind === 'idea', 'Něco jiného… se má započítat jednou rychlou odpovědí: ' + JSON.stringify(sent.map(x => x.b)));
+    ok(((await saved()).ask || {}).k === 'jine', 'Něco jiného… se má zapamatovat: ' + JSON.stringify((await saved()).ask));
     await page.click('.nav [data-v="home"]'); await w(150);
     ok(!(await card()), 'po Něco jiného… se otázka na Domů vrátila');
   });
@@ -174,6 +176,28 @@ module.exports = async function ({ browser, base }) {
     ok(sent.length === 1 && ((await saved()).ask || {}).k === 'play', 'odpověď před Napsat: ' + JSON.stringify((await saved()).ask));
     await page.click('.nav [data-v="home"]'); await w(150);
     ok(!(await card()), 'po návratu na Domů se otázka vrátila');
+  });
+
+  await step('návštěvy: návrat do aplikace a špatné hodiny', async () => {
+    /* aplikace zůstala v paměti: návrat po 31 minutách je další návštěva */
+    await prep(1, 0, null); await reopen();
+    await ev(() => { lsSet('agility-visits-v1', { n: 1, at: Date.now() - 31 * 6e4 }); document.dispatchEvent(new Event('visibilitychange')); });
+    ok((await saved()).vis.n === 2 && await ev(() => VISITS.n === 2), 'návrat do aplikace po 31 minutách se má počítat jako návštěva: ' + JSON.stringify((await saved()).vis));
+    /* čas poslední návštěvy v budoucnu (špatně nastavené hodiny): další otevření se počítá */
+    await prep(1, -600, null); await reopen();
+    ok((await saved()).vis.n === 2, 'čas v budoucnu nemá zastavit počítání návštěv: ' + JSON.stringify((await saved()).vis));
+  });
+
+  await step('obchod podle telefonu', async () => {
+    const C = await phone(browser, { timezoneId: 'Europe/London', userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1' });
+    await offline(C.ctx, { get_catalog: { version: 0 } });
+    await C.page.goto(base + '/#home'); await C.page.waitForTimeout(300);
+    await C.ev(() => { localStorage.setItem('agility-onb-v1', JSON.stringify({ done: 1, v: 2 })); localStorage.setItem('agility-visits-v1', JSON.stringify({ n: 1, at: Date.now() - 31 * 6e4 })); localStorage.setItem('agility-iosg-v1', '1'); });
+    await C.page.goto('about:blank'); await C.page.goto(base + '/#home'); await C.page.waitForTimeout(400); await C.ev(() => { closeSheet(); });
+    const t = await C.ev(() => { const c = $('hmAsk'); return c ? c.innerText : ''; });
+    ok(/Aplikace z App Storu/.test(t) && !/Google Play/.test(t), 'na iPhonu má být volba App Store: ' + t.replace(/\s+/g, ' ').slice(0, 200));
+    T.errs.push(...C.errs); await C.ctx.close();
+    ok(await ev(() => trLookup('Aplikace z App Storu') != null), 'chybí překlad volby App Store');
   });
 
   await step('zodpovězená nebo zavřená otázka se neukáže', async () => {
