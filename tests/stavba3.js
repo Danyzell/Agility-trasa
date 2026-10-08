@@ -386,6 +386,46 @@ module.exports = async function ({ browser, base }) {
     ok(!(await missEn(['⟂ Natočit překážky podle trasy', 'Překážky už jsou natočené podle trasy'])).length, 'chybí anglický překlad natočení');
   });
 
+  await step('drobnosti: natočení podle posledního, kopírování, strana psovoda', async () => {
+    await fresh(); await ev(() => { PLANUI.rot = {}; lsSet('agility-planui-v1', PLANUI); });
+    await setCourse([{ id: 1, type: 'jump', x: 5, y: 5, rot: 0 }, { id: 2, type: 'jump', x: 12, y: 5, rot: 0, v: 'wall' }, { id: 3, type: 'tunnel', x: 22, y: 5, rot: 0, len: 5 }], [1, 2, 3]);
+    /* natočení: skok otočený o 30° → nový skok má 30°, zeď zůstane 0°, dokud ji neotočíš */
+    await T.tapField(5, 5); await page.click('#rotR'); await page.click('#rotR');
+    await ev(() => { sel = null; tool = 'jump'; ui(); }); await T.tapField(30, 15);
+    let r = await ev(() => S.obs[S.obs.length - 1]); ok(r.type === 'jump' && !r.v && r.rot === 30, 'nový skok nemá natočení posledního skoku: ' + JSON.stringify(r));
+    await ev(() => { sel = null; tool = 'jump:wall'; ui(); }); await T.tapField(30, 5);
+    r = await ev(() => S.obs[S.obs.length - 1]); ok(r.v === 'wall' && r.rot === 0, 'zeď převzala natočení skoku: ' + JSON.stringify(r));
+    await ev(() => { $('rot').value = 90; $('rot').dispatchEvent(new Event('input')); $('rot').dispatchEvent(new Event('change')); });
+    await ev(() => { sel = null; tool = 'jump:wall'; ui(); }); await T.tapField(36, 10);
+    r = await ev(() => S.obs[S.obs.length - 1]); ok(r.v === 'wall' && r.rot === 90, 'nová zeď nemá natočení poslední zdi: ' + JSON.stringify(r));
+    ok(await ev(() => lsGet('agility-planui-v1', {}).rot.jump === 30 && lsGet('agility-planui-v1', {}).rot['jump:wall'] === 90), 'natočení se nepamatuje');
+    /* kopírování: další klepnutí pokládají kopie, jiná akce ho ukončí */
+    await ev(() => { tool = null; sel = null; ui(); render(); });
+    await T.tapField(22, 5); await page.click('#dupBtn');
+    const n0 = await ev(() => S.obs.length);
+    ok(await ev(() => !!COPYT && $('dupBtn').classList.contains('on') && /další kopii \(tunel\)/.test($('hint').textContent)), 'kopírování se nezapnulo');
+    await T.tapField(10, 15); await T.tapField(16, 15);
+    r = await ev(n => S.obs.slice(n).map(o => ({ t: o.type, x: o.x, y: o.y, len: o.len })), n0);
+    ok(r.length === 2 && r.every(o => o.t === 'tunnel' && o.len === 5 && Math.abs(o.y - 15) < .2) && Math.abs(r[0].x - 10) < .2 && Math.abs(r[1].x - 16) < .2, 'kopie klepnutím: ' + JSON.stringify(r));
+    await page.click('#zIn'); ok(await ev(() => !!COPYT), 'přiblížení ukončilo kopírování');
+    await page.click('#rotR'); ok(await ev(() => !COPYT && !$('dupBtn').classList.contains('on')), 'jiná akce kopírování neukončila');
+    const n1 = await ev(() => S.obs.length); await ev(() => { zoom = 1; ui(); }); await T.tapField(30, 18);
+    ok(await ev(n => S.obs.length === n && sel === null, n1), 'po ukončení kopírování klepnutí do volného místa pořád pokládá kopii');
+    /* znovu Kopírovat kopírování vypne */
+    await T.tapField(5, 5); await page.click('#dupBtn'); await page.waitForTimeout(500); await page.click('#dupBtn');
+    ok(await ev(() => !COPYT), 'druhé Kopírovat kopírování nevypnulo');
+    /* Dráha psovoda: L nebo P doplní další řádky bez strany */
+    await setCourse([{ id: 1, type: 'jump', x: 5, y: 5, rot: 0 }, { id: 2, type: 'jump', x: 11, y: 5, rot: 0 }, { id: 3, type: 'jump', x: 17, y: 5, rot: 0 }, { id: 4, type: 'jump', x: 23, y: 5, rot: 0 }, { id: 5, type: 'jump', x: 29, y: 5, rot: 0 }], [1, 2, 3, 4, 5]);
+    await ev(() => setPanel('side'));
+    const sides = () => ev(() => S.sides.map(s => s || '-').join(''));
+    await page.click('#routeList [data-sd="1"][data-v="L"]'); ok((await sides()) === '-LLLL', 'L nedoplnilo další řádky: ' + await sides());
+    await page.click('#routeList [data-sd="3"][data-v="P"]'); ok((await sides()) === '-LLPL', 'P má změnit jen svůj řádek, další už stranu mají: ' + await sides());
+    await page.click('#routeList [data-sd="0"][data-v="P"]'); ok((await sides()) === 'PLLPL', 'první řádek: ' + await sides());
+    await page.click('#routeList [data-sd="1"][data-v="L"]'); ok((await sides()) === 'P-LPL', 'opětovné L stranu nezrušilo: ' + await sides());
+    await ev(() => setPanel(null)); await page.click('#undoAll'); ok((await sides()) === 'PLLPL', 'Zpět po straně psovoda');
+    ok(await ev(() => trLookup('Klepnutím do volného místa polož další kopii (tunel). Kopírování ukončíš jinou akcí nebo znovu tlačítkem Kopírovat.') === 'Tap an empty spot to place another copy (tunnel). Any other action, or Copy again, stops copying.'), 'překlad nápovědy kopírování');
+  });
+
   await T.ctx.close();
   return T.errs;
 };
