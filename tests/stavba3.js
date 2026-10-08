@@ -237,6 +237,47 @@ module.exports = async function ({ browser, base }) {
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
   });
 
+  await step('Zpět a Znovu', async () => {
+    await fresh();
+    await setCourse([{ id: 1, type: 'jump', x: 5, y: 10, rot: 0 }, { id: 2, type: 'tunnel', x: 15, y: 10, rot: 0, len: 5 }], [1, 2]);
+    const snap = () => ev(() => JSON.stringify([S.obs, S.route]));
+    const s0 = await snap();
+    ok(await ev(() => $('undoAll').disabled && $('redoAll').disabled), 'Zpět a Znovu mají být po načtení neaktivní');
+    await T.tapField(25, 15); const s1 = await snap();               /* položení skoku */
+    await ev(() => { const o = getO(1); o.x = 7; touch(); render(); }); const s2 = await snap();   /* přesun */
+    await ev(() => { sel = 2; rotBy(15); }); const s3 = await snap();  /* otočení tunelu */
+    await page.click('#undoAll');
+    ok((await snap()) === s2 && /^Vráceno: otočení tunelu$/.test(await page.textContent('#toast')) && !(await ev(() => $('redoAll').disabled)), 'Zpět: ' + await page.textContent('#toast'));
+    await page.click('#undoAll');
+    ok((await snap()) === s1 && /^Vráceno: přesun skoku$/.test(await page.textContent('#toast')), 'Zpět přesunu: ' + await page.textContent('#toast'));
+    await page.click('#redoAll');
+    ok((await snap()) === s2 && /^Znovu: přesun skoku$/.test(await page.textContent('#toast')), 'Znovu: ' + await page.textContent('#toast'));
+    await page.keyboard.press('Control+Shift+Z');
+    ok((await snap()) === s3 && await ev(() => $('redoAll').disabled), 'Ctrl+Shift+Z neprovedl znovu');
+    await page.keyboard.press('Control+z'); await page.keyboard.press('Control+z'); await page.keyboard.press('Control+z');
+    ok((await snap()) === s0 && /^Vráceno: položení skoku$/.test(await page.textContent('#toast')) && await ev(() => $('undoAll').disabled && !S.meta.dirty), 'Ctrl+Z třikrát nevrátil vše');
+    await page.keyboard.press('Control+y');
+    ok((await snap()) === s1, 'Ctrl+Y neprovedl znovu');
+    /* nová změna po Zpět: Znovu už nejde */
+    await page.click('#undoAll'); await ev(() => { getO(1).y = 12; touch(); render(); });
+    ok(await ev(() => $('redoAll').disabled && REDO.length === 0), 'po nové změně jde pořád Znovu');
+    /* Trasa: Odebrat poslední z trasy */
+    await page.click('#mRoute');
+    ok((await page.textContent('#undoBtn')).trim() === 'Odebrat poslední z trasy', 'popisek Odebrat poslední z trasy');
+    await page.click('#undoBtn'); ok(await ev(() => S.route.join() === '1'), 'Odebrat poslední z trasy');
+    /* řádek s režimy a Zpět/Znovu se vejde i na 360 px (popisky režimů nejsou oříznuté) */
+    for (const [w, h] of [[360, 740], [390, 844]]) {
+      await page.setViewportSize({ width: w, height: h }); await page.waitForTimeout(60);
+      const r = await ev(() => { const row = $('modeRow').getBoundingClientRect(), seg = document.querySelector('#modeRow .seg'), els = ['undoAll', 'redoAll', 'toolsBtn'].map(id => $(id).getBoundingClientRect());
+        return { inRow: els.every(q => q.left >= row.left - .5 && q.right <= row.right + .5 && q.height >= 44), seg: seg.scrollWidth <= seg.clientWidth + 1, btns: [...seg.querySelectorAll('button')].every(b => b.scrollWidth <= b.clientWidth + 1), order: els[0].right <= els[1].left + 1 }; });
+      ok(r.inRow && r.seg && r.btns && r.order, `${w} px: řádek režimů s Zpět a Znovu přetéká: ` + JSON.stringify(r));
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    const miss = await missEn(['Odebrat poslední z trasy', 'Znovu provést', 'Zpět a Znovu', 'Vráceno: přesun skoku', 'Znovu: otočení tunelu', 'Vráceno: položení dvojitého skoku', 'Vráceno: smazání překážek', 'Vráceno: velikost plochy', 'Vráceno: přidání do trasy', 'Vráceno: úprava celého parkuru']);
+    ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
+    ok(await ev(() => trLookup('Vráceno: přesun skoku') === 'Undone: moving the jump' && trLookup('Znovu: otočení tunelu') === 'Redone: rotating the tunnel'), 'překlad hlášky Zpět: ' + await ev(() => trLookup('Vráceno: přesun skoku')));
+  });
+
   await T.ctx.close();
   return T.errs;
 };

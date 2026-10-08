@@ -976,6 +976,14 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 .fcilist li.tap:active{background:var(--sunk);}
 #field .ob.fcifocus{animation:fciBlink .45s ease-in-out 4 alternate;}
 @keyframes fciBlink{from{opacity:1;} to{opacity:.2;}}
+/* Zpět a Znovu jako dvojice vedle režimů; na úzkém telefonu užší tlačítka režimů, ať se řádek vejde */
+#modeRow{gap:6px;}
+.undoseg{display:inline-flex; flex:0 0 auto;}
+#modeRow .undoseg .btn{width:38px; padding:8px 0; justify-content:center;}
+#modeRow .undoseg .btn:first-child{border-top-right-radius:0; border-bottom-right-radius:0;}
+#modeRow .undoseg .btn+.btn{border-top-left-radius:0; border-bottom-left-radius:0; border-left-width:0;}
+@media (max-width:400px){ #modeRow .seg button{padding-left:8px; padding-right:8px;} }
+@media (max-width:380px){ #modeRow .seg button{padding-left:5px; padding-right:5px;} }
 /* výsledková listina pro pořadatele */
 .listina .lhead{display:flex; flex-direction:column; gap:2px;} .listina .lhead b{font-family:var(--display); font-size:20px;} .listina .lhead span{color:var(--muted); font-size:13.5px;}
 .listina h3{margin:12px 0 4px; font-size:16px; font-weight:600;}
@@ -1017,7 +1025,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
     <div class="plansum"><div class="specs" id="specs"></div><button class="fcibar" id="fciBar" hidden></button></div>
     <div class="row" id="modeRow">
       <div class="seg" role="group" aria-label="Režim"><button id="mView">Prohlížet</button><button id="mBuild" class="on">Stavba</button><button id="mRoute">Trasa</button></div>
-      <button class="btn" id="undoAll" title="Zpět: vrátit poslední změnu plánu" aria-label="Zpět" data-ic="undo" disabled></button>
+      <span class="undoseg" role="group" aria-label="Zpět a Znovu"><button class="btn" id="undoAll" title="Zpět: vrátit poslední změnu plánu" aria-label="Zpět" data-ic="undo" disabled></button><button class="btn" id="redoAll" title="Znovu: vrátit vrácenou změnu" aria-label="Znovu provést" data-ic="redo" disabled></button></span>
       <span class="grow"></span>
       <button class="btn" id="toolsBtn" aria-label="Nástroje" title="Nástroje" aria-expanded="false" aria-controls="planTools" data-ic="dots"><span class="lbl">Nástroje</span></button>
     </div>
@@ -1063,7 +1071,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       </div>
     </div>
     <div class="row" id="routeTools" hidden>
-      <button class="btn" id="undoBtn">↶ Vrátit poslední</button>
+      <button class="btn" id="undoBtn">Odebrat poslední z trasy</button>
       <button class="btn" id="orientAll">⟂ Natočit skoky podle trasy</button>
       <button class="btn" id="revRoute">⇄ Obrátit trasu</button>
       <button class="btn danger" id="clrRoute">Smazat trasu</button>
@@ -1415,6 +1423,15 @@ var I18N_EXTRA={exact:{
 "Název parkuru": "Course name",
 "Název, třída a autor upraveny": "Name, class and author updated",
 "Rozmístění uloženo do Moje": "Layout saved to Mine",
+"Znovu provést": "Redo",
+"Znovu: vrátit vrácenou změnu": "Redo: restore the undone change",
+"Zpět a Znovu": "Undo and redo",
+"Odebrat poslední z trasy": "Remove last from route",
+"velikost plochy": "field size", "úprava celého parkuru": "whole course edited", "přidání do trasy": "adding to the route", "odebrání z trasy": "removing from the route",
+"změna trasy": "route change", "otočka v trase": "wrap on the route", "strana psovoda": "handler side", "dráha psovoda": "handler's path", "značky křížení": "crossing marks", "změna plánu": "plan change",
+"položení": "placing the", "smazání": "deleting the", "přesun": "moving the", "otočení": "rotating the", "úprava": "editing the",
+"skoku": "jump", "zdi": "wall", "dvojitého skoku": "spread jump", "tunelu": "tunnel", "slalomu": "weave poles", "A-rampy": "A-frame", "kladiny": "dog walk", "houpačky": "see-saw",
+"kruhu": "tyre", "skoku dalekého": "long jump", "oblouku": "hoop", "sudu": "barrel", "plůtku": "gate", "krátkého tunelu": "short tunnel", "prostoru psovoda": "handling area", "překážek": "obstacles",
 /* postup a kalkulačka */
 "Kalkulačka SČP a MČP": "SCT and MCT calculator",
 "Standardní a maximální čas parkuru z délky trati, bez kreslení parkuru. Rychlost je z nastavení v Běhu (Rychlost pro SČP), můžeš ji přepsat.": "Standard and maximum course time from the course length, without drawing a course. The speed comes from the Run settings (Speed for SCT); you can override it.",
@@ -2345,6 +2362,9 @@ var I18N_EXTRA={exact:{
 ["^Překážky blíž než 1 m: (.+?) \\(FCI: aspoň 1 m mezi překážkami\\)$","Obstacles closer than 1 m: @1 (FCI: at least 1 m between obstacles)"],
 ["^Rovný nájezd na dvojitý skok, kruh a skok daleký: (.+)$","Straight approach to the spread jump, tyre and long jump: @1"],
 ["^Nájezd pod úhlem \\(FCI doporučuje rovně, do (\\d+)°\\): (.+)$","Angled approach (FCI recommends straight, up to $1°): @2"],
+["^Vráceno: (.+)$","Undone: @1"],
+["^Znovu: (.+)$","Redone: @1"],
+["^(položení|smazání|přesun|otočení|úprava) (skoku|zdi|dvojitého skoku|tunelu|slalomu|A-rampy|kladiny|houpačky|kruhu|skoku dalekého|oblouku|sudu|plůtku|krátkého tunelu|prostoru psovoda|překážek)$","@1 @2"],
 ["^(.+?) č\\. (\\d+) pod úhlem (\\d+)°$","@1 no. $2 at $3°"],
 ["^(.+?) č\\. (\\d+) ze zadní strany$","@1 no. $2 from the back side"],
 ["^Tunel kratší než 5 m ohnutý víc než o 90°: (.+?) \\(FCI: nejvýš 90°\\)$","Tunnel shorter than 5 m bent more than 90°: @1 (FCI: at most 90°)"],
@@ -4955,6 +4975,7 @@ var IC={
   compass:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>',
   back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
   undo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>',
+  redo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg>',
   copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>',
   trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>',
   sliders:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>',
@@ -5040,26 +5061,56 @@ function nid(){return S.obs.reduce(function(m,o){return Math.max(m,o.id);},0)+1;
 function save(){lsSet(KEY,S);}
 /* Zpět: před každou změnou plánu (touch) se zapamatuje předchozí stav. Změny se stejnou skupinou g jdou za sebou
    jako jedna (tah posuvníkem otočení). Načtení jiného parkuru, Nový a plánek z obrázku historii smažou. */
-var UNDO=[], UNDO_CUR=null, UNDO_G=null, UNDO_SV=null; /* UNDO_SV: plán, jak je uložený (null = neznámo) */
+var UNDO=[], REDO=[], UNDO_CUR=null, UNDO_G=null, UNDO_SV=null; /* UNDO_SV: plán, jak je uložený (null = neznámo); REDO: co Zpět vrátil (Znovu) */
 function planSnap(){ syncSides(); return JSON.stringify({W:S.W,H:S.H,obs:S.obs,route:S.route,sides:S.sides,turns:S.turns,hp:S.hp,marks:S.marks||[],chk:S.chk||null}); }
-function undoUI(){ $('undoAll').disabled=!UNDO.length; }
-function undoReset(){ UNDO=[]; UNDO_G=null; UNDO_CUR=planSnap(); UNDO_SV=S.meta.dirty?null:UNDO_CUR; undoUI(); }
+function undoUI(){ $('undoAll').disabled=!UNDO.length; var rb=$('redoAll'); if(rb) rb.disabled=!REDO.length; }
+function undoReset(){ UNDO=[]; REDO=[]; UNDO_G=null; UNDO_CUR=planSnap(); UNDO_SV=S.meta.dirty?null:UNDO_CUR; undoUI(); }
 function touch(g){
   var s=planSnap();
   if(s===UNDO_CUR&&UNDO_CUR!=null) return; /* nic se nezměnilo (klepnutí na už vybranou volbu) */
   if(UNDO_CUR!=null&&!(g&&g===UNDO_G)){ UNDO.push(UNDO_CUR); if(UNDO.length>60) UNDO.shift(); }
+  REDO=[]; /* nová změna: vrácené kroky už znovu provést nejdou */
   UNDO_G=g||null; UNDO_CUR=s;
   S.meta.dirty=true; save(); topbar(); undoUI();
 }
-function undo(){
-  if(!UNDO.length) return;
-  var st=JSON.parse(UNDO.pop()), sz=st.W!==S.W||st.H!==S.H;
+function planApply(st){
+  var sz=st.W!==S.W||st.H!==S.H;
   S.W=st.W; S.H=st.H; S.obs=st.obs; S.route=st.route; S.sides=st.sides; S.turns=st.turns; S.hp=st.hp; S.marks=st.marks||[]; S.chk=st.chk;
   UNDO_CUR=planSnap(); UNDO_G=null;
   if(sel!=null&&!getO(sel)) sel=null;
   S.meta.dirty=UNDO_CUR!==UNDO_SV;
   save(); if(sz){ setSizeSel(); drawGrid(); } render(); ui(); topbar(); undoUI();
 }
+function undo(){
+  if(!UNDO.length) return;
+  var cur=UNDO_CUR, st=UNDO.pop(); REDO.push(cur); planApply(JSON.parse(st)); undoToast('Vráceno',st,cur);
+}
+function redo(){
+  if(!REDO.length) return;
+  var cur=UNDO_CUR, st=REDO.pop(); UNDO.push(cur); planApply(JSON.parse(st)); undoToast('Znovu',cur,st);
+}
+/* krátká hláška, co Zpět nebo Znovu vrátil („Vráceno: přesun skoku“): porovná plán před změnou (a) a po ní (b) */
+var GEN2={jump:'skoku',wall:'zdi',oxer:'dvojitého skoku',tunnel:'tunelu',weave:'slalomu',aframe:'A-rampy',dogwalk:'kladiny',seesaw:'houpačky',tire:'kruhu',longjump:'skoku dalekého',hoop:'oblouku',barrel:'sudu',gate:'plůtku',chute:'krátkého tunelu',ha:'prostoru psovoda'};
+function genOf(o){ return GEN2[o.type==='jump'&&o.v?o.v:o.type]||'překážky'; }
+function undoWhat(a,b){
+  if(a.W!==b.W||a.H!==b.H) return 'velikost plochy';
+  var A={}, B={}, j=JSON.stringify, mv=[], rt=[], ot=[]; a.obs.forEach(function(o){A[o.id]=o;}); b.obs.forEach(function(o){B[o.id]=o;});
+  var add=b.obs.filter(function(o){return !A[o.id];}), del=a.obs.filter(function(o){return !B[o.id];});
+  if(add.length&&!del.length) return add.length===1?'položení '+genOf(add[0]):'položení překážek';
+  if(del.length&&!add.length) return del.length===1?'smazání '+genOf(del[0]):'smazání překážek';
+  b.obs.forEach(function(o){ var p=A[o.id]; if(!p) return; if(p.x!==o.x||p.y!==o.y) mv.push(o); else if(p.rot!==o.rot) rt.push(o); else if(j(p)!==j(o)) ot.push(o); });
+  if(mv.length>2&&mv.length===b.obs.length) return 'úprava celého parkuru';
+  if(mv.length) return mv.length===1?'přesun '+genOf(mv[0]):'přesun překážek';
+  if(rt.length) return rt.length===1?'otočení '+genOf(rt[0]):'otočení překážek';
+  if(ot.length) return 'úprava '+genOf(ot[0]);
+  if(j(a.route)!==j(b.route)) return a.route.length<b.route.length?'přidání do trasy':a.route.length>b.route.length?'odebrání z trasy':'změna trasy';
+  if(j(a.turns)!==j(b.turns)) return 'otočka v trase';
+  if(j(a.sides)!==j(b.sides)) return 'strana psovoda';
+  if(j(a.hp)!==j(b.hp)) return 'dráha psovoda';
+  if(j(a.marks)!==j(b.marks)) return 'značky křížení';
+  return 'změna plánu';
+}
+function undoToast(k,a,b){ try{ toast(k+': '+undoWhat(JSON.parse(a),JSON.parse(b)),1800); }catch(e){} }
 
 (function migrateMy(){
   var L=lsGet(MYK,[]), ch=false;
@@ -5536,8 +5587,13 @@ var PINCH=null;
   wr.addEventListener('touchend',end); wr.addEventListener('touchcancel',end);
 })();
 $('undoAll').onclick=undo;
+$('redoAll').onclick=redo;
+/* Ctrl+Z zpět, Ctrl+Shift+Z a Ctrl+Y znovu */
 document.addEventListener('keydown',function(e){
-  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&!e.altKey&&(e.key==='z'||e.key==='Z')&&view==='plan'&&$('scrim').hidden&&$('ov3d').hidden&&!$('modeRow').hidden&&!/^(INPUT|TEXTAREA|SELECT)$/.test((e.target&&e.target.tagName)||'')){ e.preventDefault(); undo(); }
+  if(!(e.ctrlKey||e.metaKey)||e.altKey||view!=='plan'||!$('scrim').hidden||!$('ov3d').hidden||$('modeRow').hidden||/^(INPUT|TEXTAREA|SELECT)$/.test((e.target&&e.target.tagName)||'')) return;
+  var k=String(e.key||'').toLowerCase();
+  if(k==='z'&&!e.shiftKey){ e.preventDefault(); undo(); }
+  else if((k==='z'&&e.shiftKey)||k==='y'){ e.preventDefault(); redo(); }
 });
 $('lenSel').onchange=function(){var o=getO(sel); if(!o||o.type!=='tunnel') return; var v=+this.value; if(v>=2&&v<=6) o.len=v; touch(); render();};
 $('bendSel').onchange=function(){var o=getO(sel); if(!o||o.type!=='tunnel') return; var v=+this.value; if(v) o.bend=v; else delete o.bend; touch(); render();};
