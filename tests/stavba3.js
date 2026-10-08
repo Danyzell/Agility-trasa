@@ -1,20 +1,16 @@
 /* Stavba na telefonu 3: okno Nový parkur (plocha, třída, název, celá šířka plochy), přiblížení drží střed a výšku plochy,
    paleta ve dvou řádcích, kontrola FCI na ploše i bez trasy (a nová pravidla), uložení bez trasy, Zpět a Znovu, úpravy trasy uprostřed,
-   změna plochy s překážkami mimo, natočení u Hoopers, drobnosti (natočení podle posledního, kopírování, strana psovoda),
-   přesná čísla vybrané překážky, vodítka při tažení, celý parkur (zrcadlo, 180°, posun, výběr víc překážek),
-   sdílení odkazem a porovnání s jiným parkurem. */
+   změna plochy s překážkami mimo, natočení u Hoopers, drobnosti (natočení podle posledního, kopírování, strana psovoda). */
 const { phone, offline } = require('./helpers');
 
 module.exports = async function ({ browser, base }) {
-  let shared = null;
   const T = await phone(browser, { isMobile: true }); const { page, ok, ev } = T;
-  await offline(T.ctx, { get_catalog: { version: 0 }, share_course: () => 'ABC123', get_course: () => shared });
+  await offline(T.ctx, { get_catalog: { version: 0 } });
   const step = async (label, fn) => { T.step(label); try { await fn(); } catch (e) { T.errs.push(`[${label}] krok selhal: ${String(e && e.message || e).split('\n')[0]}`); } };
   const fresh = async (hash) => { await page.goto('about:blank'); await page.goto(base + '/' + (hash == null ? '#plan' : hash)); await page.waitForTimeout(300); await ev(() => { $('toast').hidden = true; }); };
   const cdp = await T.ctx.newCDPSession(page);
   const touches = async (type, pts) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: pts });
   const px = (x, y) => ev(([x, y]) => { const b = $('field').getBoundingClientRect(); return { x: b.left + x / S.W * b.width, y: b.top + y / S.H * b.height }; }, [x, y]);
-  const cz = /[ěščřžýáíéůúňťď]/;
   const missEn = (list) => ev(l => l.filter(t => { const v = trLookup(t); return v == null || /[ěščřžýáíéůúňťď]/.test(v); }), list);
 
   await step('Nový parkur: okno s plochou, třídou a názvem', async () => {
