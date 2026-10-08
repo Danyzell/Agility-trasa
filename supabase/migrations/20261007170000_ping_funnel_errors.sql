@@ -1,6 +1,6 @@
 -- Pawkur: cesta instalace, chyby v aplikaci, časové pásmo telefonu a odpovědi na otázku „Co ti v Pawkuru chybí?“.
 -- Spustit v Supabase → SQL editor: vlož CELÝ obsah tohoto souboru (ne jen jeho název) a dej Run.
--- Skript je idempotentní: dá se spustit znovu (i po starší verzi tohoto souboru), nic nezdvojí ani nesmaže.
+-- Skript je idempotentní: dá se spustit znovu (i po starší verzi tohoto souboru), nic nezdvojí a žádná data nesmaže.
 -- Nové sloupce app_open: platforma, vestavěný prohlížeč (Facebook a spol.), instalační okno ukázané/přijaté, počet chyb a poslední hláška
 -- a časové pásmo telefonu (např. Europe/Prague: říká jen zemi, ne polohu).
 alter table public.app_open
