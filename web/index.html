@@ -140,6 +140,8 @@ footer .sp{flex:1;}
 }
 @media (max-width:759px){ .phones{padding-bottom:0;} .phone.back{display:none;} .phone{width:min(70%,260px);}
   .shots{grid-template-columns:repeat(3,minmax(200px,1fr)); overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:8px; margin-left:-20px; margin-right:-20px; padding-left:20px; padding-right:20px;} .shot{scroll-snap-align:start;} .shot .phone{width:100%; max-width:200px;} }
+/* telefon: fotka v pozadí hlavičky slabší a text výraznější, ať má úvodní odstavec dost kontrastu i přes světlá místa fotky */
+@media (max-width:599px){ .hero-pic{opacity:.12;} .hero .lead{color:rgba(255,255,255,.92);} .hero .note{color:rgba(255,255,255,.82);} }
 @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} }
 </style>
 </head>
