@@ -970,6 +970,12 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 .palette .ob-btn{min-width:0; padding:6px 0; gap:3px;}
 .palette .ob-btn svg{width:22px; height:22px; flex:0 0 auto;}
 .palette .ob-btn span{font-size:11px; line-height:1.15; text-align:center; overflow-wrap:anywhere;}
+/* kontrola FCI: položka s překážkami jde ťuknout (přiblíží plochu), překážky z položky krátce zablikají */
+.fcilist li.tap{cursor:pointer; border-radius:8px; min-height:32px;}
+.fcilist li.tap>span:last-child::after{content:' ›'; color:var(--muted);}
+.fcilist li.tap:active{background:var(--sunk);}
+#field .ob.fcifocus{animation:fciBlink .45s ease-in-out 4 alternate;}
+@keyframes fciBlink{from{opacity:1;} to{opacity:.2;}}
 /* výsledková listina pro pořadatele */
 .listina .lhead{display:flex; flex-direction:column; gap:2px;} .listina .lhead b{font-family:var(--display); font-size:20px;} .listina .lhead span{color:var(--muted); font-size:13.5px;}
 .listina h3{margin:12px 0 4px; font-size:16px; font-weight:600;}
@@ -1394,6 +1400,21 @@ var I18N_EXTRA={exact:{
 "Název (nepovinný)": "Name (optional)",
 "Výška (m)": "Height (m)",
 "Vlastní šířka × výška": "Custom width × height",
+"Bez trasy se kontroluje jen rozmístění překážek. Ostatní pravidla přibydou, až vyznačíš trasu v režimu Trasa.": "Without a route only the placement of the obstacles is checked. The other rules are added once you mark the route in Route mode.",
+"Klepnutím na položku se plocha přiblíží k překážkám, kterých se týká. Rozestupy se měří po dráze psa, jak ji ukazuje plán, i se smyčkami otoček. Pravidla platí pro závody, na trénink si můžeš postavit cokoli.": "Tap an item to zoom the field to the obstacles it concerns. Distances are measured along the dog's path as shown in the plan, including wrap loops. The rules apply to competitions; for training you can build anything.",
+"Ukázat na ploše": "Show on the field",
+"Rovný nájezd na dvojitý skok, kruh a skok daleký": "Straight approach to the spread jump, tyre and long jump",
+"Dvojitý skok v A1 (FCI: v A1 a J1 se nepoužívá)": "Spread jump in A1 (FCI: not used in A1 and J1)",
+"Rozběh a doběh aspoň 6 m": "Run-up and run-out at least 6 m",
+"Uložit jen rozmístění?": "Save just the layout?",
+"Parkur zatím nemá trasu. Uložíš rozmístění překážek a trasu doplníš později v režimu Trasa.": "The course has no route yet. You save the placement of the obstacles and add the route later in Route mode.",
+"Uložit rozmístění": "Save layout",
+"Na ploše zatím nic není. Polož překážky v režimu Stavba.": "The field is still empty. Place obstacles in Build mode.",
+"Název, třída a autor": "Name, class and author",
+"Parkur zatím nemá trasu, uloží se jen rozmístění překážek.": "The course has no route yet; only the placement of the obstacles will be saved.",
+"Název parkuru": "Course name",
+"Název, třída a autor upraveny": "Name, class and author updated",
+"Rozmístění uloženo do Moje": "Layout saved to Mine",
 /* postup a kalkulačka */
 "Kalkulačka SČP a MČP": "SCT and MCT calculator",
 "Standardní a maximální čas parkuru z délky trati, bez kreslení parkuru. Rychlost je z nastavení v Běhu (Rychlost pro SČP), můžeš ji přepsat.": "Standard and maximum course time from the course length, without drawing a course. The speed comes from the Run settings (Speed for SCT); you can override it.",
@@ -2177,6 +2198,12 @@ var I18N_EXTRA={exact:{
 /* Stavba 3 */
 "Plocha může mít #–# × #–# m.": "The field can be #–# × #–# m.",
 "Hoopers H# # × # m": "Hoopers H# # × # m",
+"# na ploše · trasa #": "# on the field · route #",
+"Zeď #× (FCI: jen jednou)": "Wall #× (FCI: only once)",
+"Dvojitý skok #× (FCI doporučuje nejvýš jednou)": "Spread jump #× (FCI recommends once at most)",
+"Skok daleký #× (FCI doporučuje nejvýš jednou)": "Long jump #× (FCI recommends once at most)",
+"Rozběh před první překážkou jen # m (FCI: aspoň # m)": "Run-up before the first obstacle only # m (FCI: at least # m)",
+"Doběh za poslední překážkou jen # m (FCI: aspoň # m)": "Run-out after the last obstacle only # m (FCI: at least # m)",
 "# mm": "# mm",
 "# %": "#%", /* procenta na Domů: anglicky bez mezery (57%) */
 "Jumping: # z #": "Jumping: # of #",
@@ -2315,6 +2342,14 @@ var I18N_EXTRA={exact:{
 },re:[
 /* Stavba 3: překážka s číslem v trase („tunel č. 3“) */
 ["^(skok|zeď|dvojitý skok|tunel|slalom|a-rampa|kladina|houpačka|kruh|skok daleký|oblouk|sud|plůtek|krátký tunel) č\\. (\\d+)$","@1 no. $2"],
+["^Překážky blíž než 1 m: (.+?) \\(FCI: aspoň 1 m mezi překážkami\\)$","Obstacles closer than 1 m: @1 (FCI: at least 1 m between obstacles)"],
+["^Rovný nájezd na dvojitý skok, kruh a skok daleký: (.+)$","Straight approach to the spread jump, tyre and long jump: @1"],
+["^Nájezd pod úhlem \\(FCI doporučuje rovně, do (\\d+)°\\): (.+)$","Angled approach (FCI recommends straight, up to $1°): @2"],
+["^(.+?) č\\. (\\d+) pod úhlem (\\d+)°$","@1 no. $2 at $3°"],
+["^(.+?) č\\. (\\d+) ze zadní strany$","@1 no. $2 from the back side"],
+["^Tunel kratší než 5 m ohnutý víc než o 90°: (.+?) \\(FCI: nejvýš 90°\\)$","Tunnel shorter than 5 m bent more than 90°: @1 (FCI: at most 90°)"],
+["^(.+?) č\\. (\\d+) \\(([\\d.,]+) m, (\\d+)°\\)$","@1 no. $2 ($3 m, $4°)"],
+["^(.+?) \\(([\\d.,]+) m, (\\d+)°\\)$","@1 ($2 m, $3°)"],
 ["^Postup (.+?) → (.+?): (.+)$","Promotion $1 → $2: @3"],
 ["^Nebo: (.+?) \\((\\d+) z (\\d+)\\)$","Or: @1 ($2 of $3)"],
 ["^Podle (.+?) \\(znění může být novější, ověř na (.+?)\\)\\. Počítají se závody zapsané v deníku u vybraného psa\\. Pravidla jiné země přepneš ve Více → Nastavení\\.$","Per @1 (the wording may be newer, check at $2). Competitions recorded in the diary for the selected dog count. Switch to another country's rules in More → Settings."],
@@ -5082,21 +5117,23 @@ function courseTimes(len,cls,disc,size,spd){
 function curM(){return metrics(S.obs,S.route,S.meta.cls,S.turns);}
 /* Plán: čísla parkuru v jednom řádku, klepnutím se rozbalí do dlaždic (volba se pamatuje) */
 var PLANUI=lsGet('agility-planui-v1',{})||{};
+/* počet překážek v souhrnu: bez trasy „15 na ploše · trasa 0“ (dřív „0 překážek“, i když plocha byla plná) */
+function nObsTxt(m){ var k=S.obs.filter(function(o){ return o.type!=='ha'; }).length; return !m.n&&k?k+' na ploše · trasa 0':nPrek(m.n); }
 function planSpecs(m){
   var el=$('specs'); if(el) el.classList.toggle('mini',!PLANUI.specs);
-  if(m.hoop&&!PLANUI.specs) return '<button class="smini" data-sp="1" aria-expanded="false"><b>'+(m.len?lenU(m.len):'–')+'</b><span>'+nPrek(m.n)+'</span><span><span>Max. čas</span> <b>3 min</b></span>'+(m.far!=null?'<span><span>Psovod</span> <b>'+lenU(m.far)+'</b></span>':'')+'</button>';
+  if(m.hoop&&!PLANUI.specs) return '<button class="smini" data-sp="1" aria-expanded="false"><b>'+(m.len?lenU(m.len):'–')+'</b><span>'+nObsTxt(m)+'</span><span><span>Max. čas</span> <b>3 min</b></span>'+(m.far!=null?'<span><span>Psovod</span> <b>'+lenU(m.far)+'</b></span>':'')+'</button>';
   if(PLANUI.specs) return specsHTML(m)+'<button class="spec sfold" data-sp="0" aria-expanded="true">Méně ▴</button>';
   var dash='–';
-  return '<button class="smini" data-sp="1" aria-expanded="false"><b>'+(m.len?lenU(m.len):dash)+'</b><span>'+nPrek(m.n)+'</span><span><span>SČP</span> <b>'+(m.sct?m.sct+' s':dash)+'</b></span><span><span>MČP</span> <b>'+(m.mct?m.mct+' s':dash)+'</b></span><i aria-hidden="true">▾</i></button>'+kacrEstHTML(m);
+  return '<button class="smini" data-sp="1" aria-expanded="false"><b>'+(m.len?lenU(m.len):dash)+'</b><span>'+nObsTxt(m)+'</span><span><span>SČP</span> <b>'+(m.sct?m.sct+' s':dash)+'</b></span><span><span>MČP</span> <b>'+(m.mct?m.mct+' s':dash)+'</b></span><i aria-hidden="true">▾</i></button>'+kacrEstHTML(m);
 }
 function specsHTML(m){
   var dash='–';
   if(m.hoop){ var q=HCFG[m.cls], fl=q.far[hoopSmall()?0:1];
-    return '<div class="spec"><small>Délka trati</small><b>'+(m.len?lenU(m.len):dash)+'</b><i>'+nPrek(m.n)+'</i></div>'+
+    return '<div class="spec"><small>Délka trati</small><b>'+(m.len?lenU(m.len):dash)+'</b><i>'+nObsTxt(m)+'</i></div>'+
       '<div class="spec"><small>Disciplína</small><b>Hoopers</b><i>třída '+m.cls+'</i></div>'+
       '<div class="spec"><small>Max. čas</small><b>3 min</b><i>bez standardního času</i></div>'+
       '<div class="spec"><small>Od psovoda nejdál</small><b>'+(m.far!=null?lenU(m.far):dash)+'</b><i>FCI nejvýš '+fl+' m</i></div>'; }
-  return '<div class="spec"><small>Délka trati</small><b>'+(m.len?lenU(m.len):dash)+'</b><i>'+nPrek(m.n)+'</i></div>'+
+  return '<div class="spec"><small>Délka trati</small><b>'+(m.len?lenU(m.len):dash)+'</b><i>'+nObsTxt(m)+'</i></div>'+
     '<div class="spec"><small>Disciplína</small><b>'+m.disc+'</b><i>třída '+m.cls+'</i></div>'+
     '<div class="spec"><small>SČP</small><b>'+(m.sct?m.sct+' s':dash)+'</b><i>'+spdU(m.spd)+'</i></div>'+
     (m.uk?'<div class="spec mct"><small>Čas</small><b>Matrix</b><i>průměr podle Course Time Matrix + 10 s</i></div>':'<div class="spec mct"><small>MČP (max.)</small><b>'+(m.mct?m.mct+' s':dash)+'</b><i>'+(RU.mctK?fmt(RU.mctK)+'× SČP':spdU(m.mcs)+' dle FCI')+'</i></div>')+kacrEstHTML(m);
@@ -5278,7 +5315,7 @@ function render(){
   c.segs.forEach(function(s,i){
     if(i+1>=showN) return;
     h+='<path d="'+s.d+'" fill="none" stroke="'+(qc?qc(i):'var(--zone)')+'" stroke-width="'+(qc?'.2':'.14')+'" stroke-dasharray=".5 .35" marker-end="url(#arr)"'+(qdim&&qdim(i)?' opacity=".25"':'')+'/>'+
-      (quiz?'':'<text x="'+r(s.m.x)+'" y="'+r(s.m.y)+'" font-size=".62" text-anchor="middle" fill="var(--muted)" stroke="var(--field)" stroke-width=".22" paint-order="stroke">'+lenU(s.len)+'</text>');
+      (quiz?'':'<g class="leg" data-leg="'+i+'"><text x="'+r(s.m.x)+'" y="'+r(s.m.y)+'" font-size=".62" text-anchor="middle" fill="var(--muted)" stroke="var(--field)" stroke-width=".22" paint-order="stroke">'+lenU(s.len)+'</text></g>');
   });
   $('pth').innerHTML=h;
   var gr={}, b='';
@@ -5543,72 +5580,137 @@ $('routeList').onclick=function(e){
 };
 
 /* ---------- nástroje plánu: dráha psovoda, podklad, trénink paměti ---------- */
-/* ---------- kontrola parkuru podle Řádu agility FCI ---------- */
+/* ---------- kontrola parkuru podle Řádu agility FCI ----------
+   Položka: ok (true / false = problém / null = doporučení), t = text, ids = překážky, kterých se týká (na ploše dostanou třídu .bad
+   a klepnutím na položku se k nim plocha přiblíží), legs = úseky trasy (i = z č. i+1 do č. i+2), jejichž popisek dostane data-bad.
+   Rozmístění (překážky přes sebe, 1 m mezi překážkami, mimo plochu, ohnutý krátký tunel) se kontroluje i bez trasy. */
+function fciUniq(a){ var s={}; return a.filter(function(x){ if(s[x]) return false; s[x]=1; return true; }); }
 function fciCheck(obs,route,turns,sides,cls,geo){
-  if(isHoopC(cls)) return hoopCheck(obs,route,cls,S.W,S.H,hoopSmall());
-  var by={}, out=[], n=route.length; obs.forEach(function(o){by[o.id]=o;});
-  if(n<2) return out;
+  var by={}, out=[], n=route.length, W=S.W, H=S.H; obs.forEach(function(o){by[o.id]=o;});
+  function add(ok,t,ids,legs){ var x={ok:ok,t:t}; if(ids&&ids.length) x.ids=fciUniq(ids); if(legs&&legs.length) x.legs=legs; out.push(x); }
+  if(isHoopC(cls)){ out=hoopCheck(obs,route,cls,W,H,hoopSmall()); fciPlace(obs,route,W,H,add,false); return out; }
+  if(n<2){ fciPlace(obs,route,W,H,add,true); return out; }
   geo=geo||calc(obs,route,turns);
-  function add(ok,t){out.push({ok:ok,t:t});}
+  var num=function(o){ var k=route.indexOf(o.id); return obL(o).toLowerCase()+(k>=0?' č. '+(k+1):''); };
   var types=route.map(function(id){return by[id].type;}), cnt=function(t){return types.filter(function(x){return x===t;}).length;};
+  var idsOf=function(f){ return fciUniq(route.filter(function(id){ return f(by[id]); })); };
   add(n>=15&&n<=22,'Počet překážek '+n+' (FCI: 15–22)');
   /* skoky podle FCI: překážka, zeď, kruh i skok daleký */
   var nJ=cnt('jump')+cnt('tire')+cnt('longjump'); add(nJ>=7,'Skoků '+nJ+' (FCI: aspoň 7, počítá se i kruh a skok daleký)');
   add(geo.total>=100&&geo.total<=220,'Délka trati '+fmt(geo.total)+' m (FCI: 100–220 m)');
-  var gaps=[];
+  var gaps=[], gapL=[];
   geo.segs.forEach(function(s,i){
-    var a=geo.P[i].ex, b=geo.P[i+1].en, st=Math.hypot(a.x-b.x,a.y-b.y), lab=(i+1)+'→'+(i+2);
+    var a=geo.P[i].ex, b=geo.P[i+1].en, st=Math.hypot(a.x-b.x,a.y-b.y), lab=(i+1)+'→'+(i+2), n0=gaps.length;
     if(s.len<5) gaps.push(lab+' po dráze jen '+fmt(s.len)+' m');
     if(st>7) gaps.push(lab+' vzdušnou čarou '+fmt(st)+' m');
     if(s.len>9) gaps.push(lab+' po dráze '+fmt(s.len)+' m');
+    if(gaps.length>n0) gapL.push(i);
   });
-  add(!gaps.length,'Rozestupy (FCI: po dráze 5–9 m, vzdušnou čarou nejvýš 7 m)'+(gaps.length?': '+gaps.join('; '):''));
-  add(cnt('weave')===1,'Slalom '+(cnt('weave')?cnt('weave')+'×':'chybí')+' (FCI: v každém parkuru, jen jednou)');
-  if(cnt('tire')) add(cnt('tire')===1,'Kruh '+cnt('tire')+'× (FCI: jen jednou)');
+  add(!gaps.length,'Rozestupy (FCI: po dráze 5–9 m, vzdušnou čarou nejvýš 7 m)'+(gaps.length?': '+gaps.join('; '):''),null,gapL);
+  add(cnt('weave')===1,'Slalom '+(cnt('weave')?cnt('weave')+'×':'chybí')+' (FCI: v každém parkuru, jen jednou)',cnt('weave')>1?idsOf(function(o){return o.type==='weave';}):null);
+  if(cnt('tire')) add(cnt('tire')===1,'Kruh '+cnt('tire')+'× (FCI: jen jednou)',cnt('tire')>1?idsOf(function(o){return o.type==='tire';}):null);
   if(cnt('tunnel')) add(cnt('tunnel')<=5,'Tunel '+cnt('tunnel')+'× (FCI: nejvýš 5 průběhů)');
-  var shortT=obs.filter(function(o){return o.type==='tunnel'&&route.indexOf(o.id)>=0&&tunLen(o)<3;}).length;
-  if(shortT) add(false,'Tunel kratší než 3 m: '+shortT+'× (FCI: délka tunelu 3–6 m)');
+  var shortT=obs.filter(function(o){return o.type==='tunnel'&&route.indexOf(o.id)>=0&&tunLen(o)<3;});
+  if(shortT.length) add(false,'Tunel kratší než 3 m: '+shortT.length+'× (FCI: délka tunelu 3–6 m)',shortT.map(function(o){return o.id;}));
   var zt=types.filter(function(t){return ZN.indexOf(t)>=0;}), kinds={}; zt.forEach(function(t){kinds[t]=1;});
   if(zt.length){ var mx=cls==='A1'?3:4; add(Object.keys(kinds).length===3&&zt.length<=mx,'Zónové překážky '+zt.length+'×, druhů '+Object.keys(kinds).length+' (FCI: všechny 3 druhy, v '+cls+' nejvýš '+mx+')'); }
   var sd=(sides||[]).slice(0,n);
   if(sd.filter(Boolean).length===n){ var ch=0; for(var i=1;i<n;i++) if(sd[i]!==sd[i-1]) ch++; add(ch>=2,'Změny strany psovoda '+ch+' (FCI: aspoň 2)'); }
   else add(null,'Změny strany psovoda: v Dráze psovoda nastav stranu psa u všech překážek (FCI chce aspoň 2)');
-  var hits=[];
+  var hits=[], hitIds=[], hitL=[];
   geo.segs.forEach(function(s,i){
     var skip={}, hit=null; skip[route[i]]=1; skip[route[i+1]]=1;
     s.pcs.forEach(function(pc){ for(var t=0;t<=12&&!hit;t++){ var q=bz(pc[0],pc[1],pc[2],pc[3],t/12);
       for(var k=0;k<obs.length&&!hit;k++){ var o=obs[k]; if(skip[o.id]) continue; if(pdist(q,opoly(o))<.45) hit=o; } } });
-    if(hit){ var num=route.indexOf(hit.id); hits.push((i+1)+'→'+(i+2)+' přes '+obL(hit).toLowerCase()+(num>=0?' č. '+(num+1):'')); }
+    if(hit){ hits.push((i+1)+'→'+(i+2)+' přes '+num(hit)); hitIds.push(hit.id); hitL.push(i); }
   });
-  add(!hits.length,'Dráha psa nevede přes jinou překážku'+(hits.length?': '+hits.join('; '):''));
-  /* překážky přes sebe (tunel pod kladinou nebo A-rampou smí) a překážka přesahující plochu */
-  var ov=[], outF=[], W=geo.W||S.W, H=geo.H||S.H, num=function(o){ var k=route.indexOf(o.id); return obL(o).toLowerCase()+(k>=0?' č. '+(k+1):''); };
-  for(var a=0;a<obs.length;a++){
-    var A=obs[a], PA=opoly(A);
-    if(PA.some(function(q){ return q.x<-.05||q.y<-.05||q.x>W+.05||q.y>H+.05; })) outF.push(num(A));
-    for(var b2=a+1;b2<obs.length;b2++){ var B=obs[b2];
-      if((A.type==='tunnel'&&(B.type==='dogwalk'||B.type==='aframe'))||(B.type==='tunnel'&&(A.type==='dogwalk'||A.type==='aframe'))) continue;
-      if(polyD(PA,opoly(B))<.35) ov.push(num(A)+' a '+num(B)); }
+  add(!hits.length,'Dráha psa nevede přes jinou překážku'+(hits.length?': '+hits.join('; '):''),hitIds,hitL);
+  /* zeď nejvýš jednou (Řád agility FCI čl. 4.1: „Weave poles, tyre and wall can be negotiated only once in the course“) */
+  var walls=idsOf(function(o){return o.type==='jump'&&o.v==='wall';}), nWall=route.filter(function(id){var o=by[id]; return o.type==='jump'&&o.v==='wall';}).length;
+  if(nWall) add(nWall===1,'Zeď '+nWall+'× (FCI: jen jednou)',nWall>1?walls:null);
+  /* dvojitý skok v A1 ne (Řád agility FCI čl. 4.1: „Spread hurdles must not be used in FCI Agility/Jumping 1“); ve vyšších třídách
+     a u skoku dalekého jen doporučení nejvýš jednou (Směrnice FCI pro rozhodčí 9.N: vyhnout se víc než jednomu použití) */
+  var ox=route.filter(function(id){var o=by[id]; return o.type==='jump'&&o.v==='oxer';}), lj=route.filter(function(id){return by[id].type==='longjump';});
+  if(ox.length&&cls==='A1') add(false,'Dvojitý skok v A1 (FCI: v A1 a J1 se nepoužívá)',ox);
+  else if(ox.length>1) add(null,'Dvojitý skok '+ox.length+'× (FCI doporučuje nejvýš jednou)',ox);
+  if(lj.length>1) add(null,'Skok daleký '+lj.length+'× (FCI doporučuje nejvýš jednou)',lj);
+  /* rovný nájezd na dvojitý skok, kruh a skok daleký (Řád agility FCI čl. 4.1: „must always be placed to allow a straight approach from the previous
+     obstacle“, Směrnice pro rozhodčí 9.F): úhel mezi spojnicí od místa, kde pes opouští předchozí překážku, a směrem skoku.
+     Nad FCI_APPR[1] (a zadní strana) je to problém, mezi FCI_APPR[0] a [1] doporučení (čára psa se odhaduje, rozhodčí posuzuje i rychlost psa) */
+  var appr=[], apIds=[], aprW=[], apwIds=[], apAny=false;
+  for(var i2=1;i2<n;i2++){
+    var o2=by[route[i2]]; if(!(o2.type==='tire'||o2.type==='longjump'||(o2.type==='jump'&&o2.v==='oxer'))) continue; apAny=true;
+    var pa=geo.P[i2-1], pb=geo.P[i2], fr=pa.w?pa.w.q:pa.ex, vx=pb.en.x-fr.x, vy=pb.en.y-fr.y, vl=Math.hypot(vx,vy);
+    var ang=pb.b?180:vl<.1?0:Math.acos(cl((vx*pb.dir.x+vy*pb.dir.y)/vl,-1,1))/D2R, at=num(o2)+(pb.b?' ze zadní strany':' pod úhlem '+Math.round(ang)+'°');
+    if(ang>FCI_APPR[1]){ appr.push(at); apIds.push(o2.id); } else if(ang>FCI_APPR[0]){ aprW.push(at); apwIds.push(o2.id); }
   }
-  if(ov.length) add(false,'Překážky přes sebe: '+ov.slice(0,4).join('; '));
-  if(outF.length) add(false,'Překážka přesahuje plochu: '+outF.slice(0,4).join(', '));
+  if(apAny) add(!appr.length,'Rovný nájezd na dvojitý skok, kruh a skok daleký'+(appr.length?': '+appr.join('; '):''),apIds);
+  if(aprW.length) add(null,'Nájezd pod úhlem (FCI doporučuje rovně, do '+FCI_APPR[0]+'°): '+aprW.join('; '),apwIds);
+  /* rozběh a doběh: aspoň 6 m volného místa v přirozeném směru před první a za poslední překážkou (Řád agility FCI čl. 4.3: „There should be
+     enough room (at least 6 m) for the dog to jump in a natural line at the start and at the finish“, Směrnice pro rozhodčí 15.3).
+     Řád říká „should“, proto doporučení, ne problém (většina vestavěných parkurů začíná blíž u kraje) */
+  var p0=geo.P[0], pn=geo.P[n-1], rs=fciRoom(p0.en,{x:-p0.dir.x,y:-p0.dir.y},obs,by[route[0]],W,H), rf=fciRoom(pn.ex,pn.dx||pn.dir,obs,by[route[n-1]],W,H);
+  if(rs<6) add(null,'Rozběh před první překážkou jen '+fmt(rs)+' m (FCI: aspoň 6 m)',[route[0]]);
+  if(rf<6) add(null,'Doběh za poslední překážkou jen '+fmt(rf)+' m (FCI: aspoň 6 m)',[route[n-1]]);
+  if(rs>=6&&rf>=6) add(true,'Rozběh a doběh aspoň 6 m');
+  fciPlace(obs,route,W,H,add,true);
   return out;
+}
+/* tolerance rovného nájezdu ve stupních (odchylka spojnice od předchozí překážky od směru skoku): do [0] rovně, nad [1] problém */
+var FCI_APPR=[30,45];
+/* šířka překážky napříč osou, kterou opoly nepokrývá (polovina, m): tunel 60 cm, kladina a houpačka 30 cm, A-rampa až 1 m,
+   skok daleký 70 cm do hloubky; skok a kruh jsou úsečka přes křídla (±0,7 m) + 10 cm */
+var OCLR={jump:.1,tire:.1,longjump:.35,tunnel:.3,dogwalk:.15,seesaw:.15,aframe:.5,weave:.05};
+/* volné místo (m, nejvýš 6) od bodu p ve směru d až ke kraji plochy nebo k jiné překážce (pruh ±0,5 m); z vějíře ±20° se bere nejlepší směr */
+function fciRoom(p,d,obs,skip,W,H){
+  var best=0, a0=Math.atan2(d.y,d.x), P=[], k, L, j;
+  obs.forEach(function(o){ if(o!==skip&&o.type!=='ha') P.push([opoly(o),OCLR[o.type]||0]); });
+  for(k=0;k<5&&best<6;k++){ var a=a0+[0,-1,1,-2,2][k]*10*D2R, ux=Math.cos(a), uy=Math.sin(a);
+    for(L=.25;L<=6.001;L+=.25){ var q={x:p.x+ux*L,y:p.y+uy*L}, hit=q.x<0||q.y<0||q.x>W||q.y>H;
+      for(j=0;j<P.length&&!hit;j++) if(pdist(q,P[j][0])-P[j][1]<.5) hit=true;
+      if(hit) break; }
+    if(L-.25>best) best=Math.min(6,L-.25); }
+  return Math.round(best*10)/10;
+}
+/* rozmístění překážek (kontroluje se i bez trasy): překážky přes sebe (tunel pod kladinou a A-rampou smí), aspoň 1 m mezi překážkami
+   i mezi otvory tunelů (Řád agility FCI čl. 4.1: „a minimum of 1 m between each obstacle (with the exception of a tunnel under the A-frame
+   or the dog-walk)“, Směrnice pro rozhodčí 9.K), překážka přesahující plochu a tunel kratší než 5 m ohnutý víc než o 90° (Směrnice 9.J).
+   U Hoopers (agi=false) jen přes sebe a mimo plochu; vzdálenosti hlídá hoopCheck. */
+function fciPlace(obs,route,W,H,add,agi){
+  var ov=[], near=[], outF=[], bend=[], iOv=[], iNear=[], iOut=[], iBend=[], i, j;
+  var num=function(o){ var k=route.indexOf(o.id); return obL(o).toLowerCase()+(k>=0?' č. '+(k+1):''); };
+  var L=obs.filter(function(o){ return o.type!=='ha'; }), P=L.map(opoly);
+  for(i=0;i<L.length;i++){
+    var A=L[i], PA=P[i];
+    if(PA.some(function(q){ return q.x<-.05||q.y<-.05||q.x>W+.05||q.y>H+.05; })){ outF.push(num(A)); iOut.push(A.id); }
+    if(agi&&A.type==='tunnel'&&tunLen(A)<5&&Math.abs(A.bend||0)>90){ bend.push(num(A)+' ('+fmt(tunLen(A))+' m, '+Math.abs(A.bend)+'°)'); iBend.push(A.id); }
+    for(j=i+1;j<L.length;j++){ var B=L[j];
+      if((A.type==='tunnel'&&(B.type==='dogwalk'||B.type==='aframe'))||(B.type==='tunnel'&&(A.type==='dogwalk'||A.type==='aframe'))) continue;
+      var d=polyD(PA,P[j]);
+      if(d<.35){ ov.push(num(A)+' a '+num(B)); iOv.push(A.id,B.id); }
+      else if(agi&&d-(OCLR[A.type]||0)-(OCLR[B.type]||0)<1){ near.push(num(A)+' a '+num(B)); iNear.push(A.id,B.id); }
+    }
+  }
+  if(ov.length) add(false,'Překážky přes sebe: '+ov.slice(0,4).join('; '),iOv);
+  if(near.length) add(false,'Překážky blíž než 1 m: '+near.slice(0,4).join('; ')+' (FCI: aspoň 1 m mezi překážkami)',iNear);
+  if(outF.length) add(false,'Překážka přesahuje plochu: '+outF.slice(0,4).join(', '),iOut);
+  if(bend.length) add(false,'Tunel kratší než 5 m ohnutý víc než o 90°: '+bend.join('; ')+' (FCI: nejvýš 90°)',iBend);
 }
 /* kontrola podle FCI Hoopers Regulations (H1–H3) */
 function hoopCheck(obs,route,cls,W,H,small){
   var q=HCFG[cls], by={}, out=[], n=route.length, i, j; obs.forEach(function(o){by[o.id]=o;});
-  function add(ok,t){out.push({ok:ok,t:t});}
+  function add(ok,t,ids,legs){ var x={ok:ok,t:t}; if(ids&&ids.length) x.ids=ids; if(legs&&legs.length) x.legs=legs; out.push(x); }
   if(n<2) return out;
   var types=route.map(function(id){return by[id].type;}), far=q.far[small?0:1];
   add(n>=q.n[0]&&n<=q.n[1],'Počet překážek '+n+' (FCI '+cls+': '+q.n[0]+'–'+q.n[1]+')');
   add(types[0]==='hoop'&&types[n-1]==='hoop','Start i cíl obloukem');
   var nh=types.filter(function(t){return t==='hoop';}).length; add(nh*2>=n,'Oblouků '+nh+' z '+n+' (FCI: aspoň polovina)');
-  var bad=[]; for(i=1;i<n;i++){ var a=by[route[i-1]], b=by[route[i]], st=Math.hypot(a.x-b.x,a.y-b.y); if(st<q.d[0]-.05||st>q.d[1]+.05) bad.push(i+'→'+(i+1)+' '+fmt(Math.round(st*10)/10)+' m'); }
-  add(!bad.length,bad.length?'Vzdálenost mimo '+q.d[0]+'–'+q.d[1]+' m: '+bad.slice(0,5).join(', ')+(bad.length>5?' …':''):'Vzdálenosti mezi překážkami '+q.d[0]+'–'+q.d[1]+' m');
+  var bad=[], badL=[]; for(i=1;i<n;i++){ var a=by[route[i-1]], b=by[route[i]], st=Math.hypot(a.x-b.x,a.y-b.y); if(st<q.d[0]-.05||st>q.d[1]+.05){ bad.push(i+'→'+(i+1)+' '+fmt(Math.round(st*10)/10)+' m'); badL.push(i-1); } }
+  add(!bad.length,bad.length?'Vzdálenost mimo '+q.d[0]+'–'+q.d[1]+' m: '+bad.slice(0,5).join(', ')+(bad.length>5?' …':''):'Vzdálenosti mezi překážkami '+q.d[0]+'–'+q.d[1]+' m',null,badL);
   var cons={}; for(i=1;i<n;i++){ cons[route[i-1]+'-'+route[i]]=cons[route[i]+'-'+route[i-1]]=1; }
-  var P=obs.filter(function(o){return o.type!=='ha';}), near=[];
-  for(i=0;i<P.length;i++) for(j=i+1;j<P.length;j++) if(!cons[P[i].id+'-'+P[j].id]&&Math.hypot(P[i].x-P[j].x,P[i].y-P[j].y)<2) near.push(obL(P[i])+' a '+obL(P[j]).toLowerCase());
-  add(!near.length,near.length?'Blíž než 2 m: '+near.slice(0,3).join(', '):'Nesousedící překážky aspoň 2 m od sebe');
+  var P=obs.filter(function(o){return o.type!=='ha';}), near=[], nearI=[];
+  for(i=0;i<P.length;i++) for(j=i+1;j<P.length;j++) if(!cons[P[i].id+'-'+P[j].id]&&Math.hypot(P[i].x-P[j].x,P[i].y-P[j].y)<2){ near.push(obL(P[i])+' a '+obL(P[j]).toLowerCase()); nearI.push(P[i].id,P[j].id); }
+  add(!near.length,near.length?'Blíž než 2 m: '+near.slice(0,3).join(', '):'Nesousedící překážky aspoň 2 m od sebe',nearI);
   var ha=obs.filter(function(o){return o.type==='ha';});
   if(ha.length!==1) add(false,ha.length?'Prostor psovoda má být jen jeden':'Chybí prostor psovoda 2 × 2 m');
   else { var fd=hoopFar(obs,route); add(fd<=far+.05,'Nejvzdálenější překážka '+fmt(Math.round(fd*10)/10)+' m od prostoru psovoda (FCI '+cls+': nejvýš '+far+' m pro '+(small?'malé':'velké')+' psy)'); }
@@ -5660,23 +5762,51 @@ function hoopClass(c){
 }
 function fciBar(geo){
   var el=$('fciBar'); if(!el) return;
-  if(S.route.length<2){ /* místo zůstane, jinak by plocha při klepání trasy poskočila */
+  var items=fciCheck(S.obs,S.route,S.turns,S.sides,S.meta.cls,geo), bad=items.filter(function(x){return x.ok===false;}).length;
+  fciMark(items);
+  if(S.route.length<2&&!bad){ /* místo zůstane, jinak by plocha při klepání trasy poskočila */
     el.hidden=false; el.className='fcibar'; el.innerHTML='<span class="ic">•</span><span class="grow">FCI</span>'; el.title='Pravidla FCI: vyznač trasu'; return; }
-  var bad=fciCheck(S.obs,S.route,S.turns,S.sides,S.meta.cls,geo).filter(function(x){return x.ok===false;}).length;
   el.hidden=false; el.className='fcibar '+(bad?'warn':'ok');
   el.title=bad?'Pravidla FCI: '+bad+' '+(bad===1?'problém':bad<5?'problémy':'problémů'):'Pravidla FCI v pořádku';
   el.innerHTML='<span class="ic">'+(bad?'!':'✓')+'</span><span class="grow">FCI'+(bad?' · '+bad:'')+'</span>';
 }
+/* problémy z kontroly FCI na ploše: překážky dostanou třídu .bad (a jednoduchý červený obrys .obbad, vzhled patří vizuálu),
+   popisky úseků mimo rozestupy atribut data-bad */
+function fciMark(items){
+  var ids={}, legs={};
+  items.forEach(function(x){ if(x.ok!==false) return; (x.ids||[]).forEach(function(id){ ids[id]=1; }); (x.legs||[]).forEach(function(i){ legs[i]=1; }); });
+  Array.prototype.forEach.call(document.querySelectorAll('#obs .ob'),function(g){
+    var id=+g.getAttribute('data-id'), on=!!ids[id], o=on&&getO(id); g.classList.toggle('bad',on);
+    if(o&&!g.querySelector('.obbad')){ var hw=ohl(o)+.5, hy=DEF[o.type].w, e=.3;
+      g.insertAdjacentHTML('beforeend','<rect class="obbad" x="'+r(-hw-e)+'" y="'+r(-hy-e)+'" width="'+r(2*(hw+e))+'" height="'+r(2*(hy+e))+'" rx=".35" fill="none" stroke="var(--bad)" stroke-width=".12" pointer-events="none"/>'); } });
+  Array.prototype.forEach.call(document.querySelectorAll('#pth [data-leg]'),function(g){ if(legs[g.getAttribute('data-leg')]) g.setAttribute('data-bad','1'); else g.removeAttribute('data-bad'); });
+}
 function fciSheet(){
-  var items=fciCheck(S.obs,S.route,S.turns,S.sides,S.meta.cls);
-  openSheet('<h3>Kontrola podle pravidel FCI</h3><ul class="fcilist">'+items.map(function(x){
-      return '<li class="'+(x.ok===true?'ok':x.ok===false?'bad':'info')+'"><span class="i">'+(x.ok===true?'✓':x.ok===false?'!':'•')+'</span><span>'+esc(x.t)+'</span></li>';}).join('')+'</ul>'+
-    '<p class="hint">Rozestupy se měří po dráze psa, jak ji ukazuje plán, i se smyčkami otoček. Pravidla platí pro závody, na trénink si můžeš postavit cokoli.</p>'+
+  var items=fciCheck(S.obs,S.route,S.turns,S.sides,S.meta.cls), noRt=S.route.length<2;
+  openSheet('<h3>Kontrola podle pravidel FCI</h3>'+(noRt?'<p class="hint">Bez trasy se kontroluje jen rozmístění překážek. Ostatní pravidla přibydou, až vyznačíš trasu v režimu Trasa.</p>':'')+'<ul class="fcilist">'+items.map(function(x,k){
+      var tap=!!((x.ids&&x.ids.length)||(x.legs&&x.legs.length));
+      return '<li class="'+(x.ok===true?'ok':x.ok===false?'bad':'info')+(tap?' tap':'')+'"'+(tap?' data-fi="'+k+'" role="button" tabindex="0" title="Ukázat na ploše"':'')+'><span class="i">'+(x.ok===true?'✓':x.ok===false?'!':'•')+'</span><span>'+esc(x.t)+'</span></li>';}).join('')+'</ul>'+
+    '<p class="hint">'+(items.some(function(x){ return x.ids||x.legs; })?'Klepnutím na položku se plocha přiblíží k překážkám, kterých se týká. ':'')+'Rozestupy se měří po dráze psa, jak ji ukazuje plán, i se smyčkami otoček. Pravidla platí pro závody, na trénink si můžeš postavit cokoli.</p>'+
     '<div class="acts"><button class="btn primary" data-a="x">Zavřít</button></div>',
-    function(e){if(e.target.closest('[data-a]')) closeSheet();});
+    function(e){ var li=e.target.closest('[data-fi]'); if(li){ var it=items[+li.getAttribute('data-fi')]; closeSheet(); fciFocus(it); return; } if(e.target.closest('[data-a]')) closeSheet(); });
+  $('sheet').onkeydown=function(e){ var li=e.target.closest&&e.target.closest('[data-fi]'); if(li&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); li.click(); } };
+}
+/* klepnutí na položku kontroly: plocha se přiblíží a posune k překážkám, kterých se týká, a ty krátce zablikají */
+function fciFocus(it){
+  var ids=(it.ids||[]).slice(); (it.legs||[]).forEach(function(i){ ids.push(S.route[i],S.route[i+1]); });
+  var os=fciUniq(ids).map(getO).filter(Boolean); if(!os.length) return;
+  var pts=[]; os.forEach(function(o){ pts=pts.concat(opoly(o)); });
+  var bb=bbox(pts), m=2.5, bw=bb[2]-bb[0]+2*m, bh=bb[3]-bb[1]+2*m, wr=$('wrap'), pxm=(wr.clientWidth||1)/S.W;
+  var z=Math.max(1,Math.min(3,S.W/bw,innerHeight*.7/(pxm*bh))); zoom=Math.floor(z*4)/4; ui(); render();
+  wr.scrollLeft=(bb[0]+bb[2])/2/S.W*svg.clientWidth-wr.clientWidth/2; wr.scrollTop=(bb[1]+bb[3])/2/S.H*svg.clientHeight-wr.clientHeight/2;
+  try{ wr.scrollIntoView({block:'center'}); }catch(e){}
+  os.forEach(function(o){ var g=document.querySelector('#obs .ob[data-id="'+o.id+'"]'); if(g) g.classList.add('fcifocus'); });
+  clearTimeout(fciFocus.t); fciFocus.t=setTimeout(function(){ Array.prototype.forEach.call(document.querySelectorAll('#obs .fcifocus'),function(g){ g.classList.remove('fcifocus'); }); },1800);
 }
 $('specs').onclick=function(e){ var b=e.target.closest('[data-sp]'); if(!b) return; PLANUI.specs=b.getAttribute('data-sp')==='1'; lsSet('agility-planui-v1',PLANUI); render(); };
-$('fciBar').onclick=function(){ if(S.route.length<2){ toast('Kontrola pravidel potřebuje trasu aspoň se 2 překážkami.'); return; } fciSheet(); };
+$('fciBar').onclick=function(){
+  if(S.route.length<2&&!fciCheck(S.obs,S.route,S.turns,S.sides,S.meta.cls).some(function(x){ return x.ok===false; })){ toast('Kontrola pravidel potřebuje trasu aspoň se 2 překážkami.'); return; }
+  fciSheet(); };
 function setPanel(p){
   if(panel==='quiz'&&p!=='quiz') quizStop();
   panel=(panel===p)?null:p; sel=null; MKT=null;
@@ -6002,32 +6132,45 @@ $('randBtn').onclick=function(){
   loadCourse(L[Math.floor(Math.random()*L.length)]);
 };
 
-/* ---------- uložení, nový, oblíbený, zaběhnuto ---------- */
-function saveSheet(){
-  if(S.route.length<2){toast('Nejdřív vyznač trasu v režimu Trasa.'); mode='route'; ui(); show('plan'); return;}
-  var m=S.meta, isMy=!!(m.id&&m.id.indexOf('my-')===0&&myDB().some(function(c){return c.id===m.id;}));
-  var nm=m.gen?crsName(m)+' '+T('(moje)'):m.name; /* předvyplněný název je v poli: slovník ho sám nepřeloží */
-  openSheet('<h3>Uložit parkur</h3>'+
-    '<label for="fName">Název<input id="fName" type="text" maxlength="60" value="'+esc(nm)+'"></label>'+
+/* ---------- uložení, nový, oblíbený, zaběhnuto ----------
+   Uložit bez trasy se zeptá „Uložit jen rozmístění?“ (trasa se doplní později). Ťuknutí na název nahoře (opt.meta) otevře název, třídu
+   a autora vždy, i bez trasy; Použít je jen přejmenuje. Výchozí název „Nový parkur“ se do pole nepředvyplňuje, jiný název se při ťuknutí označí. */
+function saveSheet(opt){
+  opt=opt||{};
+  var nObs=S.obs.filter(function(o){ return o.type!=='ha'; }).length, noRt=S.route.length<2;
+  if(!opt.meta&&noRt){
+    if(!nObs){ toast('Na ploše zatím nic není. Polož překážky v režimu Stavba.'); mode='build'; ui(); show('plan'); return; }
+    if(!opt.layout){ ask('Uložit jen rozmístění?','Parkur zatím nemá trasu. Uložíš rozmístění překážek a trasu doplníš později v režimu Trasa.','Uložit rozmístění',function(){ saveSheet({layout:1}); }); return; }
+  }
+  var m=S.meta, isMy=!!(m.id&&m.id.indexOf('my-')===0&&myDB().some(function(c){return c.id===m.id;})), def=!m.id&&/^Nový parkur( Hoopers)?$/.test(m.name);
+  var nm=def?'':m.gen?crsName(m)+' '+T('(moje)'):m.name; /* předvyplněný název je v poli: slovník ho sám nepřeloží */
+  openSheet('<h3>'+(opt.meta?'Název, třída a autor':'Uložit parkur')+'</h3>'+(noRt&&nObs?'<p class="hint">Parkur zatím nemá trasu, uloží se jen rozmístění překážek.</p>':'')+
+    '<label for="fName">Název<input id="fName" type="text" maxlength="60" value="'+esc(nm)+'" placeholder="Název parkuru"></label>'+
     '<label for="fCls">Třída (podle ní se počítá SČP)<select id="fCls"><optgroup label="Agility"><option>A1</option><option>A2</option><option>A3</option></optgroup><optgroup label="Hoopers"><option>H1</option><option>H2</option><option>H3</option></optgroup></select></label>'+
     '<label for="fAuth">Stavěl/a (trenér, rozhodčí)<input id="fAuth" type="text" maxlength="60" value="'+esc(m.author)+'" placeholder="např. Petr Pupík"></label>'+
-    '<div class="acts"><button class="btn" data-a="x">Zrušit</button>'+
-    (isMy?'<button class="btn" data-a="new">Uložit jako nový</button><button class="btn primary" data-a="upd">Uložit změny</button>':'<button class="btn primary" data-a="new">Uložit do Moje</button>')+'</div>',
+    '<div class="acts"><button class="btn" data-a="x">Zrušit</button>'+(opt.meta?'<button class="btn" data-a="meta">Použít</button>':'')+
+    (!nObs?'':isMy?'<button class="btn" data-a="new">Uložit jako nový</button><button class="btn primary" data-a="upd">Uložit změny</button>':'<button class="btn primary" data-a="new">Uložit do Moje</button>')+'</div>',
     function(e){
       var b=e.target.closest('[data-a]'); if(!b) return; var a=b.getAttribute('data-a');
       if(a==='x'){closeSheet(); return;}
-      var name=$('fName').value.trim()||'Můj parkur', cls=$('fCls').value, auth=$('fAuth').value.trim();
+      var nv=$('fName').value.trim(), cls=$('fCls').value, auth=$('fAuth').value.trim();
+      if(a==='meta'){ /* jen přejmenovat: plán zůstane neuložený */
+        if(nv&&nv!==nm){ m.name=nv; m.gen=false; } m.cls=cls; m.author=auth; m.dirty=true; if(isHoopC(cls)!==isHoopS()) setSport(isHoopC(cls)?'hoopers':'agility',true);
+        save(); closeSheet(); topbar(); render(); ui(); toast('Název, třída a autor upraveny'); return; }
+      var name=nv||(def?'Můj parkur':nm||'Můj parkur');
       var L=myDB(), rec={name:name,cls:cls,author:auth,W:S.W,H:S.H,obs:JSON.parse(JSON.stringify(S.obs)),route:S.route.slice(),sides:(S.sides||[]).slice(),turns:(S.turns||[]).slice(),hp:(S.hp||[]).slice(),marks:JSON.parse(JSON.stringify(S.marks||[]))};
       if(a==='upd'){rec.id=m.id; L=L.map(function(c){return c.id===m.id?rec:c;});}
       else { if(L.length>=5&&!plusOK()){ setTimeout(function(){ plusSheet('Neomezené vlastní parkury'); },60); return; } rec.id='my-'+Date.now().toString(36); L.push(rec);}
       if(!mySave(L)) return; /* plná paměť: plán zůstane neuložený (hlášku ukáže lsFull) */
-      S.meta={id:rec.id,name:name,cls:cls,author:auth,gen:false,dirty:false}; save(); UNDO_SV=planSnap(); HM.emit('courseSaved',{id:rec.id});
-      closeSheet(); topbar(); render(); toast(a==='upd'?'Změny uloženy':'Uloženo do Moje');
+      S.meta={id:rec.id,name:name,cls:cls,author:auth,gen:false,dirty:false}; if(isHoopC(cls)!==isHoopS()) setSport(isHoopC(cls)?'hoopers':'agility',true);
+      save(); UNDO_SV=planSnap(); HM.emit('courseSaved',{id:rec.id});
+      closeSheet(); topbar(); render(); ui(); toast(a==='upd'?'Změny uloženy':noRt?'Rozmístění uloženo do Moje':'Uloženo do Moje');
     });
   $('fCls').value=m.cls;
+  var fn=$('fName'); fn.onfocus=function(){ try{ this.select(); }catch(x){} }; if(document.activeElement===fn&&fn.value) try{ fn.select(); }catch(x){}
 }
-$('saveBtn').onclick=saveSheet;
-$('titleBtn').onclick=saveSheet;
+$('saveBtn').onclick=function(){ saveSheet(); };
+$('titleBtn').onclick=function(){ saveSheet({meta:1}); };
 /* ---------- Nový parkur: plocha, třída a název v jednom okně ----------
    Plocha z nabídky (u Hoopers podle třídy) nebo vlastní šířka × výška 10–60 × 10–40 m. Nový parkur se otevře přiblížený tak,
    aby byla vidět celá šířka plochy (dřív 200 % a polovina plochy mimo obrazovku). */

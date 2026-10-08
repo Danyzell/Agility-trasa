@@ -94,6 +94,149 @@ module.exports = async function ({ browser, base }) {
     await ev(() => setSport('agility', true));
   });
 
+  /* parkur bez historie: překážky, trasa, třída, plocha 40 × 20 m */
+  const setCourse = (obs, route, cls) => ev(([obs, route, cls]) => {
+    S.meta.dirty = false; planReset(); S.W = 40; S.H = 20; S.meta.cls = cls || 'A2';
+    S.obs = obs; S.route = route; S.sides = []; S.turns = []; S.hp = []; S.marks = []; syncSides(); mode = 'build'; tool = 'jump'; sel = null; zoom = 1;
+    setSizeSel(); drawGrid(); save(); render(); ui(); undoReset(); $('toast').hidden = true;
+  }, [obs, route, cls]);
+  const items = (cls) => ev(c => fciCheck(S.obs, S.route, S.turns, S.sides, c || S.meta.cls), cls);
+
+  await step('kontrola FCI na ploše i bez trasy', async () => {
+    await fresh();
+    /* bez trasy: dva skoky přes sebe, skok 0,8 m od otvoru tunelu, kladina přes kraj plochy */
+    await setCourse([{ id: 1, type: 'jump', x: 35, y: 15, rot: 0 }, { id: 2, type: 'jump', x: 35.2, y: 15, rot: 0 }, { id: 3, type: 'jump', x: 10, y: 10, rot: 0 },
+      { id: 4, type: 'tunnel', x: 12.7, y: 10, rot: 0, len: 3 }, { id: 5, type: 'dogwalk', x: 3, y: 18, rot: 0 }, { id: 6, type: 'jump', x: 25, y: 5, rot: 90 }], []);
+    let r = await ev(() => ({ bar: $('fciBar').querySelector('.grow').textContent, warn: $('fciBar').classList.contains('warn'), bad: [...document.querySelectorAll('#obs .ob.bad')].map(g => +g.getAttribute('data-id')).sort().join(),
+      rect: document.querySelectorAll('#obs .ob.bad .obbad').length, spec: $('specs').textContent, n: fciCheck(S.obs, S.route, S.turns, S.sides, S.meta.cls).filter(x => x.ok === false).length }));
+    ok(r.warn && r.bar === 'FCI · ' + r.n && r.n === 3 && r.bad === '1,2,3,4,5' && r.rect === 5, 'problémy bez trasy na ploše: ' + JSON.stringify(r));
+    ok(/6 na ploše · trasa 0/.test(r.spec) && !/0 překážek/.test(r.spec), 'souhrn bez trasy: ' + r.spec);
+    /* položka v kontrole jde ťuknout: plocha se přiblíží k překážkám přes sebe */
+    await page.click('#fciBar'); await page.waitForTimeout(150);
+    const li = await ev(() => [...document.querySelectorAll('#sheet .fcilist li')].map(l => ({ t: l.textContent, fi: l.getAttribute('data-fi') })));
+    ok(li.length === 3 && li.every(x => x.fi != null) && /rozmístění překážek/.test(await page.textContent('#sheet')), 'kontrola bez trasy: ' + JSON.stringify(li));
+    await page.click('#sheet .fcilist li:has-text("přes sebe")'); await page.waitForTimeout(150);
+    r = await ev(() => { const w = $('wrap').getBoundingClientRect(), g = document.querySelector('#obs .ob[data-id="1"]').getBoundingClientRect();
+      return { open: !$('scrim').hidden, zoom, inView: g.left >= w.left && g.right <= w.right && g.top >= w.top && g.bottom <= w.bottom && w.top >= 0 && w.bottom <= innerHeight,
+        blink: !!document.querySelector('#obs .ob[data-id="1"].fcifocus') && !!document.querySelector('#obs .ob[data-id="2"].fcifocus') }; });
+    ok(!r.open && r.zoom > 2 && r.inView && r.blink, 'položka nepřiblížila plochu k překážkám: ' + JSON.stringify(r));
+    /* s trasou: popisek úseku mimo rozestupy má data-bad */
+    await setCourse([{ id: 1, type: 'jump', x: 5, y: 10, rot: 0 }, { id: 2, type: 'jump', x: 11, y: 10, rot: 0 }, { id: 3, type: 'jump', x: 17, y: 10, rot: 0 }, { id: 4, type: 'jump', x: 30, y: 10, rot: 0 }], [1, 2, 3, 4]);
+    r = await ev(() => ({ legs: [...document.querySelectorAll('#pth [data-leg]')].map(g => g.getAttribute('data-leg') + ':' + (g.getAttribute('data-bad') || '')).join(),
+      bar: $('fciBar').querySelector('.grow').textContent, n: fciCheck(S.obs, S.route, S.turns, S.sides, S.meta.cls).filter(x => x.ok === false).length,
+      it: fciCheck(S.obs, S.route, S.turns, S.sides, S.meta.cls).find(x => /^Rozestupy/.test(x.t)) }));
+    ok(r.legs === '0:,1:,2:1' && r.bar === 'FCI · ' + r.n && r.it && r.it.ok === false && JSON.stringify(r.it.legs) === '[2]', 'úsek mimo rozestupy: ' + JSON.stringify(r));
+    /* položka s úsekem jde ťuknout */
+    await page.click('#fciBar'); await page.waitForTimeout(150);
+    ok(await ev(() => [...document.querySelectorAll('#sheet .fcilist li[data-fi]')].some(l => /Rozestupy/.test(l.textContent))), 'položka Rozestupy nejde ťuknout');
+    await T.sheet('x');
+    /* bez trasy a bez problémů: tlačítko FCI zůstane neutrální a jen poradí trasu */
+    await setCourse([{ id: 1, type: 'jump', x: 5, y: 10, rot: 0 }, { id: 2, type: 'jump', x: 15, y: 10, rot: 0 }], []);
+    r = await ev(() => ({ bar: $('fciBar').textContent, cls: $('fciBar').className, bad: document.querySelectorAll('#obs .ob.bad').length }));
+    ok(r.bar === '•FCI' && r.cls === 'fcibar' && !r.bad, 'bez trasy a bez problémů: ' + JSON.stringify(r));
+    await page.click('#fciBar'); ok(/potřebuje trasu/.test(await page.textContent('#toast')) && await ev(() => $('scrim').hidden), 'bez trasy a problémů má FCI jen poradit');
+  });
+
+  await step('nová pravidla FCI', async () => {
+    await fresh();
+    const J = (id, x, y, rot, v) => Object.assign({ id, type: 'jump', x, y, rot: rot || 0 }, v ? { v } : {});
+    /* 1 m mezi překážkami (i otvor tunelu); tunel pod kladinou smí */
+    await setCourse([J(1, 10, 10), { id: 2, type: 'tunnel', x: 12.7, y: 10, rot: 0, len: 3 }, { id: 3, type: 'dogwalk', x: 25, y: 5, rot: 0 }, { id: 4, type: 'tunnel', x: 25, y: 5, rot: 90, len: 4 }], [1, 2, 3]);
+    let it = await items();
+    let x = it.find(i => /^Překážky blíž než 1 m/.test(i.t));
+    ok(x && x.ok === false && /skok č\. 1 a tunel č\. 2/.test(x.t) && !/kladina/.test(x.t) && JSON.stringify(x.ids) === '[1,2]', '1 m mezi překážkami: ' + JSON.stringify(x));
+    await ev(() => { getO(2).x = 13.5; render(); }); it = await items();
+    ok(!it.some(i => /blíž než 1 m/.test(i.t)), '1,6 m mezi skokem a tunelem hlásí problém');
+    /* zeď jen jednou */
+    await setCourse([J(1, 5, 10, 0, 'wall'), J(2, 11, 10), J(3, 17, 10, 0, 'wall')], [1, 2, 3]);
+    x = (await items()).find(i => /^Zeď/.test(i.t));
+    ok(x && x.ok === false && x.t === 'Zeď 2× (FCI: jen jednou)' && JSON.stringify(x.ids) === '[1,3]', 'zeď dvakrát: ' + JSON.stringify(x));
+    await ev(() => { S.route = [1, 2]; syncSides(); }); x = (await items()).find(i => /^Zeď/.test(i.t));
+    ok(x && x.ok === true, 'zeď jednou: ' + JSON.stringify(x));
+    /* dvojitý skok v A1 ne, v A2 jednou ano, dvakrát doporučení */
+    await setCourse([J(1, 5, 10), J(2, 11, 10, 0, 'oxer'), J(3, 17, 10), J(4, 23, 10, 0, 'oxer')], [1, 2, 3], 'A1');
+    x = (await items('A1')).find(i => /^Dvojitý skok/.test(i.t));
+    ok(x && x.ok === false && x.t === 'Dvojitý skok v A1 (FCI: v A1 a J1 se nepoužívá)', 'dvojitý skok v A1: ' + JSON.stringify(x));
+    ok(!(await items('A2')).some(i => /^Dvojitý skok/.test(i.t)), 'jeden dvojitý skok v A2 hlásí problém');
+    await ev(() => { S.route = [1, 2, 3, 4]; syncSides(); }); x = (await items('A2')).find(i => /^Dvojitý skok/.test(i.t));
+    ok(x && x.ok === null && /2×/.test(x.t), 'dva dvojité skoky v A2 mají být doporučení: ' + JSON.stringify(x));
+    /* rovný nájezd: kruh v ose (0°), šikmo (38° = doporučení), napříč (90° = problém); skok daleký napříč */
+    const appr = async (rot, type) => { await setCourse([J(1, 5, 10), { id: 2, type: type || 'tire', x: 11, y: 10, rot }, J(3, 17, 10)], [1, 2, 3]); const L = await items();
+      return { ok: (L.find(i => /^Rovný nájezd/.test(i.t)) || {}).ok, t: (L.find(i => /^Rovný nájezd/.test(i.t)) || {}).t, w: (L.find(i => /^Nájezd pod úhlem/.test(i.t)) || {}).t, ids: (L.find(i => /^Rovný nájezd/.test(i.t)) || {}).ids }; };
+    let a = await appr(0); ok(a.ok === true && !a.w, 'kruh v ose: ' + JSON.stringify(a));
+    a = await appr(38); ok(a.ok === true && /kruh č\. 2 pod úhlem 38°/.test(a.w || ''), 'kruh pod úhlem 38° má být doporučení: ' + JSON.stringify(a));
+    a = await appr(90); ok(a.ok === false && /kruh č\. 2 pod úhlem 90°/.test(a.t) && JSON.stringify(a.ids) === '[2]', 'kruh napříč: ' + JSON.stringify(a));
+    a = await appr(70, 'longjump'); ok(a.ok === false && /skok daleký č\. 2 pod úhlem 70°/.test(a.t), 'skok daleký šikmo: ' + JSON.stringify(a));
+    /* rozběh a doběh 6 m: první skok 2 m od kraje plochy = doporučení; uprostřed plochy v pořádku */
+    await setCourse([J(1, 2, 10), J(2, 8, 10), J(3, 14, 10)], [1, 2, 3]); it = await items();
+    x = it.find(i => /^Rozběh před první/.test(i.t));
+    ok(x && x.ok === null && /jen 2,0 m \(FCI: aspoň 6 m\)/.test(x.t) && JSON.stringify(x.ids) === '[1]' && !it.some(i => /^Doběh/.test(i.t)), 'rozběh u kraje: ' + JSON.stringify(x));
+    await ev(() => { S.obs.forEach(o => { o.x += 12; }); render(); }); it = await items();
+    ok(it.some(i => i.t === 'Rozběh a doběh aspoň 6 m' && i.ok === true), 'rozběh a doběh uprostřed plochy');
+    await ev(() => { S.obs.push({ id: 4, type: 'tunnel', x: 30, y: 10, rot: 90, len: 4 }); render(); }); it = await items();
+    ok(it.some(i => /^Doběh za poslední překážkou jen/.test(i.t) && i.ok === null), 'tunel 4 m za cílem neubral doběh: ' + JSON.stringify(it.map(i => i.t)));
+    /* tunel kratší než 5 m nejvýš o 90° */
+    await setCourse([J(1, 5, 10), { id: 2, type: 'tunnel', x: 15, y: 10, rot: 0, len: 4, bend: 135 }, { id: 3, type: 'tunnel', x: 28, y: 10, rot: 0, len: 5, bend: 135 }, { id: 4, type: 'tunnel', x: 15, y: 16, rot: 0, len: 4, bend: 90 }], []);
+    x = (await items()).find(i => /ohnutý/.test(i.t));
+    ok(x && x.ok === false && /^Tunel kratší než 5 m ohnutý víc než o 90°: tunel \(4,0 m, 135°\) \(FCI: nejvýš 90°\)$/.test(x.t) && JSON.stringify(x.ids) === '[2]', 'ohnutý krátký tunel: ' + JSON.stringify(x));
+    /* počet na tlačítku FCI = počet problémů v okně kontroly */
+    await setCourse([J(1, 2, 10), J(2, 8, 10, 0, 'oxer'), { id: 3, type: 'tire', x: 14, y: 10, rot: 90 }, J(4, 14.6, 12)], [1, 2, 3, 4], 'A1');
+    await page.click('#fciBar'); await page.waitForTimeout(150);
+    const bc = await ev(() => ({ bar: $('fciBar').querySelector('.grow').textContent, sheet: document.querySelectorAll('#sheet .fcilist li.bad').length }));
+    ok(bc.bar === 'FCI · ' + bc.sheet && bc.sheet >= 4, 'počet na tlačítku FCI nesedí s oknem: ' + JSON.stringify(bc));
+    await T.sheet('x');
+    /* katalog: nová pravidla nepřidala žádný problém (6 m a šikmý nájezd do 45° jsou jen doporučení) */
+    const cat = await ev(() => ['A1', 'A2', 'A3'].flatMap(k => listFor(k)).filter(c => { const sw = S.W, sh = S.H; S.W = c.W || 40; S.H = c.H || 20;
+      const b = fciCheck(c.obs, c.route, c.turns || [], c.sides || [], c.cls).some(i => i.ok === false && /blíž než 1 m|Zeď|Dvojitý skok|Rovný nájezd|Rozběh|Doběh|ohnutý/.test(i.t)); S.W = sw; S.H = sh; return b; }).map(c => c.id));
+    ok(!cat.length, 'parkury z katalogu porušují nová pravidla: ' + cat.slice(0, 8).join(', '));
+    const miss = await missEn(['Překážky blíž než 1 m: skok č. 1 a tunel č. 2; skok a zeď (FCI: aspoň 1 m mezi překážkami)', 'Zeď 2× (FCI: jen jednou)', 'Dvojitý skok v A1 (FCI: v A1 a J1 se nepoužívá)',
+      'Dvojitý skok 2× (FCI doporučuje nejvýš jednou)', 'Skok daleký 2× (FCI doporučuje nejvýš jednou)', 'Rovný nájezd na dvojitý skok, kruh a skok daleký', 'Rovný nájezd na dvojitý skok, kruh a skok daleký: kruh č. 2 pod úhlem 90°; dvojitý skok č. 5 ze zadní strany',
+      'Nájezd pod úhlem (FCI doporučuje rovně, do 30°): kruh č. 2 pod úhlem 38°', 'Rozběh před první překážkou jen 2,0 m (FCI: aspoň 6 m)', 'Doběh za poslední překážkou jen 3,5 m (FCI: aspoň 6 m)', 'Rozběh a doběh aspoň 6 m',
+      'Tunel kratší než 5 m ohnutý víc než o 90°: tunel č. 3 (4,0 m, 135°); tunel (4,5 m, 180°) (FCI: nejvýš 90°)', '6 na ploše · trasa 0', 'Ukázat na ploše',
+      'Bez trasy se kontroluje jen rozmístění překážek. Ostatní pravidla přibydou, až vyznačíš trasu v režimu Trasa.',
+      'Klepnutím na položku se plocha přiblíží k překážkám, kterých se týká. Rozestupy se měří po dráze psa, jak ji ukazuje plán, i se smyčkami otoček. Pravidla platí pro závody, na trénink si můžeš postavit cokoli.']);
+    ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
+    ok(await ev(() => trLookup('Rovný nájezd na dvojitý skok, kruh a skok daleký: kruh č. 2 pod úhlem 90°; dvojitý skok č. 5 ze zadní strany') === 'Straight approach to the spread jump, tyre and long jump: tyre no. 2 at 90°; spread jump no. 5 from the back side'), 'překlad rovného nájezdu: ' + await ev(() => trLookup('Rovný nájezd na dvojitý skok, kruh a skok daleký: kruh č. 2 pod úhlem 90°; dvojitý skok č. 5 ze zadní strany')));
+  });
+
+  await step('uložení a přejmenování bez trasy', async () => {
+    await fresh(); await ev(() => { mySave([]); });
+    await page.click('#newBtn'); await T.sheet('ok');
+    /* prázdná plocha: Uložit jen poradí */
+    await page.click('#saveBtn'); ok(await ev(() => $('scrim').hidden && /nic není/.test($('toast').textContent)), 'Uložit na prázdné ploše');
+    await ev(() => { S.obs = [{ id: 1, type: 'jump', x: 5, y: 10, rot: 0 }, { id: 2, type: 'tunnel', x: 15, y: 10, rot: 0, len: 5 }]; touch(); render(); ui(); });
+    /* název nahoře jde upravit i bez trasy */
+    await page.click('#titleBtn'); await page.waitForTimeout(150);
+    let r = await ev(() => ({ open: !$('scrim').hidden, h: $('sheet').querySelector('h3').textContent, name: $('fName').value, ph: $('fName').placeholder, acts: [...document.querySelectorAll('#sheet [data-a]')].map(b => b.getAttribute('data-a')).join() }));
+    ok(r.open && r.name === '' && r.ph === 'Název parkuru' && r.acts === 'x,meta,new', 'název bez trasy: ' + JSON.stringify(r));
+    await page.fill('#fName', 'Kruhy u lesa'); await page.selectOption('#fCls', 'A3'); await T.sheet('meta');
+    r = await ev(() => ({ name: S.meta.name, cls: S.meta.cls, top: $('cName').textContent, sub: $('cSub').textContent, my: myDB().length }));
+    ok(r.name === 'Kruhy u lesa' && r.cls === 'A3' && /Kruhy u lesa/.test(r.top) && /^A3/.test(r.sub) && r.my === 0, 'přejmenování bez uložení: ' + JSON.stringify(r));
+    /* Uložit bez trasy: otázka, pak okno a uložení rozmístění */
+    await page.click('#saveBtn'); await page.waitForTimeout(150);
+    ok(/Uložit jen rozmístění\?/.test(await page.textContent('#sheet')), 'chybí otázka Uložit jen rozmístění?');
+    await T.sheet('ok');
+    r = await ev(() => ({ name: $('fName').value, sel: [$('fName').selectionStart, $('fName').selectionEnd], hint: /jen rozmístění/.test($('sheet').textContent) }));
+    ok(r.name === 'Kruhy u lesa' && r.sel[0] === 0 && r.sel[1] === r.name.length && r.hint, 'předvyplněný název se má označit: ' + JSON.stringify(r));
+    await T.sheet('new');
+    r = await ev(() => { const c = myDB()[0]; return c && { n: myDB().length, name: c.name, cls: c.cls, obs: c.obs.length, route: c.route.length, id: S.meta.id === c.id, dirty: S.meta.dirty, toast: $('toast').textContent }; });
+    ok(r && r.n === 1 && r.name === 'Kruhy u lesa' && r.cls === 'A3' && r.obs === 2 && r.route === 0 && r.id && !r.dirty && /Rozmístění uloženo/.test(r.toast), 'rozmístění se neuložilo: ' + JSON.stringify(r));
+    /* nový parkur s výchozím názvem: pole prázdné, uloží se jako Můj parkur */
+    await page.click('#newBtn'); await T.sheet('ok');
+    await ev(() => { S.obs = [{ id: 1, type: 'jump', x: 5, y: 10, rot: 0 }]; touch(); render(); });
+    await page.click('#saveBtn'); await T.sheet('ok');
+    ok(await ev(() => $('fName').value === ''), 'výchozí název Nový parkur se předvyplnil');
+    await T.sheet('new');
+    ok(await ev(() => myDB().length === 2 && myDB()[1].name === 'Můj parkur'), 'prázdný název se neuložil jako Můj parkur');
+    /* uložený parkur bez trasy jde znovu otevřít */
+    await ev(() => { loadCourse(findCourse(myDB()[0].id), true); });
+    ok(await ev(() => S.meta.name === 'Kruhy u lesa' && S.obs.length === 2 && S.route.length === 0 && /2 na ploše · trasa 0/.test($('specs').textContent)), 'parkur bez trasy se neotevřel');
+    await ev(() => { mySave([]); });
+    const miss = await missEn(['Uložit jen rozmístění?', 'Parkur zatím nemá trasu. Uložíš rozmístění překážek a trasu doplníš později v režimu Trasa.', 'Uložit rozmístění', 'Na ploše zatím nic není. Polož překážky v režimu Stavba.',
+      'Název, třída a autor', 'Parkur zatím nemá trasu, uloží se jen rozmístění překážek.', 'Název parkuru', 'Použít', 'Název, třída a autor upraveny', 'Rozmístění uloženo do Moje']);
+    ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
+  });
+
   await T.ctx.close();
   return T.errs;
 };
