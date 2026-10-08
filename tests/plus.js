@@ -1,5 +1,6 @@
 /* Pawkur Plus: 14 dní zkušební doby (všechno zdarma), pak základ zdarma a Plus za 99 Kč/rok. Nabídka Plus u 3D, rozboru, pastí,
-   stavby v terénu, kalkulačky, listiny, rozboru kacr a šestého vlastního parkuru; stav z plus_get; návrat ze Stripe ?plus=ok. */
+   stavby v terénu, kalkulačky, listiny, rozboru kacr a šestého vlastního parkuru; stav z plus_get; návrat ze Stripe ?plus=ok.
+   Dokud není odkaz na platbu (PLUS_LINK), nic se nezamyká; zkušební doba běží nejdřív ode dne spuštění platby (PLUS_FROM). */
 const { phone, offline } = require('./helpers');
 
 module.exports = async function ({ browser, base }) {
@@ -8,10 +9,31 @@ module.exports = async function ({ browser, base }) {
   const step = async (label, fn) => { T.step(label); try { await fn(); } catch (e) { T.errs.push(`[${label}] krok selhal: ${String(e && e.message || e).split('\n')[0]}`); } };
   let plusUntil = null;
   await page.route(/\/rest\/v1\/rpc\/plus_get/, r => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ until: plusUntil, src: plusUntil ? 'stripe' : '' }) }));
+  /* platba spuštěná daného dne (RRRR-MM-DD); bez volání se chová jako aplikace bez odkazu na platbu */
+  const ready = (from) => ev((f) => { PLUS_LINK = 'https://buy.stripe.com/test_abc'; PLUS_FROM = f; }, from);
+  const ymd = (daysAgo) => { const d = new Date(Date.now() - daysAgo * 864e5); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
   const prep = async (daysAgo) => { await page.goto(base + '/#plan'); await ev((d) => { localStorage.clear(); localStorage.setItem('agility-onb-v1', JSON.stringify({ done: 1, v: 2 })); localStorage.setItem('agility-first-v1', String(Date.now() - d * 864e5)); }, daysAgo); await page.goto('about:blank'); await page.goto(base + '/#plan'); await page.waitForTimeout(400); await ev(() => { $('toast').hidden = true; }); };
 
+  await step('bez odkazu na platbu se nic nezamyká', async () => {
+    await prep(20);
+    ok(await ev(() => !PLUS_LINK || /^\d{4}-\d{2}-\d{2}$/.test(PLUS_FROM)), 'k odkazu na platbu patří PLUS_FROM (den spuštění platby)');
+    await ev(() => { PLUS_LINK = ''; PLUS_FROM = ''; });
+    const r = await ev(() => ({ ok: plusOK(), trial: plusTrial(), st: plusStatus() }));
+    ok(r.ok && !r.trial && /Teď máš všechno zdarma\. Až půjde Plus koupit, dostaneš ještě 14 dní/.test(r.st), 'bez platby: ' + JSON.stringify(r));
+    await ev(() => { loadCourse(listFor('A1')[0], true); show('plan'); });
+    for (const t of ['ana', 'traps']) {
+      await page.click('#toolsBtn'); await page.click('#planTools [data-t="' + t + '"]'); await page.waitForTimeout(200);
+      ok(!/Pawkur Plus/.test(await page.textContent('#sheet').catch(() => '')), 'bez platby se u ' + t + ' nemá ukazovat nabídka Plus');
+      await ev(() => closeSheet());
+    }
+    ok(await ev(() => PLANUI.traps), 'pasti jdou zapnout i po 20 dnech, když platba ještě nejde');
+    await ev(() => { PLANUI.traps = false; lsSet('agility-planui-v1', PLANUI); moreTab = 'plus'; show('more'); }); await page.waitForTimeout(150);
+    const pg = await page.textContent('#moreBody');
+    ok(/Teď máš všechno zdarma/.test(pg) && /Platba se připravuje/.test(pg) && !(await page.isVisible('#moreBody [data-plus="buy"]')) && !(await page.isVisible('#moreBody [data-acct="in"]')), 'stránka Plus bez platby: ' + pg.slice(0, 160));
+  });
+
   await step('zkušební doba: všechno jde', async () => {
-    await prep(3);
+    await prep(3); await ready('2020-01-01');
     const r = await ev(() => ({ ok: plusOK(), trial: plusTrial(), days: plusDays(), st: plusStatus() }));
     ok(r.ok && r.trial && r.days === 11 && /zbývá 11 dní/.test(r.st), 'zkušební doba: ' + JSON.stringify(r));
     await ev(() => { loadCourse(listFor('A1')[0], true); show('plan'); }); await page.click('#toolsBtn'); await page.click('#planTools [data-t="ana"]'); await page.waitForTimeout(200);
@@ -19,8 +41,16 @@ module.exports = async function ({ browser, base }) {
     await ev(() => closeSheet());
   });
 
+  await step('zkušební doba až ode dne spuštění platby', async () => {
+    await prep(20); await ready(ymd(3));
+    const r = await ev(() => ({ ok: plusOK(), trial: plusTrial(), days: plusDays() }));
+    ok(r.ok && r.trial && r.days === 11, 'uživatel 20 dní, platba 3 dny: ' + JSON.stringify(r));
+    await ready(ymd(16));
+    ok(await ev(() => !plusOK() && !plusTrial()), 'po 14 dnech od spuštění platby zkušební doba končí');
+  });
+
   await step('po zkušební době: nabídka Plus u placených funkcí', async () => {
-    await prep(20);
+    await prep(20); await ready('2020-01-01');
     const r = await ev(() => ({ ok: plusOK(), st: plusStatus() }));
     ok(!r.ok && /Zkušební doba skončila/.test(r.st), 'po 20 dnech: ' + JSON.stringify(r));
     await ev(() => { loadCourse(listFor('A1')[0], true); show('plan'); });
@@ -67,6 +97,7 @@ module.exports = async function ({ browser, base }) {
 
   await step('aplikace z Google Play nekupuje', async () => {
     plusUntil = null;
+    await ready('2020-01-01');
     await ev(() => { PLUS = { until: 0, at: 0 }; lsSet('agility-plus-v1', PLUS); window.IS_APK = true; IS_APK = true; moreTab = 'plus'; show('more'); }); await page.waitForTimeout(400);
     const pg = await page.textContent('#moreBody');
     ok(/spravuje na/.test(pg) && !(await page.isVisible('#moreBody [data-plus="buy"]')), 'Play verze: ' + pg.slice(0, 160));
@@ -76,7 +107,8 @@ module.exports = async function ({ browser, base }) {
   await step('angličtina', async () => {
     const miss = await ev(() => ['Pawkur Plus', '99 Kč / rok', 'Zkoušíš všechno zdarma, zbývá 11 dní.', 'Zkoušíš všechno zdarma, zbývá 1 den.', 'Zkušební doba skončila. Základ zůstává zdarma, Plus je za 99 Kč / rok.',
       'Koupit Plus za 99 Kč / rok', 'Už mám Plus', 'Spravovat předplatné', 'Obchodní podmínky', 'je součást Pawkur Plus.', 'Rozbor', '3D průlet', 'Pasti', 'Stavba v terénu', 'Kalkulačka SČP a MČP', 'Výsledková listina', 'Neomezené vlastní parkury',
-      ...PLUS_FEATS.map(f => f[0]), 'Základ aplikace je zdarma napořád: parkury, plán, stopky, trénink doma a deník. Plus přidává:', 'Pawkur Plus je aktivní. Díky za podporu!'].filter(t => trLookup(t) == null));
+      ...PLUS_FEATS.map(f => f[0]), 'Základ aplikace je zdarma napořád: parkury, plán, stopky, trénink doma a deník. Plus přidává:', 'Pawkur Plus je aktivní. Díky za podporu!',
+      'Teď máš všechno zdarma. Až půjde Plus koupit, dostaneš ještě 14 dní na vyzkoušení.', 'Platba se připravuje.'].filter(t => trLookup(t) == null));
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
   });
 
