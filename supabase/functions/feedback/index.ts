@@ -1,8 +1,10 @@
-/* AgiPlan: Napsat autorovi. Hodnocení (1–5 hvězd), druh zprávy a text z aplikace uloží do tabulky feedback
+/* Pawkur: Napsat autorovi. Hodnocení (1–5 hvězd), druh zprávy a text z aplikace uloží do tabulky feedback
    a pošle e-mailem autorovi přes službu Resend. Adresu a klíč bere z proměnných FEEDBACK_TO a RESEND_API_KEY,
    jinak z tabulky app_secret (feedback_to, resend_key). Bez klíče se zpráva jen uloží a e-mail odejde,
    až bude klíč nastavený (mailed = false).
-   Vstup: { stars?: 1–5, kind: idea|bug|praise|other, msg, contact?, lang?, ver?, device } → { ok: true, mailed } */
+   Rychlá odpověď na otázku na Domů („Co ti v Pawkuru chybí?“, quick: true) se jen uloží, e-mailem nechodí;
+   souhrn vidí autor v aplikaci (app_stats, Více → O aplikaci → Návštěvnost).
+   Vstup: { stars?: 1–5, kind: idea|bug|praise|other, msg, contact?, lang?, ver?, device, quick? } → { ok: true, mailed } */
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -32,7 +34,8 @@ Deno.serve(async (req: Request) => {
     const b = await req.json().catch(() => ({}));
     const stars = b?.stars == null || b.stars === '' ? null : Math.round(+b.stars);
     const kind = String(b?.kind || '');
-    const msg = clean(b?.msg, 2000), contact = clean(b?.contact, 120), device = String(b?.device || '');
+    const quick = b?.quick === true;
+    const msg = clean(b?.msg, quick ? 200 : 2000), contact = quick ? '' : clean(b?.contact, 120), device = String(b?.device || '');
     const row = { stars, kind, msg, contact, lang: clean(b?.lang, 8), ver: clean(b?.ver, 20), ua: clean(req.headers.get('user-agent'), 200), device };
     if (stars != null && !(stars >= 1 && stars <= 5)) return json({ error: 'Neplatné hodnocení.' }, 400);
     if (!KINDS[kind]) return json({ error: 'Neplatný druh zprávy.' }, 400);
@@ -48,14 +51,15 @@ Deno.serve(async (req: Request) => {
     const id = (await ins.json())[0]?.id;
 
     let mailed = false;
-    const key = Deno.env.get('RESEND_API_KEY') || await secret('resend_key'), to = Deno.env.get('FEEDBACK_TO') || await secret('feedback_to');
+    /* rychlá odpověď se jen uloží, e-mail se neposílá */
+    const key = quick ? '' : Deno.env.get('RESEND_API_KEY') || await secret('resend_key'), to = quick ? '' : Deno.env.get('FEEDBACK_TO') || await secret('feedback_to');
     if (key && to) {
       const st = stars ? '★'.repeat(stars) + '☆'.repeat(5 - stars) + ' ' : '';
       const text = `${KINDS[kind]}${stars ? ` · ${stars}/5` : ''}\n\n${msg || '(bez textu)'}\n\n` +
         `Kontakt: ${contact || '—'}\nVerze: ${row.ver || '—'} · jazyk ${row.lang || '—'}\nZařízení: ${device.slice(0, 10)}…\n${row.ua}`;
       const r = await fetch('https://api.resend.com/emails', {
         method: 'POST', headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ from: 'AgiPlan <onboarding@resend.dev>', to: [to], subject: `AgiPlan: ${st}${KINDS[kind]}${msg ? ' – ' + msg.replace(/\s+/g, ' ').slice(0, 50) : ''}`,
+        body: JSON.stringify({ from: 'Pawkur <onboarding@resend.dev>', to: [to], subject: `Pawkur: ${st}${KINDS[kind]}${msg ? ' – ' + msg.replace(/\s+/g, ' ').slice(0, 50) : ''}`,
           text, ...(MAIL.test(contact) ? { reply_to: contact } : {}) }),
       });
       mailed = r.ok;
