@@ -723,8 +723,6 @@ h2{font-size:21px;}
 @media (max-width:400px){ .hm-tb .hm-sport button{padding:0 10px; font-size:12px;} .hm-dog{flex:0 1 auto; max-width:130px;} }
 @media (max-width:359px){ .hm-tb .hm-sport button{padding:0 8px;} .hm-dog{max-width:110px;} }
 body[data-view="home"] .sport,body[data-view="lib"] .sport,body[data-view="more"] .sport,body[data-view="video"] .sport{display:inline-flex;}
-/* vedle přepínače se název aplikace na telefonu nevejde; logo zůstává */
-@media (max-width:479px){ body[data-view="lib"] .apptitle,body[data-view="more"] .apptitle,body[data-view="video"] .apptitle{display:none!important;} .top-in .sport{margin-right:auto;} }
 @media (max-width:359px){ body[data-view="more"] .sport,body[data-view="video"] .sport{display:none;} }
 body:not([data-view="plan"]):not([data-view="run"]) .apptitle{display:flex;}
 body:not([data-view="plan"]):not([data-view="run"]) #titleBtn,
@@ -956,6 +954,83 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 .fieldbox .zoom .btn{min-height:44px; width:44px;}
 .field-row .check{min-height:44px; padding:0 8px; margin:0 -8px; cursor:pointer;}
 
+/* ===== Vzhled 2: Parkury nad ohybem, jedna barva výběru, jedna značka, cíle pro palec, dlouhé okna, tmavá lišta ===== */
+/* Parkury: postup a Řadit v jednom řádku, Náhodný | Generátor v jednom řádku, katalog a kontrola nových parkurů pod seznamem */
+.libmeta{display:flex; align-items:center; gap:10px; min-width:0;}
+.libmeta .progress{flex:1 1 auto; min-width:0;}
+.libmeta .progress>span{white-space:nowrap;}
+.libmeta .sortrow{flex:0 0 auto; gap:0;}
+.libmeta .sortrow select{min-height:40px; padding:6px 10px; font-size:13.5px; max-width:160px;}
+.librow{flex-wrap:nowrap;}
+.librow .btn{flex:1 1 0; justify-content:center; min-width:0; padding-left:10px; padding-right:10px; white-space:nowrap;}
+#catBar{justify-content:center; text-align:center; font-size:12.5px; margin-top:4px;}
+#catBar .grow{flex:0 1 auto;}
+#catBar .btn{min-height:44px; padding:4px 10px; border-color:transparent; background:none; box-shadow:none; color:var(--accent); font-size:13px;}
+/* prázdná sbírka (Moje bez parkurů): bez filtrů, postupu, Náhodný | Generátor a řazení; prázdný stav má tlačítka Nový parkur a Plánek z fotky */
+#v-lib:has(#cards>.empty-state.lib-none) :is(#libFilters,.libmeta,.librow){display:none;}
+.empty-state .es-acts{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;}
+.empty-state .es-acts .btn svg{width:18px; height:18px;}
+.empty-state .es-acts .btn:not(.primary){color:var(--text);} /* prázdný stav má tlumené písmo, tlačítko ne */
+/* jedna barva výběru a hlavní akce: vybraný čip, tlačítka na Domů a odkazy mají barvu výběru jako přepínače (dřív skoro černé);
+   limetková zůstává jen na tmavých plochách (spodní lišta, karty Parkur týdne a Zahrada týdne) */
+.chip.on{background:var(--accent); color:var(--on-accent); border-color:var(--accent);}
+.hm-go{background:var(--accent); color:var(--on-accent);}
+.hm-week i.on{background:var(--accent);}
+:where(a:not(.btn)){color:var(--accent);}
+/* jedna značka všude: limetková tlapka na tmavě zeleném přechodu jako ikona aplikace (horní lišta, Domů, O aplikaci, průvodce; dřív bílá tlapka) */
+:root{--brand-tile:linear-gradient(135deg,#2f9e62,#0a2a1c); --lime:#c6f432;}
+.brand,.hm-logo,.about-ic,.onb-logo,.about-h .about-ic{background:var(--brand-tile); color:var(--lime);} /* .about-h span by tlapku jinak zašedil */
+.brand{box-shadow:0 3px 10px rgba(10,42,28,.28);}
+.onb-logo{box-shadow:0 10px 30px rgba(10,42,28,.35);}
+/* drobnosti: souhrn v řádku bez hranatého stínu, SČP a MČP pod stopkami se stejnými mezerami, pruhy Hodnocení běhů v barvách hodnocení,
+   prázdné dny v Tento týden s okrajem, název obrazovky v horní liště a Zpět ve Videích */
+.specs.mini{box-shadow:none;}
+.clock-sub>span{display:inline-flex; align-items:baseline; gap:5px;}
+.grades tr.V .bar i{background:var(--g-v);} .grades tr.VD .bar i{background:var(--g-vd);} .grades tr.D .bar i{background:var(--g-d);} .grades tr.BO .bar i,.grades tr.DIS .bar i{background:var(--bad);}
+.hm-week i{border:1px solid var(--border);} .hm-week i.on{border-color:transparent;}
+.apptitle b{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+#vidBack{min-height:44px; padding:0 12px 0 4px; margin-left:-4px; color:var(--accent); gap:2px;} #vidBack svg{width:22px; height:22px;}
+/* na telefonu se vedle značky, názvu obrazovky a přepínače Agility | Hoopers Podpořit zúží na srdíčko 44 × 44 px (text zůstává pro čtečku) */
+@media (max-width:479px){ .sup{padding:0; width:44px; justify-content:center;} .sup .sup-t{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;} }
+@media (max-width:400px){ .top-in{gap:8px;} .top-in .sport button{padding-left:10px; padding-right:10px;} } /* víc místa pro název i se záložním písmem */
+/* tmavý vzhled: spodní lišta má světlejší tmavou plochu a jemný okraj, ať nesplývá se stránkou (popisky #a9b5a7 mají kontrast 7:1) */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .nav{background:color-mix(in srgb,#1f2823 95%,transparent); border-color:rgba(255,255,255,.13); box-shadow:0 14px 34px rgba(0,0,0,.55);}
+  :root:not([data-theme="light"]) .nav .ndot{box-shadow:0 0 0 2px #1f2823;}
+}
+:root[data-theme="dark"] .nav{background:color-mix(in srgb,#1f2823 95%,transparent); border-color:rgba(255,255,255,.13); box-shadow:0 14px 34px rgba(0,0,0,.55);}
+:root[data-theme="dark"] .nav .ndot{box-shadow:0 0 0 2px #1f2823;}
+/* dlouhá okna (Novinky, Rozbor, Export…): poslední řádek tlačítek zůstává dole v okně a je vidět bez posouvání;
+   okno dostane fokus kvůli čtečce obrazovky, zelený rámeček kolem celého okna ale nepatří */
+.sheet:focus{outline:none;}
+.sheet>.acts:last-child{position:sticky; bottom:-18px; z-index:2; /* lepkavý prvek se zastaví na vnitřním okraji okna (18 px), proto -18px */ margin-left:-18px; margin-right:-18px; margin-bottom:-18px; padding:10px 18px 18px;
+  background:var(--surface); box-shadow:0 -1px 0 color-mix(in srgb,var(--border) 80%,transparent);}
+/* cíle pro palec aspoň 44 px na dotykové obrazovce: přepínače, Podpořit, odkazy sekcí na Domů, tlačítka na Domů, pes, Vynulovat, Čas ručně,
+   otočky v seznamu trasy a malé čipy. Mění se výška a okraje, písmo zůstává; lišty mají menší okraje, ať nenarostou */
+@media (pointer:coarse){
+  .seg{padding:2px; gap:2px;}
+  .seg button{min-height:44px;}
+  .top-in{padding-top:5px; padding-bottom:5px;}
+  .sup{height:auto; min-height:44px;}
+  .hm-top{padding-top:calc(6px + env(safe-area-inset-top,0px));}
+  .hm-logo{width:40px; height:40px; border-radius:12px;}
+  .hm-tb .hm-sport button{min-height:44px;}
+  .hm-dog{min-height:44px;}
+  .hm-sup{height:auto; min-height:44px;}
+  .hm-sec button{min-height:44px; min-width:44px;}
+  .hm-go,.cd-acts .hm-go,.hm-wk .wk-go{min-height:44px;}
+  #resetClock{flex:0 0 44px; min-width:44px; padding:0; justify-content:center;}
+  .field-row input[type=text],.field-row input[type=number]{min-height:44px;}
+  .order li .tu{min-height:44px;}
+  .order li .sd button{height:44px;}
+  .chip,.kf-item .chip,.hm-ask .chip{min-height:44px;}
+  .smini{min-height:44px;}
+  #undoAll,#toolsBtn{min-width:44px; justify-content:center;}
+  .speed button{width:44px; height:44px;}
+  .libmeta .sortrow select{min-height:44px;}
+  .older summary{min-height:44px; display:flex; align-items:center;}
+}
+
 @media (prefers-reduced-motion: reduce){ .view.enter,.sheet,.scrim,.toast,.onb,.onb-body{animation:none!important;} }
 
 /* značky křížení na dráze psovoda: volba druhu v liště Dráha psovoda, legenda pod plochou */
@@ -1057,7 +1132,7 @@ body.fullfield .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));}
 <header class="top">
   <div class="top-in">
     <div class="brand" id="brandMark" aria-hidden="true"></div>
-    <div class="apptitle" id="appTitle"><b>Pawkur</b><span id="appSub"></span></div>
+    <div class="apptitle" id="appTitle"><b id="appName">Pawkur</b><span id="appSub"></span></div>
     <div class="seg sport" id="sportSeg" role="group" aria-label="Disciplína"><button data-sp="agility" class="on">Agility</button><button data-sp="hoopers">Hoopers</button></div>
     <button class="ctitle" id="titleBtn" aria-label="Upravit název, třídu a autora parkuru"><b id="cName" translate="no"></b><span id="cSub"></span></button>
     <button class="iconbtn fav" id="favBtn" aria-pressed="false" aria-label="Oblíbený" data-ic="star"></button>
@@ -1159,8 +1234,9 @@ body.fullfield .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));}
   </section>
 
   <!-- PARKURY -->
+  <!-- Parkury: záložky, filtry, postup s řazením v jednom řádku, Náhodný | Generátor v jednom řádku a hned karty;
+       popis katalogu a Zkontrolovat nové parkury jsou až pod seznamem (první karta je na 390 px kolem 300 px místo 473 px) -->
   <section class="view" id="v-lib" hidden>
-    <div class="catbar" id="catBar"><span id="catInfo" class="grow"></span><button class="btn" id="catBtn" data-ic="refresh" hidden><span class="lbl">Zkontrolovat nové parkury</span></button></div>
     <div class="seg wide" id="libTabs" role="group" aria-label="Sbírka">
       <button data-c="A1" class="on">A1</button><button data-c="A2">A2</button><button data-c="A3">A3</button><button data-c="tr">Trenéři</button><button data-c="my">Moje</button>
     </div>
@@ -1173,14 +1249,17 @@ body.fullfield .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));}
       <button class="chip" data-f="flow">Plynulé</button>
       <button class="chip" data-f="tech">Technické</button>
     </div>
-    <div class="progress"><span id="progTxt" class="num"></span><div class="bar"><i id="progBar"></i></div></div>
-    <div class="row">
-      <button class="btn" id="randBtn" data-ic="dice">Náhodný nezaběhnutý</button>
-      <button class="btn" id="genBtn" data-ic="spark">Generátor sekvencí a zahrady</button>
+    <div class="libmeta">
+      <div class="progress"><span id="progTxt" class="num"></span><div class="bar"><i id="progBar"></i></div></div>
+      <div class="row sortrow"><label for="libSort" class="sr">Řadit</label><select class="btn" id="libSort" title="Řadit"><option value="ord">Podle čísla</option><option value="easy">Od nejlehčího</option><option value="hard">Od nejtěžšího</option><option value="flow">Nejplynulejší</option><option value="short">Nejkratší</option></select></div>
     </div>
-    <div class="row sortrow"><label for="libSort">Řadit</label><select class="btn" id="libSort"><option value="ord">Podle čísla</option><option value="easy">Od nejlehčího</option><option value="hard">Od nejtěžšího</option><option value="flow">Nejplynulejší</option><option value="short">Nejkratší</option></select></div>
+    <div class="row librow">
+      <button class="btn" id="randBtn" data-ic="dice" aria-label="Náhodný nezaběhnutý" title="Náhodný nezaběhnutý">Náhodný</button>
+      <button class="btn" id="genBtn" data-ic="spark" aria-label="Generátor sekvencí a zahrady" title="Generátor sekvencí a zahrady">Generátor</button>
+    </div>
     <div class="cards" id="cards"></div>
     <p class="hint" id="libNote"></p>
+    <div class="catbar" id="catBar"><span id="catInfo" class="grow"></span><button class="btn" id="catBtn" data-ic="refresh" hidden><span class="lbl">Zkontrolovat nové parkury</span></button></div>
   </section>
 
   <!-- BĚH -->
@@ -1211,6 +1290,8 @@ body.fullfield .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));}
 
   <!-- VIDEA -->
   <section class="view" id="v-video" hidden>
+    <!-- Videa se otevírají z Více: nahoře Zpět do nabídky Více jako u sekcí Více (u otevřeného tématu je místo něj Všechna témata) -->
+    <div class="mhead" id="vidHead"><button class="btn ghost" id="vidBack" data-ic="back">Zpět</button><b>Videa a technika</b></div>
     <div id="vidList"></div>
     <div id="vidDetail" hidden></div>
   </section>
@@ -2075,6 +2156,8 @@ var I18N_EXTRA={exact:{
 "Přenáším…": "Moving…",
 "Zálohu pod tímhle klíčem jsem nenašel.": "No backup found under this key.",
 "Data jsou přenesená na novou adresu. Nainstaluj si Pawkur odsud a starou ikonu smaž.": "Your data has moved to the new address. Install Pawkur from here and delete the old icon.",
+/* vzhled 2: Parkury, prázdné Moje, tisk a export plánku, příběh z běhu */
+"Náhodný": "Random",
 "Závody z kacr.info": "Competitions from kacr.info",
 "Výsledky se do deníku berou samy. U běhu s trestnými body ťukni, co se stalo, a rozbor Kde ztrácíš body bude přesnější.": "Results come into the diary on their own. On a run with faults, tap what happened and the Where you lose points analysis gets more precise.",
 "Čisté běhy po měsících": "Clean runs by month",
@@ -5218,7 +5301,9 @@ function topbar(){
   var fb=$('favBtn'), db=$('doneBtn');
   fb.setAttribute('aria-pressed',mk.fav?'true':'false'); fb.innerHTML=mk.fav?IC.starF:IC.star;
   db.setAttribute('aria-pressed',mk.done?'true':'false');
-  var as=$('appSub'); if(as){ as.textContent={lib:'Parkury',video:'Videa',more:'Více'}[view]||''; }
+  /* název obrazovky (Parkury, Videa, Více) je v horní liště vedle značky jako nadpis i na telefonu; podnadpis už není potřeba */
+  var an=$('appName'), nm={lib:'Parkury',video:'Videa',more:'Více'}[view]; if(an) an.textContent=nm||'Pawkur';
+  var as=$('appSub'); if(as) as.textContent='';
 }
 
 
@@ -5966,6 +6051,9 @@ function libRender(){
     return libF==='all'||(libF==='new'&&isNewC(c.id))||(libF==='fav'&&m.fav)||(libF==='todo'&&!m.done)||(libF==='done'&&m.done)||
       (libF==='flow'&&st&&st.fs.arc>=52&&st.fs.tight<=10)||(libF==='tech'&&st&&st.diff>=(TECHT[c.cls]||5.4));});
   var key={easy:function(x){return x.st?x.st.diff:99;},hard:function(x){return x.st?-x.st.diff:99;},flow:function(x){return x.st?-x.st.fs.arc:99;},short:function(x){return x.st?x.st.geo.total:1e4;}}[libSort];
+  /* prázdná sbírka (Moje bez parkurů): filtry, postup, Náhodný, Generátor a Řadit se schovají (CSS podle .lib-none) a prázdný stav nabídne
+     Nový parkur a Plánek z fotky jako Domů. Když jen filtr nic nenajde, filtry zůstanou, ať jde vybrat jiný. */
+  var none=!L.length, noneBtns=none&&!isHoopS()?'<div class="es-acts"><button class="btn primary" data-lnew="1">'+IC.plus+'<span>Nový parkur</span></button><button class="btn" data-limp="1">'+IC.photo+'<span>Plánek z fotky</span></button></div>':'';
   if(key) F.sort(function(a,b){return key(a)-key(b)||a.i-b.i;});
   $('libSort').value=libSort;
   $('cards').innerHTML=(isHoopS()?'<button class="btn primary hnew" data-hnew="1">＋ Nový parkur Hoopers</button>':'')+(F.length?F.map(function(x){
@@ -5980,13 +6068,13 @@ function libRender(){
       (isNewC(c.id)||mk.done?'<div class="tags">'+(isNewC(c.id)?'<span class="new-tag">Nový</span>':'')+(mk.done?'<span class="done-tag">'+(bb?'✓ <span translate="no">'+gTxt(bb.g)+'</span>':'✓ zaběhnuto')+'</span>':'')+'</div>':'')+
       '<div class="st"><button class="fav'+(mk.fav?' on':'')+'" data-fav="'+esc(c.id)+'" aria-label="Oblíbený">'+(mk.fav?IC.starF:IC.star)+'</button>'+
       (libTab==='my'?'<button data-del="'+esc(c.id)+'" aria-label="Smazat parkur">'+IC.x+'</button>':'')+'</div></div>';
-  }).join(''):'<div class="empty-state">'+(libF==='new'&&L.length
+  }).join(''):'<div class="empty-state'+(none?' lib-none':'')+'">'+(libF==='new'&&L.length
       ? 'V téhle záložce nic nového není. Nové parkury mají štítek Nový a tečku u názvu záložky.'
       : libTab==='tr'&&!L.length
       ? 'Zatím tu nejsou žádné parkury trenérů. Pošli do chatu s Claudem screenshoty plánků a přepíše je sem i se jménem autora. Nebo v Plánu zvol Plánek z obrázku: aplikace překážky rozpozná, pořadí naklepeš a při ukládání vyplníš, kdo parkur stavěl.'
       : libTab==='my'&&!L.length
       ? (isHoopS()?'Zatím tu nemáš žádný vlastní parkur Hoopers. Klepni na Nový parkur Hoopers, nebo si otevři některý z H1–H3, uprav ho a ulož.':'Zatím tu nemáš žádný vlastní parkur. Postav ho v Plánu nebo si otevři některý z A1–A3, uprav ho a ulož.')
-      : 'V tomhle filtru nic není. Zkus jiný filtr nebo třídu.')+'</div>');
+      : 'V tomhle filtru nic není. Zkus jiný filtr nebo třídu.')+noneBtns+'</div>');
   catUI();
   $('libNote').textContent=libTab==='my'?'':isHoopS()?'Hoopers: pes běží parkur z oblouků, sudů, plůtků a krátkých tunelů sám a psovod ho vede z prostoru 2 × 2 m (žlutý čtverec). Parkury H1–H3 složil generátor podle pravidel FCI Hoopers: start i cíl obloukem, aspoň polovina oblouků, vzdálenosti mezi překážkami a od psovoda podle třídy. Hodnotí se chyby, maximální čas jsou 3 minuty.':libTab==='tr'?'Přepsané plánky trenérů a rozhodčích pro vlastní trénink. Rozmístění překážek je přibližné, zdroj je uvedený u parkuru.':'Parkury A1–A3 složil generátor v aplikaci podle Řádu agility FCI a podle toho, jak stavějí rozhodčí: dráha vede v obloucích a hadech, skoky stojí šikmo, tunely jsou i do oblouku a do U a dráha se kříží (A1 nejvýš jednou, A2 jednou až dvakrát, A3 dvakrát až třikrát). 15–22 překážek, start i cíl skokem, v A1 právě 3 zónové překážky, v A2 a A3 nejvýš 4. Otočky kolem křídla (v A3 aspoň dvě), v A3 vždy i zadní strana skoku.';
 }
@@ -6026,6 +6114,9 @@ $('libFilters').onclick=function(e){var b=e.target.closest('.chip'); if(!b) retu
 $('libSort').onchange=function(){libSort=this.value; libRender();};
 $('cards').onclick=function(e){
   if(e.target.closest('[data-hnew]')){ hoopNew(); return; }
+  /* prázdné Moje: stejně jako tlačítka na Domů */
+  if(e.target.closest('[data-lnew]')){ show('plan'); $('newBtn').click(); return; }
+  if(e.target.closest('[data-limp]')){ show('plan'); impOpen(); return; }
   var f=e.target.closest('[data-fav]'), d=e.target.closest('[data-del]'), p=e.target.closest('.pick');
   if(f){var id=f.getAttribute('data-fav'); setMark(id,{fav:!getMark(id).fav}); libRender(); topbar(); return;}
   if(d){
@@ -6119,7 +6210,8 @@ function runRender(){
   $('speedRow').hidden=!PLANUI.speed;
   $('runCare').innerHTML=careHTML();
   $('speedRow').innerHTML='<span class="grow">Rychlost pro SČP ('+m.cls+')<small>volí ji rozhodčí podle obtížnosti</small></span><button data-sp="-1" aria-label="Snížit rychlost">−</button><b class="num">'+fmt(m.spd)+' m/s</b><button data-sp="1" aria-label="Zvýšit rychlost">+</button>';
-  $('clockSub').innerHTML=m.hoop?'Hoopers <b class="num">'+esc(m.cls)+'</b><span>Max. čas <b class="num">3 min</b></span>':'SČP <b class="num">'+(m.sct||'–')+' s</b><span>MČP <b class="num">'+(m.mct||'–')+' s</b></span>';
+  /* obě dvojice stejně: popisek a hodnota v jednom prvku, mezi dvojicemi stejná mezera (dřív SČP a 45 s oddělila mezera mezi dvojicemi) */
+  $('clockSub').innerHTML=m.hoop?'<span>Hoopers <b class="num">'+esc(m.cls)+'</b></span><span>Max. čas <b class="num">3 min</b></span>':'<span>SČP <b class="num">'+(m.sct||'–')+' s</b></span><span>MČP <b class="num">'+(m.mct||'–')+' s</b></span>';
   if(m.hoop) $('speedRow').hidden=true;
   $('startBtn').textContent=RUN.on?'STOP':'START'; $('startBtn').className='startbtn'+(RUN.on?' stop':'');
   tick(); resultRender(); histRender();
@@ -7415,7 +7507,7 @@ function topicIcon(id){
 }
 function videoRender(){
   if(VID.id){ showTopic(VID.id); return; }
-  $('vidDetail').hidden=true; $('vidList').hidden=false;
+  $('vidDetail').hidden=true; $('vidList').hidden=false; $('vidHead').hidden=false;
   var groups={}; TOPICS.forEach(function(t){ if(t.cz&&CZONLY) return; (groups[t.g]=groups[t.g]||[]).push(t);});
   $('vidList').innerHTML='<p class="hint">Animace ukazují správnou techniku. U každého tématu je postup nácviku a vybraná videa trenérů, česká i zahraniční.</p>'+
     Object.keys(groups).map(function(g){return '<h2>'+esc(g)+'</h2><div class="topics">'+groups[g].map(function(t){
@@ -7426,7 +7518,7 @@ function topicById(id){for(var i=0;i<TOPICS.length;i++) if(TOPICS[i].id===id) re
 function showTopic(id){
   var t=topicById(id); if(!t) return; VID.id=id; stopVid();
   var use3=!!SC[id]&&v3dOK();
-  $('vidList').hidden=true; var d=$('vidDetail'); d.hidden=false;
+  $('vidList').hidden=true; $('vidHead').hidden=true; var d=$('vidDetail'); d.hidden=false;
   d.innerHTML='<button class="btn backlink" data-vback="1">'+IC.back+'Všechna témata</button><h2>'+esc(t.t)+'</h2>'+
     (SC[id]?'<div class="stage">'+(use3?'<canvas id="vStage3" width="360" height="180" hidden role="img" aria-label="3D animace: '+esc(t.t)+'"></canvas>':'')+'<svg id="vStage" viewBox="0 0 100 50" role="img" aria-label="Animace: '+esc(t.t)+'"></svg></div><div class="caption" id="vCap" aria-live="polite"></div>'+
       '<div class="row"><button class="btn primary" id="vPlay">Pauza</button><button class="btn" id="vRe">Od začátku</button><div class="seg" id="vSpd"><button data-s=".5">0,5×</button><button data-s="1" class="on">1×</button></div></div>':'')+
@@ -7487,6 +7579,7 @@ document.addEventListener('visibilitychange',function(){
   else if(VID.resume){ VID.resume=false; if(VID.id&&$('vStage')) playVid(); }
 });
 $('vidList').onclick=function(e){var b=e.target.closest('[data-top]'); if(b) showTopic(b.getAttribute('data-top'));};
+$('vidBack').onclick=function(){ moreTab=''; show('more'); }; /* zpět do nabídky Více, odkud se Videa otevírají */
 $('vidDetail').onclick=function(e){
   if(e.target.closest('[data-vback]')){stopVid(); VID.id=null; $('vidDetail').innerHTML=''; videoRender(); return;}
   if(e.target.closest('#vPlay')){VID.on?pauseVid():playVid(); return;}
@@ -8525,8 +8618,8 @@ function statsHTML(){
     '<div><small>Průměr trestných bodů</small><b>'+fmt2(avgP)+'</b></div><div><small>Průměrná rychlost</small><b>'+(avgS?spdU(avgS):'–')+'</b></div>'+
     '<div><small>Nejrychlejší běh</small><b>'+(maxS?spdU(maxS):'–')+'</b></div><div><small>Zaběhnuté parkury</small><b>'+doneN+'</b></div></div>'+
     speedChart(runs)+
-    '<div class="chart"><b>Hodnocení běhů</b><table class="table" style="margin-top:6px">'+Object.keys(gr).map(function(k){
-      return '<tr><td style="width:60px"><span class="g" style="display:inline-block" translate="no">'+gTxt(k)+'</span></td><td><div class="bar" style="height:10px"><i style="width:'+Math.round(gr[k]/mx*100)+'%"></i></div></td><td class="num" style="width:40px;text-align:right">'+gr[k]+'</td></tr>';
+    '<div class="chart"><b>Hodnocení běhů</b><table class="table grades" style="margin-top:6px">'+Object.keys(gr).map(function(k){ /* pruhy v barvě hodnocení: V, VD, D, BO a DIS */
+      return '<tr class="'+k+'"><td style="width:60px"><span class="g" style="display:inline-block" translate="no">'+gTxt(k)+'</span></td><td><div class="bar" style="height:10px"><i style="width:'+Math.round(gr[k]/mx*100)+'%"></i></div></td><td class="num" style="width:40px;text-align:right">'+gr[k]+'</td></tr>';
     }).join('')+'</table></div>';
 }
 
