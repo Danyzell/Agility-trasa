@@ -511,6 +511,8 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 /* ---------- Domů ---------- */
 body.at-home .top{display:none;}
 .home{padding:0 !important; max-width:none !important;}
+/* na Domů nemá okraje ani <main>: horní blok jde od kraje ke kraji a sekce pod ním mají jeden okraj 16 px (ne 16 + 16); spodní okraj kvůli liště zůstává */
+body.at-home main{padding-top:0; padding-left:0; padding-right:0;}
 .hm-top{background:var(--surface); padding:calc(10px + env(safe-area-inset-top,0px)) 16px 14px; border-bottom:1px solid var(--border);}
 /* prázdné schránky (instalace, den závodů) by jinak v mezerách sloupce nechaly díru pod horním blokem */
 #hmInst:empty,#hmDay:empty{display:none;}
@@ -536,7 +538,7 @@ body.at-home .top{display:none;}
 /* dlouhý nadpis (angličtina, záložní písmo bez Barlow) se zalomí, ať Žebříček › nepřeteče z obrazovky */
 .hm-sec h3{margin:0; font-family:var(--display); font-size:22px; text-transform:uppercase; letter-spacing:.3px; min-width:0; text-wrap:balance;}
 .hm-sec button{flex:0 0 auto; white-space:nowrap; border:0; background:none; color:var(--accent); font-weight:700; font-size:14px; min-height:40px;}
-.hm-car{display:flex; gap:12px; overflow-x:auto; padding:0 16px 4px; scroll-snap-type:x mandatory; scrollbar-width:none;}
+.hm-car{display:flex; gap:12px; overflow-x:auto; padding:0 16px 4px; scroll-snap-type:x mandatory; scroll-padding-inline:16px; scrollbar-width:none;} /* karty se přichytávají 16 px od kraje, zarovnané s nadpisem */
 .hm-car::-webkit-scrollbar{display:none;}
 .hm-cc{flex:0 0 200px; scroll-snap-align:start; border-radius:20px; overflow:hidden; background:var(--surface); border:1px solid var(--border); text-align:left; padding:0; color:var(--text);}
 .hm-cc .m{display:block; height:96px; overflow:hidden; background:var(--field); position:relative;}
@@ -563,12 +565,13 @@ body.at-home .top{display:none;}
 .hm-week i.on{background:linear-gradient(180deg,#c6f432,#2f9e62);}
 .hm-week .today{color:var(--text); font-weight:700;}
 /* Parkur týdne */
-.hm-wk{margin:0 16px; border-radius:22px; padding:14px; color:#fff; background:radial-gradient(120% 110% at 100% 0%,#2f9e62 0%,#14553a 50%,#0a2a1c 100%); position:relative; overflow:hidden; display:flex; flex-direction:column; gap:10px; box-shadow:0 12px 28px rgba(10,42,28,.22);}
+/* světlý konec přechodu je tmavší (#1f6f45 místo #2f9e62), ať má limetkový štítek i bílý text kontrast aspoň 4,5:1 */
+.hm-wk{margin:0 16px; border-radius:22px; padding:14px; color:#fff; background:radial-gradient(120% 110% at 100% 0%,#1f6f45 0%,#14553a 50%,#0a2a1c 100%); position:relative; overflow:hidden; display:flex; flex-direction:column; gap:10px; box-shadow:0 12px 28px rgba(10,42,28,.22);}
 .hm-wk:after{content:""; position:absolute; right:-40px; bottom:-60px; width:150px; height:150px; border:14px solid rgba(198,244,50,.12); border-radius:50%; pointer-events:none;}
 .hm-wk > div{position:relative; z-index:1; min-width:0;}
 .hm-wk .wk-a{display:flex; gap:12px; align-items:center;}
 /* Zahrada týdne: teplejší zelená, řádek Zahradní ligy */
-.hm-wk.zg{background:radial-gradient(120% 110% at 100% 0%,#7fae3a 0%,#3d6b25 50%,#1d3a12 100%);}
+.hm-wk.zg{background:radial-gradient(120% 110% at 100% 0%,#44731f 0%,#2d571a 50%,#1a3510 100%);}
 .lg-line{display:flex; align-items:center; gap:10px; width:100%; text-align:left; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.08); color:inherit; border-radius:14px; padding:9px 12px; position:relative; z-index:1; font:inherit;}
 .lg-line .lg-ic{font-size:20px;} .lg-line .lg-tx{flex:1; min-width:0; display:flex; flex-direction:column;} .lg-line .lg-tx span{font-size:12.5px; opacity:.8;} .lg-line i{font-style:normal; opacity:.7;}
 .hm-skills{display:flex; gap:8px; overflow-x:auto; padding:2px 16px 4px; margin-top:10px; scrollbar-width:none;}
@@ -621,7 +624,7 @@ body.at-home .top{display:none;}
 .wkrow.mine small{color:#c6f432;} .wkrow.mine .sz{background:rgba(255,255,255,.14); border-color:transparent;}
 .wk-sep{text-align:center; color:var(--muted); line-height:1;}
 .wk-res{display:flex; gap:10px;}
-.wk-res div{flex:1; border-radius:14px; padding:10px 12px; background:radial-gradient(120% 110% at 100% 0%,#2f9e62 0%,#14553a 55%,#0a2a1c 100%); color:#fff;}
+.wk-res div{flex:1; border-radius:14px; padding:10px 12px; background:radial-gradient(120% 110% at 100% 0%,#1f6f45 0%,#14553a 55%,#0a2a1c 100%); color:#fff;}
 .wk-res b{display:block; font-family:var(--display); font-size:26px; line-height:1; color:#c6f432;}
 .wk-res span{font-size:12px; opacity:.85;}
 
@@ -646,8 +649,8 @@ body.at-home .top{display:none;}
 input[type=range]{height:36px;}
 .sheet{max-height:calc(100dvh - 32px);}
 body:has(input:not([type=checkbox]):not([type=range]):not([type=file]):focus,textarea:focus) .nav{display:none;}
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .grade, :root:not([data-theme="light"]) .hist .g, :root:not([data-theme="light"]) .fcibar .ic, :root:not([data-theme="light"]) .traps .tn{color:#0b1a11;} }
-:root[data-theme="dark"] .grade, :root[data-theme="dark"] .hist .g, :root[data-theme="dark"] .fcibar .ic, :root[data-theme="dark"] .traps .tn{color:#0b1a11;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .grade, :root:not([data-theme="light"]) .hist .g, :root:not([data-theme="light"]) .listina .g, :root:not([data-theme="light"]) .fcibar .ic, :root:not([data-theme="light"]) .traps .tn{color:#0b1a11;} }
+:root[data-theme="dark"] .grade, :root[data-theme="dark"] .hist .g, :root[data-theme="dark"] .listina .g, :root[data-theme="dark"] .fcibar .ic, :root[data-theme="dark"] .traps .tn{color:#0b1a11;}
 
 @media (prefers-reduced-motion: reduce){ *{transition:none!important; animation:none!important;} }
 </style>
@@ -775,8 +778,7 @@ main{padding-bottom:calc(var(--nav-h) + var(--nav-gap) + 28px + env(safe-area-in
 .toast{border-radius:14px; padding:11px 16px; max-width:calc(100% - 32px); animation:hmToast .2s ease-out; font-weight:500;}
 @keyframes hmToast{from{opacity:0; transform:translate(-50%,10px);} to{opacity:1; transform:translate(-50%,0);}}
 
-/* značka na úvodní obrazovce (limetkové pozadí) */
-.hm-logo{color:#0a2a1c; --mark-accent:#1f6b45;}
+/* značka na úvodní obrazovce: limetková tlapka na zeleném přechodu jako ikona aplikace (barva je u .hm-logo výš) */
 .hm-logo svg{width:26px; height:26px;}
 /* Více: nastavení a O aplikaci */
 .panel.set,.panel.about{display:flex; flex-direction:column; gap:10px;}
@@ -918,6 +920,10 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 .mrow .ml{flex:1; min-width:0;}
 .mrow .mch{display:grid; color:var(--muted);} .mrow .mch svg{width:18px; height:18px;}
 .mhead{display:flex; align-items:center; gap:6px; margin:-6px 0 -4px;}
+/* otevřená sekce Více: stejný rytmus 12 px jako .view, ať se panely, seznamy a tlačítka nedotýkají; prázdné schránky nenechávají mezeru */
+#moreBody{display:flex; flex-direction:column; gap:12px;}
+#moreBody>h2{margin-top:8px;}
+#statsBox:empty,#pwaInst:empty{display:none;}
 #moreBack{min-height:44px; padding:0 12px 0 4px; margin-left:-4px; color:var(--accent); gap:2px;}
 #moreBack svg{width:22px; height:22px;}
 .mhead b{font-family:var(--display); font-size:22px; font-weight:600; line-height:1.1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
@@ -2121,15 +2127,18 @@ var I18N_EXTRA={exact:{
 "Počítá se poslední uložený běh každého psa.": "The latest saved run of each dog counts.",
 "Řazení podle FCI: méně trestných bodů, pak rychlejší čas, diskvalifikace na konci.": "Order per FCI: fewer penalty points first, then the faster time, disqualifications last.",
 "Tisk tady nejde otevřít. Zkopíruj listinu jako text.": "Printing can't be opened here. Copy the sheet as text instead.",
+/* novinky 2.7 */
+"Aplikace se teď jmenuje Pawkur, dřív AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.": "The app is now called Pawkur, formerly AgiPlan. Your courses, dogs and runs stayed as they were.",
 },num:{
 "# mm": "# mm",
+"# %": "#%", /* procenta na Domů: anglicky bez mezery (57%) */
 "Jumping: # z #": "Jumping: # of #",
 "Letos # z #": "This year # of #",
 "Letos # z # · splněno": "This year # of # · met",
 "# z # zkoušek": "# of # qualifying runs",
-"série # den": "# day streak",
-"série # dny": "# day streak",
-"série # dní": "# day streak",
+"série # den": "#-day streak",
+"série # dny": "#-day streak",
+"série # dní": "#-day streak",
 "Zkoušíš všechno zdarma, zbývá # den.": "You are trying everything for free, # day left.",
 "Zkoušíš všechno zdarma, zbývá # dny.": "You are trying everything for free, # days left.",
 "Zkoušíš všechno zdarma, zbývá # dní.": "You are trying everything for free, # days left.",
@@ -6232,7 +6241,7 @@ function homeRender(){
     (isHoopS()?'<button data-h="lib">'+IC.book+'<span>Knihovna</span></button><button data-h="run">'+IC.timer+'<span>Běh</span></button>'
              :'<button data-h="imp">'+IC.photo+'<span>Plánek z fotky</span></button><button data-h="lib">'+IC.book+'<span>Knihovna</span></button>')+'</div>'+
     '<div class="hm-row">'+(runs.length
-      ?'<p class="hm-mini"><b>'+doneN+'</b> '+T('zaběhnuto')+' · <b>'+(avg?fmt(avg):'–')+'</b> '+T('m/s')+' · <b>'+(runs.length?clean+' %':'–')+'</b> '+T('čisté')+(st?' · '+T('série '+st+(st===1?' den':st<5?' dny':' dní'))+' 🔥':'')+'</p>'
+      ?'<p class="hm-mini"><b>'+doneN+'</b> '+T('zaběhnuto')+' · <b>'+(avg?fmt(avg):'–')+'</b> '+T('m/s')+' · <b>'+(runs.length?T(clean+' %'):'–')+'</b> '+T('čisté')+(st?' · '+T('série '+st+(st===1?' den':st<5?' dny':' dní'))+' 🔥':'')+'</p>'
       :'<p class="hm-mini">Změř první běh ve stopkách a tady uvidíš rychlost a čisté běhy.</p>')+
     (donateOn()?'<button class="hm-sup" data-h="sup" aria-label="Podpořit aplikaci">'+IC.heartF+'<span>Podpořit</span></button>':'')+'</div></div>';
   h+='<div id="hmInst"></div><div id="hmDay">'+(KACR_OK?compDayHTML():'')+'</div>';
@@ -9231,7 +9240,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='listina'){ h=listinaPage(); }
   else {
     h='<div class="morego"><button class="btn" data-mgo="fb">'+IC.mail+'<span>Napsat autorovi</span></button>'+(donateOn()?'<button class="btn primary" data-mgo="donate">'+IC.heartF+'<span>Podpořit aplikaci</span></button>':'')+'</div>'+
-      '<div id="statsBox"></div><div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>Pawkur 2.6</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
+      '<div id="statsBox"></div><div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>Pawkur '+APPV+'</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
       '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
       '<h4>Novinky ve verzi 2.3</h4><ul class="news"><li>Účet: přihlášení přes Google a automatická synchronizace dat mezi telefonem a počítačem</li><li>AR na place: parkur kamerou na skutečném trávníku (Chrome na Androidu)</li><li>Náhled odkazu pro Facebook</li></ul>'+
       '<h4>Novinky ve verzi 2.2</h4><ul class="news"><li>3D parkur a přepínač 2D / 3D v Plánu</li><li>Pes ve 3D kličkuje slalomem podle pravidel FCI</li><li>Délka tunelu 2–6 m (nový tunel 5 m)</li><li>Google Pay, Apple Pay a uložení QR platby do galerie</li><li>Zásady ochrany osobních údajů</li></ul>'+
