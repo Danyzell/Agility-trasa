@@ -982,6 +982,9 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 #modeRow .undoseg .btn{width:38px; padding:8px 0; justify-content:center;}
 #modeRow .undoseg .btn:first-child{border-top-right-radius:0; border-bottom-right-radius:0;}
 #modeRow .undoseg .btn+.btn{border-top-left-radius:0; border-bottom-left-radius:0; border-left-width:0;}
+/* úpravy trasy: ⋯ u kroku v Pořadí překážek, krok, za který se vkládá (nebo který se nahradí) */
+.order li .rmore{margin-left:4px; min-width:36px; min-height:36px; padding:0 6px; border:1px solid var(--border); background:var(--surface); border-radius:8px; color:var(--muted); font-weight:700; line-height:1; vertical-align:middle;}
+.order li.rte{background:color-mix(in srgb,var(--accent) 14%,transparent); border-radius:8px;}
 @media (max-width:400px){ #modeRow .seg button{padding-left:8px; padding-right:8px;} }
 @media (max-width:380px){ #modeRow .seg button{padding-left:5px; padding-right:5px;} }
 /* výsledková listina pro pořadatele */
@@ -1427,6 +1430,16 @@ var I18N_EXTRA={exact:{
 "Znovu: vrátit vrácenou změnu": "Redo: restore the undone change",
 "Zpět a Znovu": "Undo and redo",
 "Odebrat poslední z trasy": "Remove last from route",
+"Odebrat z trasy": "Remove from route",
+"Překážka zůstane na ploše, z pořadí zmizí. Další kroky se přečíslují.": "The obstacle stays on the field and leaves the order. The following steps are renumbered.",
+"Vložit za": "Insert after",
+"Další klepnutí na překážky na ploše je vloží za tento krok.": "Your next taps on obstacles on the field insert them after this step.",
+"Nahradit": "Replace",
+"Další klepnutí na překážku nahradí tento krok.": "Your next tap on an obstacle replaces this step.",
+"Ukončit vkládání": "Stop inserting",
+"Zrušit nahrazení": "Cancel replacing",
+"Klepnutí na plochu zase přidávají na konec trasy.": "Taps on the field add to the end of the route again.",
+"Vkládáš na začátek trasy: klepej na překážky. Vkládání ukončíš tlačítkem Ukončit vkládání.": "You're inserting at the start of the route: tap the obstacles. Stop with the Stop inserting button.",
 "velikost plochy": "field size", "úprava celého parkuru": "whole course edited", "přidání do trasy": "adding to the route", "odebrání z trasy": "removing from the route",
 "změna trasy": "route change", "otočka v trase": "wrap on the route", "strana psovoda": "handler side", "dráha psovoda": "handler's path", "značky křížení": "crossing marks", "změna plánu": "plan change",
 "položení": "placing the", "smazání": "deleting the", "přesun": "moving the", "otočení": "rotating the", "úprava": "editing the",
@@ -2221,6 +2234,12 @@ var I18N_EXTRA={exact:{
 "Skok daleký #× (FCI doporučuje nejvýš jednou)": "Long jump #× (FCI recommends once at most)",
 "Rozběh před první překážkou jen # m (FCI: aspoň # m)": "Run-up before the first obstacle only # m (FCI: at least # m)",
 "Doběh za poslední překážkou jen # m (FCI: aspoň # m)": "Run-out after the last obstacle only # m (FCI: at least # m)",
+"Krok č. #: upravit": "Step no. #: edit",
+"Krok č. # odebrán z trasy": "Step no. # removed from the route",
+"Vkládáš za krok č. #: klepej na překážky, přidají se za něj. Vkládání ukončíš tlačítkem Ukončit vkládání.": "You're inserting after step no. #: tap the obstacles, they are added after it. Stop with the Stop inserting button.",
+"Klepni na překážku, která nahradí krok č. #. Nahrazení zrušíš tlačítkem Zrušit nahrazení.": "Tap the obstacle that replaces step no. #. Cancel with the Cancel replacing button.",
+"Klepej na překážky, vloží se za krok č. #": "Tap the obstacles, they are inserted after step no. #",
+"Klepni na překážku, která nahradí krok č. #": "Tap the obstacle that replaces step no. #",
 "# mm": "# mm",
 "# %": "#%", /* procenta na Domů: anglicky bez mezery (57%) */
 "Jumping: # z #": "Jumping: # of #",
@@ -2362,6 +2381,8 @@ var I18N_EXTRA={exact:{
 ["^Překážky blíž než 1 m: (.+?) \\(FCI: aspoň 1 m mezi překážkami\\)$","Obstacles closer than 1 m: @1 (FCI: at least 1 m between obstacles)"],
 ["^Rovný nájezd na dvojitý skok, kruh a skok daleký: (.+)$","Straight approach to the spread jump, tyre and long jump: @1"],
 ["^Nájezd pod úhlem \\(FCI doporučuje rovně, do (\\d+)°\\): (.+)$","Angled approach (FCI recommends straight, up to $1°): @2"],
+["^Krok č\\. (\\d+) nahrazen: (.+)$","Step no. $1 replaced: @2"],
+["^Krok č\\. (\\d+): (.+)$","Step no. $1: @2"],
 ["^Vráceno: (.+)$","Undone: @1"],
 ["^Znovu: (.+)$","Redone: @1"],
 ["^(položení|smazání|přesun|otočení|úprava) (skoku|zdi|dvojitého skoku|tunelu|slalomu|A-rampy|kladiny|houpačky|kruhu|skoku dalekého|oblouku|sudu|plůtku|krátkého tunelu|prostoru psovoda|překážek)$","@1 @2"],
@@ -5076,7 +5097,7 @@ function touch(g){
 function planApply(st){
   var sz=st.W!==S.W||st.H!==S.H;
   S.W=st.W; S.H=st.H; S.obs=st.obs; S.route=st.route; S.sides=st.sides; S.turns=st.turns; S.hp=st.hp; S.marks=st.marks||[]; S.chk=st.chk;
-  UNDO_CUR=planSnap(); UNDO_G=null;
+  UNDO_CUR=planSnap(); UNDO_G=null; RTE=null;
   if(sel!=null&&!getO(sel)) sel=null;
   S.meta.dirty=UNDO_CUR!==UNDO_SV;
   save(); if(sz){ setSizeSel(); drawGrid(); } render(); ui(); topbar(); undoUI();
@@ -5407,7 +5428,8 @@ function render(){
   ol.innerHTML=S.route.length
     ? S.route.map(function(id,i){var sd=S.sides[i], ty=getO(id).type, t=tuValid(S.turns[i],ty), jp=ty==='jump';
         var tb=(jp||DEF[ty].hl>0)&&(t||mode==='route'||panel==='side')?' <button class="tu'+(t?' on':'')+'" data-tu="'+i+'" aria-label="'+(jp?'Otočka u skoku':'Vstup do překážky')+' č. '+(i+1)+'">'+(t?tuLabel(t,sd):jp?'+ otočka':'+ vstup')+'</button>':'';
-        return '<li>'+obL(getO(id))+(S.chk&&S.chk[i]?' <span class="chk" title="Zkontroluj podle plánku">?</span>':'')+tb+(panel==='side'?'<span class="sd"><button data-sd="'+i+'" data-v="L" class="'+(sd==='L'?'on':'')+'">L</button><button data-sd="'+i+'" data-v="P" class="'+(sd==='P'?'on':'')+'">P</button></span>':'')+'</li>';}).join('')
+        return '<li'+(RTE&&RTE.i===i?' class="rte"':'')+'>'+obL(getO(id))+(S.chk&&S.chk[i]?' <span class="chk" title="Zkontroluj podle plánku">?</span>':'')+tb+(panel==='side'?'<span class="sd"><button data-sd="'+i+'" data-v="L" class="'+(sd==='L'?'on':'')+'">L</button><button data-sd="'+i+'" data-v="P" class="'+(sd==='P'?'on':'')+'">P</button></span>':'')+
+          (mode!=='view'&&!panel?' <button class="rmore" data-rm="'+i+'" aria-label="Krok č. '+(i+1)+': upravit">⋯</button>':'')+'</li>';}).join('')
     : '<li class="empty">Zatím žádná trasa. Přepni na Trasa a klepej na překážky v pořadí.</li>';
   if(panel==='side'){var n=sideChanges().length; $('sideInfo').textContent='Změny strany: '+n+(n<2?' (FCI chce aspoň 2)':'');}
 }
@@ -5439,8 +5461,11 @@ function ui(){
   $('zLbl').textContent=Math.round(zoom*100)+' %';
   svg.style.width=(zoom*100)+'%';
   if(BG){$('bgOp').value=Math.round((BG.op||.6)*100); $('bgFit').textContent=BG.fit==='none'?'Zachovat poměr':'Roztáhnout';}
+  if(RTE&&(mode!=='route'||panel)) RTE=null; /* vkládání a nahrazování v trase platí jen v režimu Trasa */
+  $('undoBtn').textContent=RTE?(RTE.k==='ins'?'Ukončit vkládání':'Zrušit nahrazení'):'Odebrat poslední z trasy';
   $('hint').textContent=panel==='side'?'':panel==='quiz'?'':mode==='build'
     ? (sel!=null&&!SELNEW?'Klepnutím do volného místa zrušíš výběr. Tažením překážku přesuneš, tlačítky otočíš, dvěma prsty přiblížíš.':tool?'Klepnutím polož '+toolL(tool).toLowerCase()+' na plochu. Překážku přesuneš tažením, plochu přiblížíš dvěma prsty.':'Vyber překážku v nabídce, nebo klepni na překážku na ploše.')
+    : RTE?(RTE.k==='ins'?(RTE.i<0?'Vkládáš na začátek trasy: klepej na překážky.':'Vkládáš za krok č. '+(RTE.i+1)+': klepej na překážky, přidají se za něj.')+' Vkládání ukončíš tlačítkem Ukončit vkládání.':'Klepni na překážku, která nahradí krok č. '+(RTE.i+1)+'. Nahrazení zrušíš tlačítkem Zrušit nahrazení.')
     : 'Klepej na překážky v pořadí, v jakém je pes poběží. Stejnou překážku můžeš použít víckrát. Otočku kolem křídla nebo zadní stranu nastavíš u skoku v seznamu pod plochou.';
   $('hint').hidden=special||mode==='view';
 }
@@ -5489,7 +5514,8 @@ svg.addEventListener('pointerup',function(e){
   } else if(tap&&still){
     if(mode==='route'){
       if(tap.id!=null&&getO(tap.id).type==='ha'){ toast('Prostor psovoda není součást trasy. Psovod v něm stojí celý běh.'); }
-      else if(tap.id!=null){S.route.push(tap.id); if(S.chk) S.chk.push(0); syncSides(); touch(); render();}
+      else if(tap.id!=null){ var tnow=Date.now(); /* druhé klepnutí na stejnou překážku do 0,4 s je omylem (dvojité ťuknutí), krok se nepřidá podruhé */
+        if(!(RTAP&&RTAP.id===tap.id&&tnow-RTAP.t<400)){ RTAP={id:tap.id,t:tnow}; routeTap(tap.id); } }
     } else if(mode==='view'){
       if(tap.id!=null&&!ui.tipped){ ui.tipped=1; toast('Překážky upravíš v režimu Stavba, pořadí v režimu Trasa.'); }
     } else if(sel!=null&&!SELNEW&&tap.id==null){ sel=null; render(); ui(); /* vybraná (ne právě položená) překážka: klepnutí do volného místa jen zruší výběr */
@@ -5541,7 +5567,7 @@ $('dupBtn').onclick=function(){
 $('revRoute').onclick=function(){
   if(S.route.length<2) return; syncSides();
   var fl=function(t){ return t&&/^[wb][LR]$/.test(t)?t.charAt(0)+(t.charAt(1)==='L'?'R':'L'):t; };
-  S.route.reverse(); S.sides.reverse(); S.turns=S.turns.reverse().map(fl); if(S.chk) S.chk.reverse();
+  S.route.reverse(); S.sides.reverse(); S.turns=S.turns.reverse().map(fl); if(S.chk) S.chk.reverse(); RTE=null;
   touch(); render(); ui(); toast('Trasa obrácená, start je teď u překážky '+obL(getO(S.route[0])).toLowerCase());
 };
 var SELNEW=false;
@@ -5603,11 +5629,45 @@ $('delBtn').onclick=function(){
   S.obs=S.obs.filter(function(o){return o.id!==sel;});
   sel=null; touch(); render(); ui();
 };
-$('undoBtn').onclick=function(){if(!S.route.length) return; S.route.pop(); if(S.chk) S.chk.pop(); syncSides(); touch(); render();};
+$('undoBtn').onclick=function(){ if(RTE){ RTE=null; ui(); render(); return; } if(!S.route.length) return; S.route.pop(); if(S.chk) S.chk.pop(); syncSides(); touch(); render();};
 $('clrRoute').onclick=function(){
   if(!S.route.length) return;
-  ask('Smazat trasu?','Překážky zůstanou na ploše, smaže se jen pořadí.','Smazat trasu',function(){S.route=[]; S.sides=[]; S.turns=[]; S.chk=null; touch(); render();},true);
+  ask('Smazat trasu?','Překážky zůstanou na ploše, smaže se jen pořadí.','Smazat trasu',function(){S.route=[]; S.sides=[]; S.turns=[]; S.chk=null; RTE=null; touch(); render(); ui();},true);
 };
+/* ---------- úpravy trasy uprostřed: u kroku v Pořadí překážek ⋯ → Odebrat z trasy, Vložit za, Nahradit ----------
+   RTE = {k:'ins', i} (další klepnutí na plochu vloží překážky za krok i) nebo {k:'rep', i} (další klepnutí nahradí krok i).
+   Strana psovoda, otočka a značka kontroly jsou u svého kroku: při vložení a odebrání se posunou s ním (jako u Odebrat poslední). */
+var RTE=null, RTAP=null;
+function routeFix(){ syncSides(); S.route.forEach(function(id,i){ var o=getO(id); S.turns[i]=o?tuValid(S.turns[i],o.type):null; }); if(S.turns[0]&&S.turns[0].charAt(0)==='b') S.turns[0]=null; }
+function routeTap(id){
+  syncSides();
+  if(RTE&&RTE.k==='rep'&&RTE.i<S.route.length){ var ri=RTE.i; S.route[ri]=id; if(S.chk) S.chk[ri]=0; RTE=null; routeFix(); touch(); render(); ui(); toast('Krok č. '+(ri+1)+' nahrazen: '+obL(getO(id)).toLowerCase()); return; }
+  if(RTE&&RTE.k==='ins'&&RTE.i<S.route.length){ var j=RTE.i+1; S.route.splice(j,0,id); S.sides.splice(j,0,null); S.turns.splice(j,0,null); if(S.chk) S.chk.splice(j,0,0); RTE.i=j; routeFix(); touch(); render(); ui(); return; }
+  RTE=null; S.route.push(id); if(S.chk) S.chk.push(0); syncSides(); touch(); render();
+}
+function routeDel(i){
+  syncSides(); if(i<0||i>=S.route.length) return;
+  S.route.splice(i,1); S.sides.splice(i,1); S.turns.splice(i,1); if(S.chk) S.chk.splice(i,1);
+  if(RTE){ if(RTE.k==='rep'&&RTE.i===i) RTE=null; else if(RTE.i>i||(RTE.i===i&&RTE.k==='ins')) RTE.i--; if(RTE&&RTE.i<0) RTE=RTE.k==='ins'?{k:'ins',i:-1}:null; }
+  routeFix(); touch(); render(); ui(); toast('Krok č. '+(i+1)+' odebrán z trasy');
+}
+function routeStepSheet(i){
+  var o=getO(S.route[i]); if(!o) return;
+  openSheet('<h3>Krok č. '+(i+1)+': '+esc(obL(o).toLowerCase())+'</h3><div class="opts">'+
+    '<button class="opt" data-ra="del"><b>Odebrat z trasy</b><span>Překážka zůstane na ploše, z pořadí zmizí. Další kroky se přečíslují.</span></button>'+
+    '<button class="opt" data-ra="ins"><b>Vložit za</b><span>Další klepnutí na překážky na ploše je vloží za tento krok.</span></button>'+
+    '<button class="opt" data-ra="rep"><b>Nahradit</b><span>Další klepnutí na překážku nahradí tento krok.</span></button>'+
+    (RTE?'<button class="opt" data-ra="end"><b>'+(RTE.k==='ins'?'Ukončit vkládání':'Zrušit nahrazení')+'</b><span>Klepnutí na plochu zase přidávají na konec trasy.</span></button>':'')+
+    '</div><div class="acts"><button class="btn" data-a="x">Zavřít</button></div>',
+    function(e){
+      var b=e.target.closest('[data-ra]'); if(!b){ if(e.target.closest('[data-a]')) closeSheet(); return; }
+      var a=b.getAttribute('data-ra'); closeSheet();
+      if(a==='del'){ routeDel(i); return; }
+      if(a==='end'){ RTE=null; ui(); render(); return; }
+      RTE={k:a,i:i}; RTAP=null; mode='route'; sel=null; ui(); render();
+      toast(a==='ins'?'Klepej na překážky, vloží se za krok č. '+(i+1):'Klepni na překážku, která nahradí krok č. '+(i+1));
+    });
+}
 /* velikosti plochy: agility a zahrada; v Hoopers navíc plochy podle třídy (H1 30 × 30, H2 36 × 30, H3 40 × 32 m) */
 var SIZEL=[[40,20,'Plocha'],[40,24,'Plocha'],[30,20,'Plocha'],[25,15,'Zahrada'],[20,15,'Zahrada'],[15,10,'Zahrada']];
 function sizeList(hoop){
@@ -5629,6 +5689,7 @@ $('sizeSelect').onchange=function(){
   drawGrid(); touch(); render();
 };
 $('routeList').onclick=function(e){
+  var rm=e.target.closest('[data-rm]'); if(rm){ routeStepSheet(+rm.getAttribute('data-rm')); return; }
   var tb=e.target.closest('[data-tu]'); if(tb){ var ti=+tb.getAttribute('data-tu'); if(S.chk&&S.chk[ti]){ S.chk[ti]=0; } turnSheet(ti); return;}
   var b=e.target.closest('[data-sd]'); if(!b) return;
   var i=+b.getAttribute('data-sd'), v=b.getAttribute('data-v');
@@ -5893,7 +5954,7 @@ function bgClear(){ BG=null; try{localStorage.removeItem('agility-bg-v1');}catch
 function planReset(){
   sayStop(); simStop();
   if(QZ) quizStop(); panel=null;
-  sel=null; drag=null; tap=null; hpDraw=null; MKT=null; mode='view'; toolsOpen(false);
+  sel=null; drag=null; tap=null; hpDraw=null; MKT=null; mode='view'; toolsOpen(false); RTE=null; RTAP=null;
   ANA={};
   if(SET.psz){ SET.psz=null; lsSet(SETK,SET); }
   var w=$('wrap'); if(w){ w.scrollLeft=0; w.scrollTop=0; w.classList.remove('flash-bad'); }

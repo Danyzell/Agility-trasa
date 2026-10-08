@@ -278,6 +278,56 @@ module.exports = async function ({ browser, base }) {
     ok(await ev(() => trLookup('Vráceno: přesun skoku') === 'Undone: moving the jump' && trLookup('Znovu: otočení tunelu') === 'Redone: rotating the tunnel'), 'překlad hlášky Zpět: ' + await ev(() => trLookup('Vráceno: přesun skoku')));
   });
 
+  await step('úpravy trasy uprostřed', async () => {
+    await fresh();
+    const J = (id, x, y) => ({ id, type: 'jump', x, y, rot: 0 });
+    await setCourse([J(1, 5, 5), J(2, 12, 5), { id: 3, type: 'tunnel', x: 20, y: 5, rot: 0, len: 5 }, J(4, 30, 5), J(5, 8, 14), J(6, 18, 14), J(7, 28, 14)], [1, 2, 3, 4]);
+    await ev(() => { S.turns = [null, 'wL', null, null]; S.sides = ['L', 'P', 'L', 'P']; mode = 'route'; render(); ui(); undoReset(); });
+    const st = () => ev(() => ({ r: S.route.join(), t: S.turns.map(t => t || '-').join(), s: S.sides.map(s => s || '-').join() }));
+    ok(await ev(() => document.querySelectorAll('#routeList [data-rm]').length === 4), 'u kroků chybí ⋯');
+    /* Odebrat z trasy: otočka i strana odejdou s krokem */
+    await page.click('#routeList [data-rm="1"]'); await page.waitForTimeout(100);
+    ok(/Krok č\. 2: skok/.test(await page.textContent('#sheet h3')), 'okno kroku: ' + await page.textContent('#sheet h3'));
+    await page.click('#sheet [data-ra="del"]'); await page.waitForTimeout(80);
+    let r = await st(); ok(r.r === '1,3,4' && r.t === '-,-,-' && r.s === 'L,L,P', 'odebrání kroku: ' + JSON.stringify(r));
+    /* Vložit za krok 1: dvě klepnutí na plochu se vloží za něj */
+    await page.click('#routeList [data-rm="0"]'); await page.click('#sheet [data-ra="ins"]'); await page.waitForTimeout(80);
+    ok(await ev(() => mode === 'route' && RTE && RTE.k === 'ins' && $('undoBtn').textContent === 'Ukončit vkládání' && /Vkládáš za krok č\. 1/.test($('hint').textContent)), 'vkládání nezačalo');
+    await T.tapField(8, 14); await page.waitForTimeout(420); await T.tapField(18, 14);
+    r = await st(); ok(r.r === '1,5,6,3,4' && r.t === '-,-,-,-,-' && r.s === 'L,-,-,L,P', 'vložení za krok 1: ' + JSON.stringify(r));
+    ok(await ev(() => /Vkládáš za krok č\. 3/.test($('hint').textContent) && document.querySelectorAll('#routeList li.rte').length === 1 && [...document.querySelectorAll('#routeList li')].indexOf(document.querySelector('#routeList li.rte')) === 2), 'zvýraznění kroku, za který se vkládá');
+    await page.click('#undoBtn');
+    ok(await ev(() => !RTE && $('undoBtn').textContent === 'Odebrat poslední z trasy' && S.route.join() === '1,5,6,3,4'), 'Ukončit vkládání');
+    /* Nahradit krok 3 (skok č. 6) skokem 7 */
+    await page.click('#routeList [data-rm="2"]'); await page.click('#sheet [data-ra="rep"]'); await page.waitForTimeout(80);
+    await T.tapField(28, 14);
+    r = await st(); ok(r.r === '1,5,7,3,4' && await ev(() => !RTE && /Krok č\. 3 nahrazen: skok/.test($('toast').textContent)), 'nahrazení kroku: ' + JSON.stringify(r));
+    /* nahrazení skoku s otočkou tunelem: otočka u tunelu neplatí */
+    await ev(() => { S.turns[1] = 'wL'; render(); });
+    await page.click('#routeList [data-rm="1"]'); await page.click('#sheet [data-ra="rep"]'); await page.waitForTimeout(80);
+    await T.tapField(20, 5);
+    r = await st(); ok(r.r === '1,3,7,3,4' && r.t === '-,-,-,-,-', 'otočka zůstala u tunelu: ' + JSON.stringify(r));
+    /* zadní strana nesmí zůstat u prvního kroku */
+    await ev(() => { S.turns[2] = 'bL'; render(); });
+    await page.click('#routeList [data-rm="1"]'); await page.click('#sheet [data-ra="del"]'); await page.click('#routeList [data-rm="0"]'); await page.click('#sheet [data-ra="del"]'); await page.waitForTimeout(80);
+    r = await st(); ok(r.r === '7,3,4' && r.t === '-,-,-', 'zadní strana u prvního kroku: ' + JSON.stringify(r));
+    /* dvojité ťuknutí na stejnou překážku přidá jen jeden krok, další ťuknutí po 0,4 s ano */
+    await ev(() => { $('toast').hidden = true; $('wrap').scrollIntoView({ block: 'center' }); });
+    const p = await px(5, 5);
+    await page.mouse.click(p.x, p.y); await page.mouse.click(p.x, p.y);
+    ok(await ev(() => S.route.join()) === '7,3,4,1', 'dvojité ťuknutí přidalo krok dvakrát: ' + await ev(() => S.route.join()));
+    await page.waitForTimeout(450); await page.mouse.click(p.x, p.y);
+    ok(await ev(() => S.route.join()) === '7,3,4,1,1', 'ťuknutí po 0,45 s se nepřidalo');
+    /* Zpět vrátí poslední úpravu; v Prohlížet ⋯ nejsou */
+    await page.click('#undoAll'); ok(await ev(() => S.route.join()) === '7,3,4,1', 'Zpět po úpravě trasy');
+    await page.click('#mView'); ok(await ev(() => !document.querySelector('#routeList [data-rm]')), 'v Prohlížet má trasa ⋯');
+    const miss = await missEn(['Odebrat z trasy', 'Vložit za', 'Nahradit', 'Ukončit vkládání', 'Zrušit nahrazení', 'Krok č. 2: skok', 'Krok č. 2: upravit', 'Krok č. 3 nahrazen: tunel', 'Krok č. 5 odebrán z trasy',
+      'Překážka zůstane na ploše, z pořadí zmizí. Další kroky se přečíslují.', 'Další klepnutí na překážky na ploše je vloží za tento krok.', 'Další klepnutí na překážku nahradí tento krok.', 'Klepnutí na plochu zase přidávají na konec trasy.',
+      'Vkládáš za krok č. 3: klepej na překážky, přidají se za něj. Vkládání ukončíš tlačítkem Ukončit vkládání.', 'Vkládáš na začátek trasy: klepej na překážky. Vkládání ukončíš tlačítkem Ukončit vkládání.',
+      'Klepni na překážku, která nahradí krok č. 4. Nahrazení zrušíš tlačítkem Zrušit nahrazení.', 'Klepej na překážky, vloží se za krok č. 2', 'Klepni na překážku, která nahradí krok č. 2']);
+    ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
+  });
+
   await T.ctx.close();
   return T.errs;
 };
