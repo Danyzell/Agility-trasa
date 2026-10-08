@@ -968,6 +968,11 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 #catBar{justify-content:center; text-align:center; font-size:12.5px; margin-top:4px;}
 #catBar .grow{flex:0 1 auto;}
 #catBar .btn{min-height:44px; padding:4px 10px; border-color:transparent; background:none; box-shadow:none; color:var(--accent); font-size:13px;}
+/* prázdná sbírka (Moje bez parkurů): bez filtrů, postupu, Náhodný | Generátor a řazení; prázdný stav má tlačítka Nový parkur a Plánek z fotky */
+#v-lib:has(#cards>.empty-state.lib-none) :is(#libFilters,.libmeta,.librow){display:none;}
+.empty-state .es-acts{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;}
+.empty-state .es-acts .btn svg{width:18px; height:18px;}
+.empty-state .es-acts .btn:not(.primary){color:var(--text);} /* prázdný stav má tlumené písmo, tlačítko ne */
 /* jedna barva výběru a hlavní akce: vybraný čip, tlačítka na Domů a odkazy mají barvu výběru jako přepínače (dřív skoro černé);
    limetková zůstává jen na tmavých plochách (spodní lišta, karty Parkur týdne a Zahrada týdne) */
 .chip.on{background:var(--accent); color:var(--on-accent); border-color:var(--accent);}
@@ -5952,6 +5957,9 @@ function libRender(){
     return libF==='all'||(libF==='new'&&isNewC(c.id))||(libF==='fav'&&m.fav)||(libF==='todo'&&!m.done)||(libF==='done'&&m.done)||
       (libF==='flow'&&st&&st.fs.arc>=52&&st.fs.tight<=10)||(libF==='tech'&&st&&st.diff>=(TECHT[c.cls]||5.4));});
   var key={easy:function(x){return x.st?x.st.diff:99;},hard:function(x){return x.st?-x.st.diff:99;},flow:function(x){return x.st?-x.st.fs.arc:99;},short:function(x){return x.st?x.st.geo.total:1e4;}}[libSort];
+  /* prázdná sbírka (Moje bez parkurů): filtry, postup, Náhodný, Generátor a Řadit se schovají (CSS podle .lib-none) a prázdný stav nabídne
+     Nový parkur a Plánek z fotky jako Domů. Když jen filtr nic nenajde, filtry zůstanou, ať jde vybrat jiný. */
+  var none=!L.length, noneBtns=none&&!isHoopS()?'<div class="es-acts"><button class="btn primary" data-lnew="1">'+IC.plus+'<span>Nový parkur</span></button><button class="btn" data-limp="1">'+IC.photo+'<span>Plánek z fotky</span></button></div>':'';
   if(key) F.sort(function(a,b){return key(a)-key(b)||a.i-b.i;});
   $('libSort').value=libSort;
   $('cards').innerHTML=(isHoopS()?'<button class="btn primary hnew" data-hnew="1">＋ Nový parkur Hoopers</button>':'')+(F.length?F.map(function(x){
@@ -5966,13 +5974,13 @@ function libRender(){
       (isNewC(c.id)||mk.done?'<div class="tags">'+(isNewC(c.id)?'<span class="new-tag">Nový</span>':'')+(mk.done?'<span class="done-tag">'+(bb?'✓ <span translate="no">'+gTxt(bb.g)+'</span>':'✓ zaběhnuto')+'</span>':'')+'</div>':'')+
       '<div class="st"><button class="fav'+(mk.fav?' on':'')+'" data-fav="'+esc(c.id)+'" aria-label="Oblíbený">'+(mk.fav?IC.starF:IC.star)+'</button>'+
       (libTab==='my'?'<button data-del="'+esc(c.id)+'" aria-label="Smazat parkur">'+IC.x+'</button>':'')+'</div></div>';
-  }).join(''):'<div class="empty-state">'+(libF==='new'&&L.length
+  }).join(''):'<div class="empty-state'+(none?' lib-none':'')+'">'+(libF==='new'&&L.length
       ? 'V téhle záložce nic nového není. Nové parkury mají štítek Nový a tečku u názvu záložky.'
       : libTab==='tr'&&!L.length
       ? 'Zatím tu nejsou žádné parkury trenérů. Pošli do chatu s Claudem screenshoty plánků a přepíše je sem i se jménem autora. Nebo v Plánu zvol Plánek z obrázku: aplikace překážky rozpozná, pořadí naklepeš a při ukládání vyplníš, kdo parkur stavěl.'
       : libTab==='my'&&!L.length
       ? (isHoopS()?'Zatím tu nemáš žádný vlastní parkur Hoopers. Klepni na Nový parkur Hoopers, nebo si otevři některý z H1–H3, uprav ho a ulož.':'Zatím tu nemáš žádný vlastní parkur. Postav ho v Plánu nebo si otevři některý z A1–A3, uprav ho a ulož.')
-      : 'V tomhle filtru nic není. Zkus jiný filtr nebo třídu.')+'</div>');
+      : 'V tomhle filtru nic není. Zkus jiný filtr nebo třídu.')+noneBtns+'</div>');
   catUI();
   $('libNote').textContent=libTab==='my'?'':isHoopS()?'Hoopers: pes běží parkur z oblouků, sudů, plůtků a krátkých tunelů sám a psovod ho vede z prostoru 2 × 2 m (žlutý čtverec). Parkury H1–H3 složil generátor podle pravidel FCI Hoopers: start i cíl obloukem, aspoň polovina oblouků, vzdálenosti mezi překážkami a od psovoda podle třídy. Hodnotí se chyby, maximální čas jsou 3 minuty.':libTab==='tr'?'Přepsané plánky trenérů a rozhodčích pro vlastní trénink. Rozmístění překážek je přibližné, zdroj je uvedený u parkuru.':'Parkury A1–A3 složil generátor v aplikaci podle Řádu agility FCI a podle toho, jak stavějí rozhodčí: dráha vede v obloucích a hadech, skoky stojí šikmo, tunely jsou i do oblouku a do U a dráha se kříží (A1 nejvýš jednou, A2 jednou až dvakrát, A3 dvakrát až třikrát). 15–22 překážek, start i cíl skokem, v A1 právě 3 zónové překážky, v A2 a A3 nejvýš 4. Otočky kolem křídla (v A3 aspoň dvě), v A3 vždy i zadní strana skoku.';
 }
@@ -6012,6 +6020,9 @@ $('libFilters').onclick=function(e){var b=e.target.closest('.chip'); if(!b) retu
 $('libSort').onchange=function(){libSort=this.value; libRender();};
 $('cards').onclick=function(e){
   if(e.target.closest('[data-hnew]')){ hoopNew(); return; }
+  /* prázdné Moje: stejně jako tlačítka na Domů */
+  if(e.target.closest('[data-lnew]')){ show('plan'); $('newBtn').click(); return; }
+  if(e.target.closest('[data-limp]')){ show('plan'); impOpen(); return; }
   var f=e.target.closest('[data-fav]'), d=e.target.closest('[data-del]'), p=e.target.closest('.pick');
   if(f){var id=f.getAttribute('data-fav'); setMark(id,{fav:!getMark(id).fav}); libRender(); topbar(); return;}
   if(d){
