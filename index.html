@@ -956,6 +956,21 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 .fieldbox .zoom .btn{min-height:44px; width:44px;}
 .field-row .check{min-height:44px; padding:0 8px; margin:0 -8px; cursor:pointer;}
 
+/* ===== Vzhled 2: Parkury nad ohybem, jedna barva výběru, jedna značka, cíle pro palec, dlouhé okna, tmavá lišta ===== */
+/* Parkury: postup a Řadit v jednom řádku, Náhodný | Generátor v jednom řádku, katalog a kontrola nových parkurů pod seznamem */
+.libmeta{display:flex; align-items:center; gap:10px; min-width:0;}
+.libmeta .progress{flex:1 1 auto; min-width:0;}
+.libmeta .progress>span{white-space:nowrap;}
+.libmeta .sortrow{flex:0 0 auto; gap:0;}
+.libmeta .sortrow select{min-height:40px; padding:6px 10px; font-size:13.5px; max-width:160px;}
+.librow{flex-wrap:nowrap;}
+.librow .btn{flex:1 1 0; justify-content:center; min-width:0; padding-left:10px; padding-right:10px; white-space:nowrap;}
+#catBar{justify-content:center; text-align:center; font-size:12.5px; margin-top:4px;}
+#catBar .grow{flex:0 1 auto;}
+#catBar .btn{min-height:40px; padding:4px 10px; border-color:transparent; background:none; box-shadow:none; color:var(--accent); font-size:13px;}
+/* vybraný čip má barvu výběru jako přepínače (dřív skoro černý) */
+.chip.on{background:var(--accent); color:var(--on-accent); border-color:var(--accent);}
+
 @media (prefers-reduced-motion: reduce){ .view.enter,.sheet,.scrim,.toast,.onb,.onb-body{animation:none!important;} }
 
 /* značky křížení na dráze psovoda: volba druhu v liště Dráha psovoda, legenda pod plochou */
@@ -1090,8 +1105,9 @@ html.onb-open,html.onb-open body{overflow:hidden;}
   </section>
 
   <!-- PARKURY -->
+  <!-- Parkury: záložky, filtry, postup s řazením v jednom řádku, Náhodný | Generátor v jednom řádku a hned karty;
+       popis katalogu a Zkontrolovat nové parkury jsou až pod seznamem (první karta je na 390 px kolem 300 px místo 473 px) -->
   <section class="view" id="v-lib" hidden>
-    <div class="catbar" id="catBar"><span id="catInfo" class="grow"></span><button class="btn" id="catBtn" data-ic="refresh" hidden><span class="lbl">Zkontrolovat nové parkury</span></button></div>
     <div class="seg wide" id="libTabs" role="group" aria-label="Sbírka">
       <button data-c="A1" class="on">A1</button><button data-c="A2">A2</button><button data-c="A3">A3</button><button data-c="tr">Trenéři</button><button data-c="my">Moje</button>
     </div>
@@ -1104,14 +1120,17 @@ html.onb-open,html.onb-open body{overflow:hidden;}
       <button class="chip" data-f="flow">Plynulé</button>
       <button class="chip" data-f="tech">Technické</button>
     </div>
-    <div class="progress"><span id="progTxt" class="num"></span><div class="bar"><i id="progBar"></i></div></div>
-    <div class="row">
-      <button class="btn" id="randBtn" data-ic="dice">Náhodný nezaběhnutý</button>
-      <button class="btn" id="genBtn" data-ic="spark">Generátor sekvencí a zahrady</button>
+    <div class="libmeta">
+      <div class="progress"><span id="progTxt" class="num"></span><div class="bar"><i id="progBar"></i></div></div>
+      <div class="row sortrow"><label for="libSort" class="sr">Řadit</label><select class="btn" id="libSort" title="Řadit"><option value="ord">Podle čísla</option><option value="easy">Od nejlehčího</option><option value="hard">Od nejtěžšího</option><option value="flow">Nejplynulejší</option><option value="short">Nejkratší</option></select></div>
     </div>
-    <div class="row sortrow"><label for="libSort">Řadit</label><select class="btn" id="libSort"><option value="ord">Podle čísla</option><option value="easy">Od nejlehčího</option><option value="hard">Od nejtěžšího</option><option value="flow">Nejplynulejší</option><option value="short">Nejkratší</option></select></div>
+    <div class="row librow">
+      <button class="btn" id="randBtn" data-ic="dice" aria-label="Náhodný nezaběhnutý" title="Náhodný nezaběhnutý">Náhodný</button>
+      <button class="btn" id="genBtn" data-ic="spark" aria-label="Generátor sekvencí a zahrady" title="Generátor sekvencí a zahrady">Generátor</button>
+    </div>
     <div class="cards" id="cards"></div>
     <p class="hint" id="libNote"></p>
+    <div class="catbar" id="catBar"><span id="catInfo" class="grow"></span><button class="btn" id="catBtn" data-ic="refresh" hidden><span class="lbl">Zkontrolovat nové parkury</span></button></div>
   </section>
 
   <!-- BĚH -->
@@ -2003,6 +2022,8 @@ var I18N_EXTRA={exact:{
 "Přenáším…": "Moving…",
 "Zálohu pod tímhle klíčem jsem nenašel.": "No backup found under this key.",
 "Data jsou přenesená na novou adresu. Nainstaluj si Pawkur odsud a starou ikonu smaž.": "Your data has moved to the new address. Install Pawkur from here and delete the old icon.",
+/* vzhled 2: Parkury, prázdné Moje, tisk a export plánku, příběh z běhu */
+"Náhodný": "Random",
 "Závody z kacr.info": "Competitions from kacr.info",
 "Výsledky se do deníku berou samy. U běhu s trestnými body ťukni, co se stalo, a rozbor Kde ztrácíš body bude přesnější.": "Results come into the diary on their own. On a run with faults, tap what happened and the Where you lose points analysis gets more precise.",
 "Čisté běhy po měsících": "Clean runs by month",
