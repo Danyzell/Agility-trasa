@@ -50,8 +50,9 @@ section{padding:64px 0;}
 .top{position:sticky; top:0; z-index:10; background:rgba(10,42,28,.92); backdrop-filter:blur(12px); color:#fff;}
 .top .wrap{display:flex; align-items:center; gap:12px; min-height:64px;}
 .logo{display:flex; align-items:center; gap:10px; color:#fff; text-decoration:none; font-family:var(--display); font-weight:700; font-size:22px; letter-spacing:.5px;}
-.logo i{width:36px; height:36px; border-radius:10px; background:var(--lime); display:grid; place-items:center;}
-.logo svg{width:24px; height:24px; color:var(--ink);}
+/* značka jako ikona aplikace: limetková tlapka na tmavě zeleném přechodu, na tmavé liště s jemným okrajem */
+.logo i{width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#2f9e62,#0a2a1c); box-shadow:0 0 0 1px rgba(255,255,255,.18); display:grid; place-items:center;}
+.logo svg{width:24px; height:24px; color:var(--lime);}
 .top nav{margin-left:auto; display:flex; gap:4px; align-items:center;}
 .top nav a{color:rgba(255,255,255,.85); text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:500;}
 .top nav a:hover{background:rgba(255,255,255,.1);}
@@ -85,6 +86,7 @@ section{padding:64px 0;}
 .grid{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); margin-top:28px;}
 .card{background:var(--surface); border:1px solid var(--border); border-radius:22px; padding:22px;}
 .card .ic{width:48px; height:48px; border-radius:14px; background:#e6f3ea; color:var(--accent); display:grid; place-items:center; font-size:24px; margin-bottom:14px;}
+.card .ic svg{width:26px; height:26px;} /* čárové ikony jako v aplikaci místo emoji */
 .card h3{margin-bottom:6px;}
 .card p{color:var(--muted); font-size:16px;}
 
@@ -145,7 +147,7 @@ footer .sp{flex:1;}
 
 <header class="top">
   <div class="wrap">
-    <a class="logo" href="./" aria-label="Pawkur"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.6 20.6L12 9.2l6.4 11.4" fill="none" stroke="currentColor" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.6 16.6h6.8" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></i>Pawkur</a>
+    <a class="logo" href="./" aria-label="Pawkur"><i class="paw"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><ellipse cx="7.3" cy="8.3" rx="2.2" ry="2.9" transform="rotate(-18 7.3 8.3)"/><ellipse cx="16.7" cy="8.3" rx="2.2" ry="2.9" transform="rotate(18 16.7 8.3)"/><ellipse cx="3.4" cy="13.6" rx="1.9" ry="2.5" transform="rotate(-32 3.4 13.6)"/><ellipse cx="20.6" cy="13.6" rx="1.9" ry="2.5" transform="rotate(32 20.6 13.6)"/><path d="M12 12.2c-3.7 0-6.6 2.8-6.6 5.7 0 2 1.4 3.4 3.3 3.4 1.2 0 2.1-.6 3.3-.6s2.1.6 3.3.6c1.9 0 3.3-1.4 3.3-3.4 0-2.9-2.9-5.7-6.6-5.7z"/></svg></i>Pawkur</a>
     <nav>
       <a class="hide-s" href="#funkce" data-en="Features">Co umí</a>
       <a class="hide-s" href="#hoopers">Hoopers</a>
@@ -192,12 +194,12 @@ footer .sp{flex:1;}
     <h2 data-en="What it does">Co umí</h2>
     <p class="lead" data-en="Everything a handler needs between training and the start line.">Všechno, co psovod potřebuje mezi tréninkem a startem.</p>
     <div class="grid">
-      <div class="card"><div class="ic">📐</div><h3 data-en="Courses by the rules">Parkury podle pravidel</h3><p data-en="Over 90 A1–A3 courses plus your own builds. Automatic check of distances, angles, obstacle counts and standard time by the rules of your country.">Přes 90 parkurů A1–A3 a vlastní stavba. Automatická kontrola vzdáleností, úhlů, počtu překážek a standardního času podle pravidel tvé země.</p></div>
-      <div class="card"><div class="ic">📷</div><h3 data-en="Read a course map from a photo">Plánek z fotky</h3><p data-en="Photograph the course map at the competition, the app recognises obstacles and the route. Then walk it on the phone before the course walk.">Vyfoť plánek na závodech, aplikace rozpozná překážky a trasu. Pak si ho projdeš v telefonu ještě před prohlídkou.</p></div>
-      <div class="card"><div class="ic">🧊</div><h3 data-en="3D walk-through and AR">3D průlet a rozšířená realita</h3><p data-en="Run through the course from the dog's view, check lines and traps, or place the course onto a real field with the camera.">Proleť parkur pohledem psa, zkontroluj linie a pasti, nebo si parkur promítni kamerou na skutečné kolbiště.</p></div>
-      <div class="card"><div class="ic">⏱️</div><h3 data-en="Stopwatch with grading">Stopky s hodnocením</h3><p data-en="Time, faults and refusals; the app grades the run (Excellent to Disqualified) and compares with the standard time. Split times live or from video.">Čas, chyby a odmítnutí; aplikace běh ohodnotí (výborně až diskvalifikace) a porovná se SČP. Mezičasy naživo i z videa.</p></div>
-      <div class="card"><div class="ic">🏡</div><h3 data-en="Training at home">Trénink doma</h3><p data-en="Sequences cut from real courses that fit your garden and the equipment you own. Drills by skill: serpentine, threadle, wrap, weave entry.">Úseky ze skutečných parkurů, které se vejdou na tvou zahradu a postavíš je z toho, co máš. Cvičení podle dovednosti: serpentina, threadle, obrat, nájezd do slalomu.</p></div>
-      <div class="card"><div class="ic">📓</div><h3 data-en="Diary and promotion">Deník a postup</h3><p data-en="Runs, results and fault types per dog. Where you lose points, success by judge, and the app watches your promotion to the next class.">Běhy, výsledky a typy chyb pro každého psa. Kde ztrácíš body, úspěšnost podle rozhodčího a hlídání postupu do vyšší třídy.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15c2-5 4 1 6-3s3-2 4-2" stroke-dasharray="2 2.5"/></svg></div><h3 data-en="Courses by the rules">Parkury podle pravidel</h3><p data-en="Over 90 A1–A3 courses plus your own builds. Automatic check of distances, angles, obstacle counts and standard time by the rules of your country.">Přes 90 parkurů A1–A3 a vlastní stavba. Automatická kontrola vzdáleností, úhlů, počtu překážek a standardního času podle pravidel tvé země.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M8 15l3-4 2 2.5 3-4"/></svg></div><h3 data-en="Read a course map from a photo">Plánek z fotky</h3><p data-en="Photograph the course map at the competition, the app recognises obstacles and the route. Then walk it on the phone before the course walk.">Vyfoť plánek na závodech, aplikace rozpozná překážky a trasu. Pak si ho projdeš v telefonu ještě před prohlídkou.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></div><h3 data-en="3D walk-through and AR">3D průlet a rozšířená realita</h3><p data-en="Run through the course from the dog's view, check lines and traps, or place the course onto a real field with the camera.">Proleť parkur pohledem psa, zkontroluj linie a pasti, nebo si parkur promítni kamerou na skutečné kolbiště.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V10M10 3h4M18.5 6.5l-1.3 1.3"/></svg></div><h3 data-en="Stopwatch with grading">Stopky s hodnocením</h3><p data-en="Time, faults and refusals; the app grades the run (Excellent to Disqualified) and compares with the standard time. Split times live or from video.">Čas, chyby a odmítnutí; aplikace běh ohodnotí (výborně až diskvalifikace) a porovná se SČP. Mezičasy naživo i z videa.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-6.5 8 6.5"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/></svg></div><h3 data-en="Training at home">Trénink doma</h3><p data-en="Sequences cut from real courses that fit your garden and the equipment you own. Drills by skill: serpentine, threadle, wrap, weave entry.">Úseky ze skutečných parkurů, které se vejdou na tvou zahradu a postavíš je z toho, co máš. Cvičení podle dovednosti: serpentina, threadle, obrat, nájezd do slalomu.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div><h3 data-en="Diary and promotion">Deník a postup</h3><p data-en="Runs, results and fault types per dog. Where you lose points, success by judge, and the app watches your promotion to the next class.">Běhy, výsledky a typy chyb pro každého psa. Kde ztrácíš body, úspěšnost podle rozhodčího a hlídání postupu do vyšší třídy.</p></div>
     </div>
   </div>
 </section>

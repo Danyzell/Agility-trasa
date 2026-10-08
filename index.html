@@ -974,6 +974,11 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 .hm-go{background:var(--accent); color:var(--on-accent);}
 .hm-week i.on{background:var(--accent);}
 :where(a:not(.btn)){color:var(--accent);}
+/* jedna značka všude: limetková tlapka na tmavě zeleném přechodu jako ikona aplikace (horní lišta, Domů, O aplikaci, průvodce; dřív bílá tlapka) */
+:root{--brand-tile:linear-gradient(135deg,#2f9e62,#0a2a1c); --lime:#c6f432;}
+.brand,.hm-logo,.about-ic,.onb-logo,.about-h .about-ic{background:var(--brand-tile); color:var(--lime);} /* .about-h span by tlapku jinak zašedil */
+.brand{box-shadow:0 3px 10px rgba(10,42,28,.28);}
+.onb-logo{box-shadow:0 10px 30px rgba(10,42,28,.35);}
 
 @media (prefers-reduced-motion: reduce){ .view.enter,.sheet,.scrim,.toast,.onb,.onb-body{animation:none!important;} }
 
