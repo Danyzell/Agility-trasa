@@ -11,7 +11,8 @@ module.exports = async function ({ browser, base }) {
   await page.reload(); await page.waitForTimeout(1500);
   ok(await page.evaluate(() => !!navigator.serviceWorker.controller), 'stránku neřídí service worker');
   const c = await page.evaluate(async () => { const o = {}; for (const k of await caches.keys()) o[k] = (await (await caches.open(k)).keys()).length; return o; });
-  ok(Object.keys(c).some(k => /^agility-trasa-/.test(k) && c[k] >= 6), 'chybí uložená aplikace: ' + JSON.stringify(c));
+  /* CORE v sw.js: './', index.html, manifest a malá ikona (velké ikony z manifestu se offline neukládají) */
+  ok(Object.keys(c).some(k => /^agility-trasa-/.test(k) && c[k] >= 4), 'chybí uložená aplikace: ' + JSON.stringify(c));
   /* písmo se uloží, jen když je Google Fonts dostupné */
   if (await page.evaluate(() => document.fonts.check('16px Barlow'))) ok(c['agility-fonts'] > 0, 'písmo se neuložilo pro offline');
 
