@@ -6715,6 +6715,7 @@ var IS_APK=!!NATIVE||location.protocol==='file:';
 var APK_LITE=IS_APK&&!NATIVE; /* aplikace pro Android bez přístupu k souborům telefonu */
 var IS_PWA=!!window.AGILITY_PWA; /* aplikace nainstalovaná z webu (GitHub Pages): soubory i server */
 var IS_SRV=IS_APK||IS_PWA;
+var APP_URL='https://pawkur.cz/'; /* hlavní adresa aplikace (stará github.io běží dál) */
 var SB_URL='https://wtjyjknaibsamgczvaxy.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0anlqa25haWJzYW1nY3p2YXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MDA1NjAsImV4cCI6MjEwNjE3NjU2MH0.kV8UN9xQFKqTNcnY9B81-wWrnM5nWXUPnzcCTHVIMZc';
 /* při slabém signálu nečekat donekonečna: po 20 s to vzdát */
@@ -8748,7 +8749,7 @@ $('jsonFile').onchange=function(){
    Přihlášení přes Supabase Auth (Google), tokeny v localStorage. Synchronizují se stejná data jako v záloze (parkury, značky a běhy,
    psi, deník, výsledky z kacr.info, nastavení). Slučuje se třícestně: základ je stav po poslední synchronizaci, takže změny
    i smazání z obou zařízení se zachovají a nic se nepřepíše naslepo. Na serveru jeden řádek na uživatele (funkce sync_get, sync_put). */
-var AUTHK='agility-auth-v1', SYNCK='agility-sync-v1', SYNC_OWN={}; SYNC_OWN[AUTHK]=1; SYNC_OWN[SYNCK]=1;
+var AUTHK='agility-auth-v1', SYNCK='agility-sync-v1', LOGINK='agility-login-v1', SYNC_OWN={}; SYNC_OWN[AUTHK]=1; SYNC_OWN[SYNCK]=1; SYNC_OWN[LOGINK]=1;
 var SYNC_KEYS=[MYK,MKK,DOGK,DOGCUR,DIARYK,KACRK,SETK,NICKK,WKME,WARMK];
 var AUTH=lsGet(AUTHK,null), AUTH_NEW=false, AUTH_ERR='', SYNC={busy:false,again:false,tm:0,st:'',msg:'',at:0,p:null,apply:false};
 function jwtBody(t){ try{ var s=String(t).split('.')[1].replace(/-/g,'+').replace(/_/g,'/'); while(s.length%4) s+='='; return JSON.parse(decodeURIComponent(escape(atob(s)))); }catch(e){ return {}; } }
@@ -8759,6 +8760,14 @@ function authFrom(p){
 /* návrat z přihlášení: tokeny přijdou v adrese za # (dřív, než se podle # otevře záložka) */
 (function(){
   var h=location.hash||''; if(h.indexOf('access_token=')<0&&h.indexOf('error_description=')<0) return;
+  var t0=+lsGet(LOGINK,0)||0; try{ localStorage.removeItem(LOGINK); }catch(e){}
+  /* stará adresa (github.io): Supabase sem vrací i přihlášení začaté na pawkur.cz, když pawkur.cz nemá v povolených adresách
+     (Authentication → URL Configuration → Redirect URLs). Tady přihlašování nezačalo, takže tokeny patří na pawkur.cz,
+     jinak by se uložily jen sem a aplikace na pawkur.cz by po zavření byla zase odhlášená. Testy: ?oldhost, window.AUTH_FWD */
+  if((/\.github\.io$/.test(location.host)||/[?&]oldhost\b/.test(location.search))&&!(Date.now()-t0<15*6e4)){
+    try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){}
+    (window.AUTH_FWD||function(u){ location.replace(u); })(APP_URL+h); return;
+  }
   var p={}; h.slice(1).split('&').forEach(function(kv){ var i=kv.indexOf('='); if(i>0) try{ p[decodeURIComponent(kv.slice(0,i))]=decodeURIComponent(kv.slice(i+1).replace(/\+/g,' ')); }catch(e){} });
   try{ history.replaceState(null,'',location.pathname+location.search+'#more'); }catch(e){ location.hash='#more'; }
   if(p.access_token&&p.refresh_token){ var a=authFrom(p); if(a.uid){ AUTH=a; lsSet(AUTHK,AUTH); AUTH_NEW=true; } }
@@ -8767,6 +8776,9 @@ function authFrom(p){
 var AUTH_REF=null;
 function authTok(){
   if(!AUTH) return Promise.reject(new Error('nepřihlášeno'));
+  /* jiné okno aplikace (nainstalovaná a k tomu prohlížeč) mohlo token mezitím obnovit: starý obnovovací token by server vzal
+     jako ukradený a zrušil by přihlášení všude, proto vzít novější token z úložiště */
+  var cur=lsGet(AUTHK,null); if(cur&&cur.uid===AUTH.uid&&cur.rt&&cur.rt!==AUTH.rt&&(+cur.exp||0)>=(+AUTH.exp||0)) AUTH=cur;
   if(AUTH.exp-120>Date.now()/1000) return Promise.resolve(AUTH.at);
   if(AUTH_REF) return AUTH_REF;
   AUTH_REF=fetch(SB_URL+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:AUTH.rt})})
@@ -8781,6 +8793,7 @@ function authIn(){
   var back=location.origin+location.pathname;
   fetch(SB_URL+'/auth/v1/settings',{headers:{apikey:SB_KEY}}).then(function(r){return r.json();}).then(function(s){
     if(!s||!s.external||!s.external.google){ toast(T('Přihlášení přes Google se právě zapíná, zkus to prosím později.'),5000); return; }
+    lsSet(LOGINK,Date.now()); /* po návratu se podle toho pozná, že přihlašování začalo na téhle adrese */
     location.href=SB_URL+'/auth/v1/authorize?provider=google&redirect_to='+encodeURIComponent(back);
   },function(){ toast(T('Bez připojení k internetu se přihlásit nedá.')); });
 }
@@ -9182,7 +9195,6 @@ function dnCopy(s){
   try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(s).then(done,function(){ toast(s,5000); }); return; } }catch(e){}
   toast(s,5000);
 }
-var APP_URL='https://pawkur.cz/';
 function appShare(){
   var txt=T('Pawkur – plánovač agility parkurů, stopky a trénink. Zdarma v telefonu:');
   try{ if(navigator.share){ navigator.share({title:'Pawkur',text:txt,url:APP_URL}).catch(function(){}); return; } }catch(e){}

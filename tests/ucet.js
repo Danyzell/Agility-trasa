@@ -95,6 +95,56 @@ module.exports = async function ({ browser, base }) {
     ok(!miss.length, 'chybí překlad: ' + miss.join(' | '));
   });
 
+  await step('začátek přihlášení si zapamatuje adresu', async () => {
+    await T.ctx.route(/\/auth\/v1\/settings/, r => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ external: { google: true } }) }));
+    await T.ctx.route(/\/auth\/v1\/authorize/, r => r.fulfill({ status: 200, contentType: 'text/html', body: '<p>Google</p>' }));
+    await page.goto('about:blank'); await page.goto(base + '/#home'); await page.waitForTimeout(300);
+    await ev(() => { localStorage.removeItem('agility-login-v1'); authIn(); });
+    await page.waitForURL(/\/auth\/v1\/authorize\?provider=google&redirect_to=/, { timeout: 5000 });
+    await page.goto(base + '/#home'); await page.waitForTimeout(200);
+    const d = await ev(() => Date.now() - (+JSON.parse(localStorage.getItem('agility-login-v1') || '0')));
+    ok(d >= 0 && d < 60000, 'začátek přihlášení se nezapsal: ' + d);
+  });
+
+  await step('návrat na starou adresu', async () => {
+    /* přihlášení začalo na pawkur.cz a Supabase ho vrátil na starou adresu (pawkur.cz chybí v Redirect URLs):
+       tokeny se přepošlou na pawkur.cz a stará adresa si je nenechá */
+    await page.addInitScript(() => { window.AUTH_FWD = u => { window.__fwd = u; }; });
+    const back = '#access_token=' + jwt + '&refresh_token=r9&expires_in=3600&token_type=bearer';
+    await ev(() => { localStorage.removeItem('agility-auth-v1'); localStorage.removeItem('agility-login-v1'); });
+    await page.goto('about:blank'); await page.goto(base + '/?oldhost' + back); await page.waitForTimeout(600);
+    const f = await ev(() => [window.__fwd || '', !!AUTH, localStorage.getItem('agility-auth-v1'), location.hash]);
+    ok(f[0] === 'https://pawkur.cz/' + back, 'tokeny se nepřeposlaly na pawkur.cz: ' + f[0].slice(0, 60));
+    ok(!f[1] && f[2] === null && !/access_token/.test(f[3]), 'stará adresa si tokeny nechala nebo zůstaly v adrese');
+    /* přihlášení začalo tady (značka z authIn): zůstane tady a značka se spotřebuje */
+    await ev(() => { window.__fwd = ''; localStorage.setItem('agility-login-v1', JSON.stringify(Date.now() - 60000)); });
+    await page.goto('about:blank'); await page.goto(base + '/?oldhost#access_token=' + jwt + '&refresh_token=r8&expires_in=3600&token_type=bearer'); await page.waitForTimeout(600);
+    const g = await ev(() => [window.__fwd || '', AUTH && AUTH.rt, localStorage.getItem('agility-login-v1')]);
+    ok(!g[0] && g[1] === 'r8' && g[2] === null, 'přihlášení začaté na staré adrese se tam neuložilo: ' + JSON.stringify(g));
+    /* stará značka (přihlašování před víc než 15 min) se nepočítá */
+    await ev(() => { window.__fwd = ''; localStorage.setItem('agility-login-v1', JSON.stringify(Date.now() - 20 * 60000)); });
+    await page.goto('about:blank'); await page.goto(base + '/?oldhost' + back); await page.waitForTimeout(400);
+    ok(/^https:\/\/pawkur\.cz\/#access_token=/.test(await ev(() => window.__fwd || '')), 'stará značka zadržela tokeny na staré adrese');
+  });
+
+  await step('token obnovený jiným oknem', async () => {
+    /* jiné okno už token obnovilo: tohle okno má v paměti starý a nesmí s ním jít na server (ten by přihlášení zrušil všude) */
+    let refresh = 0;
+    await T.ctx.route(/\/auth\/v1\/token/, r => { refresh++; r.fulfill({ status: 400, contentType: 'application/json', body: '{"error":"invalid_grant"}' }); });
+    const r = await ev(() => { const now = Math.floor(Date.now() / 1000);
+      AUTH = { at: 'stary', rt: 'r1', exp: now - 10, uid: 'u-1', email: 'a@b.cz', name: 'A' };
+      lsSet('agility-auth-v1', { at: 'novy', rt: 'r2', exp: now + 3600, uid: 'u-1', email: 'a@b.cz', name: 'A' });
+      return authTok().then(t => t, e => 'chyba: ' + e.message); });
+    ok(r === 'novy' && refresh === 0, 'nevzal se token obnovený jiným oknem: ' + r + ', obnovení ' + refresh);
+    /* token jiného účtu z úložiště se nepřevezme */
+    const r2 = await ev(() => { const now = Math.floor(Date.now() / 1000);
+      AUTH = { at: 'muj', rt: 'r5', exp: now + 3600, uid: 'u-1', email: 'a@b.cz', name: 'A' };
+      lsSet('agility-auth-v1', { at: 'cizi', rt: 'r6', exp: now + 7200, uid: 'u-2', email: 'c@d.cz', name: 'C' });
+      return authTok(); });
+    ok(r2 === 'muj', 'převzal se token jiného účtu');
+    await ev(() => { AUTH = null; localStorage.removeItem('agility-auth-v1'); });
+  });
+
   await T.ctx.close();
   return T.errs;
 };
