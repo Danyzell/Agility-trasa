@@ -2175,6 +2175,14 @@ var I18N_EXTRA={exact:{
 "Hoopers: přepínač Agility | Hoopers nahoře na Domů a v Parkurech. Parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb": "Hoopers: an Agility | Hoopers switch at the top of Home and Courses. H1–H3 courses following FCI rules, your own builds with hoops, barrels, gates, a chute and the handling area, a rules check and run scoring by faults",
 "Novinky v Pawkuru 2.6": "What's new in Pawkur 2.6",
 "Novinky v Pawkuru 2.7": "What's new in Pawkur 2.7",
+"Novinky v Pawkuru 2.8": "What's new in Pawkur 2.8",
+"Telefon na šířku: v Plánu je plocha přes celou výšku a ovládání vedle, v Běhu stopky a START vlevo": "Phone sideways: in Plan the field fills the whole height with the controls beside it, in Run the stopwatch and START are on the left",
+"Plocha přes celou obrazovku: tlačítko pod plochou schová lišty a souhrn": "Full-screen field: the button under the field hides the bars and the summary",
+"Nový parkur se zeptá na plochu a třídu a otevře se celý; v paletě jsou všechny překážky bez posouvání": "A new course asks for the field size and class and opens in full; the palette shows every obstacle without scrolling",
+"Kontrola FCI rovnou na ploše i bez trasy: překážky přes sebe, mimo plochu nebo blíž než 1 m se obtáhnou červeně; nové kontroly nájezdu, zdi, dvojitého skoku a tunelů": "FCI check right on the field, even without a route: overlapping obstacles, obstacles outside the field or closer than 1 m get a red outline; new checks for approaches, the wall, the spread jump and tunnels",
+"Znovu vedle Zpět, úprava trasy uprostřed (⋯ u kroku) a uložení parkuru i bez trasy": "Redo next to Undo, editing the route in the middle (⋯ next to a step) and saving a course without a route",
+"Parkury začínají výš, prázdné Moje nabídne Nový parkur a Plánek z fotky": "Courses start higher up, an empty Mine offers New course and Plan from a photo",
+"Jedna barva výběru, stejná tlapka všude, větší tlačítka pro prst a tlačítka dlouhých oken vždy vidět": "One selection colour, the same paw everywhere, bigger buttons for fingers and the buttons of long sheets always visible",
 "Rozpracovaný parkur": "Course in progress",
 "Otevřít plán ›": "Open plan ›",
 "Plánek z fotky": "Course map from photo",
@@ -9815,7 +9823,7 @@ function appShare(){
   dnCopy(APP_URL);
 }
 /* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
-var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='2.7';
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='2.8';
 var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
 function fbSave(){ lsSet(FBK,FB); }
 var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];
@@ -11827,10 +11835,11 @@ function onbStart(){
   onbOpen(1);
 }
 function newsCheck(){
-  var seen=lsGet('agility-news-v1',null); if(seen==='2.7') return false; lsSet('agility-news-v1','2.7');
-  /* kdo neviděl novinky 2.1, dozví se i o novém názvu */
-  openSheet('<h3>Novinky v Pawkuru 2.7</h3>'+'<p>Aplikace se teď jmenuje Pawkur, dřív AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>'+
-    '<ul class="news"><li>Stavba: panel výběru dole nad lištou, plocha už neposkakuje; přiblížení a 3D vedle plochy; přetažení prstem funguje</li><li>Domů: nahoře rozpracovaný parkur s mapou a tlačítka Nový parkur, Plánek z fotky a Knihovna; úvodní fotka je pryč</li><li>Postup se hlídá sám: na Domů vidíš, kolik ti zbývá do vyšší třídy podle pravidel tvé země</li><li>Kalkulačka SČP a MČP (Více → Nástroje): časy podle délky trati bez kreslení parkuru</li><li>Křížení na dráze psovoda: do plánku si označíš přední, zadní a slepé křížení a místa, kde si dát pozor</li><li>Výsledková listina pro pořadatele (Více → Nástroje a v Běhu): pořadí podle FCI, tisk, PDF a kopírování do Excelu</li>'+(seen==='2.6'?'':'<li>Hoopers: přepínač Agility | Hoopers nahoře na Domů a v Parkurech. Parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb</li>')+(seen==='2.5'||seen==='2.6'?'':'<li>Deník: Kde ztrácíš body. Z výsledků na kacr.info aplikace spočítá diskvalifikace, chyby, odmítnutí a čas a doporučí sekvenci na trénink</li><li>Úspěšnost podle rozhodčího a povrchu; rozhodčí z kacr.info se počítají do postupu</li><li>Den závodů na Domů: den předem a během závodu navigace, rozhodčí, počet týmů v kategorii, seznam věcí s sebou a zápis výsledku</li><li>U závodu v deníku jde zaškrtnout, co se stalo (tyčka, zóna, slalom…)</li>')+'</ul>'+
+  var seen=lsGet('agility-news-v1',null); if(seen==='2.8') return false; lsSet('agility-news-v1','2.8');
+  /* kdo neviděl novinky 2.7, dozví se i o nich a o novém názvu */
+  var old=seen!=='2.7';
+  openSheet('<h3>Novinky v Pawkuru 2.8</h3>'+(old?'<p>Aplikace se teď jmenuje Pawkur, dřív AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>':'')+
+    '<ul class="news"><li>Telefon na šířku: v Plánu je plocha přes celou výšku a ovládání vedle, v Běhu stopky a START vlevo</li><li>Plocha přes celou obrazovku: tlačítko pod plochou schová lišty a souhrn</li><li>Nový parkur se zeptá na plochu a třídu a otevře se celý; v paletě jsou všechny překážky bez posouvání</li><li>Kontrola FCI rovnou na ploše i bez trasy: překážky přes sebe, mimo plochu nebo blíž než 1 m se obtáhnou červeně; nové kontroly nájezdu, zdi, dvojitého skoku a tunelů</li><li>Znovu vedle Zpět, úprava trasy uprostřed (⋯ u kroku) a uložení parkuru i bez trasy</li><li>Parkury začínají výš, prázdné Moje nabídne Nový parkur a Plánek z fotky</li><li>Jedna barva výběru, stejná tlapka všude, větší tlačítka pro prst a tlačítka dlouhých oken vždy vidět</li>'+(old?'<li>Stavba: panel výběru dole nad lištou, plocha už neposkakuje; přiblížení a 3D vedle plochy; přetažení prstem funguje</li><li>Domů: nahoře rozpracovaný parkur s mapou a tlačítka Nový parkur, Plánek z fotky a Knihovna; úvodní fotka je pryč</li><li>Postup se hlídá sám: na Domů vidíš, kolik ti zbývá do vyšší třídy podle pravidel tvé země</li><li>Kalkulačka SČP a MČP (Více → Nástroje): časy podle délky trati bez kreslení parkuru</li><li>Křížení na dráze psovoda: do plánku si označíš přední, zadní a slepé křížení a místa, kde si dát pozor</li><li>Výsledková listina pro pořadatele (Více → Nástroje a v Běhu): pořadí podle FCI, tisk, PDF a kopírování do Excelu</li>'+(seen==='2.6'?'':'<li>Hoopers: přepínač Agility | Hoopers nahoře na Domů a v Parkurech. Parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb</li>')+(seen==='2.5'||seen==='2.6'?'':'<li>Deník: Kde ztrácíš body. Z výsledků na kacr.info aplikace spočítá diskvalifikace, chyby, odmítnutí a čas a doporučí sekvenci na trénink</li><li>Úspěšnost podle rozhodčího a povrchu; rozhodčí z kacr.info se počítají do postupu</li><li>Den závodů na Domů: den předem a během závodu navigace, rozhodčí, počet týmů v kategorii, seznam věcí s sebou a zápis výsledku</li><li>U závodu v deníku jde zaškrtnout, co se stalo (tyčka, zóna, slalom…)</li>'):'')+'</ul>'+
     '<div class="acts"><button class="btn primary" data-a="x">Pokračovat</button></div>',function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
   return true;
 }
