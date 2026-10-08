@@ -359,6 +359,33 @@ module.exports = async function ({ browser, base }) {
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
   });
 
+  await step('Hoopers: natočení podle trasy a plochy podle třídy', async () => {
+    await fresh();
+    await ev(() => { S.meta.dirty = false; loadCourse(listFor('H1')[0], true); mode = 'route'; ui(); render(); $('toast').hidden = true; });
+    const gen = await ev(() => S.obs.map(o => o.id + ':' + o.rot).join());
+    ok((await page.textContent('#orientAll')).trim() === '⟂ Natočit překážky podle trasy', 'popisek Natočit překážky podle trasy');
+    /* parkur z generátoru už je natočený stejně */
+    await page.click('#orientAll'); await page.waitForTimeout(80);
+    ok(/Překážky už jsou natočené podle trasy/.test(await page.textContent('#toast')) && (await ev(() => S.obs.map(o => o.id + ':' + o.rot).join())) === gen, 'parkur Hoopers z generátoru se natočil jinak');
+    /* pootočený oblouk, plůtek a krátký tunel se vrátí čelem k trase, sud se nenatáčí */
+    const turned = await ev(() => { const pick = t => S.obs.find(o => o.type === t && S.route.indexOf(o.id) >= 0); const L = ['hoop', 'gate', 'chute', 'barrel'].map(pick).filter(Boolean);
+      L.forEach(o => { o.rot = (o.rot + 40) % 360; }); touch(); render(); return L.map(o => o.type); });
+    await page.click('#orientAll'); await page.waitForTimeout(80);
+    const nTurn = turned.filter(t => t !== 'barrel').length, barrel = turned.indexOf('barrel') >= 0;
+    const after = await ev(() => S.obs.map(o => o.id + ':' + o.rot).join()), tt = await page.textContent('#toast');
+    const back = await ev(g => { const want = {}; g.split(',').forEach(x => { const p = x.split(':'); want[p[0]] = +p[1]; });
+      return S.obs.filter(o => o.type !== 'barrel').every(o => { const d = ((o.rot - want[o.id]) % 360 + 360) % 360; return d <= 1.5 || d >= 358.5; }); }, gen);
+    ok(nTurn >= 2 && back && new RegExp('Natočeno překážek: ' + nTurn + '$').test(tt), 'natočení Hoopers podle trasy: ' + JSON.stringify({ turned, tt, after, gen }));
+    if (barrel) ok(await ev(g => { const b = S.obs.find(o => o.type === 'barrel' && S.route.indexOf(o.id) >= 0); const w = +g.split(',').find(x => x.split(':')[0] === String(b.id)).split(':')[1]; return b.rot === (w + 40) % 360; }, gen), 'sud se natočil');
+    /* jedna překážka (⟂ trasa) ve Stavbě: plůtek napříč jako v generátoru */
+    const gate = await ev(() => { const g = S.obs.find(o => o.type === 'gate' && S.route.indexOf(o.id) >= 0); if (!g) return null; const r0 = g.rot; g.rot = (g.rot + 70) % 360; mode = 'build'; sel = g.id; SELNEW = false; render(); ui(); return { id: g.id, r0 }; });
+    if (gate) { await page.click('#rotP'); ok(await ev(gt => { const d = ((getO(gt.id).rot - gt.r0) % 360 + 360) % 360; return d <= 1.5 || d >= 358.5; }, gate), 'plůtek ⟂ trasa: ' + await ev(gt => getO(gt.id).rot, gate) + ' / ' + gate.r0); }
+    /* plochy podle třídy v nabídce velikosti */
+    ok(await ev(() => [...$('sizeSelect').options].slice(0, 3).map(o => o.textContent).join('|') === 'Hoopers H1 30 × 30 m|Hoopers H2 36 × 30 m|Hoopers H3 40 × 32 m'), 'plochy Hoopers v nabídce velikosti');
+    await ev(() => setSport('agility', true));
+    ok(!(await missEn(['⟂ Natočit překážky podle trasy', 'Překážky už jsou natočené podle trasy'])).length, 'chybí anglický překlad natočení');
+  });
+
   await T.ctx.close();
   return T.errs;
 };

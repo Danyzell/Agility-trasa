@@ -1075,7 +1075,7 @@ html.onb-open,html.onb-open body{overflow:hidden;}
     </div>
     <div class="row" id="routeTools" hidden>
       <button class="btn" id="undoBtn">Odebrat poslední z trasy</button>
-      <button class="btn" id="orientAll">⟂ Natočit skoky podle trasy</button>
+      <button class="btn" id="orientAll">⟂ Natočit překážky podle trasy</button>
       <button class="btn" id="revRoute">⇄ Obrátit trasu</button>
       <button class="btn danger" id="clrRoute">Smazat trasu</button>
     </div>
@@ -1440,6 +1440,8 @@ var I18N_EXTRA={exact:{
 "Zrušit nahrazení": "Cancel replacing",
 "Klepnutí na plochu zase přidávají na konec trasy.": "Taps on the field add to the end of the route again.",
 "Vkládáš na začátek trasy: klepej na překážky. Vkládání ukončíš tlačítkem Ukončit vkládání.": "You're inserting at the start of the route: tap the obstacles. Stop with the Stop inserting button.",
+"⟂ Natočit překážky podle trasy": "⟂ Align obstacles to the route",
+"Překážky už jsou natočené podle trasy": "The obstacles are already aligned to the route",
 "Překážky by byly mimo plochu": "Obstacles would end up outside the field",
 "Posunout dovnitř": "Move inside",
 "Překážky mimo plochu se posunou ke kraji, ostatní zůstanou, kde jsou.": "Obstacles outside the field move to its edge; the others stay where they are.",
@@ -5587,18 +5589,28 @@ function orientRot(o,i){
   var dx=(a?ax/la:0)+(b?bx/lb:0), dy=(a?ay/la:0)+(b?by/lb:0); if(Math.hypot(dx,dy)<1e-3){ dx=ax||bx; dy=ay||by; }
   return ((Math.round(Math.atan2(dy,dx)*180/Math.PI/5)*5)%360+360)%360;
 }
+/* Hoopers: oblouk, plůtek a krátký tunel čelem k trase jako v generátoru (hoopGen): směr je osa úhlu mezi příchodem a odchodem,
+   u první a poslední překážky se počítá s prostorem psovoda, plůtek je napříč (+90°); po 1° jako generátor */
+var ORIENT_H={hoop:1,gate:1,chute:1};
+function orientRotH(o,i){
+  var ha=S.obs.filter(function(x){ return x.type==='ha'; })[0], a=i>0?getO(S.route[i-1]):ha, b=i<S.route.length-1?getO(S.route[i+1]):ha;
+  if(!a&&!b) return null;
+  var din=a?Math.atan2(o.y-a.y,o.x-a.x):Math.atan2(b.y-o.y,b.x-o.x), dout=b?Math.atan2(b.y-o.y,b.x-o.x):din, dd=nAng(dout-din);
+  return ((Math.round((din+dd/2)/D2R+(o.type==='gate'?90:0))%360)+360)%360;
+}
 $('rotP').onclick=function(){
   var o=getO(sel); if(!o) return; var i=S.route.indexOf(o.id);
   if(i<0){ toast('Překážka není v trase. Nejdřív vyznač trasu v režimu Trasa.'); return; }
-  var r2=orientRot(o,i); if(r2==null) return; o.rot=r2; touch(); render(); ui();
+  var r2=isHoop()?orientRotH(o,i):orientRot(o,i); if(r2==null) return; o.rot=r2; touch(); render(); ui();
 };
-/* všechny skoky, kruh a skok daleký v trase (bez otoček kolem křídla, ty si psovod natočí sám) */
+/* agility: všechny skoky, kruh a skok daleký v trase (bez otoček kolem křídla, ty si psovod natočí sám); Hoopers: oblouky, plůtky a krátké tunely */
 $('orientAll').onclick=function(){
-  var n=0, seen={};
-  S.route.forEach(function(id,i){ var o=getO(id); if(!o||!ORIENT_T[o.type]||seen[id]) return; seen[id]=1;
+  var n=0, seen={}, hp=isHoop(), TY=hp?ORIENT_H:ORIENT_T;
+  S.route.forEach(function(id,i){ var o=getO(id); if(!o||!TY[o.type]||seen[id]) return; seen[id]=1;
     if(S.route.indexOf(id)!==S.route.lastIndexOf(id)||tuValid(S.turns[i],o.type)) return;
-    var r2=orientRot(o,i); if(r2!=null&&r2!==o.rot){ o.rot=r2; n++; } });
-  if(n){ touch(); render(); ui(); } toast(n?'Natočeno překážek: '+n:'Skoky už jsou natočené podle trasy');
+    /* Hoopers: odchylka do 1,5° se nepočítá (generátor počítá z nezaokrouhlených poloh) */
+    var r2=hp?orientRotH(o,i):orientRot(o,i); if(r2!=null&&(hp?Math.abs(nAng((r2-o.rot)*D2R))/D2R>1.5:r2!==o.rot)){ o.rot=r2; n++; } });
+  if(n){ touch(); render(); ui(); } toast(n?'Natočeno překážek: '+n:hp?'Překážky už jsou natočené podle trasy':'Skoky už jsou natočené podle trasy');
 };
 /* přiblížení dvěma prsty: zoom 100–400 %, bod mezi prsty zůstane na místě (jedním prstem se plocha posouvá jako dřív) */
 var PINCH=null;
