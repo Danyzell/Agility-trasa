@@ -965,6 +965,11 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 #mkClear{white-space:nowrap; margin-left:auto;} @media (max-width:430px){ .mkseg button{font-size:12px;} }
 #field.side.mk{cursor:copy;}
 .mklegend{text-align:center; font-weight:500;}
+/* Stavba 3 (jen rozložení, vzhled patří vizuálu): paleta jako mřížka bez posouvání do strany, na telefonu 2 řádky po 5 */
+.palette{display:grid; grid-template-columns:repeat(auto-fill,minmax(58px,1fr)); gap:6px; overflow:visible; padding:2px;}
+.palette .ob-btn{min-width:0; padding:6px 0; gap:3px;}
+.palette .ob-btn svg{width:22px; height:22px; flex:0 0 auto;}
+.palette .ob-btn span{font-size:11px; line-height:1.15; text-align:center; overflow-wrap:anywhere;}
 /* výsledková listina pro pořadatele */
 .listina .lhead{display:flex; flex-direction:column; gap:2px;} .listina .lhead b{font-family:var(--display); font-size:20px;} .listina .lhead span{color:var(--muted); font-size:13.5px;}
 .listina h3{margin:12px 0 4px; font-size:16px; font-weight:600;}
@@ -1385,6 +1390,10 @@ function trTree(root){
 /* Překlady nových textů: když přidáš do aplikace český text, sem dopiš jeho anglickou verzi (stejný formát jako i18nAdd). */
 var I18N_EXTRA={exact:{
 "Můj tým": "My team",
+/* Stavba 3: Nový parkur, paleta, kontrola FCI na ploše, ukládání, Zpět a Znovu, úpravy trasy, plocha, Hoopers, přesná čísla, porovnání */
+"Název (nepovinný)": "Name (optional)",
+"Výška (m)": "Height (m)",
+"Vlastní šířka × výška": "Custom width × height",
 /* postup a kalkulačka */
 "Kalkulačka SČP a MČP": "SCT and MCT calculator",
 "Standardní a maximální čas parkuru z délky trati, bez kreslení parkuru. Rychlost je z nastavení v Běhu (Rychlost pro SČP), můžeš ji přepsat.": "Standard and maximum course time from the course length, without drawing a course. The speed comes from the Run settings (Speed for SCT); you can override it.",
@@ -2165,6 +2174,9 @@ var I18N_EXTRA={exact:{
 /* novinky 2.7 */
 "Aplikace se teď jmenuje Pawkur, dřív AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.": "The app is now called Pawkur, formerly AgiPlan. Your courses, dogs and runs stayed as they were.",
 },num:{
+/* Stavba 3 */
+"Plocha může mít #–# × #–# m.": "The field can be #–# × #–# m.",
+"Hoopers H# # × # m": "Hoopers H# # × # m",
 "# mm": "# mm",
 "# %": "#%", /* procenta na Domů: anglicky bez mezery (57%) */
 "Jumping: # z #": "Jumping: # of #",
@@ -2301,6 +2313,8 @@ var I18N_EXTRA={exact:{
 "Zahrada týdne # · # × # m · zbývá # dní": "Garden of the week # · # × # m · # days left",
 "Zahrada týdne # · # × # m · zbývá poslední den": "Garden of the week # · # × # m · last day left",
 },re:[
+/* Stavba 3: překážka s číslem v trase („tunel č. 3“) */
+["^(skok|zeď|dvojitý skok|tunel|slalom|a-rampa|kladina|houpačka|kruh|skok daleký|oblouk|sud|plůtek|krátký tunel) č\\. (\\d+)$","@1 no. $2"],
 ["^Postup (.+?) → (.+?): (.+)$","Promotion $1 → $2: @3"],
 ["^Nebo: (.+?) \\((\\d+) z (\\d+)\\)$","Or: @1 ($2 of $3)"],
 ["^Podle (.+?) \\(znění může být novější, ověř na (.+?)\\)\\. Počítají se závody zapsané v deníku u vybraného psa\\. Pravidla jiné země přepneš ve Více → Nastavení\\.$","Per @1 (the wording may be newer, check at $2). Competitions recorded in the diary for the selected dog count. Switch to another country's rules in More → Settings."],
@@ -5312,7 +5326,7 @@ function render(){
 function ui(){
   var special=panel==='side'||panel==='quiz';
   if(mode==='view'&&!S.obs.length) mode='build'; /* prázdná plocha: rovnou stavět */
-  var hoop=isHoop();
+  var hoop=isHoop(); setSizeSel();
   $('dimBtn').hidden=mode!=='view'||special||hoop; /* při tréninku paměti by 3D prozradilo čísla překážek; 3D zatím jen agility */
   $('arBtn').hidden=!(typeof AR!=='undefined'&&AR.ok)||mode!=='view'||special||S.route.length<2||hoop;
   Array.prototype.forEach.call(document.querySelectorAll('#planTools .tool'),function(b){ if(/^(ana|traps|3d|fld)$/.test(b.getAttribute('data-t'))) b.hidden=hoop; });
@@ -5418,8 +5432,14 @@ $('palette').addEventListener('click',function(e){
 $('mView').onclick=function(){mode='view'; sel=null; ui(); render();};
 $('mBuild').onclick=function(){mode='build'; ui(); render();};
 $('mRoute').onclick=function(){mode='route'; sel=null; ui(); render();};
-$('zIn').onclick=function(){zoom=Math.min(4,zoom+.5); ui();};
-$('zOut').onclick=function(){zoom=Math.max(1,zoom-.5); ui();};
+/* přiblížení tlačítky: střed toho, co je na ploše vidět, zůstane uprostřed (dřív se plocha přiblížila k levému hornímu rohu) */
+function zoomBy(d){
+  var wr=$('wrap'), w0=svg.clientWidth||1, h0=svg.clientHeight||1, fx=(wr.scrollLeft+wr.clientWidth/2)/w0, fy=(wr.scrollTop+wr.clientHeight/2)/h0;
+  var z=Math.round(cl(zoom+d,1,4)*100)/100; if(z===zoom) return; zoom=z; ui();
+  wr.scrollLeft=fx*svg.clientWidth-wr.clientWidth/2; wr.scrollTop=fy*svg.clientHeight-wr.clientHeight/2;
+}
+$('zIn').onclick=function(){zoomBy(.5);};
+$('zOut').onclick=function(){zoomBy(-.5);};
 $('rot').oninput=function(){var o=getO(sel); if(!o) return; SELNEW=false; o.rot=+this.value; $('rotLbl').textContent=o.rot+'°'; touch('rot'+o.id); renderSoon();};
 $('rot').onchange=function(){UNDO_G=null;};
 /* kopie vybrané překážky o kus vedle (stejné natočení, tunel i s délkou a obloukem) */
@@ -5467,13 +5487,15 @@ var PINCH=null;
   function mid(t){ var b=wr.getBoundingClientRect(); return {x:(t[0].clientX+t[1].clientX)/2-b.left,y:(t[0].clientY+t[1].clientY)/2-b.top,d:Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY)||1}; }
   wr.addEventListener('touchstart',function(e){ if(e.touches.length!==2) return;
     var m=mid(e.touches); PINCH={d:m.d,z:zoom,fx:(wr.scrollLeft+m.x)/svg.clientWidth,fy:(wr.scrollTop+m.y)/svg.clientHeight};
+    /* výška plochy se během přibližování nemění (stránka pod prsty neposkakuje); po zvednutí prstů se zase řídí přiblížením */
+    wr.style.height=wr.getBoundingClientRect().height+'px';
     /* rozjeté přesunutí překážky se vrátí, druhý prst nic nepoloží */
     if(drag){ var o=getO(drag.id); if(o&&drag.moved&&drag.x0!=null){ o.x=drag.x0; o.y=drag.y0; } } drag=null; tap=null; hpDraw=null; },{passive:true});
   wr.addEventListener('touchmove',function(e){ if(!PINCH||e.touches.length!==2) return; e.preventDefault();
     var m=mid(e.touches), z=Math.round(cl(PINCH.z*m.d/PINCH.d,1,4)*100)/100; if(Math.abs(z-zoom)<.01) return;
     zoom=z; svg.style.width=(zoom*100)+'%'; $('zLbl').textContent=Math.round(zoom*100)+' %';
     wr.scrollLeft=PINCH.fx*svg.clientWidth-m.x; wr.scrollTop=PINCH.fy*svg.clientHeight-m.y; },{passive:false});
-  function end(e){ if(PINCH&&e.touches.length<2){ PINCH=null; tap=null; drag=null; render(); } }
+  function end(e){ if(PINCH&&e.touches.length<2){ PINCH=null; tap=null; drag=null; wr.style.height=''; render(); } }
   wr.addEventListener('touchend',end); wr.addEventListener('touchcancel',end);
 })();
 $('undoAll').onclick=undo;
@@ -5493,11 +5515,20 @@ $('clrRoute').onclick=function(){
   if(!S.route.length) return;
   ask('Smazat trasu?','Překážky zůstanou na ploše, smaže se jen pořadí.','Smazat trasu',function(){S.route=[]; S.sides=[]; S.turns=[]; S.chk=null; touch(); render();},true);
 };
+/* velikosti plochy: agility a zahrada; v Hoopers navíc plochy podle třídy (H1 30 × 30, H2 36 × 30, H3 40 × 32 m) */
+var SIZEL=[[40,20,'Plocha'],[40,24,'Plocha'],[30,20,'Plocha'],[25,15,'Zahrada'],[20,15,'Zahrada'],[15,10,'Zahrada']];
+function sizeList(hoop){
+  var L=hoop?['H1','H2','H3'].map(function(c){ var q=HCFG[c]; return [q.W,q.H,'Hoopers '+c]; }):[];
+  SIZEL.forEach(function(s){ if(!L.some(function(x){return x[0]===s[0]&&x[1]===s[1];})) L.push(s); });
+  return L;
+}
+function sizeOptsHTML(hoop){ return sizeList(hoop).map(function(s){ return '<option value="'+s[0]+'x'+s[1]+'">'+s[2]+' '+s[0]+' × '+s[1]+' m</option>'; }).join(''); }
 /* plocha jiné velikosti (třeba 40 × 30 m u parkuru trenéra) dostane v nabídce vlastní položku */
 function setSizeSel(){
-  var s=$('sizeSelect'), v=S.W+'x'+S.H;
+  var s=$('sizeSelect'), v=S.W+'x'+S.H, h=String(isHoop());
+  if(s.getAttribute('data-h')!==h){ s.innerHTML=sizeOptsHTML(h==='true'); s.setAttribute('data-h',h); }
   if(!Array.prototype.some.call(s.options,function(o){return o.value===v;})){ var o=document.createElement('option'); o.value=v; o.textContent='Plocha '+S.W+' × '+S.H+' m'; s.appendChild(o); }
-  s.value=v;
+  if(s.value!==v) s.value=v;
 }
 $('sizeSelect').onchange=function(){
   var v=this.value.split('x'); S.W=+v[0]; S.H=+v[1];
@@ -5920,7 +5951,7 @@ function libRender(){
 function hoopNew(){
   var c=(isHoopC(S.meta.cls)?S.meta.cls:'H1'), q=HCFG[c];
   loadCourse({id:null,name:'Nový parkur Hoopers',cls:c,author:'',gen:false,W:q.W,H:q.H,obs:[{id:1,type:'ha',x:q.W/2,y:q.H/2,rot:0}],route:[],turns:[]},true);
-  mode='build'; ui(); render();
+  mode='build'; zoom=1; ui(); render();
 }
 function findCourse(id){
   if(String(id).indexOf('cut~')===0) return cutById(id);
@@ -5997,10 +6028,48 @@ function saveSheet(){
 }
 $('saveBtn').onclick=saveSheet;
 $('titleBtn').onclick=saveSheet;
-$('newBtn').onclick=function(){
-  function go(){planReset(); bgClear(); if(isHoopS()!==isHoopC(S.meta.cls)) S.meta.cls=isHoopS()?'H1':'A1'; var hq=HCFG[S.meta.cls]; S.W=hq?hq.W:40; S.H=hq?hq.H:20; setSizeSel(); drawGrid(); S.obs=hq?[{id:1,type:'ha',x:S.W/2,y:S.H/2,rot:0}]:[]; S.route=[]; S.sides=[]; S.turns=[]; S.hp=[]; S.marks=[]; S.chk=null; sel=null; if(panel==='quiz'){quizStop();} panel=null; S.meta={id:null,name:'Nový parkur',cls:S.meta.cls||'A1',author:'',gen:false,dirty:false}; mode='build'; save(); render(); ui(); topbar(); resetRun(); undoReset();}
-  if(S.obs.length&&(S.meta.dirty||!S.meta.id)) ask('Začít nový parkur?','Plocha se vyčistí a neuložené změny se ztratí.','Začít nový',go,true); else go();
-};
+/* ---------- Nový parkur: plocha, třída a název v jednom okně ----------
+   Plocha z nabídky (u Hoopers podle třídy) nebo vlastní šířka × výška 10–60 × 10–40 m. Nový parkur se otevře přiblížený tak,
+   aby byla vidět celá šířka plochy (dřív 200 % a polovina plochy mimo obrazovku). */
+function newDefSize(cls){ var q=HCFG[cls]; return q?q.W+'x'+q.H:'40x20'; }
+function newCourseSheet(){
+  var cls=S.meta.cls||'A1'; if(isHoopS()!==isHoopC(cls)) cls=isHoopS()?'H1':'A1';
+  var lose=S.obs.some(function(o){return o.type!=='ha';})&&(S.meta.dirty||!S.meta.id);
+  var clsOpt=function(c){ return '<option'+(c===cls?' selected':'')+'>'+c+'</option>'; };
+  openSheet('<h3>Nový parkur</h3>'+(lose?'<p>Plocha se vyčistí a neuložené změny se ztratí.</p>':'')+
+    '<label for="nSize">Plocha<select id="nSize"></select></label>'+
+    '<div class="grid2" id="nOwn" hidden><label for="nW">Šířka (m)<input id="nW" type="number" inputmode="numeric" min="10" max="60" step="1" value="'+S.W+'"></label>'+
+    '<label for="nH">Výška (m)<input id="nH" type="number" inputmode="numeric" min="10" max="40" step="1" value="'+S.H+'"></label></div>'+
+    '<label for="nCls">Třída<select id="nCls"><optgroup label="Agility">'+['A1','A2','A3'].map(clsOpt).join('')+'</optgroup><optgroup label="Hoopers">'+['H1','H2','H3'].map(clsOpt).join('')+'</optgroup></select></label>'+
+    '<label for="nName">Název (nepovinný)<input id="nName" type="text" maxlength="60" autocomplete="off" placeholder="Nový parkur"></label>'+
+    '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="ok">Začít</button></div>',
+    function(e){
+      var b=e.target.closest('[data-a]'); if(!b) return;
+      if(b.getAttribute('data-a')!=='ok'){ closeSheet(); return; }
+      var c=$('nCls').value, sv=$('nSize').value, W, H;
+      if(sv==='own'){ W=Math.round(+$('nW').value); H=Math.round(+$('nH').value);
+        if(!(W>=10&&W<=60&&H>=10&&H<=40)){ toast('Plocha může mít 10–60 × 10–40 m.'); return; } }
+      else { W=+sv.split('x')[0]; H=+sv.split('x')[1]; }
+      var nm=$('nName').value.trim().slice(0,60); closeSheet(); newCourse(c,W,H,nm);
+    });
+  /* nabídka ploch podle disciplíny vybrané třídy; vlastní rozměr ukáže dvě pole */
+  function fill(keep){ var s=$('nSize'), v=keep||s.value, h=isHoopC($('nCls').value);
+    s.innerHTML=sizeOptsHTML(h)+'<option value="own">Vlastní šířka × výška</option>';
+    if(!Array.prototype.some.call(s.options,function(o){return o.value===v;})) v=newDefSize($('nCls').value);
+    s.value=v; $('nOwn').hidden=v!=='own'; }
+  fill(newDefSize(cls));
+  $('nCls').onchange=function(){ if($('nSize').value!=='own') fill(newDefSize(this.value)); else fill('own'); };
+  $('nSize').onchange=function(){ $('nOwn').hidden=this.value!=='own'; };
+}
+function newCourse(cls,W,H,name){
+  var hq=isHoopC(cls);
+  planReset(); bgClear(); if(hq!==isHoopS()) setSport(hq?'hoopers':'agility',true);
+  S.W=W; S.H=H; S.obs=hq?[{id:1,type:'ha',x:r1(W/2),y:r1(H/2),rot:0}]:[]; S.route=[]; S.sides=[]; S.turns=[]; S.hp=[]; S.marks=[]; S.chk=null; sel=null;
+  S.meta={id:null,name:name||(hq?'Nový parkur Hoopers':'Nový parkur'),cls:cls,author:'',gen:false,dirty:false};
+  mode='build'; zoom=1; setSizeSel(); drawGrid(); save(); render(); ui(); topbar(); resetRun(); undoReset();
+  var w=$('wrap'); w.scrollLeft=0; w.scrollTop=0;
+}
+$('newBtn').onclick=newCourseSheet;
 function needId(){if(!S.meta.id){toast('Nejdřív parkur ulož, pak si ho můžeš označit.'); return true;} return false;}
 $('favBtn').onclick=function(){if(needId()) return; setMark(S.meta.id,{fav:!getMark(S.meta.id).fav}); topbar(); toast(getMark(S.meta.id).fav?'Přidáno do oblíbených':'Odebráno z oblíbených');};
 $('doneBtn').onclick=function(){if(needId()) return; var d=!getMark(S.meta.id).done; setMark(S.meta.id,{done:d}); topbar(); toast(d?'Označeno jako zaběhnuté':'Označení zaběhnutí zrušeno');};
