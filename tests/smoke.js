@@ -46,7 +46,7 @@ module.exports = async function ({ browser, base }) {
     await step('záložka ' + v, async () => { await page.click(`.nav [data-v="${v}"]`); T.ok(await page.isVisible('#v-' + v), 'záložka se neukázala'); });
   await step('domů po spuštění', async () => {
     await page.goto(base + '/'); await page.waitForTimeout(300);
-    T.ok(await page.isVisible('#v-home .hm-cta'), 'aplikace nezačíná na Domů');
+    T.ok(await page.isVisible('#v-home .hm-cur'), 'aplikace nezačíná na Domů');
     T.ok(!(await page.isVisible('.top')), 'na Domů je vidět horní lišta plánu');
     T.ok(await page.locator('#v-home .hm-cc').count() > 0, 'chybí Parkury pro tebe');
     T.ok(await page.locator('#v-home .hm-week > div').count() === 7, 'týden nemá 7 dní');
@@ -57,7 +57,7 @@ module.exports = async function ({ browser, base }) {
     T.ok(await T.ev(id => S.meta.id === id && view === 'plan', id), 'parkur z nabídky se neotevřel');
   });
   await step('domů: pokračovat a výzva dne', async () => {
-    await page.click('.nav [data-v="home"]'); await page.click('#v-home .hm-cta');
+    await page.click('.nav [data-v="home"]'); await page.click('#v-home .hm-cur');
     T.ok(await T.ev(() => view === 'plan'), 'Pokračovat neotevřelo plán');
     await page.click('.nav [data-v="home"]'); const id = await T.ev(() => homeChallenge().c.id);
     await page.click('#v-home [data-h="ch"]'); await page.waitForTimeout(200);
@@ -68,7 +68,7 @@ module.exports = async function ({ browser, base }) {
       const day = n => { const t = new Date(); t.setHours(12, 0, 0, 0); t.setDate(t.getDate() - n); return localDate(t); };
       const a = streak({ [day(0)]: 1, [day(1)]: 1, [day(2)]: 1, [day(4)]: 1 }), b = streak({ [day(1)]: 1, [day(2)]: 1 }), c = streak({ [day(2)]: 1 });
       const ch = homeChallenge(); setMark(ch.c.id, { runs: [{ d: Date.now(), t: 30, tot: 0, g: 'V', len: 100 }], done: true });
-      show('home'); return [a, b, c, homeChallenge().c.id === ch.c.id && homeChallenge().ok, !!document.querySelector('#v-home .hm-go.ok'), document.querySelector('.hm-big small').textContent];
+      show('home'); return [a, b, c, homeChallenge().c.id === ch.c.id && homeChallenge().ok, !!document.querySelector('#v-home .hm-go.ok'), document.querySelector('#v-home .hm-mini').textContent];
     });
     T.ok(r[0] === 3 && r[1] === 2 && r[2] === 0, 'špatně spočítaná série: ' + r.slice(0, 3));
     T.ok(r[3] && r[4], 'výzva dne se po čistém běhu neoznačila jako splněná');
