@@ -979,6 +979,11 @@ html.onb-open,html.onb-open body{overflow:hidden;}
 .brand,.hm-logo,.about-ic,.onb-logo,.about-h .about-ic{background:var(--brand-tile); color:var(--lime);} /* .about-h span by tlapku jinak zašedil */
 .brand{box-shadow:0 3px 10px rgba(10,42,28,.28);}
 .onb-logo{box-shadow:0 10px 30px rgba(10,42,28,.35);}
+/* dlouhá okna (Novinky, Rozbor, Export…): poslední řádek tlačítek zůstává dole v okně a je vidět bez posouvání;
+   okno dostane fokus kvůli čtečce obrazovky, zelený rámeček kolem celého okna ale nepatří */
+.sheet:focus{outline:none;}
+.sheet>.acts:last-child{position:sticky; bottom:-18px; z-index:2; /* lepkavý prvek se zastaví na vnitřním okraji okna (18 px), proto -18px */ margin-left:-18px; margin-right:-18px; margin-bottom:-18px; padding:10px 18px 18px;
+  background:var(--surface); box-shadow:0 -1px 0 color-mix(in srgb,var(--border) 80%,transparent);}
 /* cíle pro palec aspoň 44 px na dotykové obrazovce: přepínače, Podpořit, odkazy sekcí na Domů, tlačítka na Domů, pes, Vynulovat, Čas ručně,
    otočky v seznamu trasy a malé čipy. Mění se výška a okraje, písmo zůstává; lišty mají menší okraje, ať nenarostou */
 @media (pointer:coarse){
