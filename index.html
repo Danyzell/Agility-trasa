@@ -3,7 +3,7 @@
 <script>try{var t0=JSON.parse(localStorage.getItem('agility-theme-v1'));if(t0==='light'||t0==='dark')document.documentElement.setAttribute('data-theme',t0);}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f2f4ee; --surface:#ffffff; --sunk:#e9ede4; --field:#e4eddb; --grid:#c9d6bd;
@@ -542,10 +542,8 @@ body.at-home main{padding-top:0; padding-left:0; padding-right:0;}
 .hm-tb{display:flex; align-items:center; gap:10px; white-space:nowrap; font-family:var(--display); font-weight:700; font-size:20px; letter-spacing:.4px; position:relative; z-index:1;}
 .hm-logo{flex:0 0 auto; width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#2f9e62,#0a2a1c); color:#c6f432; display:grid; place-items:center;}
 .hm-logo svg{width:22px; height:22px;}
-.hm-dog{margin-left:auto; background:var(--sunk); color:var(--text); border:0; border-radius:999px; padding:5px 12px 5px 5px; font:600 13px var(--body); display:flex; align-items:center; gap:8px; min-height:40px; flex:0 0 auto; max-width:150px; overflow:hidden;}
 .hm-tb > span{min-width:0; overflow:hidden; text-overflow:ellipsis;}
 @media (max-width:400px){.hm-tb{font-size:17px; gap:8px;}}
-.hm-dog i{flex:0 0 auto; width:28px; height:28px; border-radius:50%; background:#ff9f1c; display:grid; place-items:center; font-style:normal;}
 .hm-cur{display:flex; gap:12px; width:100%; margin-top:14px; border:1px solid var(--border); border-radius:20px; background:var(--sunk); padding:10px; text-align:left; align-items:center; color:var(--text);}
 .hm-curmap{width:138px; height:88px; border-radius:12px; overflow:hidden; background:var(--field); flex:0 0 auto; display:block;} .hm-curmap svg{width:100%; height:100%; display:block;}
 .hm-curmap-e{display:grid; place-items:center; color:var(--accent);} .hm-curmap-e svg{width:34px; height:34px;}
@@ -681,11 +679,15 @@ body:has(input:not([type=checkbox]):not([type=range]):not([type=file]):focus,tex
 /* ===== HandlerMap 2.0: nový vzhled ===== */
 [hidden]{display:none!important;}
 :root{
-  --bg:#f3f5f1; --surface:#ffffff; --sunk:#edf0eb; --border:#dce3d7; --muted:#58675c;
+  /* světlý vzhled je teplý (2.9): krémové pozadí, teplé okraje a stíny; zelená a limetková značka zůstávají */
+  --bg:#fbf6ee; --surface:#ffffff; --sunk:#f5eee3; --border:#e6dccb; --muted:#6b6458;
   --radius:16px; --radius-s:12px; --tap:44px; --nav-h:68px;
-  --shadow:0 1px 2px rgba(20,32,24,.05),0 4px 18px rgba(20,32,24,.06);
+  --shadow:0 1px 2px rgba(120,90,40,.06),0 4px 18px rgba(120,90,40,.09);
   --shadow-l:0 18px 50px rgba(8,14,10,.22);
   --grad:linear-gradient(150deg,#2a8558,#1a5c3b);
+  /* hřejivé plochy (pozadí horního bloku Domů, rámeček s čísly, přidání psa) a barevné dlaždice Domů */
+  --top:#fffaf3; --warm:#fff3df; --on-warm:#6d4a17;
+  --t-or:#ffe9d6; --on-t-or:#8a3d0c; --t-bl:#e2efff; --on-t-bl:#173f73;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -693,6 +695,8 @@ body:has(input:not([type=checkbox]):not([type=range]):not([type=file]):focus,tex
     --text:#e8eee6; --muted:#9dab9f; --accent:#64bb8c; --on-accent:#08170f;
     --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 22px rgba(0,0,0,.28); --shadow-l:0 18px 50px rgba(0,0,0,.55);
     --grad:linear-gradient(150deg,#3f9b6b,#1f6b45);
+    --top:#161d19; --warm:#272217; --on-warm:#f0cf98;
+    --t-or:#33241a; --on-t-or:#ffb784; --t-bl:#182638; --on-t-bl:#a9cdfd;
   }
 }
 :root[data-theme="dark"]{
@@ -700,6 +704,8 @@ body:has(input:not([type=checkbox]):not([type=range]):not([type=file]):focus,tex
   --text:#e8eee6; --muted:#9dab9f; --accent:#64bb8c; --on-accent:#08170f;
   --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 22px rgba(0,0,0,.28); --shadow-l:0 18px 50px rgba(0,0,0,.55);
   --grad:linear-gradient(150deg,#3f9b6b,#1f6b45);
+  --top:#161d19; --warm:#272217; --on-warm:#f0cf98;
+  --t-or:#33241a; --on-t-or:#ffb784; --t-bl:#182638; --on-t-bl:#a9cdfd;
 }
 body{-webkit-tap-highlight-color:transparent; text-rendering:optimizeLegibility;}
 main{padding-top:14px;}
@@ -720,8 +726,8 @@ h2{font-size:21px;}
 .hm-tb .hm-sport{display:inline-flex; background:var(--sunk); border-color:transparent; font-family:var(--body); letter-spacing:0; z-index:1; margin-left:2px;}
 .hm-tb .hm-sport button{color:var(--muted); min-height:34px; padding:0 13px; font-size:13px;}
 .hm-tb .hm-sport button.on{background:var(--accent); color:var(--on-accent);}
-@media (max-width:400px){ .hm-tb .hm-sport button{padding:0 10px; font-size:12px;} .hm-dog{flex:0 1 auto; max-width:130px;} }
-@media (max-width:359px){ .hm-tb .hm-sport button{padding:0 8px;} .hm-dog{max-width:110px;} }
+@media (max-width:400px){ .hm-tb .hm-sport button{padding:0 10px; font-size:12px;} }
+@media (max-width:359px){ .hm-tb .hm-sport button{padding:0 8px;} }
 body[data-view="home"] .sport,body[data-view="lib"] .sport,body[data-view="more"] .sport,body[data-view="video"] .sport{display:inline-flex;}
 @media (max-width:359px){ body[data-view="more"] .sport,body[data-view="video"] .sport{display:none;} }
 body:not([data-view="plan"]):not([data-view="run"]) .apptitle{display:flex;}
@@ -1082,6 +1088,89 @@ html.onb-open,html.onb-open body{overflow:hidden;}
   #prListina .listina table{min-width:0;} #prListina .listina th,#prListina .listina td{border-bottom:1px solid #bbb; color:#000;} #prListina .listina .g{color:#000; background:none; padding:0; font-weight:700;}
   #prListina .listina .lhead span,#prListina .listina .lfoot,#prListina .listina th{color:#444;}
 }
+
+/* ===== Přívětivý vzhled (2.9): pes jako hlavní postava, teplé barvy, nadpisy normálním písmem, obrázky v prázdných místech ===== */
+/* tvář psa: kreslený pes nebo vlastní fotka v kroužku (dogAva) */
+.dava{position:relative; display:inline-block; flex:0 0 auto; width:40px; height:40px; border-radius:50%; overflow:hidden; vertical-align:middle; background:var(--sunk);}
+.dava svg,.dava img{display:block; width:100%; height:100%; object-fit:cover;}
+/* nadpisy a popisky normálním písmem, bez verzálek (štítky na náhledech parkurů zůstávají) */
+h2{font-family:var(--body); font-weight:700; font-size:19px; letter-spacing:0;}
+.hm-sec h3{font-family:var(--body); font-weight:700; font-size:20px; text-transform:none; letter-spacing:0; line-height:1.2;}
+.hm-sec small,.hm-curtx small,.hm-wk small,.hm-day .cd-when,.mgrp,#planTools .tgrp,.kc-cap{text-transform:none; letter-spacing:0;}
+.hm-curtx small{font-size:12.5px;} .mgrp,#planTools .tgrp{font-size:13px;} .hm-wk small{font-size:12.5px;}
+/* Domů: horní blok na teplém podkladu se zaoblením dole, pozdrav psa, barevné dlaždice, čísla v teplém rámečku */
+.hm-top{background:var(--top); border-bottom:0; border-radius:0 0 28px 28px; box-shadow:0 6px 24px rgba(120,90,40,.08);}
+.hm-greet{display:flex; align-items:center; gap:14px; width:100%; margin:14px 0 0; padding:2px 0; border:0; background:none; text-align:left; color:var(--text); font:inherit; min-height:44px;}
+.hm-greet .gav{position:relative; flex:0 0 auto; display:grid;}
+.hm-greet .dava{width:60px; height:60px; box-shadow:0 0 0 3px var(--top),0 0 0 5px var(--lime);}
+.hm-greet .gplus{position:absolute; right:-4px; bottom:-4px; width:24px; height:24px; border-radius:50%; background:var(--accent); color:var(--on-accent); display:grid; place-items:center; font:700 17px/1 var(--body); box-shadow:0 0 0 2px var(--top);}
+.hm-greet .tx{flex:1; min-width:0;}
+.hm-greet b{display:block; font:700 24px/1.15 var(--body); overflow-wrap:anywhere;}
+.hm-greet .tx span{display:block; font-size:14.5px; color:var(--muted); margin-top:2px;}
+.hm-greet:active .dava{transform:scale(.96);}
+.hm-cur{border-color:transparent; background:var(--surface); box-shadow:var(--shadow); border-radius:22px;}
+.hm-acts{gap:10px;}
+.hm-acts button{border:0; border-radius:20px; min-height:78px; padding:10px 6px 9px; font-weight:700; box-shadow:0 3px 0 rgba(120,90,40,.16); transition:transform .12s;}
+.hm-acts button:active{transform:translateY(2px); box-shadow:0 1px 0 rgba(120,90,40,.16);}
+.hm-acts button svg{width:34px; height:34px; padding:6px; border-radius:50%; background:rgba(255,255,255,.7); box-sizing:border-box;}
+.hm-acts button.pri{box-shadow:0 3px 0 #134a2f;} .hm-acts button.pri svg{background:rgba(255,255,255,.18);}
+.hm-acts [data-h="imp"],.hm-acts [data-h="run"]{background:var(--t-or); color:var(--on-t-or);}
+.hm-acts [data-h="lib"]{background:var(--t-bl); color:var(--on-t-bl);}
+.hm-mini{background:var(--warm); color:var(--on-warm); border-radius:14px; padding:8px 12px; line-height:1.4;} .hm-mini b{color:inherit;}
+.hm-cc,.hm-ch,.hm-skill,.hm-more{border-color:color-mix(in srgb,var(--border) 55%,transparent); box-shadow:var(--shadow);}
+.hm-cc,.hm-ch{border-radius:22px;}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .hm-top{box-shadow:none; border-bottom:1px solid var(--border);} :root:not([data-theme="light"]) .hm-acts button:not(.pri) svg{background:rgba(255,255,255,.08);} :root:not([data-theme="light"]) .hm-acts button:not(.pri){box-shadow:0 3px 0 rgba(0,0,0,.35);} }
+:root[data-theme="dark"] .hm-top{box-shadow:none; border-bottom:1px solid var(--border);}
+:root[data-theme="dark"] .hm-acts button:not(.pri) svg{background:rgba(255,255,255,.08);}
+:root[data-theme="dark"] .hm-acts button:not(.pri){box-shadow:0 3px 0 rgba(0,0,0,.35);}
+/* čipy psů (Běh, Deník, Statistiky) s tváří psa */
+.chip .dava{width:28px; height:28px; margin:-4px 7px -4px -10px;}
+.chip:has(.dava){display:inline-flex; align-items:center;}
+/* Psi: profil vybraného psa s kroužkem postupu do vyšší třídy, ostatní psi v řádcích s tváří */
+.dprof{position:relative; display:flex; flex-direction:column; align-items:center; text-align:center; gap:2px; padding:20px 16px 16px; background:var(--surface); border-radius:24px; box-shadow:var(--shadow); border:1px solid color-mix(in srgb,var(--border) 55%,transparent);}
+.dprof .ring{position:relative; width:124px; height:124px; display:grid; place-items:center; margin-bottom:8px;}
+.dprof .ring>svg{position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg);}
+.dprof .ring .rg-b{stroke:var(--sunk);} .dprof .ring .rg-v{stroke:var(--lime);}
+.dprof .ring .dava{width:104px; height:104px;}
+.dprof h3{margin:0; font:700 26px/1.15 var(--body); overflow-wrap:anywhere;}
+.dprof .dmeta{color:var(--muted); font-size:14px;}
+.dprof .dchips{display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin:10px 0 2px;}
+.dprof .dchips span{background:var(--sunk); border-radius:999px; padding:5px 12px; font-size:13px; font-weight:600;}
+.dprof .dgoal{margin:6px 0 0; font-size:13.5px; color:var(--muted); max-width:340px;}
+.dprof .acts{display:flex; flex-wrap:wrap; gap:8px; width:100%; margin-top:12px;}
+.dprof .acts .btn{flex:1 1 0; justify-content:center; min-width:96px;}
+.dprof .dx{position:absolute; top:8px; right:8px; width:44px; height:44px; padding:0; justify-content:center; border-color:transparent; background:none; box-shadow:none; font-size:20px; color:var(--muted);}
+.list .item.dog{grid-template-columns:auto minmax(80px,1fr) auto;}
+.item.dog .dava{width:44px; height:44px;}
+.btn.dadd{background:var(--warm); color:var(--on-warm); border-color:transparent; border-radius:999px; padding:6px 18px 6px 6px; gap:10px; box-shadow:none;}
+.btn.dadd i{width:34px; height:34px; border-radius:50%; background:var(--surface); color:var(--accent); display:grid; place-items:center; font:700 22px/1 var(--body); font-style:normal;}
+/* prázdná místa s obrázkem: pes s míčkem (Deník, Moje, Psi) */
+.es-ill{display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px; padding:22px 18px; border:1px solid color-mix(in srgb,var(--border) 55%,transparent); background:var(--surface); box-shadow:var(--shadow); border-radius:22px; color:var(--muted);}
+.es-ill>b{font:700 19px/1.25 var(--body); color:var(--text); margin-top:4px;} .es-ill>p{margin:0; max-width:340px;}
+.es-ill .es-acts{justify-content:center; margin-top:10px;}
+.ill{position:relative; flex:0 0 auto; width:150px; height:112px;}
+.ill .ill-sh{position:absolute; left:12px; right:12px; bottom:0; height:16px; border-radius:50%; background:var(--sunk);}
+.ill .dava{position:absolute; left:29px; top:2px; width:92px; height:92px; box-shadow:0 0 0 4px var(--surface);}
+.ill .ill-ball{position:absolute; right:6px; bottom:5px; width:28px; height:28px;}
+/* průvodce: začíná psem a jeho jménem, jazyk je malý přepínač nahoře */
+.onb-hero{display:flex; justify-content:center; margin-bottom:4px;}
+.onb-hero .dava{width:120px; height:120px; box-shadow:0 0 0 5px var(--bg),0 0 0 9px var(--lime);}
+.onb h1{font-family:var(--body); font-size:30px; line-height:1.15;}
+.onb-body.c{text-align:center;} .onb-body.c .lead{max-width:420px; margin:0 auto;} .onb-body.c label{text-align:left;}
+.onb-r{display:flex; align-items:center; gap:8px;}
+.onb-lang button{min-height:40px; padding:0 12px; font-size:13px;}
+.onb .dlooks{justify-content:center;} .onb .dlooks+.hint{margin-top:6px; text-align:center;}
+/* okno psa: obrázek psa (6 kreslených vzhledů nebo fotka) */
+.dpick{display:flex; align-items:center; gap:14px;}
+.dpick .dprev{flex:0 0 auto; display:grid;} .dpick .dprev .dava{width:72px; height:72px;}
+.dpick .dpk{flex:1; min-width:0;} .dpick .hint{margin-top:6px; font-size:12.5px;}
+.dlooks{display:flex; flex-wrap:wrap; gap:6px;}
+.dlooks button{width:44px; height:44px; padding:0; border:0; border-radius:50%; background:none; display:grid; place-items:center;}
+.dlooks button .dava{width:40px; height:40px;}
+.dlooks button[aria-pressed="true"] .dava{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--accent);}
+.dlooks .dcam{background:var(--sunk); color:var(--text);} .dlooks .dcam svg{width:22px; height:22px;}
+.dlooks .dcam[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--accent);}
+@media (prefers-reduced-motion:reduce){ .hm-acts button,.hm-greet .dava{transition:none;} }
 
 /* ---------- plocha přes celou obrazovku (tlačítko vedle 3D pod plochou) ----------
    Schová horní a spodní lištu, souhrn, nápovědu, nástroje, Uložit a pořadí; zůstanou režimy, paleta a plocha přes zbytek výšky. */
@@ -2651,8 +2740,55 @@ var I18N_POSTUP={num:{
 ["^Ještě (.+?) a můžeš do (.+)$","To move up to $2 you still need @1"],
 ["^Máš splněno: můžeš postoupit do (.+)$","All done: you can move up to $1"]
 ]};
+/* přívětivý vzhled (2.9): pozdrav psa na Domů, obrázek psa, profil psa, prázdná místa s obrázkem, průvodce */
+var I18N_PES={exact:{
+"Ahoj!": "Hi!",
+"Přidej svého psa a Pawkur mu bude počítat běhy i postup.": "Add your dog and Pawkur will keep track of its runs and progress.",
+"Dnešní trénink máte za sebou. Pěkná práce!": "Today's training is done. Nice work!",
+"Psi už spí. Parkur si ale naplánuješ kdykoli.": "The dogs are asleep. You can still plan a course any time.",
+"Pondělí": "Monday", "Úterý": "Tuesday", "Středa": "Wednesday", "Čtvrtek": "Thursday", "Pátek": "Friday", "Sobota": "Saturday", "Neděle": "Sunday",
+"ráno": "morning", "dopoledne": "morning", "odpoledne": "afternoon",
+"Vyber kreslený obrázek, nebo vlastní fotku. Fotka zůstane jen v tomhle telefonu.": "Pick a drawing or your own photo. The photo stays on this phone only.",
+"Fotka zůstane jen v tomhle telefonu.": "The photo stays on this phone only.",
+"Obrázek psa": "Dog picture",
+"Vlastní fotka": "Your own photo",
+"Hnědý": "Brown", "Černobílý": "Black and white", "Zlatý": "Golden", "Mramorovaný": "Merle", "Bílý s hnědou": "White and brown", "Černý": "Black",
+"Vyber fotku psa": "Choose a photo of your dog",
+"Fotku se nepodařilo načíst": "The photo couldn't be loaded",
+"Přidat dalšího psa": "Add another dog",
+"Kdo s tebou běhá?": "Who runs with you?",
+"Trénovat": "Train",
+"Deník je zatím prázdný": "Your diary is empty so far",
+"Zapiš první trénink nebo výsledek ze závodů a uvidíš, jak se tvůj pes zlepšuje.": "Log your first training or competition result and see how your dog improves.",
+"＋ Zapsat trénink": "＋ Log training",
+"＋ Výsledek ze závodů": "＋ Competition result",
+"Tvoje parkury budou tady": "Your courses will be here",
+"Parkury, stopky a deník pro tebe a tvého psa. Jak se jmenuje?": "Courses, a stopwatch and a diary for you and your dog. What's your dog's name?",
+"Jméno psa": "Dog's name",
+"např. Fany": "e.g. Bella",
+"Novinky v Pawkuru 2.9": "What's new in Pawkur 2.9",
+"Pes jako hlavní postava: na Domů pozdrav se jménem a obrázkem psa, v Psech profil s kroužkem, kolik zbývá do vyšší třídy": "Your dog takes the lead: Home greets it by name with its picture, and Dogs has a profile with a ring showing how far it is to the next class",
+"Obrázek psa: šest kreslených psů, nebo vlastní fotka, která zůstane jen v tomhle telefonu": "Dog picture: six drawn dogs, or your own photo that stays on this phone only",
+"Teplejší barvy, barevná tlačítka na Domů a nadpisy normálním písmem": "Warmer colours, colourful buttons on Home and headings in normal case",
+"Prázdný Deník, Moje parkury a Psi mají obrázek a radu, čím začít": "An empty Diary, My courses and Dogs show a picture and a tip on where to start",
+"Průvodce prvním spuštěním začíná jménem psa": "The first-run guide starts with your dog's name"
+},num:{
+"Trénujete # dny v řadě. Jen tak dál!": "# days in a row. Keep it up!",
+"Trénujete # dní v řadě. Jen tak dál!": "# days in a row. Keep it up!",
+"# běh": "# run", "# běhy": "# runs", "# běhů": "# runs",
+"# čistý": "# clean", "# čisté": "# clean", "# čistých": "# clean",
+"# z # letos": "# of # this year"
+},re:[
+["^Ahoj, (.+)!$","Hi, $1!"],
+["^(Pondělí|Úterý|Středa|Čtvrtek|Pátek|Sobota|Neděle) (ráno|dopoledne|odpoledne)\\. Dáme dnes trénink\\?$","@1 @2. Shall we train today?"],
+["^(Pondělí|Úterý|Středa|Čtvrtek|Pátek|Sobota|Neděle) večer\\. Co si naplánovat na zítra\\?$","@1 evening. What shall we plan for tomorrow?"],
+["^(.+) čeká na první měřený běh\\. Stopky ukážou rychlost i čisté běhy\\.$","$1 is waiting for the first timed run. The stopwatch will show speed and clean runs."],
+["^Kreslený pes: (.+)$","Drawn dog: @1"],
+["^Zapiš první trénink a uvidíš, jak se (.+) zlepšuje\\.$","Log your first training and see how $1 improves."],
+["^(\\d+) z (\\d+) do (.+)$","$1 of $2 to $3"]
+]};
 function i18nStart(){
-  i18nAdd(I18N_EXTRA); i18nAdd(I18N_POSTUP);
+  i18nAdd(I18N_EXTRA); i18nAdd(I18N_POSTUP); i18nAdd(I18N_PES);
   document.documentElement.lang=LANG==='en'?'en':'cs';
   if(LANG!=='en'||!window.MutationObserver) return;
   trTree(document.body);
@@ -6436,13 +6572,13 @@ function libRender(){
       (isNewC(c.id)||mk.done?'<div class="tags">'+(isNewC(c.id)?'<span class="new-tag">Nový</span>':'')+(mk.done?'<span class="done-tag">'+(bb?'✓ <span translate="no">'+gTxt(bb.g)+'</span>':'✓ zaběhnuto')+'</span>':'')+'</div>':'')+
       '<div class="st"><button class="fav'+(mk.fav?' on':'')+'" data-fav="'+esc(c.id)+'" aria-label="Oblíbený">'+(mk.fav?IC.starF:IC.star)+'</button>'+
       (libTab==='my'?'<button data-del="'+esc(c.id)+'" aria-label="Smazat parkur">'+IC.x+'</button>':'')+'</div></div>';
-  }).join(''):'<div class="empty-state'+(none?' lib-none':'')+'">'+(libF==='new'&&L.length
+  }).join(''):'<div class="empty-state'+(none?' lib-none':'')+(libTab==='my'&&none?' es-ill">'+dogIll(curDog())+'<b>Tvoje parkury budou tady</b><p>':'">')+(libF==='new'&&L.length
       ? 'V téhle záložce nic nového není. Nové parkury mají štítek Nový a tečku u názvu záložky.'
       : libTab==='tr'&&!L.length
       ? 'Zatím tu nejsou žádné parkury trenérů. Pošli do chatu s Claudem screenshoty plánků a přepíše je sem i se jménem autora. Nebo v Plánu zvol Plánek z obrázku: aplikace překážky rozpozná, pořadí naklepeš a při ukládání vyplníš, kdo parkur stavěl.'
       : libTab==='my'&&!L.length
       ? (isHoopS()?'Zatím tu nemáš žádný vlastní parkur Hoopers. Klepni na Nový parkur Hoopers, nebo si otevři některý z H1–H3, uprav ho a ulož.':'Zatím tu nemáš žádný vlastní parkur. Postav ho v Plánu nebo si otevři některý z A1–A3, uprav ho a ulož.')
-      : 'V tomhle filtru nic není. Zkus jiný filtr nebo třídu.')+noneBtns+'</div>');
+      : 'V tomhle filtru nic není. Zkus jiný filtr nebo třídu.')+(libTab==='my'&&none?'</p>':'')+noneBtns+'</div>');
   catUI();
   $('libNote').textContent=libTab==='my'?'':isHoopS()?'Hoopers: pes běží parkur z oblouků, sudů, plůtků a krátkých tunelů sám a psovod ho vede z prostoru 2 × 2 m (žlutý čtverec). Parkury H1–H3 složil generátor podle pravidel FCI Hoopers: start i cíl obloukem, aspoň polovina oblouků, vzdálenosti mezi překážkami a od psovoda podle třídy. Hodnotí se chyby, maximální čas jsou 3 minuty.':libTab==='tr'?'Přepsané plánky trenérů a rozhodčích pro vlastní trénink. Rozmístění překážek je přibližné, zdroj je uvedený u parkuru.':'Parkury A1–A3 složil generátor v aplikaci podle Řádu agility FCI a podle toho, jak stavějí rozhodčí: dráha vede v obloucích a hadech, skoky stojí šikmo, tunely jsou i do oblouku a do U a dráha se kříží (A1 nejvýš jednou, A2 jednou až dvakrát, A3 dvakrát až třikrát). 15–22 překážek, start i cíl skokem, v A1 právě 3 zónové překážky, v A2 a A3 nejvýš 4. Otočky kolem křídla (v A3 aspoň dvě), v A3 vždy i zadní strana skoku.';
 }
@@ -6867,6 +7003,18 @@ function homeChallenge(){
 }
 var HOME_C=[];
 var HMMORE='agility-hmmore-v1';
+/* pozdrav nahoře na Domů: tvář a jméno psa, pod tím věta podle série, dnešního tréninku a denní doby. Klepnutí otevře Psy
+   (bez psa rovnou okno Nový pes). Tvary bez rodu: „Trénujete“, „máte za sebou“, žádné „jsi byl/a“. */
+function greetHTML(d,days,st){
+  if(!d) return '<button class="hm-greet hm-dog" data-h="dog"><span class="gav">'+dogAva(null)+'<span class="gplus" aria-hidden="true">+</span></span><span class="tx"><b>Ahoj!</b><span>Přidej svého psa a Pawkur mu bude počítat běhy i postup.</span></span></button>';
+  var now=new Date(), hr=now.getHours(), day=['Neděle','Pondělí','Úterý','Středa','Čtvrtek','Pátek','Sobota'][now.getDay()], sub;
+  if(st>=2) sub='Trénujete '+st+(st<5?' dny':' dní')+' v řadě. Jen tak dál!';
+  else if(days[localDate(now)]) sub='Dnešní trénink máte za sebou. Pěkná práce!';
+  else if(hr>=5&&hr<18) sub=day+' '+(hr<9?'ráno':hr<12?'dopoledne':'odpoledne')+'. Dáme dnes trénink?';
+  else if(hr>=18&&hr<23) sub=day+' večer. Co si naplánovat na zítra?';
+  else sub='Psi už spí. Parkur si ale naplánuješ kdykoli.';
+  return '<button class="hm-greet hm-dog" data-h="dog"><span class="gav">'+dogAva(d)+'</span><span class="tx"><b>Ahoj, '+esc(d.name)+'!</b><span>'+sub+'</span></span></button>';
+}
 function homeRender(){
   var d=curDog(), cls=homeCls(), runs=allRuns(d&&d.id), ok=runs.filter(function(x){return x.g!=='DIS';});
   var sp=ok.filter(function(x){return x.t>0&&x.len>0;}).map(function(x){return x.len/x.t;}), avg=sp.length?sp.reduce(function(a,v){return a+v;},0)/sp.length:0;
@@ -6874,16 +7022,15 @@ function homeRender(){
   var doneN=Object.keys(MK).filter(function(k){return MK[k].done;}).length, days=activeDays(), st=streak(days);
   /* nahoře to, kvůli čemu se lidi vracejí: rozpracovaný parkur s mapou, Nový parkur, Plánek z fotky a Knihovna; čísla jen když nějaké běhy jsou */
   var cur=S.route.length>1?{obs:S.obs,route:S.route,W:S.W,H:S.H,turns:S.turns,cls:S.meta.cls}:null, cm=cur?curM():null;
-  var h='<div class="hm-top"><div class="hm-tb"><div class="hm-logo" aria-label="Pawkur">'+IC.brand+'</div>'+sportSegHTML()+
-    '<button class="hm-dog" data-h="dog"><i>🐕</i><span style="overflow:hidden;text-overflow:ellipsis;min-width:0">'+(d?esc(d.name)+' · '+esc(d.cls):'Přidat psa')+'</span></button></div>'+
-    (cur?'<button class="hm-cur" data-h="plan"><span class="hm-curmap" aria-hidden="true">'+thumb(cur)+'</span><span class="hm-curtx"><small>Rozpracovaný parkur</small><b translate="no">'+esc(S.meta.name)+'</b><span>'+esc(S.meta.cls)+' · '+fmt(cm.len)+' m · '+nPrek(cm.n)+(isHoopC(S.meta.cls)?'':' · SČP '+cm.sct+' s')+'</span><em>Otevřít plán ›</em></span></button>'
+  var h='<div class="hm-top"><div class="hm-tb"><div class="hm-logo" aria-label="Pawkur">'+IC.brand+'</div>'+sportSegHTML()+'</div>'+greetHTML(d,days,st)+
+    (cur?'<button class="hm-cur" data-h="plan"><span class="hm-curmap" aria-hidden="true">'+thumb(cur)+'</span><span class="hm-curtx"><small>Rozpracovaný parkur</small><b translate="no">'+esc(S.meta.name)+'</b><span>'+esc(S.meta.cls)+' · '+fmt(cm.len)+' m · '+nPrek(cm.n)+(isHoopC(S.meta.cls)?'':' · SČP '+cm.sct+' s')+'</span><em>Otevřít plán ›</em></span></button>'
        :'<button class="hm-cur hm-cur-e" data-h="lib"><span class="hm-curmap hm-curmap-e" aria-hidden="true">'+IC.book+'</span><span class="hm-curtx"><small>Začni</small><b>Vyber si parkur</b><span>'+(isHoopS()?'24 parkurů Hoopers H1–H3 podle FCI, nebo si postav vlastní':'90 parkurů podle pravidel FCI, nebo si postav vlastní')+'</span></span></button>')+
     '<div class="hm-acts"><button class="pri" data-h="new">'+IC.plus+'<span>Nový parkur</span></button>'+
     (isHoopS()?'<button data-h="lib">'+IC.book+'<span>Knihovna</span></button><button data-h="run">'+IC.timer+'<span>Běh</span></button>'
              :'<button data-h="imp">'+IC.photo+'<span>Plánek z fotky</span></button><button data-h="lib">'+IC.book+'<span>Knihovna</span></button>')+'</div>'+
     '<div class="hm-row">'+(runs.length
       ?'<p class="hm-mini"><b>'+doneN+'</b> '+T('zaběhnuto')+' · <b>'+(avg?fmt(avg):'–')+'</b> '+T('m/s')+' · <b>'+(runs.length?T(clean+' %'):'–')+'</b> '+T('čisté')+(st?' · '+T('série '+st+(st===1?' den':st<5?' dny':' dní'))+' 🔥':'')+'</p>'
-      :'<p class="hm-mini">Změř první běh ve stopkách a tady uvidíš rychlost a čisté běhy.</p>')+
+      :'<p class="hm-mini">'+(d?esc(d.name)+' čeká na první měřený běh. Stopky ukážou rychlost i čisté běhy.':'Změř první běh ve stopkách a tady uvidíš rychlost a čisté běhy.')+'</p>')+
     (donateOn()?'<button class="hm-sup" data-h="sup" aria-label="Podpořit aplikaci">'+IC.heartF+'<span>Podpořit</span></button>':'')+'</div></div>';
   h+='<div id="hmInst"></div><div id="hmDay">'+(KACR_OK?compDayHTML():'')+'</div>';
   h+=promoHomeHTML(); /* postup se hlídá sám: kolik zbývá do vyšší třídy */
@@ -8690,9 +8837,56 @@ DOGS.forEach(function(d){ if(!SIZES.hasOwnProperty(d.size)) d.size='L'; if(!/^(A
 function curDog(){for(var i=0;i<DOGS.length;i++) if(DOGS[i].id===DOGC) return DOGS[i]; return DOGS[0]||null;}
 function dogName(id){for(var i=0;i<DOGS.length;i++) if(DOGS[i].id===id) return DOGS[i].name; return '';}
 function saveDogs(){lsSet(DOGK,DOGS); lsSet(DOGCUR,DOGC); HM.emit('dogChanged',{id:DOGC});}
+/* tvář psa: jeden ze šesti kreslených vzhledů (d.look, jinak podle id psa) nebo vlastní fotka. Fotka zůstane jen v tomhle zařízení:
+   klíč agility-dogpic-v1 se nesynchronizuje ani nezálohuje (SYNC_OWN); zmenšená na 192 × 192 px má kolem 15 kB */
+var DOGPICK='agility-dogpic-v1', DOGPIC=lsGet(DOGPICK,{});
+if(!DOGPIC||typeof DOGPIC!=='object'||Array.isArray(DOGPIC)) DOGPIC={};
+var LOOKS=[
+  {n:'Hnědý',bg:'#FFE3AE',f:'#D79A5E',e:'#8F5F33',m:'#F5DDB8'},
+  {n:'Černobílý',bg:'#DCEBFF',f:'#2B2724',e:'#1E1B19',m:'#F6F2EC',bl:1,ir:'#A06B34',up:1},
+  {n:'Zlatý',bg:'#FFEBCB',f:'#E8B865',e:'#C38A3A',m:'#FBEBCD'},
+  {n:'Mramorovaný',bg:'#E2EFE4',f:'#AEB6BE',e:'#5B626C',m:'#F2F3F4',bl:1,pa:'#5E6670',ir:'#5B8FD0',up:1},
+  {n:'Bílý s hnědou',bg:'#FFE0D4',f:'#F8F3EA',e:'#B5773F',m:'#FFFFFF',pa:'#C68A52',up:1},
+  {n:'Černý',bg:'#E7E0FF',f:'#2E2A28',e:'#1E1B19',m:'#C98A4B',ir:'#A06B34'}
+];
+function dogLook(d){
+  if(d&&d.look>=0&&d.look<LOOKS.length) return d.look|0;
+  var h=0, s=String(d&&d.id||''); for(var i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return Math.abs(h)%LOOKS.length;
+}
+function dogSvg(k){
+  var L=LOOKS[k]||LOOKS[0], s='<svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="40" fill="'+L.bg+'"/>';
+  s+=L.up?'<path d="M21 34L18 9L39 25Z" fill="'+L.e+'"/><path d="M59 34L62 9L41 25Z" fill="'+L.e+'"/><path d="M23.5 29L21.5 15L32 24.5Z" fill="#F0B4AA"/><path d="M56.5 29L58.5 15L48 24.5Z" fill="#F0B4AA"/>'
+    :'<path d="M17 21C7 30 9 50 20 53C26 44 26 30 24 21Z" fill="'+L.e+'"/><path d="M63 21C73 30 71 50 60 53C54 44 54 30 56 21Z" fill="'+L.e+'"/>';
+  s+='<ellipse cx="40" cy="42" rx="20" ry="21" fill="'+L.f+'"/>';
+  if(L.pa) s+='<ellipse cx="31" cy="37" rx="7.5" ry="7" fill="'+L.pa+'"/>';
+  if(L.bl) s+='<path d="M37.4 22Q40 20.6 42.6 22L44.6 46H35.4Z" fill="'+L.m+'"/>';
+  s+='<ellipse cx="40" cy="52" rx="11.5" ry="8.5" fill="'+L.m+'"/>';
+  s+=L.ir?'<circle cx="32" cy="39" r="3.4" fill="'+L.ir+'"/><circle cx="48" cy="39" r="3.4" fill="'+L.ir+'"/><circle cx="32" cy="39" r="2" fill="#140d08"/><circle cx="48" cy="39" r="2" fill="#140d08"/>'
+    :'<circle cx="32" cy="39" r="3" fill="#2a1d14"/><circle cx="48" cy="39" r="3" fill="#2a1d14"/>';
+  return s+'<circle cx="33.1" cy="37.9" r="1" fill="#fff"/><circle cx="49.1" cy="37.9" r="1" fill="#fff"/><ellipse cx="40" cy="47.5" rx="4.3" ry="3.1" fill="#2a1d14"/>'+
+    '<path d="M35.5 52.5Q40 56 44.5 52.5" stroke="#2a1d14" stroke-width="1.7" fill="none" stroke-linecap="round"/><path d="M38.3 54Q40 61 41.7 54Z" fill="#E8676A"/></svg>';
+}
+function dogPic(d){ var p=d&&DOGPIC[d.id]; return typeof p==='string'&&/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(p)?p:null; }
+function dogAva(d,pic){ var p=pic===undefined?dogPic(d):pic; return '<span class="dava" aria-hidden="true">'+(p?'<img src="'+p+'" alt="">':dogSvg(dogLook(d)))+'</span>'; }
+/* obrázek do prázdných míst: pes (vybraný, jinak kreslený) s míčkem */
+function dogIll(d){ return '<div class="ill" aria-hidden="true"><span class="ill-sh"></span>'+dogAva(d)+
+  '<svg class="ill-ball" viewBox="0 0 28 28"><circle cx="14" cy="14" r="13" fill="#c6f432" stroke="#9cc41f" stroke-width="1"/><path d="M3 9.5Q14 15 25 9.5M3 18.5Q14 13 25 18.5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>'; }
+/* fotka z galerie nebo fotoaparátu: čtverec ze středu (u fotky na výšku spíš z horní části, kde bývá hlava) zmenšený na 192 px */
+function dogPicLoad(file,cb){
+  if(!file||!/^image\//.test(file.type||'')){ toast('Vyber fotku psa'); return; }
+  var url=URL.createObjectURL(file), im=new Image(), bad=function(){ URL.revokeObjectURL(url); toast('Fotku se nepodařilo načíst'); };
+  im.onload=function(){
+    try{ var w=im.naturalWidth, h=im.naturalHeight, s=Math.min(w,h), c=document.createElement('canvas'); c.width=c.height=192;
+      var g=c.getContext('2d'); g.imageSmoothingQuality='high'; g.drawImage(im,(w-s)/2,(h-s)*.4,s,s,0,0,192,192);
+      URL.revokeObjectURL(url); cb(c.toDataURL('image/jpeg',.82)); }
+    catch(e){ bad(); }
+  };
+  im.onerror=bad; im.src=url;
+}
+function dogPicSave(id,p){ if(p) DOGPIC[id]=p; else delete DOGPIC[id]; lsSet(DOGPICK,DOGPIC); }
 function dogChips(el){
   var box=$(el); if(!box) return; var c=curDog();
-  box.innerHTML=DOGS.length?DOGS.map(function(d){return '<button class="chip'+(c&&c.id===d.id?' on':'')+'" data-dog="'+esc(d.id)+'">'+esc(d.name)+' · '+d.size+'</button>';}).join('')
+  box.innerHTML=DOGS.length?DOGS.map(function(d){return '<button class="chip'+(c&&c.id===d.id?' on':'')+'" data-dog="'+esc(d.id)+'">'+dogAva(d)+'<span>'+esc(d.name)+' · '+d.size+'</span></button>';}).join('')
     :'<button class="chip" data-adddog="1">＋ Přidat psa (běhy se pak zapisují ke psovi)</button>';
   box.onclick=function(e){
     var b=e.target.closest('[data-dog]'), a=e.target.closest('[data-adddog]');
@@ -8702,8 +8896,17 @@ function dogChips(el){
 }
 function dogSheet(d){
   var isNew=!d; d=d||{id:'dog-'+Date.now().toString(36),name:'',size:'L',cls:RU.cls.indexOf('A1')>=0?'A1':RU.cls[0]};
+  /* obrázek psa se mění jen v okně; uloží se tlačítkem Přidat / Uložit */
+  var AV={look:dogLook(d),pic:dogPic(d)};
+  var avUI=function(){
+    $('dPrev').innerHTML=dogAva({id:d.id,look:AV.look},AV.pic);
+    $('dLooks').innerHTML=LOOKS.map(function(L,i){ return '<button type="button" data-dl="'+i+'" aria-pressed="'+(!AV.pic&&AV.look===i)+'" aria-label="Kreslený pes: '+L.n+'">'+dogAva({look:i},null)+'</button>'; }).join('')+
+      '<button type="button" class="dcam" data-dpic="1" aria-pressed="'+!!AV.pic+'" aria-label="Vlastní fotka">'+IC.photo+'</button>';
+  };
   openSheet('<h3>'+(isNew?'Nový pes':'Upravit psa')+'</h3>'+
     '<label for="dName">Jméno<input id="dName" type="text" maxlength="40" value="'+esc(d.name)+'"></label>'+
+    '<div class="dpick"><span class="dprev" id="dPrev"></span><div class="dpk"><div class="dlooks" id="dLooks" role="group" aria-label="Obrázek psa"></div>'+
+    '<p class="hint">Vyber kreslený obrázek, nebo vlastní fotku. Fotka zůstane jen v tomhle telefonu.</p></div></div><input id="dPic" type="file" accept="image/*" hidden>'+
     '<div class="grid2"><label for="dSize">Velikost<select id="dSize">'+Object.keys(RU.heights||SIZES).map(function(k){return '<option value="'+k+'">'+(RU.heights||SIZES)[k].l+'</option>';}).join('')+'</select></label>'+
     '<label for="dCls">Výkonnostní třída<select id="dCls">'+clsOpts(d.cls)+'</select></label></div>'+
     '<label for="dBorn">Narozen/a (měsíc a rok, nepovinné)<input id="dBorn" type="month" value="'+esc(d.born||'')+'" max="'+localDate().slice(0,7)+'"></label>'+
@@ -8712,6 +8915,8 @@ function dogSheet(d){
     '<p class="hint">Napiš jméno psa nebo své jméno a vyber psa ze seznamu. Výsledky ze závodů se pak načtou do aplikace: rychlost, čisté běhy a odhad času na parkuru.</p>')+
     '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="ok">'+(isNew?'Přidat':'Uložit')+'</button></div>',
     function(e){
+      var lk=e.target.closest('[data-dl]'); if(lk){ AV.look=+lk.getAttribute('data-dl'); AV.pic=null; avUI(); return; }
+      if(e.target.closest('[data-dpic]')){ $('dPic').click(); return; }
       var b=e.target.closest('[data-a]'); if(!b) return;
       if(b.getAttribute('data-a')==='ks'){ kacrFind(); return; }
       if(b.getAttribute('data-a')==='ok'){
@@ -8720,11 +8925,14 @@ function dogSheet(d){
         if(kv&&!kid){ kacrFind(); toast('Vyber psa ze seznamu'); return; }
         d.name=$('dName').value.trim()||'Pes'; d.size=$('dSize').value; d.cls=$('dCls').value; var bv=$('dBorn').value; if(/^\d{4}-\d{2}$/.test(bv)) d.born=bv; else delete d.born;
         var kNew=kid&&kid!==d.kacr; if(kid) d.kacr=kid; else delete d.kacr;
+        d.look=AV.look; if(AV.pic!==dogPic(d)) dogPicSave(d.id,AV.pic);
         if(isNew) DOGS.push(d); DOGC=d.id; saveDogs(); toast(isNew?'Pes přidán':'Uloženo');
         if(kNew) kacrLoad(d,true);
       }
-      closeSheet(); if(view==='more') moreRender(); if(view==='run') runRender();
+      closeSheet(); if(view==='more') moreRender(); if(view==='run') runRender(); if(view==='home') homeRender();
     });
+  avUI();
+  $('dPic').onchange=function(){ var f=this.files&&this.files[0]; this.value=''; if(f) dogPicLoad(f,function(u){ AV.pic=u; avUI(); }); };
   $('dSize').value=d.size; $('dCls').value=d.cls;
   $('dKacr').onkeydown=function(e){ if(e.key==='Enter'){ e.preventDefault(); if(!kacrId(this.value)) kacrFind(); } };
   if($('dKres')) $('dKres').onclick=function(e){ /* pole kacr.info se cizincům neukazuje */
@@ -9211,6 +9419,20 @@ function promoHomeHTML(){
   return '<div class="hm-ch hm-promo" data-h="promo"><div class="ic">🏅</div><div class="tx"><b>'+ps.text+'</b><span>'+ps.sub+'</span>'+
     '<div class="bar"><i style="width:'+Math.round(Math.min(ps.n,ps.need)/Math.max(1,ps.need)*100)+'%"></i></div></div><button class="hm-go" data-h="promo">Deník</button></div>';
 }
+/* profil psa v sekci Psi: tvář v kroužku postupu do vyšší třídy (stejný výpočet jako karta na Domů), běhy, čisté běhy a co zbývá.
+   V nejvyšší třídě (nebo v Hoopers) je kroužek jen limetkový rámeček. */
+function dogProfHTML(x,meta){
+  var runs=allRuns(x.id), clean=runs.filter(function(r){return r.tot===0&&r.g!=='DIS';}).length;
+  var ps=!isHoopS()&&(RU.promo.length||RU.keep)?promoState(x):null, need=ps&&ps.text?ps.need:0, C=2*Math.PI*58;
+  var ring='<svg viewBox="0 0 124 124" aria-hidden="true"><circle class="'+(need?'rg-b':'rg-v')+'" cx="62" cy="62" r="58" fill="none" stroke-width="7"/>'+
+    (need&&ps.n>0?'<circle class="rg-v" cx="62" cy="62" r="58" fill="none" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+(C*Math.min(1,ps.n/need)).toFixed(1)+' '+C.toFixed(1)+'"/>':'')+'</svg>';
+  var chips=[czN(runs.length,'běh','běhy','běhů'),czN(clean,'čistý','čisté','čistých')];
+  if(need) chips.push(Math.min(ps.n,need)+' z '+need+(ps.cur?' do '+clsL(ps.cur.st.to):' letos'));
+  return '<div class="dprof"><div class="ring">'+ring+dogAva(x)+'</div><h3 translate="no">'+esc(x.name)+'</h3><span class="dmeta">'+meta+'</span>'+
+    '<div class="dchips">'+chips.map(function(c){return '<span>'+c+'</span>';}).join('')+'</div>'+(need?'<p class="dgoal">'+ps.text+'</p>':'')+
+    '<div class="acts"><button class="btn" data-dedit="'+esc(x.id)+'">Upravit</button>'+(x.kacr?'<button class="btn" data-dkacr="'+esc(x.id)+'">Závody</button>':'')+'<button class="btn primary" data-dtrain="1">Trénovat</button></div>'+
+    '<button class="btn dx" data-ddel="'+esc(x.id)+'" aria-label="Smazat psa">×</button></div>';
+}
 function promoHTML(){
   var ps=promoState(curDog()), bar=function(n,need){ return '<div class="bar"><i style="width:'+Math.round(Math.min(n,need)/need*100)+'%"></i></div>'; };
   var h=ps.steps.map(function(s){
@@ -9227,12 +9449,16 @@ function promoHTML(){
 }
 function diaryHTML(){
   var d=curDog(), L=diary().filter(function(x){return !d||!x.dog||x.dog===d.id;}).sort(function(a,b){return b.date<a.date?-1:1;});
-  return (RU.promo.length?promoHTML():'')+lossHTML(d)+cleanChartHTML(d)+judgeHTML(d)+'<div class="row"><button class="btn primary" data-dy="trenink">＋ Trénink</button><button class="btn" data-dy="zavod">＋ Závod</button></div>'+
+  /* úplně prázdný deník (ani závody z kacr.info): nahoře obrázek psa s míčkem a tlačítka místo řádku Trénink | Závod */
+  var kl=kacrListHTML(d), none=!L.length&&!kl;
+  return (none?'<div class="empty-state es-ill">'+dogIll(d)+'<b>Deník je zatím prázdný</b><p>'+(d?'Zapiš první trénink a uvidíš, jak se '+esc(d.name)+' zlepšuje.':'Zapiš první trénink nebo výsledek ze závodů a uvidíš, jak se tvůj pes zlepšuje.')+'</p>'+
+      '<div class="es-acts"><button class="btn primary" data-dy="trenink">＋ Zapsat trénink</button><button class="btn" data-dy="zavod">＋ Výsledek ze závodů</button></div></div>':'')+
+    (RU.promo.length?promoHTML():'')+lossHTML(d)+cleanChartHTML(d)+judgeHTML(d)+(none?'':'<div class="row"><button class="btn primary" data-dy="trenink">＋ Trénink</button><button class="btn" data-dy="zavod">＋ Závod</button></div>'+
     '<div class="list">'+(L.length?L.map(function(x){
       var t=x.kind==='zavod'?'<b>Závod'+(x.event?': '+esc(x.event):'')+'</b><span>'+esc(x.cls||'')+' · '+esc(gTxt(x.g||''))+(x.place?' · '+esc(T(x.place+'. místo')):'')+(x.tot!==''&&x.tot!=null?' · '+esc(T(x.tot+' tr. b.')):'')+(x.judge?' · '+esc(T('rozhodčí '+x.judge)):'')+(x.faults&&x.faults.length?' · '+x.faults.filter(function(k){return FAULTS[k];}).map(function(k){return esc(T(FAULTS[k][0]));}).join(', '):'')+(+x.t>0?' · '+esc(fmt(+x.t)+' s')+(+x.len>0?' · '+esc(spdU(+x.len/+x.t)):''):'')+'</span>'+(x.video?'<a class="dy-vid" href="'+esc(x.video)+'" target="_blank" rel="noopener">▶ Video</a>':'') /* části přes T(): celý řádek slovník nepřeloží */
         :'<b>Trénink'+(x.surface?' · '+esc(x.surface):'')+'</b>';
       return '<div class="item"><div>'+t+'<span>'+dateOf(x.date).toLocaleDateString(LOC)+(dogName(x.dog)?' · '+esc(dogName(x.dog)):'')+'</span>'+(x.note?'<span>'+esc(x.note)+'</span>':'')+'</div><div class="acts"><button class="btn" data-dydel="'+esc(x.id)+'" aria-label="Smazat záznam">×</button></div></div>';
-    }).join(''):'<p class="hint">Zatím žádné záznamy. Zapiš si trénink nebo výsledek ze závodů.</p>')+'</div>'+kacrListHTML(d);
+    }).join(''):'<p class="hint">Zatím žádné záznamy. Zapiš si trénink nebo výsledek ze závodů.</p>')+'</div>')+kl;
 }
 function diarySheet(kind,pre){
   var d=curDog(), today=localDate(); pre=pre||{};
@@ -9372,6 +9598,7 @@ $('jsonFile').onchange=function(){
    psi, deník, výsledky z kacr.info, nastavení). Slučuje se třícestně: základ je stav po poslední synchronizaci, takže změny
    i smazání z obou zařízení se zachovají a nic se nepřepíše naslepo. Na serveru jeden řádek na uživatele (funkce sync_get, sync_put). */
 var AUTHK='agility-auth-v1', SYNCK='agility-sync-v1', LOGINK='agility-login-v1', SYNC_OWN={}; SYNC_OWN[AUTHK]=1; SYNC_OWN[SYNCK]=1; SYNC_OWN[LOGINK]=1;
+SYNC_OWN[DOGPICK]=1; /* fotka psa zůstává jen v tomhle zařízení: nejde do zálohy ani na server a obnova zálohy ji nesmaže */
 var SYNC_KEYS=[MYK,MKK,DOGK,DOGCUR,DIARYK,KACRK,SETK,NICKK,WKME,WARMK];
 var AUTH=lsGet(AUTHK,null), AUTH_NEW=false, AUTH_ERR='', SYNC={busy:false,again:false,tm:0,st:'',msg:'',at:0,p:null,apply:false};
 function jwtBody(t){ try{ var s=String(t).split('.')[1].replace(/-/g,'+').replace(/_/g,'/'); while(s.length%4) s+='='; return JSON.parse(decodeURIComponent(escape(atob(s)))); }catch(e){ return {}; } }
@@ -9823,7 +10050,7 @@ function appShare(){
   dnCopy(APP_URL);
 }
 /* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
-var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='2.8';
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='2.9';
 var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
 function fbSave(){ lsSet(FBK,FB); }
 var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];
@@ -9913,9 +10140,13 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   if(moreTab==='plus'){ $('moreBody').innerHTML=plusHTML(); plusRefresh(); return; }
   if(moreTab==='set'){ $('moreBody').innerHTML=settingsHTML()+'<h2>Záloha</h2>'+backupHTML(); return; }
   if(moreTab==='dogs'){
-    h='<div class="list">'+(DOGS.length?DOGS.map(function(x){return '<div class="item'+(d&&d.id===x.id?' cur':'')+'"><div><b>'+esc(x.name)+'</b><span>'+SIZES[x.size].l+' · '+x.cls+(dogAgeM(x)!=null?' · '+ageTxt(dogAgeM(x)):'')+'</span></div><div class="acts">'+(d&&d.id===x.id?'':'<button class="btn" data-dsel="'+esc(x.id)+'">Vybrat</button>')+(x.kacr?'<button class="btn" data-dkacr="'+esc(x.id)+'">Závody</button>':'')+'<button class="btn" data-dedit="'+esc(x.id)+'">Upravit</button><button class="btn danger" data-ddel="'+esc(x.id)+'" aria-label="Smazat psa">×</button></div></div>';}).join('')
-      :'<p class="hint">Přidej psa. Aplikace pak ukáže výšky překážek pro jeho kategorii a běhy i statistiky povede zvlášť pro každého psa.</p>')+'</div>'+
-      '<div class="row"><button class="btn primary" data-dadd="1">＋ Přidat psa</button></div>';
+    /* vybraný pes jako profil (tvář s kroužkem postupu, běhy, čisté běhy, kolik zbývá do vyšší třídy), ostatní psi v řádcích */
+    h=DOGS.length?'<div class="list">'+DOGS.map(function(x){
+      var meta=SIZES[x.size].l+' · '+x.cls+(dogAgeM(x)!=null?' · '+ageTxt(dogAgeM(x)):'');
+      if(!(d&&d.id===x.id)) return '<div class="item dog">'+dogAva(x)+'<div><b>'+esc(x.name)+'</b><span>'+meta+'</span></div><div class="acts"><button class="btn" data-dsel="'+esc(x.id)+'">Vybrat</button>'+(x.kacr?'<button class="btn" data-dkacr="'+esc(x.id)+'">Závody</button>':'')+'<button class="btn" data-dedit="'+esc(x.id)+'">Upravit</button><button class="btn danger" data-ddel="'+esc(x.id)+'" aria-label="Smazat psa">×</button></div></div>';
+      return dogProfHTML(x,meta);
+    }).join('')+'</div><div class="row"><button class="btn dadd" data-dadd="1"><i aria-hidden="true">+</i>Přidat dalšího psa</button></div>'
+      :'<div class="empty-state es-ill">'+dogIll(null)+'<b>Kdo s tebou běhá?</b><p>Přidej psa. Aplikace pak ukáže výšky překážek pro jeho kategorii a běhy i statistiky povede zvlášť pro každého psa.</p><div class="es-acts"><button class="btn primary" data-dadd="1">＋ Přidat psa</button></div></div>';
     var z=(RU.heights&&RU.heights[d?d.size:'L'])||SIZES[d?d.size:'L'];
     h+='<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (kategorie L)')+'</h2><table class="table"><tr><th>Překážka</th><th>Podle FCI</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (střed od země)</td><td>'+z.tire+'</td></tr><tr><td>Skok daleký</td><td>'+z.lj+'</td></tr><tr><td>Áčko, kladina, houpačka</td><td>stejné pro všechny: 170 / 120–130 / 60 cm</td></tr></table>'+(RU.note?'<p class="hint">'+RU.note+'</p>':'');
   } else if(moreTab==='stats'){ h='<div class="filters" id="statDogs"></div>'+statsHTML()+weakHTML(); }
@@ -9983,10 +10214,11 @@ $('moreBody').onclick=function(e){
   if(g('data-unit')){ SET.unit=g('data-unit')==='ft'?'ft':null; lsSet(SETK,SET); drawGrid(); render(); moreRender(); return; }
   if(g('data-gdrill')){ GEN.tab='drill'; GEN.drill=g('data-gdrill'); show('lib'); genSheet(); return; }
   if(g('data-dadd')) dogSheet(null);
+  else if(g('data-dtrain')) show('run');
   else if(g('data-dsel')){DOGC=g('data-dsel'); saveDogs(); moreRender();}
   else if(g('data-dedit')){var x=DOGS.filter(function(q){return q.id===g('data-dedit');})[0]; if(x) dogSheet(x);}
   else if(g('data-dkacr')){var xk=DOGS.filter(function(q){return q.id===g('data-dkacr');})[0]; if(xk) kacrSheet(xk);}
-  else if(g('data-ddel')){var id=g('data-ddel'), x2=DOGS.filter(function(q){return q.id===id;})[0]; if(x2) ask('Smazat psa '+x2.name+'?','Jeho běhy zůstanou uložené u parkurů.','Smazat',function(){DOGS=DOGS.filter(function(q){return q.id!==id;}); if(DOGC===id) DOGC=DOGS[0]?DOGS[0].id:null; saveDogs(); moreRender();},true);}
+  else if(g('data-ddel')){var id=g('data-ddel'), x2=DOGS.filter(function(q){return q.id===id;})[0]; if(x2) ask('Smazat psa '+x2.name+'?','Jeho běhy zůstanou uložené u parkurů.','Smazat',function(){DOGS=DOGS.filter(function(q){return q.id!==id;}); if(DOGC===id) DOGC=DOGS[0]?DOGS[0].id:null; if(DOGPIC[id]) dogPicSave(id,null); saveDogs(); moreRender();},true);}
   else if(g('data-kf')){ var kb=e.target.closest('[data-kf]'), kr=kb.parentNode.getAttribute('data-kr'), kd=curDog(); if(kd&&kd.kacr){ var kk=kd.kacr+':'+kr, arr=(KF[kk]||[]).slice(), kf=g('data-kf'), ki=arr.indexOf(kf); if(ki>=0) arr.splice(ki,1); else arr.push(kf); if(arr.length) KF[kk]=arr; else delete KF[kk]; lsSet(KFK,KF);
       kb.classList.toggle('on',ki<0); kb.setAttribute('aria-pressed',ki<0); var lb=$('lossBox'); if(lb){ var tmp=document.createElement('div'); tmp.innerHTML=lossHTML(kd); if(tmp.firstChild) lb.parentNode.replaceChild(tmp.firstChild,lb); } } }
   else if(g('data-dy')) diarySheet(g('data-dy'));
@@ -11757,7 +11989,7 @@ function settingsHTML(){
 }
 
 /* ---------- průvodce prvním spuštěním ---------- */
-var ONBK='agility-onb-v1', ONB={step:1,dog:null};
+var ONBK='agility-onb-v1', ONB={step:1,dog:null,name:null,look:null,id:null}; /* ONB.pic: fotka vybraná v průvodci (undefined = beze změny) */
 function onbHasData(){ return S.meta.dirty||DOGS.length>0||myDB().length>0||Object.keys(MK).some(function(k){return (MK[k].runs||[]).length||MK[k].fav||MK[k].done;}); }
 /* návrat z platby kartou: odkaz Stripe po zaplacení přesměruje na …/?dekuji (nastavuje se ve Stripe u odkazu na platbu) */
 var THX=/[?&]dekuji\b/.test(location.search);
@@ -11829,17 +12061,17 @@ function onbStart(){
   /* iPhone v Safari: data z Safari se do aplikace na ploše nepřenesou (iOS jí dá vlastní úložiště), proto napřed instalace */
   if(iosGuideAuto()){ IOSG_THEN=onbStart; return; }
   var st=lsGet(ONBK,null);
-  if(st&&st.step&&!st.done){ onbOpen(st.step); return; }
+  if(st&&st.step&&!st.done){ if(typeof st.name==='string') ONB.name=st.name.slice(0,40); onbOpen(st.step); return; }
   if(st) { if(!newsCheck()) acctAsk(); return; }
   if(onbHasData()){ lsSet(ONBK,{done:1,v:2}); if(!newsCheck()) acctAsk(); return; }
   onbOpen(1);
 }
 function newsCheck(){
-  var seen=lsGet('agility-news-v1',null); if(seen==='2.8') return false; lsSet('agility-news-v1','2.8');
-  /* kdo neviděl novinky 2.7, dozví se i o nich a o novém názvu */
-  var old=seen!=='2.7';
-  openSheet('<h3>Novinky v Pawkuru 2.8</h3>'+(old?'<p>Aplikace se teď jmenuje Pawkur, dřív AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>':'')+
-    '<ul class="news"><li>Telefon na šířku: v Plánu je plocha přes celou výšku a ovládání vedle, v Běhu stopky a START vlevo</li><li>Plocha přes celou obrazovku: tlačítko pod plochou schová lišty a souhrn</li><li>Nový parkur se zeptá na plochu a třídu a otevře se celý; v paletě jsou všechny překážky bez posouvání</li><li>Kontrola FCI rovnou na ploše i bez trasy: překážky přes sebe, mimo plochu nebo blíž než 1 m se obtáhnou červeně; nové kontroly nájezdu, zdi, dvojitého skoku a tunelů</li><li>Znovu vedle Zpět, úprava trasy uprostřed (⋯ u kroku) a uložení parkuru i bez trasy</li><li>Parkury začínají výš, prázdné Moje nabídne Nový parkur a Plánek z fotky</li><li>Jedna barva výběru, stejná tlapka všude, větší tlačítka pro prst a tlačítka dlouhých oken vždy vidět</li>'+(old?'<li>Stavba: panel výběru dole nad lištou, plocha už neposkakuje; přiblížení a 3D vedle plochy; přetažení prstem funguje</li><li>Domů: nahoře rozpracovaný parkur s mapou a tlačítka Nový parkur, Plánek z fotky a Knihovna; úvodní fotka je pryč</li><li>Postup se hlídá sám: na Domů vidíš, kolik ti zbývá do vyšší třídy podle pravidel tvé země</li><li>Kalkulačka SČP a MČP (Více → Nástroje): časy podle délky trati bez kreslení parkuru</li><li>Křížení na dráze psovoda: do plánku si označíš přední, zadní a slepé křížení a místa, kde si dát pozor</li><li>Výsledková listina pro pořadatele (Více → Nástroje a v Běhu): pořadí podle FCI, tisk, PDF a kopírování do Excelu</li>'+(seen==='2.6'?'':'<li>Hoopers: přepínač Agility | Hoopers nahoře na Domů a v Parkurech. Parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb</li>')+(seen==='2.5'||seen==='2.6'?'':'<li>Deník: Kde ztrácíš body. Z výsledků na kacr.info aplikace spočítá diskvalifikace, chyby, odmítnutí a čas a doporučí sekvenci na trénink</li><li>Úspěšnost podle rozhodčího a povrchu; rozhodčí z kacr.info se počítají do postupu</li><li>Den závodů na Domů: den předem a během závodu navigace, rozhodčí, počet týmů v kategorii, seznam věcí s sebou a zápis výsledku</li><li>U závodu v deníku jde zaškrtnout, co se stalo (tyčka, zóna, slalom…)</li>'):'')+'</ul>'+
+  var seen=lsGet('agility-news-v1',null); if(seen==='2.9') return false; lsSet('agility-news-v1','2.9');
+  /* kdo neviděl novinky 2.8, dozví se i o nich; kdo neviděl ani 2.7, i o novém názvu */
+  var o8=seen!=='2.8', old=o8&&seen!=='2.7';
+  openSheet('<h3>Novinky v Pawkuru 2.9</h3>'+(old?'<p>Aplikace se teď jmenuje Pawkur, dřív AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>':'')+
+    '<ul class="news"><li>Pes jako hlavní postava: na Domů pozdrav se jménem a obrázkem psa, v Psech profil s kroužkem, kolik zbývá do vyšší třídy</li><li>Obrázek psa: šest kreslených psů, nebo vlastní fotka, která zůstane jen v tomhle telefonu</li><li>Teplejší barvy, barevná tlačítka na Domů a nadpisy normálním písmem</li><li>Prázdný Deník, Moje parkury a Psi mají obrázek a radu, čím začít</li><li>Průvodce prvním spuštěním začíná jménem psa</li>'+(o8?'<li>Telefon na šířku: v Plánu je plocha přes celou výšku a ovládání vedle, v Běhu stopky a START vlevo</li><li>Plocha přes celou obrazovku: tlačítko pod plochou schová lišty a souhrn</li><li>Nový parkur se zeptá na plochu a třídu a otevře se celý; v paletě jsou všechny překážky bez posouvání</li><li>Kontrola FCI rovnou na ploše i bez trasy: překážky přes sebe, mimo plochu nebo blíž než 1 m se obtáhnou červeně; nové kontroly nájezdu, zdi, dvojitého skoku a tunelů</li><li>Znovu vedle Zpět, úprava trasy uprostřed (⋯ u kroku) a uložení parkuru i bez trasy</li><li>Parkury začínají výš, prázdné Moje nabídne Nový parkur a Plánek z fotky</li><li>Jedna barva výběru, stejná tlapka všude, větší tlačítka pro prst a tlačítka dlouhých oken vždy vidět</li>'+(old?'<li>Stavba: panel výběru dole nad lištou, plocha už neposkakuje; přiblížení a 3D vedle plochy; přetažení prstem funguje</li><li>Domů: nahoře rozpracovaný parkur s mapou a tlačítka Nový parkur, Plánek z fotky a Knihovna; úvodní fotka je pryč</li><li>Postup se hlídá sám: na Domů vidíš, kolik ti zbývá do vyšší třídy podle pravidel tvé země</li><li>Kalkulačka SČP a MČP (Více → Nástroje): časy podle délky trati bez kreslení parkuru</li><li>Křížení na dráze psovoda: do plánku si označíš přední, zadní a slepé křížení a místa, kde si dát pozor</li><li>Výsledková listina pro pořadatele (Více → Nástroje a v Běhu): pořadí podle FCI, tisk, PDF a kopírování do Excelu</li>'+(seen==='2.6'?'':'<li>Hoopers: přepínač Agility | Hoopers nahoře na Domů a v Parkurech. Parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb</li>')+(seen==='2.5'||seen==='2.6'?'':'<li>Deník: Kde ztrácíš body. Z výsledků na kacr.info aplikace spočítá diskvalifikace, chyby, odmítnutí a čas a doporučí sekvenci na trénink</li><li>Úspěšnost podle rozhodčího a povrchu; rozhodčí z kacr.info se počítají do postupu</li><li>Den závodů na Domů: den předem a během závodu navigace, rozhodčí, počet týmů v kategorii, seznam věcí s sebou a zápis výsledku</li><li>U závodu v deníku jde zaškrtnout, co se stalo (tyčka, zóna, slalom…)</li>'):''):'')+'</ul>'+
     '<div class="acts"><button class="btn primary" data-a="x">Pokračovat</button></div>',function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
   return true;
 }
@@ -11849,18 +12081,29 @@ function onbOpen(step){
   if(!o){ o=document.createElement('div'); o.id='onb'; o.className='onb'; o.setAttribute('role','dialog'); o.setAttribute('aria-modal','true'); document.body.appendChild(o); o.onclick=onbClick; o.onchange=onbClick; }
   document.documentElement.classList.add('onb-open'); onbRender();
 }
+/* pes v průvodci: už uložený, jinak nový (id se drží, ať obrázek psa nepřeskakuje mezi kroky) */
+function onbDog(){ return curDog()||{id:ONB.id||(ONB.id='dog-'+Date.now().toString(36)),name:'',size:'L',cls:RU.cls.indexOf('A1')>=0?'A1':RU.cls[0]}; }
+function onbLooks(){
+  var d=onbDog(), lk=ONB.look==null?dogLook(d):ONB.look, pic=ONB.pic!==undefined?ONB.pic:dogPic(d);
+  $('oPrev').innerHTML=dogAva({id:d.id,look:lk},pic);
+  $('oLooks').innerHTML=LOOKS.map(function(L,i){ return '<button type="button" data-o="look" data-v="'+i+'" aria-pressed="'+(!pic&&lk===i)+'" aria-label="Kreslený pes: '+L.n+'">'+dogAva({look:i},null)+'</button>'; }).join('')+
+    '<button type="button" class="dcam" data-o="pic" aria-pressed="'+!!pic+'" aria-label="Vlastní fotka">'+IC.photo+'</button>';
+}
+/* průvodce začíná psem: obrázek a jméno psa, pak velikost, třída a obrázek, nakonec čím začít. Jazyk je malý přepínač nahoře,
+   vzhled (světlý / tmavý) se řídí systémem a mění se ve Více → Nastavení. */
 function onbRender(){
-  var o=$('onb'), s=ONB.step, h='<div class="onb-top"><div class="dots" aria-hidden="true"><i'+(s===1?' class="on"':'')+'></i><i'+(s===2?' class="on"':'')+'></i><i'+(s===3?' class="on"':'')+'></i></div><button class="btn ghost" data-o="skip">Přeskočit</button></div><div class="onb-body">';
+  var o=$('onb'), s=ONB.step, d=onbDog(), h='<div class="onb-top"><div class="dots" aria-hidden="true"><i'+(s===1?' class="on"':'')+'></i><i'+(s===2?' class="on"':'')+'></i><i'+(s===3?' class="on"':'')+'></i></div><div class="onb-r">'+
+    (s===1?'<div class="seg onb-lang" role="group" aria-label="Jazyk / Language"><button data-o="lang" data-v="cs" class="'+(LANG==='cs'?'on':'')+'" translate="no">CZ</button><button data-o="lang" data-v="en" class="'+(LANG==='en'?'on':'')+'" translate="no">EN</button></div>':'')+
+    '<button class="btn ghost" data-o="skip">Přeskočit</button></div></div><div class="onb-body'+(s<3?' c':'')+'">';
   if(s===1){
-    h+='<div class="onb-logo" aria-hidden="true">'+IC.brand+'</div><h1>Vítej v Pawkuru</h1><p class="lead">Plánuj parkury, čti plánky z fotky, trénuj se stopkami a sleduj, jak se tvůj pes zlepšuje.</p>'+
-      '<label>Jazyk / Language<div class="seg wide" role="group"><button data-o="lang" data-v="cs" class="'+(LANG==='cs'?'on':'')+'" translate="no">Čeština</button><button data-o="lang" data-v="en" class="'+(LANG==='en'?'on':'')+'" translate="no">English</button></div></label>'+
-      '<label>Vzhled<div class="seg wide" role="group"><button data-o="theme" data-v="system" class="'+(THEME==='system'?'on':'')+'">Podle systému</button><button data-o="theme" data-v="light" class="'+(THEME==='light'?'on':'')+'">Světlý</button><button data-o="theme" data-v="dark" class="'+(THEME==='dark'?'on':'')+'">Tmavý</button></div></label>';
+    h+='<div class="onb-hero">'+dogAva({id:d.id,look:ONB.look==null?dogLook(d):ONB.look},ONB.pic!==undefined?ONB.pic:dogPic(d))+'</div><h1>Vítej v Pawkuru</h1><p class="lead">Parkury, stopky a deník pro tebe a tvého psa. Jak se jmenuje?</p>'+
+      '<label for="oName">Jméno psa<input id="oName" type="text" maxlength="40" autocomplete="off" value="'+esc(ONB.name!=null?ONB.name:d.name)+'" placeholder="např. Fany"></label>';
     if(!AUTH&&IS_SRV) h+='<div class="onb-acct"><button class="btn gbtn" data-acct="in" data-o="acct">'+GLOGO+'<span>Přihlásit přes Google</span></button><p class="hint">Parkury, psi a běhy pak budeš mít na všech svých zařízeních. Jde to i bez přihlášení, stačí Pokračovat.</p></div>';
     h+='</div><div class="onb-foot"><button class="btn primary" data-o="next">Pokračovat</button></div>';
   } else if(s===2){
-    var d=curDog()||{name:'',size:'L',cls:RU.cls.indexOf('A1')>=0?'A1':RU.cls[0]};
-    h+='<h1>Tvůj pes</h1><p class="lead">Podle velikosti a třídy aplikace nastaví výšky překážek, čas SČP a povede statistiky zvlášť pro každého psa.</p>'+
-      '<label for="oName">Jméno<input id="oName" type="text" maxlength="40" autocomplete="off" value="'+esc(d.name)+'" placeholder="např. Aris"></label>'+
+    var nm=(ONB.name!=null?ONB.name:d.name).trim();
+    h+='<div class="onb-hero" id="oPrev"></div><h1'+(nm?' translate="no">'+esc(nm):'>Tvůj pes')+'</h1><p class="lead">Podle velikosti a třídy aplikace nastaví výšky překážek, čas SČP a povede statistiky zvlášť pro každého psa.</p>'+
+      '<div><div class="dlooks" id="oLooks" role="group" aria-label="Obrázek psa"></div><p class="hint">Fotka zůstane jen v tomhle telefonu.</p></div><input id="oPic" type="file" accept="image/*" hidden>'+
       '<div class="grid2"><label for="oSize">Velikost<select id="oSize">'+Object.keys(SIZES).map(function(k){return '<option value="'+k+'"'+(k===d.size?' selected':'')+'>'+SIZES[k].l+'</option>';}).join('')+'</select></label>'+
       '<label for="oCls">Třída<select id="oCls">'+clsOpts(d.cls)+'</select></label></div>';
     h+='</div><div class="onb-foot"><button class="btn" data-o="back">Zpět</button><button class="btn primary" data-o="dog">Pokračovat</button></div>';
@@ -11872,19 +12115,24 @@ function onbRender(){
     h+='</div><div class="onb-foot"><button class="btn" data-o="back">Zpět</button><button class="btn primary" data-o="go" data-v="home">Hotovo</button></div>';
   }
   o.innerHTML=h;
+  if(s===2){ onbLooks(); $('oPic').onchange=function(){ var f=this.files&&this.files[0]; this.value=''; if(f) dogPicLoad(f,function(u){ ONB.pic=u; onbLooks(); }); }; }
+  if(s===1) $('oName').oninput=function(){ ONB.name=this.value; }; /* rozepsané jméno přežije Zpět z druhého kroku */
 }
 function onbClick(e){
   if(e.type==='change') return;
   var b=e.target.closest('[data-o]'); if(!b) return; var a=b.getAttribute('data-o'), v=b.getAttribute('data-v');
   if(a==='skip'){ onbClose(true); show('home'); }
   else if(a==='acct'){ lsSet(ONBK,{done:1,v:2}); lsSet(ACCTASK,1); } /* přihlášení otevře Google; po návratu se ukáže účet */
-  else if(a==='lang'){ if(v!==LANG){ lsSet(ONBK,{step:2}); setLang(v); } }
-  else if(a==='theme'){ setTheme(v); onbRender(); }
-  else if(a==='next'){ ONB.step=2; lsSet(ONBK,{step:2}); onbRender(); }
+  else if(a==='lang'){ if(v!==LANG){ lsSet(ONBK,{step:1,name:($('oName')||{}).value||''}); setLang(v); } }
+  else if(a==='look'){ ONB.look=+v; ONB.pic=null; onbLooks(); }
+  else if(a==='pic') $('oPic').click();
+  else if(a==='next'){ ONB.name=$('oName').value; ONB.step=2; lsSet(ONBK,{step:2,name:ONB.name}); onbRender(); }
   else if(a==='back'){ ONB.step=Math.max(1,ONB.step-1); onbRender(); }
   else if(a==='dog'){
-    var nm=($('oName').value||'').trim();
-    if(nm){ var d=curDog(); if(!d){ d={id:'dog-'+Date.now().toString(36),name:nm,size:$('oSize').value,cls:$('oCls').value,u:Date.now()}; DOGS.push(d); } else { d.name=nm; d.size=$('oSize').value; d.cls=$('oCls').value; d.u=Date.now(); } DOGC=d.id; saveDogs(); }
+    var nm=(ONB.name!=null?ONB.name:'').trim(), d=curDog(), lk=ONB.look==null?dogLook(onbDog()):ONB.look;
+    if(!nm&&d) nm=d.name;
+    if(nm){ if(!d){ d={id:onbDog().id,name:nm,size:$('oSize').value,cls:$('oCls').value,u:Date.now()}; DOGS.push(d); } else { d.name=nm; d.size=$('oSize').value; d.cls=$('oCls').value; d.u=Date.now(); }
+      d.look=lk; if(ONB.pic!==undefined&&ONB.pic!==dogPic(d)) dogPicSave(d.id,ONB.pic); DOGC=d.id; saveDogs(); }
     ONB.step=3; lsSet(ONBK,{step:3}); onbRender();
   }
   else if(a==='go'){
