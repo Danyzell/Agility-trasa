@@ -1,6 +1,6 @@
 /* Pawkur 3.1: měření první návštěvy (anonymní počty akcí za den, odeslání přes app_act, souhrn pro autora v Návštěvnosti)
-   a první zážitek po průvodci (parkur týdne pro třídu psa rovnou ve 3D nebo v Běhu). Plánek z fotky s naklepáním trasy
-   testuje sada ctecka. */
+   a první zážitek po průvodci (parkur týdne pro třídu psa rovnou ve 3D nebo v Běhu), tlačítko Zaběhnout v Plánu.
+   Plánek z fotky s naklepáním trasy testuje sada ctecka. */
 const { phone, offline } = require('./helpers');
 
 module.exports = async function ({ browser, base }) {
@@ -119,6 +119,34 @@ module.exports = async function ({ browser, base }) {
       'Překážky z obrázku: 12. Teď na ně klepej v pořadí podle čísel na podkladu. Chybějící doplníš v režimu Stavba.']);
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
     ok(await ev(() => trLookup('Jak ho poběží Fany') === 'How Fany will run it'), 'překlad Jak ho poběží: ' + await ev(() => trLookup('Jak ho poběží Fany')));
+  });
+
+  /* Zaběhnout: z vybraného parkuru jedním klepnutím na stopky (dřív jen přes Běh ve spodní liště) */
+  await step('tlačítko Zaběhnout v Plánu', async () => {
+    await fresh('#lib'); await ev(() => { localStorage.removeItem('agility-runhint-v1'); ACT = { day: localDate(), a: {} }; libTab = 'A2'; libRender(); window.scrollTo(0, 0); }); await w(150);
+    await page.click('#cards .pick >> nth=2'); await w(400);
+    const fab = () => ev(() => !$('runFab').hidden && getComputedStyle($('runFab')).display !== 'none');
+    const r = await ev(() => { const f = $('runFab').getBoundingClientRect(), n = document.querySelector('.nav').getBoundingClientRect();
+      return { view, mode, toast: $('toast').hidden ? '' : $('toast').textContent, above: f.bottom <= n.top, right: f.right <= innerWidth, h: f.height, txt: $('runFab').textContent.trim() }; });
+    ok(await fab() && r.view === 'plan' && r.mode === 'view' && !r.toast && r.above && r.right && r.h >= 44 && r.txt === 'Zaběhnout', 'po výběru parkuru: ' + JSON.stringify(r));
+    /* u seznamu překážek, ve Stavbě a Trase a na celou obrazovku se schová */
+    await ev(() => $('routeList').scrollIntoView({ block: 'start' })); await w(300); ok(!await fab(), 'u seznamu překážek má být schované');
+    await ev(() => window.scrollTo(0, 0)); await w(300); ok(await fab(), 'nahoře u plochy má být zase vidět');
+    await page.click('#mBuild'); await w(100); ok(!await fab(), 've Stavbě má být schované');
+    await page.click('#mRoute'); await w(100); ok(!await fab(), 'v Trase má být schované');
+    await page.click('#mView'); await w(100); ok(await fab(), 'v Prohlížet zase vidět');
+    await ev(() => $('fullBtn').click()); await w(250); ok(!await fab(), 'na celou obrazovku má být schované');
+    await ev(() => { $('fullBtn').click(); $('toast').hidden = true; window.scrollTo(0, 0); }); await w(300);
+    /* klepnutí: Běh pro tenhle parkur, rada jen napoprvé */
+    await page.click('#runFab'); await w(500);
+    const k = await ev(() => ({ view, name: $('cName').textContent, toast: $('toast').hidden ? '' : $('toast').textContent, n: ACT.a.run_fab }));
+    ok(k.view === 'run' && k.name === 'A2-03' && /^Na place zmáčkni START/.test(k.toast) && k.n === 1, 'klepnutí na Zaběhnout: ' + JSON.stringify(k));
+    await ev(() => { $('toast').hidden = true; show('plan'); window.scrollTo(0, 0); }); await w(300); await page.click('#runFab'); await w(500);
+    ok(await ev(() => view === 'run' && $('toast').hidden), 'rada se má ukázat jen napoprvé');
+    /* parkur bez trasy: není co běžet */
+    await ev(() => { show('plan'); newCourse('A1', 40, 20, ''); S.obs.push({ id: 1, type: 'jump', x: 5, y: 5, rot: 0 }); mode = 'view'; ui(); render(); window.scrollTo(0, 0); }); await w(200);
+    ok(!await fab(), 'u parkuru bez trasy má být schované');
+    ok(!(await missEn(['Zaběhnout tenhle parkur na stopkách'])).length, 'chybí anglický popisek tlačítka');
   });
 
   await T.ctx.close();

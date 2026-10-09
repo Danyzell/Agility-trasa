@@ -1338,6 +1338,13 @@ body.fullfield .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));}
 .psp-row{display:flex; align-items:center; gap:10px; margin:0 0 8px;}
 .psp-l{flex:0 0 auto; font-weight:700; font-size:13.5px; color:var(--muted);}
 .psp{flex:1 1 auto; display:flex; min-width:0;} .psp button{flex:1 1 0; min-width:0; padding:6px 8px;}
+/* Zaběhnout: plovoucí tlačítko nad spodní lištou v režimu Prohlížet (3.1) */
+.runfab{position:fixed; z-index:25; right:16px; bottom:calc(var(--nav-h) + var(--nav-gap) + 12px + env(safe-area-inset-bottom,0px)); display:inline-flex; align-items:center; gap:8px;
+  border:0; border-radius:999px; padding:12px 22px 12px 18px; min-height:52px; background:var(--accent); color:var(--on-accent); font-size:17px; font-weight:700; box-shadow:0 8px 22px rgba(0,0,0,.28);}
+.runfab svg{width:22px; height:22px;}
+.runfab:active{transform:translateY(1px);}
+body.fullfield .runfab{display:none;}
+@media (orientation:landscape) and (max-height:540px){ .runfab{right:calc(16px + env(safe-area-inset-right,0px)); bottom:calc(12px + env(safe-area-inset-bottom,0px));} }
 #mselRow .sr-a b{font-size:14px; color:var(--text); min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 #mselRow .sr-b .btn{padding:8px 8px;} #mselRow .sr-a .btn{padding:8px 12px; flex:0 0 auto;}
 #field .cob{pointer-events:none;} #cmp{pointer-events:none;}
@@ -1470,6 +1477,8 @@ body.fullfield .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));}
     </div>
     <h2>Pořadí překážek</h2>
     <ol class="order" id="routeList"></ol>
+    <!-- z prohlíženého parkuru jedním klepnutím na stopky (3.1): dřív se ke stopkám šlo jen přes Běh ve spodní liště -->
+    <button class="runfab" id="runFab" hidden title="Zaběhnout tenhle parkur na stopkách"><span data-ic="timer"></span>Zaběhnout</button>
   </section>
 
   <!-- PARKURY -->
@@ -2989,7 +2998,7 @@ var I18N_TRI={exact:{
 "Nejspolehlivější je použít překážky a trasu naklepat podle čísel na podkladu. Přečtenou trasu můžeš použít i rovnou.": "The most reliable way is to apply the obstacles and tap the route by the numbers on the underlay. You can also use the route that was read right away.", "3D zatím umí jen parkury agility. Oblouk, sud a plůtek ve 3D teprve chystáme.": "3D only supports agility courses so far. Hoops, barrels and gates in 3D are on the way.", "x, y = metry od levého a horního okraje": "x, y = metres from the left and top edge", "Datum a místo": "Date and venue", "SČP / MČP": "SCT / MCT", "Poznámky": "Notes", "délka": "length",
 "Nebo otevři odkaz": "Or open the link", "Kopírovat odkaz": "Copy the link", "Načítám parkur z odkazu…": "Loading the course from the link…",
 /* 3.1: Parkur: Agility | Hoopers ve Stavbě */
-"Parkur": "Course", "Disciplína parkuru": "Course discipline", "Přepnout parkur na Hoopers?": "Switch the course to Hoopers?", "Přepnout parkur na agility?": "Switch the course to agility?",
+"Zaběhnout tenhle parkur na stopkách": "Run this course with the stopwatch", "Parkur": "Course", "Disciplína parkuru": "Course discipline", "Přepnout parkur na Hoopers?": "Switch the course to Hoopers?", "Přepnout parkur na agility?": "Switch the course to agility?",
 "Na ploše jsou překážky agility. Co s nimi?": "There are agility obstacles on the field. What should happen to them?", "Na ploše jsou překážky Hoopers. Co s nimi?": "There are Hoopers obstacles on the field. What should happen to them?",
 "Nový prázdný parkur Hoopers": "New empty Hoopers course", "Nový prázdný parkur agility": "New empty agility course",
 "Neuložené změny tohoto parkuru se ztratí.": "Unsaved changes to this course will be lost.", "Tenhle parkur zůstane, jak je uložený.": "This course stays as it is saved.",
@@ -6121,6 +6130,7 @@ function ui(){
     : RTE?(RTE.k==='ins'?(RTE.i<0?'Vkládáš na začátek trasy: klepej na překážky.':'Vkládáš za krok č. '+(RTE.i+1)+': klepej na překážky, přidají se za něj.')+' Vkládání ukončíš tlačítkem Ukončit vkládání.':'Klepni na překážku, která nahradí krok č. '+(RTE.i+1)+'. Nahrazení zrušíš tlačítkem Zrušit nahrazení.')
     : 'Klepej na překážky v pořadí, v jakém je pes poběží. Stejnou překážku můžeš použít víckrát. Otočku kolem křídla nebo zadní stranu nastavíš u skoku v seznamu pod plochou.';
   $('hint').hidden=special||mode==='view';
+  runFabUI();
 }
 function pt(e){var b=svg.getBoundingClientRect(); return {x:(e.clientX-b.left)/b.width*S.W, y:(e.clientY-b.top)/b.height*S.H};}
 
@@ -6965,7 +6975,7 @@ function loadCourse(c,quiet){
     newSeen(c.id);
     if(CMP_NEXT){ CMP=CMP_NEXT; CMP_NEXT=null; } /* prohození v porovnání: předchozí parkur zůstane šedě */
     save(); drawGrid(); render(); ui(); topbar(); resetRun(); undoReset();
-    if(!quiet) toast('Načteno: '+c.name);
+    /* bez hlášky „Načteno“: název je nahoře a vpravo dole čeká Zaběhnout (hláška by ho zakryla) */
     show('plan');
     HM.emit('courseLoaded',{id:c.id});
   }
@@ -10369,7 +10379,7 @@ function statsLoad(){
   },function(){});
 }
 /* souhrn první návštěvy za 14 dní: procenta z nových zařízení, která už počty akcí posílají */
-var ACT_L={onb:'průvodce',course:'parkur',v3d:'3D',runsave:'uložený běh',imp_open:'plánek z fotky',gen:'generátor',edit:'úprava plánu',save:'uložení parkuru',v_lib:'Parkury',v_run:'Běh',v_plan:'Plán',v_video:'Videa',v_more:'Více',dog:'nový pes',share:'sdílení',wk:'žebříček týdne',push:'upozornění',grp:'skupina',fx_3d:'po průvodci 3D',fx_run:'po průvodci Běh',onb_skip:'průvodce přeskočen',sport:'disciplína v Plánu',sport_new:'disciplína: nový parkur',sport_conv:'disciplína: převod parkuru'};
+var ACT_L={onb:'průvodce',course:'parkur',v3d:'3D',runsave:'uložený běh',imp_open:'plánek z fotky',gen:'generátor',edit:'úprava plánu',save:'uložení parkuru',v_lib:'Parkury',v_run:'Běh',v_plan:'Plán',v_video:'Videa',v_more:'Více',dog:'nový pes',share:'sdílení',wk:'žebříček týdne',push:'upozornění',grp:'skupina',fx_3d:'po průvodci 3D',fx_run:'po průvodci Běh',onb_skip:'průvodce přeskočen',sport:'disciplína v Plánu',sport_new:'disciplína: nový parkur',sport_conv:'disciplína: převod parkuru',run_fab:'Zaběhnout z Plánu'};
 function statsActHTML(a){
   if(!a||!(+a.n>0)) return '';
   var m=+a.m||0, k=a.k||{}, pc=function(v){ return m?Math.round(100*(+v||0)/m)+' %':'–'; };
@@ -13187,6 +13197,17 @@ HM.on('view',function(d){ if(!ACT_BOOT&&d&&d.v) act('v_'+d.v); });
 HM.on('courseLoaded',function(){ if(!ACT_BOOT) act('course'); });
 HM.on('runSaved',function(){ act('runsave'); });
 HM.on('courseSaved',function(){ act('save'); });
+
+/* Zaběhnout (3.1): v režimu Prohlížet u parkuru s trasou jedním klepnutím na stopky. Tlačítko je vidět, dokud je vidět plocha;
+   u seznamu překážek pod plochou by zakrývalo tlačítka otoček. Napoprvé rada, jak měřit. */
+var RUNFAB_IN=true, RUNHINTK='agility-runhint-v1'; SYNC_OWN[RUNHINTK]=1;
+function runFabUI(){ var b=$('runFab'); if(b) b.hidden=!(mode==='view'&&panel!=='side'&&panel!=='quiz'&&S.route.length>=2&&RUNFAB_IN!==false); }
+if(typeof IntersectionObserver!=='undefined') new IntersectionObserver(function(es){ RUNFAB_IN=es[es.length-1].isIntersecting; runFabUI(); },{rootMargin:'0px 0px -140px 0px'}).observe($('wrap'));
+$('runFab').onclick=function(){
+  act('run_fab'); show('run');
+  if(!lsGet(RUNHINTK,0)){ lsSet(RUNHINTK,1); setTimeout(function(){ toast('Na place zmáčkni START, když pes vyběhne, a STOP v cíli. Čas jde zadat i ručně.',6000); },350); }
+};
+runFabUI();
 
 /* ---------- HandlerMap 2.0: nastavení (jazyk, vzhled), průvodce prvním spuštěním, novinky ---------- */
 (function(){ var bm=$('brandMark'); if(bm) bm.innerHTML=IC.brand; })();
