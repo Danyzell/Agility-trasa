@@ -561,6 +561,9 @@ body.at-home main{padding-top:0; padding-left:0; padding-right:0;}
 .hm-tb > span{min-width:0; overflow:hidden; text-overflow:ellipsis;}
 @media (max-width:400px){.hm-tb{font-size:17px; gap:8px;}}
 .hm-cur{display:flex; gap:12px; width:100%; margin-top:14px; border:1px solid var(--border); border-radius:20px; background:var(--sunk); padding:10px; text-align:left; align-items:center; color:var(--text);}
+.gc-prev{background:var(--field); border-radius:12px; overflow:hidden; margin:4px 0 8px;} .gc-prev svg{display:block; width:100%; height:auto; max-height:40vh;}
+.gc-sum{font-weight:600; margin:2px 0 6px;} .gc-warn{margin:4px 0 10px; padding-left:1.2em; font-size:13.5px; color:var(--muted);} .gc-warn li{margin:2px 0;} .gc-warn b{color:var(--text);}
+.nc-geo{margin-top:14px; padding-top:12px; border-top:1px solid var(--border); display:grid; gap:6px;} .nc-geo .btn{justify-content:center;}
 .hm-curmap{width:138px; height:88px; border-radius:12px; overflow:hidden; background:var(--field); flex:0 0 auto; display:block;} .hm-curmap svg{width:100%; height:100%; display:block;}
 .hm-curmap-e{display:grid; place-items:center; color:var(--accent);} .hm-curmap-e svg{width:34px; height:34px;}
 .hm-curtx{flex:1; min-width:0;} .hm-curtx small{display:block; color:var(--muted); font-size:11.5px; font-weight:600; text-transform:uppercase; letter-spacing:.8px;}
@@ -7222,7 +7225,9 @@ function newCourseSheet(){
     '<label for="nH">Výška (m)<input id="nH" type="number" inputmode="numeric" min="10" max="40" step="1" value="'+S.H+'"></label></div>'+
     '<label for="nCls">Třída<select id="nCls"></select></label>'+
     '<label for="nName">Název (nepovinný)<input id="nName" type="text" maxlength="60" autocomplete="off" placeholder="Nový parkur"></label>'+
-    '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="ok">Začít</button></div>',
+    '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="ok">Začít</button></div>'+
+    '<div class="nc-geo"><label class="btn" for="gcFile">Načíst ze souboru (GeoJSON, KML)</label><input type="file" id="gcFile" multiple accept="'+GC_ACC+'" hidden>'+
+    '<p class="hint">Plán z QGIS, Google Earth nebo Mapy.cz. Soubor s kolbištěm a s překážkami vyber najednou.</p></div>',
     function(e){
       var b=e.target.closest('[data-a]'); if(!b) return;
       if(b.getAttribute('data-a')!=='ok'){ closeSheet(); return; }
@@ -7245,6 +7250,7 @@ function newCourseSheet(){
     clsFill(clsTwin(c,h)); fill($('nSize').value==='own'?'own':newDefSize($('nCls').value)); };
   $('nCls').onchange=function(){ if($('nSize').value!=='own') fill(newDefSize(this.value)); else fill('own'); };
   $('nSize').onchange=function(){ $('nOwn').hidden=this.value!=='own'; };
+  $('gcFile').onchange=function(){ var f=Array.prototype.slice.call(this.files||[]); this.value=''; if(f.length){ closeSheet(); gcRead(f); } }; /* parkur z GeoJSON/KML (3.2) */
 }
 function newCourse(cls,W,H,name){
   var hq=isHoopC(cls);
@@ -10777,7 +10783,7 @@ function statsLoad(){
   },function(){});
 }
 /* souhrn první návštěvy za 14 dní: procenta z nových zařízení, která už počty akcí posílají */
-var ACT_L={gpeek:'parkur z náhledu skupiny bez přihlášení',gpeek_show:'náhled skupiny z odkazu',onb:'průvodce',course:'parkur',v3d:'3D',runsave:'uložený běh',run_bar:'uložení z lišty po STOP',push_nudge:'upozornění z nabídky po prvním běhu',home_3d:'3D z karty Parkur týdne',home_run:'Zaběhnout z karty Parkur týdne',imp_open:'plánek z fotky',gen:'generátor',edit:'úprava plánu',save:'uložení parkuru',v_lib:'Parkury',v_run:'Běh',v_plan:'Plán',v_video:'Videa',v_more:'Více',dog:'nový pes',share:'sdílení',wk:'žebříček týdne',push:'upozornění',grp:'skupina',fx_3d:'po průvodci 3D',fx_run:'po průvodci Běh',onb_skip:'průvodce přeskočen',sport:'disciplína v Plánu',sport_new:'disciplína: nový parkur',sport_conv:'disciplína: převod parkuru',run_fab:'Zaběhnout z Plánu',comp_star:'hvězdička u závodu',comp_cal:'závod do kalendáře',ev_new:'vypsaný trénink',ev_rsvp:'odpověď na trénink',ev_cal:'trénink do kalendáře'};
+var ACT_L={geoimp:'parkur ze souboru GeoJSON/KML',gpeek:'parkur z náhledu skupiny bez přihlášení',gpeek_show:'náhled skupiny z odkazu',onb:'průvodce',course:'parkur',v3d:'3D',runsave:'uložený běh',run_bar:'uložení z lišty po STOP',push_nudge:'upozornění z nabídky po prvním běhu',home_3d:'3D z karty Parkur týdne',home_run:'Zaběhnout z karty Parkur týdne',imp_open:'plánek z fotky',gen:'generátor',edit:'úprava plánu',save:'uložení parkuru',v_lib:'Parkury',v_run:'Běh',v_plan:'Plán',v_video:'Videa',v_more:'Více',dog:'nový pes',share:'sdílení',wk:'žebříček týdne',push:'upozornění',grp:'skupina',fx_3d:'po průvodci 3D',fx_run:'po průvodci Běh',onb_skip:'průvodce přeskočen',sport:'disciplína v Plánu',sport_new:'disciplína: nový parkur',sport_conv:'disciplína: převod parkuru',run_fab:'Zaběhnout z Plánu',comp_star:'hvězdička u závodu',comp_cal:'závod do kalendáře',ev_new:'vypsaný trénink',ev_rsvp:'odpověď na trénink',ev_cal:'trénink do kalendáře'};
 function statsActHTML(a){
   if(!a||!(+a.n>0)) return '';
   var m=+a.m||0, k=a.k||{}, pc=function(v){ return m?Math.round(100*(+v||0)/m)+' %':'–'; };
@@ -12664,7 +12670,7 @@ function ringList(){
   $('rgBody').innerHTML='<p class="hint">Ulož si, kde stojí kolbiště, a aplikace tě k němu dovede. Zaměřené natočení použije Stavba v terénu a AR na place. Polohy zůstávají v tomhle zařízení a v záloze, kterou si sám uložíš.</p>'+
     '<p class="rg-now">Parkur na plánu: <b translate="no">'+esc(crsName(S.meta))+'</b> · '+(mine?'kolbiště <b translate="no">'+esc(mine.name)+'</b>':'bez kolbiště')+'</p>'+
     (L.length?'<div class="rg-list">'+L.map(ringRowHTML).join('')+'</div>':'<p class="rg-empty">Zatím žádné kolbiště. Postav se doprostřed kolbiště a ulož jeho polohu.</p>')+
-    '<div class="acts"><label class="btn" for="rgFile">Načíst plán závodiště</label><input type="file" id="rgFile" accept=".geojson,.json,.kml,application/geo+json,application/vnd.google-earth.kml+xml" hidden><button class="btn primary" data-rg="new">Uložit polohu kolbiště</button></div>'+
+    '<div class="acts"><label class="btn" for="rgFile">Načíst plán závodiště</label><input type="file" id="rgFile" accept=".geojson,.json,.kml,application/geo+json,application/json,application/vnd.google-earth.kml+xml,application/octet-stream,text/plain" hidden><button class="btn primary" data-rg="new">Uložit polohu kolbiště</button></div>'+
     '<p class="hint">Plán závodiště: soubor GeoJSON nebo KML (třeba z Google Earth nebo Mapy.cz) s kolbišti jako obdélníky (4 rohy) nebo body se šířkou, délkou a natočením.</p>';
   /* vzdálenosti: jedna rychlá poloha (může být i starší) */
   /* jen jednou za otevření (seznam se po zjištění polohy překreslí a znovu by se ptal) */
@@ -12882,6 +12888,293 @@ function ringImpSave(){
     L.push({id:'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:g.name,venue:g.venue,lat:+(+g.lat).toFixed(7),lng:+(+g.lng).toFixed(7),acc:1,az:g.az,azErr:g.az!=null?2:null,W:g.W||S.W,H:g.H||S.H,cid:null,cname:null,at:Date.now()}); n++; });
   ringsPut(L); RG.imp=null; toast(n===1?'Uloženo 1 kolbiště':'Uložená kolbiště: '+n); ringList();
 }
+
+/* ---------- parkur ze souboru (3.2): GeoJSON nebo KML, třeba export z QGIS (EPSG:4326), Google Earth nebo Mapy.cz ----------
+   Kolbiště = největší polygon (nejmenší opsaný obdélník), osa x podél dlouhé strany natočená co nejblíž mapě se severem nahoře
+   (Otočit o 180° ji obrátí). Překážky = ostatní prvky: čára (skok od křídla ke křídlu, tunel podél osy i do oblouku, slalom
+   a zóny od konce ke konci), bod (+ pole natočení po směru hodin od severu: u skoku směr břevna, jinak směr průchodu),
+   polygon (osa = nejdelší hrana). Typ a číslo z atributů (type, number…, v KML jméno „3 Tunnel“), pořadí podle čísel;
+   tunel, slalom a zóny se otočí podle sousedů v trase (čára mohla být nakreslená obráceně). Prvky bez typu i bez čísla
+   (Start, popisky, lékárnička) se přeskočí. Kolbiště se uloží s polohou a propojí s parkurem (Nástroje → Kolbiště). */
+var GC=null; /* {feats, fname, name, flip, res} */
+var GC_ACC='.geojson,.json,.kml,application/geo+json,application/json,application/vnd.google-earth.kml+xml,application/octet-stream,text/plain'; /* Android: .geojson bez známého typu = octet-stream */
+var GC_T=[
+  [/\b(a ?-?frame|a ?-?rampa?|a ?-?wand|schragwand|palisad[ae])\b/,'aframe'],
+  [/\b(dog ?-?walk|kladina|steg|laufsteg|k[lł]adka)\b/,'dogwalk'],
+  [/\b(see ?-?saw|teeter|houpacka|wippe|hustawka)\b/,'seesaw'],
+  [/\b(weaves?|poles|slalom)\b/,'weave'],
+  [/\b(tunnels?|tunely?|pipe|tube|rura|chute|collapsed)\b/,'tunnel'],
+  [/\b(hoops?|oblouky?|bogen)\b/,'hoop'],
+  [/\b(barrels?|sudy?|tonnen?|fass|beczka)\b/,'barrel'],
+  [/\b(handler ?area|prostor psovoda|fuhrbereich)\b/,'ha'],
+  [/\b(gates?|plutek|gatter)\b/,'gate'],
+  [/\b(tyres?|tires?|kruh|reifen|opona)\b/,'tire'],
+  [/\b(long ?-?jump|broad ?-?jump|skok daleky|weitsprung|skok w dal)\b/,'longjump'],
+  [/\b(wall|viaduct|zed|mauer)\b/,'wall'],
+  [/\b(spread|double|triple|oxer|dvojity|doppel\w*)\b/,'oxer'],
+  [/\b(table|stul|tisch)\b/,'table'],
+  [/\b(jumps?|hurdles?|single|skok|sprung|hurde|przeszkoda)\b/,'jump']
+];
+var GC_AB={AF:'aframe',DW:'dogwalk',SS:'seesaw',WP:'weave',WV:'weave',TUN:'tunnel',TY:'tire',LJ:'longjump',JMP:'jump',SP:'oxer'};
+var GC_TK=/^(type|typ|obstacle|obst|kind|class|category|cat|equipment|equip|item|object|symbol|name|label|title|desc|description|popis|nazev|název|druh|art|typ_przeszkody)$/i;
+var GC_NS=/^(number|num|no|nr|n|cislo|číslo|order|seq|sequence|ord|poradi|pořadí|nummer|numer|kolejnosc|obstacle_no|obs_no|obs_num)$/i, GC_NW=/^(label|name|title|nazev|název|popis|id)$/i;
+var GC_RK=/^(rotation|rot|angle|bearing|heading|azimuth|az|orientation|natoceni|natočení|uhel|úhel|winkel|drehung|kat|kąt)$/i;
+function gcNorm(s){ s=String(s==null?'':s).toLowerCase().replace(/_/g,' '); try{ s=s.normalize('NFD').replace(/[̀-ͯ]/g,''); }catch(e){} return s; }
+function gcType(pr){
+  var ks=Object.keys(pr||{}), v=[], i, j;
+  ks.forEach(function(k){ if(GC_TK.test(k)&&pr[k]!=null) v.push(String(pr[k])); });
+  ks.forEach(function(k){ if(!GC_TK.test(k)&&typeof pr[k]==='string'&&pr[k].length<=24) v.push(pr[k]); });
+  for(i=0;i<v.length;i++){ var ab=GC_AB[v[i].trim().toUpperCase()]; if(ab) return ab; var n=gcNorm(v[i]); for(j=0;j<GC_T.length;j++) if(GC_T[j][0].test(n)) return GC_T[j][1]; }
+  return null;
+}
+/* číslo překážky: silné z pole number/order…, nebo popisek čistě číselný („7“); „Ring 2“ jen slabé (bez typu se přeskočí) */
+function gcNum(pr){
+  var ks=Object.keys(pr||{}), best=null;
+  ks.forEach(function(k){ if(best&&best.s) return; var st=GC_NS.test(k), wk=GC_NW.test(k); if(!st&&!wk) return;
+    var v=pr[k]; if(v==null||v==='') return; v=String(v).trim(); var m=v.match(/(^|\D)(\d{1,2})(?!\d)/); if(!m||+m[2]<1||+m[2]>40) return;
+    var isId=/^id$/i.test(k), s=st||!isId&&/^\d{1,2}\.?$/.test(v), c={n:+m[2],s:s,id:isId}; if(!best||s&&!best.s) best=c; });
+  return best;
+}
+function gcRot(pr){ var ks=Object.keys(pr||{}); for(var i=0;i<ks.length;i++) if(GC_RK.test(ks[i])){ var v=parseFloat(String(pr[ks[i]]).replace(',','.')); if(isFinite(v)) return v; } return null; }
+function gcParts(g){
+  if(!g||!g.coordinates&&g.type!=='GeometryCollection') return [];
+  var c=g.coordinates;
+  switch(g.type){
+    case 'Point': return [{k:'pt',c:[c]}];
+    case 'MultiPoint': return c.map(function(p){ return {k:'pt',c:[p]}; });
+    case 'LineString': return [{k:'line',c:c}];
+    case 'MultiLineString': return c.map(function(l){ return {k:'line',c:l}; });
+    case 'Polygon': return [{k:'poly',c:c[0]||[]}];
+    case 'MultiPolygon': return c.map(function(p){ return {k:'poly',c:p[0]||[]}; });
+    case 'GeometryCollection': return [].concat.apply([],(g.geometries||[]).map(gcParts));
+  }
+  return [];
+}
+/* soubor → prvky {pr,k,c} (souřadnice [lng,lat]); název plánu z GeoJSON name nebo KML Document */
+function gcFeats(text,fname){
+  var t=String(text||'').trim(), out=[], name=null;
+  if(t.charAt(0)==='{'||t.charAt(0)==='['){
+    var j; try{ j=JSON.parse(t); }catch(e){ throw new Error('read'); }
+    var cr=j&&j.crs&&j.crs.properties&&String(j.crs.properties.name||''); if(cr&&!/4326|CRS84/i.test(cr)) throw new Error('crs');
+    name=j&&typeof j.name==='string'?j.name:null;
+    var F=j.type==='FeatureCollection'?j.features||[]:j.type==='Feature'?[j]:j.type?[{type:'Feature',geometry:j,properties:{}}]:[];
+    F.forEach(function(f){ gcParts(f&&f.geometry).forEach(function(p){ out.push({pr:f.properties||{},k:p.k,c:p.c}); }); });
+  } else if(/<kml[\s>]/i.test(t)||/<Placemark[\s>]/i.test(t)){
+    var doc=new DOMParser().parseFromString(t,'application/xml'); if(doc.getElementsByTagName('parsererror').length) throw new Error('read');
+    var dn=doc.querySelector('Document > name'); name=dn?dn.textContent.trim():null;
+    var co=function(el){ return el.textContent.trim().split(/\s+/).map(function(s){ var p=s.split(','); return [+p[0],+p[1]]; }); };
+    Array.prototype.forEach.call(doc.getElementsByTagName('Placemark'),function(pm){
+      var pr={}, n=pm.getElementsByTagName('name')[0]; if(n) pr.name=n.textContent.trim();
+      Array.prototype.forEach.call(pm.getElementsByTagName('Data'),function(d){ var v=d.getElementsByTagName('value')[0]; if(v) pr[d.getAttribute('name')]=v.textContent.trim(); });
+      Array.prototype.forEach.call(pm.getElementsByTagName('SimpleData'),function(d){ pr[d.getAttribute('name')]=d.textContent.trim(); });
+      Array.prototype.forEach.call(pm.getElementsByTagName('Point'),function(g){ var c=g.getElementsByTagName('coordinates')[0]; if(c) out.push({pr:pr,k:'pt',c:co(c).slice(0,1)}); });
+      Array.prototype.forEach.call(pm.getElementsByTagName('LineString'),function(g){ var c=g.getElementsByTagName('coordinates')[0]; if(c) out.push({pr:pr,k:'line',c:co(c)}); });
+      Array.prototype.forEach.call(pm.getElementsByTagName('Polygon'),function(g){ var b=g.getElementsByTagName('outerBoundaryIs')[0]||g, c=b.getElementsByTagName('coordinates')[0]; if(c) out.push({pr:pr,k:'poly',c:co(c)}); });
+    });
+  } else throw new Error('read');
+  out=out.filter(function(f){ return f.c.length&&f.c.every(function(p){ return p&&isFinite(+p[0])&&isFinite(+p[1]); }); });
+  out.forEach(function(f){ f.src=String(fname||''); });
+  return {feats:out,name:name};
+}
+/* nejmenší opsaný obdélník (přes hrany); ang = směr dlouhé strany v rovině východ/sever */
+function gcRect(P){
+  if(P.length>2&&Math.hypot(P[0].e-P[P.length-1].e,P[0].n-P[P.length-1].n)<.05) P=P.slice(0,-1);
+  var b=null;
+  P.forEach(function(p,i){ var q=P[(i+1)%P.length], a=Math.atan2(q.n-p.n,q.e-p.e), c=Math.cos(a), s=Math.sin(a), u0=1e9, u1=-1e9, v0=1e9, v1=-1e9;
+    P.forEach(function(r){ var u=r.e*c+r.n*s, v=-r.e*s+r.n*c; u0=Math.min(u0,u); u1=Math.max(u1,u); v0=Math.min(v0,v); v1=Math.max(v1,v); });
+    var A=(u1-u0)*(v1-v0); if(q!==p&&(!b||A<b.A)) b={A:A,a:a,u0:u0,u1:u1,v0:v0,v1:v1}; });
+  if(!b) return null;
+  var L=b.u1-b.u0, S2=b.v1-b.v0, a=b.a; if(S2>L){ var t=L; L=S2; S2=t; a+=Math.PI/2; }
+  var cu=(b.u0+b.u1)/2, cv=(b.v0+b.v1)/2, c0=Math.cos(b.a), s0=Math.sin(b.a);
+  var az=(90-a/G2R+720)%360; if(az>180) az-=180; if(az===0) az=180; /* osa x víc na východ: plán co nejblíž mapě */
+  return {W:L,H:S2,ce:cu*c0-cv*s0,cn:cu*s0+cv*c0,az:az};
+}
+function gcHull(P){
+  P=P.slice().sort(function(a,b){ return a.e-b.e||a.n-b.n; });
+  var cr=function(o,a,b){ return (a.e-o.e)*(b.n-o.n)-(a.n-o.n)*(b.e-o.e); }, lo=[], up=[];
+  P.forEach(function(p){ while(lo.length>=2&&cr(lo[lo.length-2],lo[lo.length-1],p)<=0) lo.pop(); lo.push(p); });
+  P.slice().reverse().forEach(function(p){ while(up.length>=2&&cr(up[up.length-2],up[up.length-1],p)<=0) up.pop(); up.push(p); });
+  return lo.slice(0,-1).concat(up.slice(0,-1));
+}
+/* prvky → parkur {W,H,obs,route}, kolbiště {lat,lng,az,W,H} a varování; chyba = Error('deg'|'none'|'big') */
+function gcBuild(feats,flip){
+  var all=[].concat.apply([],feats.map(function(f){ return f.c; })); if(!all.length) throw new Error('none');
+  var o=[0,0]; all.forEach(function(p){ o[0]+=+p[0]; o[1]+=+p[1]; }); o[0]/=all.length; o[1]/=all.length;
+  if(!all.every(function(p){ return Math.abs(p[0])<=180&&Math.abs(p[1])<=90; })) throw new Error('deg');
+  var k=Math.cos(o[1]*G2R), E=function(p){ return {e:(p[0]-o[0])*G2R*GEO_R*k,n:(p[1]-o[1])*G2R*GEO_R}; };
+  if(all.some(function(p){ var q=E(p); return Math.abs(q.e)>2000||Math.abs(q.n)>2000; })) throw new Error('far');
+  feats.forEach(function(f){ f.P=f.c.map(E); f.ty=gcType(f.pr); f.num=gcNum(f.pr); });
+  var area=function(P){ var a=0; for(var i=0;i<P.length;i++){ var p=P[i], q=P[(i+1)%P.length]; a+=p.e*q.n-q.e*p.n; } return Math.abs(a)/2; };
+  var polys=feats.filter(function(f){ return f.k==='poly'&&!f.ty&&f.P.length>=3; }).map(function(f){ f.area=area(f.P); return f; }).sort(function(a,b){ return b.area-a.area; });
+  /* kolbiště = polygon, ve kterém je nejvíc překážek; při shodě ten se jménem ring/kolbiště…, pak menší (parkoviště kolem ne) */
+  var inP=function(P,q){ var c=false; for(var i=0,j=P.length-1;i<P.length;j=i++){ var a=P[i], b=P[j]; if((a.n>q.n)!==(b.n>q.n)&&q.e<(b.e-a.e)*(q.n-a.n)/(b.n-a.n)+a.e) c=!c; } return c; };
+  var mids=feats.filter(function(f){ return f.k!=='poly'&&(f.ty||f.num); }).map(function(f){ return f.P[Math.floor(f.P.length/2)]; });
+  var RN=/ring|arena|kolbi|field|outline|boundary|plocha|hala|hall/i;
+  polys.forEach(function(f){ f.cnt=mids.filter(function(q){ return inP(f.P,q); }).length; f.rn=RN.test(JSON.stringify(f.pr))?1:0; });
+  var ringF=polys.filter(function(f){ return f.area>50&&(f.cnt||f.rn||f.area>150); }).sort(function(a,b){ return b.cnt-a.cnt||b.rn-a.rn||(a.cnt?a.area-b.area:b.area-a.area); })[0]||null;
+  var warn=[], rect=ringF?gcRect(ringF.P):null, crop=false;
+  var obsF=feats.filter(function(f){ return f!==ringF&&!(f.k==='poly'&&!f.ty&&f.area>150); }), skip=feats.length-obsF.length-(ringF?1:0);
+  var keep=obsF.filter(function(f){ return f.ty||(f.num&&f.num.s); }); skip+=obsF.length-keep.length;
+  if(!keep.length) throw new Error('none');
+  var pts=[].concat.apply([],keep.map(function(f){ return f.P; }));
+  if(!rect){ rect=gcRect(gcHull(pts.length>2?pts:pts.concat([{e:pts[0].e+.1,n:pts[0].n+.1}]))); rect.W+=6; rect.H+=6; warn.push(['Obrys kolbiště v souboru není: plocha je obdélník kolem překážek.']); }
+  if(flip) rect.az=(rect.az+180)%360;
+  var az=rect.az*G2R, W=rect.W, H=rect.H;
+  var XY=function(p){ var e=p.e-rect.ce, n=p.n-rect.cn; return {x:W/2+e*Math.sin(az)+n*Math.cos(az),y:H/2+e*Math.cos(az)-n*Math.sin(az)}; };
+  /* kolbiště větší než 60 × 40 m: výřez kolem překážek + 3 m (v rámci kolbiště) */
+  if(W>60.5||H>40.5){
+    var Q=pts.map(XY), x0=Math.max(0,Math.min.apply(null,Q.map(function(q){ return q.x; }))-3), x1=Math.min(W,Math.max.apply(null,Q.map(function(q){ return q.x; }))+3),
+      y0=Math.max(0,Math.min.apply(null,Q.map(function(q){ return q.y; }))-3), y1=Math.min(H,Math.max.apply(null,Q.map(function(q){ return q.y; }))+3);
+    if(x1-x0>60.5||y1-y0>40.5) throw new Error('big');
+    var cx=(x0+x1)/2-W/2, cy=(y0+y1)/2-H/2; rect.ce+=cx*Math.sin(az)+cy*Math.cos(az); rect.cn+=cx*Math.cos(az)-cy*Math.sin(az); W=rect.W=x1-x0; H=rect.H=y1-y0; crop=true;
+    warn.push(['Kolbiště je větší než 60 × 40 m: plocha je výřez kolem překážek.']);
+  }
+  /* plocha Pawkuru má celé metry 10–60 × 10–40, překážky zůstanou na středu */
+  var Wi=Math.max(10,Math.min(60,Math.round(W))), Hi=Math.max(10,Math.min(40,Math.round(H))), dx=(Wi-W)/2, dy=(Hi-H)/2;
+  var hd=function(a,b){ return Math.atan2(b.y-a.y,b.x-a.x)/G2R; }, nrm=function(a){ a=((a%360)+360)%360; return Math.round(a*10)/10; };
+  var plen=function(Q){ var s=0; for(var i=1;i<Q.length;i++) s+=Math.hypot(Q[i].x-Q[i-1].x,Q[i].y-Q[i-1].y); return s; };
+  var at=function(Q,s){ for(var i=1;i<Q.length;i++){ var d=Math.hypot(Q[i].x-Q[i-1].x,Q[i].y-Q[i-1].y); if(s<=d||i===Q.length-1){ var t=d?Math.min(1,s/d):0; return {x:Q[i-1].x+(Q[i].x-Q[i-1].x)*t,y:Q[i-1].y+(Q[i].y-Q[i-1].y)*t}; } s-=d; } return {x:Q[0].x,y:Q[0].y}; };
+  var obs=[], guess=0, table=0, ptRot=0, ptNo=0, tunBad=0, idOrd=0, out=[];
+  keep.forEach(function(f){
+    var ty=f.ty, Q=f.P.map(XY).map(function(q){ return {x:q.x+dx,y:q.y+dy}; }), v=null, o2;
+    if(!ty){ ty=f.k==='line'&&plen(Q)>2.2?'tunnel':'jump'; guess++; }
+    if(ty==='wall'||ty==='oxer'){ v=ty; ty='jump'; }
+    if(ty==='table'){ ty='jump'; table++; }
+    var jl=/^(jump|tire|longjump|hoop|gate)$/.test(ty);
+    if(f.k==='pt'){
+      var ro=gcRot(f.pr); o2={x:Q[0].x,y:Q[0].y,rot:0};
+      if(ro!=null){ o2.rot=ro-rect.az+(jl?90:0); ptRot++; } else if(ty!=='barrel'&&ty!=='ha') ptNo++;
+    } else {
+      if(f.k==='poly'){ var P2=Q.length>2&&Math.hypot(Q[0].x-Q[Q.length-1].x,Q[0].y-Q[Q.length-1].y)<.05?Q.slice(0,-1):Q, bi=0, bd=0, cx2=0, cy2=0;
+        P2.forEach(function(p,i){ var q=P2[(i+1)%P2.length], d=Math.hypot(q.x-p.x,q.y-p.y); if(d>bd){ bd=d; bi=i; } cx2+=p.x; cy2+=p.y; });
+        var a2=P2[bi], b2=P2[(bi+1)%P2.length], m2={x:cx2/P2.length,y:cy2/P2.length};
+        Q=[{x:m2.x-(b2.x-a2.x)/2,y:m2.y-(b2.y-a2.y)/2},{x:m2.x+(b2.x-a2.x)/2,y:m2.y+(b2.y-a2.y)/2}]; }
+      var L=plen(Q), m=at(Q,L/2), A=Q[0], B=Q[Q.length-1];
+      if(jl) o2={x:m.x,y:m.y,rot:hd(A,B)+90};
+      else if(ty==='tunnel'){
+        /* oblouk z délky a tětivy: c/L = sin(θ/2)/(θ/2), ohyb na stranu vyboulení, střed = vrchol oblouku */
+        var ch={x:B.x-A.x,y:B.y-A.y}, c=Math.hypot(ch.x,ch.y), Cm={x:(A.x+B.x)/2,y:(A.y+B.y)/2}, cr=ch.x*(m.y-Cm.y)-ch.y*(m.x-Cm.x), th=0, lo=0, hi=2*Math.PI-1e-6, rr=L>0?Math.min(1,c/L):1;
+        if(Q.length>2&&rr<.995) for(var it=0;it<60;it++){ th=(lo+hi)/2; if(Math.sin(th/2)/(th/2)>rr) lo=th; else hi=th; }
+        var sg=th>1e-3?(L/th)*(1-Math.cos(th/2)):0, sd=cr>0?1:-1, nx=c?-ch.y/c:0, ny=c?ch.x/c:0;
+        o2={x:Cm.x+nx*sg*sd,y:Cm.y+ny*sg*sd,rot:c?hd(A,B):0,len:Math.max(2,Math.min(6,Math.round(L*2)/2))};
+        var bn=sd*th/G2R; if(Math.abs(bn)>=10) o2.bend=Math.round(Math.max(-180,Math.min(180,bn)));
+        if(L>6.25||L<1.75) tunBad++;
+      } else o2={x:m.x,y:m.y,rot:hd(A,B)};
+    }
+    var ob={id:obs.length+1,type:ty,x:Math.round(o2.x*100)/100,y:Math.round(o2.y*100)/100,rot:nrm(o2.rot)};
+    if(o2.len) ob.len=o2.len; if(o2.bend) ob.bend=o2.bend; if(v) ob.v=v;
+    if(ob.x<-.3||ob.y<-.3||ob.x>Wi+.3||ob.y>Hi+.3) out.push(f.num?f.num.n:ob.id);
+    ob.x=Math.max(0,Math.min(Wi,ob.x)); ob.y=Math.max(0,Math.min(Hi,ob.y));
+    ob._n=ty==='ha'?null:f.num?f.num.n:null; if(f.num&&f.num.id) idOrd++; obs.push(ob);
+  });
+  /* trasa podle čísel; dvě stejná čísla, chybějící čísla a překážky bez čísla do varování */
+  var nb=obs.filter(function(b){ return b._n!=null; }).sort(function(a,b){ return a._n-b._n; }), seen={}, dup=[], gap=[];
+  nb.forEach(function(b){ if(seen[b._n]&&dup.indexOf(b._n)<0) dup.push(b._n); seen[b._n]=1; });
+  for(var q=1;nb.length&&q<=nb[nb.length-1]._n;q++) if(!seen[q]) gap.push(q);
+  var route=nb.map(function(b){ return b.id; }), noNum=obs.filter(function(b){ return b._n==null&&b.type!=='ha'; }).length;
+  /* tunel, slalom a zóny: vstup A, výstup B; obráceně nakreslená čára se otočí podle sousedů v trase */
+  var by={}; obs.forEach(function(b){ by[b.id]=b; });
+  route.forEach(function(id,i){ var b=by[id]; if(!/^(tunnel|weave|aframe|dogwalk|seesaw)$/.test(b.type)) return;
+    var pv=i>0?by[route[i-1]]:null, nx2=i<route.length-1?by[route[i+1]]:null; if(!pv&&!nx2) return;
+    var E2=ends(b), dd=function(p,r){ return p&&r?Math.hypot(p.x-r.x,p.y-r.y):0; };
+    if(dd(pv,E2.B)+dd(E2.A,nx2)+.01<dd(pv,E2.A)+dd(E2.B,nx2)){ b.rot=nrm(b.rot+180); if(b.bend) b.bend=-b.bend; } });
+  obs.forEach(function(b){ delete b._n; });
+  /* Hoopers jen když v souboru nejsou agility překážky; jinak oblouk, sud a plůtek jako skok (odhad) a prostor psovoda pryč */
+  var hq=obs.some(function(b){ return /^(hoop|barrel|gate|ha)$/.test(b.type); })&&!obs.some(function(b){ return /^(jump|weave|aframe|dogwalk|seesaw|tire|longjump)$/.test(b.type); });
+  if(!hq){ obs=obs.filter(function(b){ return b.type!=='ha'; }); obs.forEach(function(b){ if(/^(hoop|barrel|gate)$/.test(b.type)){ b.type='jump'; guess++; } }); route=route.filter(function(id){ return by[id].type!=='ha'; }); }
+  else obs.forEach(function(b){ if(b.type==='tunnel'){ b.type='chute'; delete b.len; delete b.bend; } });
+  if(!route.length) warn.push(['Pořadí překážek v souboru není: trasu naklikej v režimu Trasa.']);
+  else { if(noNum) warn.push(['Bez čísla (nejsou v trase):',String(noNum)]); if(gap.length) warn.push(['Chybí čísla:',gap.join(', ')]); if(dup.length) warn.push(['Číslo je dvakrát:',dup.join(', ')]); }
+  if(idOrd&&route.length) warn.push(['Pořadí je podle pole id: zkontroluj trasu.']);
+  if(guess) warn.push(['Typ odhadnutý podle tvaru (zkontroluj ve Stavbě):',String(guess)]);
+  if(table) warn.push(['Stůl Pawkur nemá, místo něj je skok:',String(table)]);
+  if(ptRot) warn.push(['Natočení z atributu u bodů (zkontroluj):',String(ptRot)]);
+  if(ptNo) warn.push(['Body bez natočení (otoč je ve Stavbě):',String(ptNo)]);
+  if(tunBad) warn.push(['Tunel mimo 2–6 m (zkrácený nebo prodloužený):',String(tunBad)]);
+  if(out.length) warn.push(['Mimo plochu (posunuté na okraj):',out.join(', ')]);
+  if(skip) warn.push(['Přeskočené prvky bez typu a čísla (značky, popisky):',String(skip)]);
+  var gl=function(m){ return m/(GEO_R*G2R); };
+  return {course:{W:Wi,H:Hi,obs:obs,route:route},hoop:hq,crop:crop,warn:warn,
+    ring:ringF||crop?{lat:o[1]+gl(rect.cn),lng:o[0]+gl(rect.ce)/k,az:Math.round(rect.az*10)/10,W:Wi,H:Hi,name:ringF?String(ringF.pr.name||ringF.pr.Name||ringF.pr.label||'').slice(0,60):''}:null};
+}
+function gcRead(files){
+  files=Array.prototype.slice.call(files||[]); if(!files.length) return;
+  if(files.some(function(f){ return /\.kmz$/i.test(f.name); })){ toast('KMZ je zabalený KML. Rozbal ho, nebo ulož plán jako KML.',5000); return; }
+  if(files.some(function(f){ return f.size>5e6; })){ toast('Soubor je moc velký.'); return; }
+  var left=files.length, feats=[], names=[], bad=null;
+  files.forEach(function(f){ var rd=new FileReader();
+    rd.onload=function(){ try{ var r=gcFeats(rd.result,f.name); feats=feats.concat(r.feats); if(r.name) names.push(r.name); }catch(e){ bad=bad||e.message; } done(); };
+    rd.onerror=function(){ bad=bad||'read'; done(); }; rd.readAsText(f); });
+  function done(){ if(--left) return;
+    if(bad==='crs'){ toast('Souřadnice nejsou ve stupních. V QGIS ulož vrstvu jako GeoJSON v EPSG:4326.',6000); return; }
+    if(bad&&!feats.length){ toast('Soubor se nepodařilo přečíst. Pošli GeoJSON nebo KML.',5000); return; }
+    /* název: první neobecný název vrstvy nebo souboru (ne „ring_outline“, „course_obstacles“, „Export“) */
+    var fn=files.map(function(f){ return f.name.replace(/\.(geo)?json$|\.kml$/i,''); }), gen=/^((ring|course|obstacles?|layer|vrstva|export|output|outline|kolbiste|prekazky|parkur|plan|untitled|new|novy)[\s_-]*)+\d*$/i;
+    var nm=names.concat(fn).filter(function(x){ return x&&!gen.test(String(x).trim()); })[0]||'';
+    GC={feats:feats,flip:false,name:String(nm).replace(/_/g,' ').slice(0,60),fname:fn.join(', ')};
+    gcSheet(); }
+}
+function gcSheet(){
+  var r;
+  try{ r=gcBuild(GC.feats.map(function(f){ return {pr:f.pr,k:f.k,c:f.c,src:f.src}; }),GC.flip); }catch(e){
+    toast(e.message==='deg'?'Souřadnice nejsou ve stupních. V QGIS ulož vrstvu jako GeoJSON v EPSG:4326.':e.message==='far'?'Prvky v souboru jsou od sebe dál než 2 km. Vyber soubor jen s jedním kolbištěm.':
+      e.message==='big'?'Překážky zabírají víc než 60 × 40 m.':'V souboru nejsou žádné překážky.',6000); GC=null; return; }
+  GC.res=r; var c=r.course, n=c.obs.length, nm=$('gcName')?$('gcName').value:GC.name, cl=$('gcCls')?$('gcCls').value:null;
+  var L=r.hoop?['H1','H2','H3']:['A1','A2','A3']; if(L.indexOf(cl)<0) cl=L.indexOf(curDog()&&curDog().cls)>=0?curDog().cls:L[r.hoop?0:1];
+  openSheet('<h3>Parkur ze souboru</h3>'+
+    '<div class="gc-prev">'+thumb({W:c.W,H:c.H,obs:c.obs,route:c.route,turns:[]})+'</div>'+
+    '<p class="gc-sum"><span>'+c.W+' × '+c.H+' m</span> · <span>'+czN(n,'překážka','překážky','překážek')+'</span> · <span>'+(c.route.length?czN(c.route.length,'v trase','v trase','v trase'):'bez pořadí')+'</span></p>'+
+    (r.ring?'<p class="hint">Kolbiště se uloží i s polohou (natočení '+Math.round(r.ring.az)+'°) a propojí s parkurem. Najdeš ho v Nástroje → Kolbiště (GPS).</p>':'')+
+    (r.warn.length?'<ul class="gc-warn">'+r.warn.map(function(w){ return '<li><span>'+w[0]+'</span>'+(w[1]?' <b translate="no">'+esc(w[1])+'</b>':'')+'</li>'; }).join('')+'</ul>':'')+
+    '<label for="gcName">Název<input id="gcName" type="text" maxlength="60" autocomplete="off" translate="no" value="'+esc(nm||'')+'"></label>'+
+    '<label for="gcCls">Třída<select id="gcCls">'+L.map(function(x){ return '<option'+(x===cl?' selected':'')+'>'+x+'</option>'; }).join('')+'</select></label>'+
+    '<div class="acts"><button class="btn" data-a="flip">Otočit o 180°</button></div>'+
+    '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="ok">Vytvořit parkur</button></div>',
+    function(e){ var b=e.target.closest('[data-a]'); if(!b) return; var a=b.getAttribute('data-a');
+      if(a==='x'){ GC=null; closeSheet(); return; }
+      if(a==='flip'){ GC.flip=!GC.flip; GC.name=$('gcName').value; gcSheet(); return; }
+      if(a==='ok') gcSave(); });
+}
+function gcSave(){
+  var r=GC&&GC.res; if(!r) return;
+  var c=r.course, d=courseClean({W:c.W,H:c.H,obs:c.obs,route:c.route,sides:[],turns:[]}), nm=($('gcName').value.trim()||GC.name||'Parkur ze souboru').slice(0,60), cls=clsClean($('gcCls').value);
+  var rec={id:'my-'+Date.now().toString(36),name:nm,cls:cls,author:'',W:d.W,H:d.H,obs:d.obs,route:d.route,sides:d.sides,turns:d.turns,hp:[],marks:[],src:'soubor '+String(GC.fname||'').slice(0,60)};
+  var L=myDB(); L.push(rec); if(!mySave(L)) return;
+  if(r.ring){ var R2=ringsGet(); R2.forEach(function(g){ if(g.cid===rec.id){ g.cid=null; g.cname=null; } });
+    R2.push({id:'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:(r.ring.name||nm).slice(0,60),venue:null,lat:+r.ring.lat.toFixed(7),lng:+r.ring.lng.toFixed(7),acc:1,az:r.ring.az,azErr:2,W:r.ring.W,H:r.ring.H,cid:rec.id,cname:nm,at:Date.now()});
+    ringsPut(R2); }
+  GC=null; closeSheet(); if(isHoopC(cls)!==isHoopS()) setSport(isHoopC(cls)?'hoopers':'agility',true);
+  loadCourse(rec,true); show('plan'); zoom=1; ui(); render(); act('geoimp'); toast('Parkur ze souboru je v Moje.'); /* celá plocha, ne přiblížení z minula */
+}
+i18nAdd({exact:{
+"Parkur ze souboru": "Course from a file",
+"Načíst ze souboru (GeoJSON, KML)": "Load from a file (GeoJSON, KML)",
+"Plán z QGIS, Google Earth nebo Mapy.cz. Soubor s kolbištěm a s překážkami vyber najednou.": "A plan from QGIS, Google Earth or Mapy.cz. Select the ring file and the obstacles file together.",
+"bez pořadí": "no order",
+"Vytvořit parkur": "Create course",
+"Obrys kolbiště v souboru není: plocha je obdélník kolem překážek.": "The file has no ring outline: the field is a rectangle around the obstacles.",
+"Kolbiště je větší než 60 × 40 m: plocha je výřez kolem překážek.": "The ring is larger than 60 × 40 m: the field is cropped around the obstacles.",
+"Pořadí překážek v souboru není: trasu naklikej v režimu Trasa.": "The file has no obstacle order: tap the route in Route mode.",
+"Bez čísla (nejsou v trase):": "Without a number (not in the route):",
+"Chybí čísla:": "Missing numbers:",
+"Číslo je dvakrát:": "Number used twice:",
+"Pořadí je podle pole id: zkontroluj trasu.": "The order comes from the id field: check the route.",
+"Typ odhadnutý podle tvaru (zkontroluj ve Stavbě):": "Type guessed from the shape (check in Build):",
+"Stůl Pawkur nemá, místo něj je skok:": "Pawkur has no table, a jump is used instead:",
+"Natočení z atributu u bodů (zkontroluj):": "Point rotation taken from an attribute (check it):",
+"Body bez natočení (otoč je ve Stavbě):": "Points without rotation (rotate them in Build):",
+"Tunel mimo 2–6 m (zkrácený nebo prodloužený):": "Tunnel outside 2–6 m (shortened or lengthened):",
+"Mimo plochu (posunuté na okraj):": "Outside the field (moved to the edge):",
+"Přeskočené prvky bez typu a čísla (značky, popisky):": "Skipped features without a type or number (markers, labels):",
+"Souřadnice nejsou ve stupních. V QGIS ulož vrstvu jako GeoJSON v EPSG:4326.": "The coordinates aren't in degrees. In QGIS, save the layer as GeoJSON in EPSG:4326.",
+"Prvky v souboru jsou od sebe dál než 2 km. Vyber soubor jen s jedním kolbištěm.": "The features in the file are more than 2 km apart. Pick a file with just one ring.",
+"Překážky zabírají víc než 60 × 40 m.": "The obstacles cover more than 60 × 40 m.",
+"V souboru nejsou žádné překážky.": "There are no obstacles in the file.",
+"Parkur ze souboru je v Moje.": "The course from the file is in Mine."
+},num:{
+"# v trase": "# in the route",
+"Kolbiště se uloží i s polohou (natočení #°) a propojí s parkurem. Najdeš ho v Nástroje → Kolbiště (GPS).": "The ring is saved with its location (bearing #°) and linked to the course. You'll find it in Tools → Ring (GPS)."
+}});
 
 /* ---------- Pawkur 3.0: Dnes na Domů, galerie parkurů, skupiny s trenérem a upozornění (web push) ----------
    Server: SQL 20261009090000_trojka.sql (galerie s náhledem, push_subs/push_queue, skupiny) a serverová funkce push (klíče VAPID, odesílání).
