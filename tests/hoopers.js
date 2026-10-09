@@ -73,6 +73,53 @@ module.exports = async function ({ browser, base }) {
     ok(await ev(() => !$('dimBtn').classList.contains('soon') && $('dimBtn').getAttribute('aria-label') === 'Zobrazit parkur ve 3D' && $('dimBtn').innerText.trim() === '3D'), 'tlačítko 3D u agility zůstalo šedé: ' + await ev(() => $('dimBtn').className + ' ' + $('dimBtn').innerText));
   });
 
+  /* 3.1: Parkur: Agility | Hoopers přímo ve Stavbě (uživatel nevěděl, jak disciplínu v Plánu změnit) a v okně Nový parkur */
+  await step('přepínač Agility | Hoopers ve Stavbě', async () => {
+    const pal = () => ev(() => [...document.querySelectorAll('#palette .ob-btn')].map(b => b.getAttribute('data-type')).join());
+    const seg = () => ev(() => [...document.querySelectorAll('#pSport button')].map(b => b.getAttribute('data-ps') + (b.classList.contains('on') ? '*' : '') + (b.getAttribute('aria-pressed') === 'true' ? '+' : '')).join());
+    await ev(() => { closeSheet(); $('toast').hidden = true; S.meta.dirty = false; loadCourse(listFor('A2')[2], true); mode = 'build'; ui(); render(); ACT = { day: localDate(), a: {} }; });
+    ok(await seg() === 'agility*+,hoopers' && await ev(() => !$('pSportRow').closest('[hidden]') && $('pSportRow').offsetHeight > 0), 'přepínač u parkuru agility: ' + await seg());
+    /* rozestavěný parkur: okno se dvěma volbami, Tenhle parkur jako Hoopers H2 */
+    const n0 = await ev(() => S.obs.length);
+    await page.click('#pSport [data-ps="hoopers"]'); await page.waitForTimeout(200);
+    const sh = await ev(() => ({ open: !$('scrim').hidden, h: $('sheet').querySelector('h3').textContent, o: [...$('sheet').querySelectorAll('[data-sw]')].map(b => b.querySelector('b').textContent) }));
+    ok(sh.open && sh.h === 'Přepnout parkur na Hoopers?' && sh.o.join('|') === 'Nový prázdný parkur Hoopers|Tenhle parkur jako Hoopers H2', 'okno přepnutí: ' + JSON.stringify(sh));
+    await page.click('#sheet [data-sw="conv"]'); await page.waitForTimeout(200);
+    const c = await ev(() => ({ cls: S.meta.cls, gen: S.meta.gen, dirty: S.meta.dirty, n: S.obs.length, sport: SPORT, sub: $('cSub').textContent, toast: $('toast').textContent }));
+    ok(c.cls === 'H2' && !c.gen && c.dirty && c.n === n0 && c.sport === 'hoopers' && /^Hoopers H2/.test(c.sub) && c.toast === 'Parkur je teď Hoopers H2. Překážky na ploše zůstaly.', 'převod na Hoopers: ' + JSON.stringify(c));
+    ok(await pal() === 'hoop,barrel,gate,chute,ha' && await seg() === 'agility,hoopers*+', 'po převodu paleta a přepínač Hoopers: ' + await pal() + ' / ' + await seg());
+    /* zpět na agility: Nový prázdný parkur agility (neuložené změny se ztratí, okno to říká) */
+    await ev(() => { $('toast').hidden = true; }); await page.click('#pSport [data-ps="agility"]'); await page.waitForTimeout(200);
+    ok(/Neuložené změny tohoto parkuru se ztratí\./.test(await page.textContent('#sheet')), 'okno nevaruje před ztrátou změn');
+    await page.click('#sheet [data-sw="new"]'); await page.waitForTimeout(200);
+    const a = await ev(() => ({ cls: S.meta.cls, W: S.W, H: S.H, n: S.obs.length, mode, sport: SPORT, toast: $('toast').textContent }));
+    ok(a.cls === 'A2' && a.W === 40 && a.H === 20 && a.n === 0 && a.mode === 'build' && a.sport === 'agility' && a.toast === 'Nový parkur agility A2.', 'nový prázdný parkur agility: ' + JSON.stringify(a));
+    /* prázdná plocha: přepne se hned, bez okna, úroveň zůstane (A2 → H2) */
+    await ev(() => { $('toast').hidden = true; }); await page.click('#pSport [data-ps="hoopers"]'); await page.waitForTimeout(200);
+    const e = await ev(() => ({ sheet: !$('scrim').hidden, cls: S.meta.cls, W: S.W, H: S.H, obs: S.obs.map(o => o.type).join(), name: S.meta.name }));
+    ok(!e.sheet && e.cls === 'H2' && e.W === 36 && e.H === 30 && e.obs === 'ha' && e.name === 'Nový parkur Hoopers', 'prázdná plocha na Hoopers: ' + JSON.stringify(e));
+    await page.click('#pSport [data-ps="agility"]'); await page.waitForTimeout(200);
+    ok(await ev(() => $('scrim').hidden && S.meta.cls === 'A2' && S.obs.length === 0 && SPORT === 'agility'), 'prázdná plocha zpět na agility');
+    const k = await ev(() => ACT.a);
+    ok(k.sport === 2 && k.sport_conv === 1 && k.sport_new === 1, 'počty akcí přepínače: ' + JSON.stringify(k));
+    /* okno Nový parkur: nahoře Agility | Hoopers, ve třídě jen třídy zvolené disciplíny */
+    await ev(() => { $('toast').hidden = true; loadCourse(listFor('A3')[0], true); newCourseSheet(); }); await page.waitForTimeout(150);
+    const n1 = await ev(() => ({ on: $('nSp').querySelector('.on').getAttribute('data-ns'), cls: [...$('nCls').options].map(o => o.value).join(), v: $('nCls').value, size: $('nSize').value }));
+    ok(n1.on === 'agility' && n1.cls === 'A1,A2,A3' && n1.v === 'A3' && n1.size === '40x20', 'Nový parkur u agility: ' + JSON.stringify(n1));
+    await page.click('#nSp [data-ns="hoopers"]'); await page.waitForTimeout(100);
+    const n2 = await ev(() => ({ on: $('nSp').querySelector('.on').getAttribute('data-ns'), cls: [...$('nCls').options].map(o => o.value).join(), v: $('nCls').value, size: $('nSize').value }));
+    ok(n2.on === 'hoopers' && n2.cls === 'H1,H2,H3' && n2.v === 'H3' && n2.size === '40x32', 'Nový parkur po přepnutí na Hoopers: ' + JSON.stringify(n2));
+    await page.click('#sheet [data-a="ok"]'); await page.waitForTimeout(200);
+    ok(await ev(() => S.meta.cls === 'H3' && S.W === 40 && S.H === 32 && S.obs.map(o => o.type).join() === 'ha' && SPORT === 'hoopers'), 'Nový parkur Hoopers H3: ' + await ev(() => S.meta.cls + ' ' + S.W + '×' + S.H));
+    const miss = await ev(() => ['Parkur', 'Disciplína parkuru', 'Přepnout parkur na Hoopers?', 'Přepnout parkur na agility?', 'Na ploše jsou překážky agility. Co s nimi?', 'Na ploše jsou překážky Hoopers. Co s nimi?',
+      'Nový prázdný parkur Hoopers', 'Nový prázdný parkur agility', 'Plocha 36 × 30 m a prostor psovoda uprostřed, třída H2.', 'Plocha 40 × 20 m, třída A2.', 'Neuložené změny tohoto parkuru se ztratí.',
+      'Tenhle parkur zůstane, jak je uložený.', 'Tenhle parkur jako Hoopers H2', 'Tenhle parkur jako agility A3',
+      'Překážky zůstanou na místě a v nabídce budou oblouk, sud, plůtek, krátký tunel a prostor psovoda. Hodí se pro plánek z fotky.',
+      'Překážky zůstanou na místě a v nabídce budou skoky, tunel, slalom, zóny a další překážky agility.', 'Parkur je teď Hoopers H2. Překážky na ploše zůstaly.', 'Parkur je teď agility A1. Překážky na ploše zůstaly.',
+      'Nový parkur Hoopers H2. V nabídce jsou oblouk, sud, plůtek, krátký tunel a prostor psovoda.', 'Nový parkur agility A2.'].filter(t => trLookup(t) == null));
+    ok(!miss.length, 'chybí anglický překlad přepínače: ' + miss.join(' | '));
+  });
+
   await step('běh podle chyb', async () => {
     const r = await ev(() => { const m = metrics(listFor('H2')[0].obs, listFor('H2')[0].route, 'H2');
       return [evalRun(95, 0, 0, false, m), evalRun(95, 1, 1, false, m), evalRun(181, 0, 0, false, m)].map(e => e.g + ':' + e.tot); });

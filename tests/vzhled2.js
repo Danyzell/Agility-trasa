@@ -59,7 +59,9 @@ module.exports = async function ({ browser, base }) {
 
   await step('jedna značka: fotka otisku tlapky jako ikona aplikace', async () => {
     await fresh('#lib');
-    const look = async (sel) => ev(s => { const e = document.querySelector(s), i = e && e.querySelector('img'); if (!i) return null; return { src: i.src.replace(/^.*\//, ''), loaded: i.naturalWidth > 0, fit: getComputedStyle(i).objectFit, ov: getComputedStyle(e).overflow, svg: e.querySelectorAll('svg').length, w: Math.round(i.getBoundingClientRect().width), h: Math.round(e.getBoundingClientRect().height) }; }, sel);
+    /* Domů se při show('home') vykreslí znovu s novým <img>; ten se chvíli načítá (na pomalém stroji i po dalším dotazu), tak měřit až po dokončení */
+    const look = async (sel) => { await page.waitForFunction(s => { const i = document.querySelector(s + ' img'); return !i || i.complete; }, sel, { timeout: 5000 }).catch(() => {});
+      return ev(s => { const e = document.querySelector(s), i = e && e.querySelector('img'); if (!i) return null; return { src: i.src.replace(/^.*\//, ''), loaded: i.naturalWidth > 0, fit: getComputedStyle(i).objectFit, ov: getComputedStyle(e).overflow, svg: e.querySelectorAll('svg').length, w: Math.round(i.getBoundingClientRect().width), h: Math.round(e.getBoundingClientRect().height) }; }, sel); };
     const top = await look('.top .brand'); await ev(() => show('home')); const home = await look('#v-home .hm-logo');
     await ev(() => { moreTab = 'about'; show('more'); }); await page.waitForTimeout(100); const about = await look('.about-h .about-ic');
     [['horní lišta', top], ['Domů', home], ['O aplikaci', about]].forEach(([n, x]) => ok(x && x.src === 'icon-192.png' && x.loaded && x.fit === 'cover' && x.ov === 'hidden' && x.svg === 0 && x.w >= 30 && x.w === x.h, n + ': značka má být fotka otisku tlapky (icon-192.png) vyplňující dlaždici: ' + JSON.stringify(x)));
@@ -84,10 +86,11 @@ module.exports = async function ({ browser, base }) {
     if (await ev(() => donateOn())) await need('#v-home .hm-sup');
     await ev(() => { libTab = 'A1'; show('lib'); }); await page.waitForTimeout(100);
     for (const s of ['.top .sport button', '#libTabs button', '#libFilters .chip', '#libSort', '#randBtn']) await need(s);
-    if (await ev(() => donateOn())) await need('#supBtn', true);
     await ev(() => show('run')); await page.waitForTimeout(100);
     for (const s of ['#runDogs .chip', '#manT', '#runSpecs .smini']) await need(s);
     await need('#resetClock', true);
+    await ev(() => { moreTab = ''; show('more'); }); await page.waitForTimeout(100);
+    if (await ev(() => donateOn())) await need('#supBtn', true); /* srdíčko v horní liště je od 3.1 jen ve Více */
     await ev(() => { mode = 'route'; show('plan'); ui(); render(); }); await page.waitForTimeout(100);
     await need('#routeList .tu'); await need('#undoAll', true); await need('#toolsBtn', true); await need('#modeRow .seg button');
     await ev(() => { moreTab = 'set'; show('more'); }); await page.waitForTimeout(100);

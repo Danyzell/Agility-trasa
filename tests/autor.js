@@ -142,10 +142,12 @@ module.exports = async function ({ browser, base }) {
     ok(await page.isVisible('#v-home .hm-sup'), 'na Domů chybí Podpořit');
     await page.click('#v-home .hm-sup'); await page.waitForTimeout(200);
     ok(await ev(() => view === 'more' && moreTab === 'donate') && await page.isVisible('#moreBody .dn-qr svg'), 'Podpořit na Domů neotevřelo QR platbu');
-    await page.click('.nav [data-v="lib"]'); await page.waitForTimeout(150);
-    ok(await page.isVisible('#supBtn'), 'v horní liště chybí Podpořit');
+    await page.click('.nav [data-v="more"]'); await page.waitForTimeout(150);
+    ok(await page.isVisible('#supBtn'), 'v horní liště Více chybí Podpořit');
     await page.click('#supBtn'); await page.waitForTimeout(200);
     ok(await ev(() => view === 'more' && moreTab === 'donate'), 'Podpořit v liště neotevřelo QR platbu');
+    await page.click('.nav [data-v="lib"]'); await page.waitForTimeout(150);
+    ok(!(await page.isVisible('#supBtn')), 'v Parkurech má být lišta bez Podpořit (3.1: místo pro nadpis, anglicky se zkracoval na „Co…“)');
     await page.click('.nav [data-v="plan"]'); await page.waitForTimeout(150);
     ok(!(await page.isVisible('#supBtn')), 'v Plánu má být lišta bez Podpořit (místo pro název parkuru)');
     /* bez účtu i bez odkazu ze Stripe se srdíčko neukazuje */
@@ -172,13 +174,15 @@ module.exports = async function ({ browser, base }) {
     ok(/property="og:title"/.test(html) && /property="og:image" content="https:\/\/pawkur\.cz\/og\.jpg"/.test(html), 'chybí náhled odkazu pro Facebook');
     ok((await page.request.get(base + '/og.jpg')).ok(), 'chybí obrázek og.jpg');
     /* ve vestavěném prohlížeči Facebooku na Androidu nabídne otevření v Chromu, jinde nic */
-    ok(!(await page.isVisible('#iabBar')), 'pruh pro Facebook v běžném prohlížeči');
+    ok(!(await page.isVisible('#iabBar')), 'karta pro Facebook v běžném prohlížeči');
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block', userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/480.0.0.0;]' });
     await ctx.route(u => !/^http:\/\/(127\.0\.0\.1|localhost)/.test(u.href), r => r.abort());
     const p2 = await ctx.newPage(); await p2.goto(base + '/#home'); await p2.waitForTimeout(400);
     const href = await p2.getAttribute('#iabGo', 'href').catch(() => null);
     ok(href && /^intent:\/\/.+#Intent;scheme=https;package=com\.android\.chrome;/.test(href), 've Facebooku chybí Otevřít v Chromu: ' + href);
-    await p2.click('#iabX'); ok(!(await p2.isVisible('#iabBar')), 'pruh pro Facebook nejde zavřít');
+    /* 3.1: karta na Domů (#hmIab) místo pruhu přes obsah; bez tlačítka přenosu dat (to je pro iPhone, Android se přepne do Chromu sám) */
+    ok(await p2.evaluate(() => !document.querySelector('.iabbar') && !!document.querySelector('#hmIab .hm-iab#iabBar') && /Otevřeno ve Facebooku/.test(document.querySelector('#hmIab .tx').textContent) && !document.querySelector('#hmIab [data-iabmove]')), 'karta pro Facebook má být na Domů v Dnes, ne jako pruh');
+    await p2.click('#iabX'); ok(!(await p2.isVisible('#iabBar')), 'karta pro Facebook nejde zavřít');
     await ctx.close();
     /* Android: poprvé se odkaz sám přepne do Chromu (i s parametry adresy), podruhé už ne; na iPhonu se nic samo neotevírá */
     const auto = async (ua) => {

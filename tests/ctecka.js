@@ -48,9 +48,19 @@ module.exports = async function ({ browser, base }) {
       ok(r.route === n && r.nn === want, 'trasa z plánku se přečetla špatně: ' + JSON.stringify(r));
       /* čtení směrů se dělí na kousky: stránka nesmí zamrznout na sekundy */
       ok(r.lt < 1500, 'čtení plánku zablokovalo stránku na ' + r.lt + ' ms');
-      await page.click('#imGo'); await page.waitForTimeout(300); /* Použít */
-      if (await page.isVisible('#scrim')) await T.sheet('ok'); /* Nahradit rozpracovaný plán? */
-      ok(await ev(n => S.route.length === n && S.obs.length >= n - 2, n), 'trasa z plánku se nepřenesla do Plánu');
+      /* 3.1: hlavní tlačítko použije překážky a trasa se naklepe podle čísel; přečtenou trasu nabízí druhé tlačítko */
+      const bt = await ev(() => ({ go: $('imGo').textContent, r: !$('imGoR').hidden && $('imGoR').textContent, hint: $('imHint').textContent }));
+      ok(bt.go === 'Použít a naklepat trasu' && bt.r === 'Použít i s trasou' && /Nejspolehlivější je použít překážky a trasu naklepat/.test(bt.hint), 'tlačítka po rozpoznání: ' + JSON.stringify(bt));
+      if (n === 12) {
+        await page.click('#imGo'); await page.waitForTimeout(300); /* Použít a naklepat trasu */
+        if (await page.isVisible('#scrim')) await T.sheet('ok'); /* Nahradit rozpracovaný plán? */
+        const t = await ev(() => ({ route: S.route.length, obs: S.obs.length, mode, bg: !!(BG && BG.src), toast: $('toast').textContent, a: (ACT && ACT.a) || {} }));
+        ok(t.route === 0 && t.obs >= n - 2 && t.mode === 'route' && t.bg && /^Překážky z obrázku: \d+\. Teď na ně klepej v pořadí podle čísel na podkladu\./.test(t.toast) && t.a.imp_tap === 1 && t.a.imp_open >= 1, 'použít a naklepat trasu: ' + JSON.stringify(t));
+      } else {
+        await page.click('#imGoR'); await page.waitForTimeout(300); /* Použít i s trasou */
+        if (await page.isVisible('#scrim')) await T.sheet('ok');
+        ok(await ev(n => S.route.length === n && S.obs.length >= n - 2 && mode === 'build' && ACT.a.imp_route === 1, n), 'trasa z plánku se nepřenesla do Plánu');
+      }
     }
 
     T.step('Jiný obrázek během čtení');

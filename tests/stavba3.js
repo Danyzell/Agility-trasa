@@ -21,12 +21,12 @@ module.exports = async function ({ browser, base }) {
     let r = await ev(() => ({ open: !$('scrim').hidden, warn: /neuložené změny/.test($('sheet').textContent), size: $('nSize').value, cls: $('nCls').value, name: $('nName').value, ph: $('nName').placeholder,
       opts: [...$('nSize').options].map(o => o.value).join() }));
     ok(r.open && r.warn && r.size === '40x20' && r.name === '' && r.ph === 'Nový parkur' && /^40x20,40x24,30x20,25x15,20x15,15x10,own$/.test(r.opts), 'okno Nový parkur: ' + JSON.stringify(r));
-    /* Hoopers: plochy podle třídy */
-    await page.selectOption('#nCls', 'H3');
+    /* Hoopers: plochy podle třídy (3.1: nejdřív Agility | Hoopers nahoře, ve třídě jen třídy zvolené disciplíny) */
+    await page.click('#nSp [data-ns="hoopers"]'); await page.selectOption('#nCls', 'H3');
     r = await ev(() => ({ size: $('nSize').value, opts: [...$('nSize').options].map(o => o.textContent).slice(0, 3).join('|') }));
     ok(r.size === '40x32' && r.opts === 'Hoopers H1 30 × 30 m|Hoopers H2 36 × 30 m|Hoopers H3 40 × 32 m', 'plochy Hoopers podle třídy: ' + JSON.stringify(r));
     /* vlastní rozměr: mimo 10–60 × 10–40 m nejde */
-    await page.selectOption('#nCls', 'A2'); await page.selectOption('#nSize', 'own');
+    await page.click('#nSp [data-ns="agility"]'); await page.selectOption('#nCls', 'A2'); await page.selectOption('#nSize', 'own');
     ok(await page.isVisible('#nW') && await page.isVisible('#nH'), 'vlastní rozměr nemá pole');
     await page.fill('#nW', '70'); await page.fill('#nH', '20'); await T.sheet('ok');
     ok(await ev(() => !$('scrim').hidden && /10–60/.test($('toast').textContent) && S.W === 40), 'plocha 70 m se přijala');
@@ -36,7 +36,7 @@ module.exports = async function ({ browser, base }) {
     ok(r.W === 33 && r.H === 17 && r.cls === 'A2' && r.name === 'Úterní trénink' && r.n === 0 && r.mode === 'build' && r.sel === '33x17' && !r.und && !r.dirty, 'nový parkur podle okna: ' + JSON.stringify(r));
     ok(r.zoom === 1 && r.fit && r.sl === 0, 'nový parkur není přiblížený na celou šířku plochy: ' + JSON.stringify(r));
     /* Hoopers z okna: prostor psovoda uprostřed, paleta Hoopers */
-    await page.click('#newBtn'); await page.selectOption('#nCls', 'H1'); await T.sheet('ok');
+    await page.click('#newBtn'); await page.click('#nSp [data-ns="hoopers"]'); await page.selectOption('#nCls', 'H1'); await T.sheet('ok');
     r = await ev(() => ({ cls: S.meta.cls, W: S.W, H: S.H, obs: S.obs.map(o => o.type).join(), sport: SPORT, pal: [...document.querySelectorAll('#palette .ob-btn')].map(b => b.getAttribute('data-type')).join(),
       sizes: [...$('sizeSelect').options].map(o => o.value).slice(0, 3).join() }));
     ok(r.cls === 'H1' && r.W === 30 && r.H === 30 && r.obs === 'ha' && r.sport === 'hoopers' && r.pal === 'hoop,barrel,gate,chute,ha' && r.sizes === '30x30,36x30,40x32', 'nový parkur Hoopers: ' + JSON.stringify(r));

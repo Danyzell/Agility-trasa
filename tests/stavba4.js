@@ -19,7 +19,8 @@ module.exports = async function ({ browser, base }) {
     S.obs = obs; S.route = route; S.sides = []; S.turns = []; S.hp = []; S.marks = []; syncSides(); mode = 'build'; tool = null; sel = null; zoom = 1;
     setSizeSel(); drawGrid(); save(); render(); ui(); topbar(); undoReset(); $('toast').hidden = true; $('wrap').scrollIntoView({ block: 'center' });
   }, [obs, route, cls]);
-  const drag = async (x0, y0, x1, y1) => { const a = await px(x0, y0), b = await px(x1, y1); await page.mouse.move(a.x, a.y); await page.mouse.down(); await page.mouse.move(b.x, b.y, { steps: 6 }); await page.mouse.up(); await w(80); };
+  /* tah začíná na ploše uprostřed obrazovky (jako tapField): po kliknutí na tlačítko nahoře může začátek tahu ležet pod plovoucím panelem výběru */
+  const drag = async (x0, y0, x1, y1) => { await ev(() => $('wrap').scrollIntoView({ block: 'center' })); const a = await px(x0, y0), b = await px(x1, y1); await page.mouse.move(a.x, a.y); await page.mouse.down(); await page.mouse.move(b.x, b.y, { steps: 6 }); await page.mouse.up(); await w(80); };
 
   await step('přesná poloha: X, Y, otočení po 1°, zámek', async () => {
     await fresh();

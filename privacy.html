@@ -34,10 +34,10 @@ hr{border:0; border-top:1px solid var(--border); margin:40px 0;}
 <nav class="lang"><a href="#cs">Česky</a><a href="#en" lang="en">English</a></nav>
 
 <section id="cs">
-<p class="muted">Aplikace Pawkur · platné od 5. 10. 2026, upraveno 8. 10. 2026</p>
+<p class="muted">Aplikace Pawkur · platné od 5. 10. 2026, upraveno 9. 10. 2026</p>
 <div class="box">
 <b>Stručně:</b> Pawkur funguje bez registrace a bez reklam. Parkury, psi, běhy, deník i nastavení zůstávají jen ve tvém telefonu, pokud se nepřihlásíš k účtu.
-Na server odchází jen to, co sám odešleš (výsledek do žebříčku, sdílený parkur, záloha, zpráva autorovi). Nepoužíváme sledovací cookies ani reklamní analytiku, jen anonymní počet otevření aplikace (viz 4c).
+Na server odchází jen to, co sám odešleš (výsledek do žebříčku, sdílený parkur, záloha, zpráva autorovi). Nepoužíváme sledovací cookies ani reklamní analytiku, jen anonymní počty otevření a použití aplikace (viz 4c).
 </div>
 
 <h2>Kdo údaje zpracovává</h2>
@@ -62,10 +62,16 @@ Na server odchází jen to, co sám odešleš (výsledek do žebříčku, sdíle
 Účel: synchronizace a obnova dat. Základ: plnění služby, o kterou žádáš přihlášením. Data uchováváme, dokud účet používáš; smažeš je v aplikaci tlačítkem <b>Více → Účet → Smazat data z účtu</b>, zrušení celého účtu vyřídíme na požádání.</p>
 
 <h3>4c. Anonymní návštěvnost</h3>
-<p>Jednou denně aplikace pošle náhodné číslo instalace (stejné jako u žebříčků), datum, jestli běží z ikony na ploše, jazyk, druh zařízení (Android, iPhone, počítač), jestli je otevřená ve vestavěném prohlížeči jiné aplikace (Facebook a podobně), jestli se ukázala a přijala nabídka instalace, počet chyb v aplikaci s poslední chybovou hláškou bez adres a časové pásmo telefonu (například Europe/Prague, říká jen zemi). Neposílá jméno, IP adresu ani polohu. Účel: vědět, kolik lidí aplikaci používá, odkud jsou a kde aplikace nefunguje. Základ: oprávněný zájem. Uchováváme nejvýš 14 měsíců.</p>
+<p>Jednou denně aplikace pošle náhodné číslo instalace (stejné jako u žebříčků), datum, jestli běží z ikony na ploše, jazyk, druh zařízení (Android, iPhone, počítač), jestli je otevřená ve vestavěném prohlížeči jiné aplikace (Facebook a podobně), jestli se ukázala a přijala nabídka instalace, počet chyb v aplikaci s poslední chybovou hláškou bez adres a časové pásmo telefonu (například Europe/Prague, říká jen zemi). Během dne k tomu průběžně posílá počty, kolikrát se ten den použily hlavní části aplikace (například otevřený parkur, 3D, uložený běh, plánek z fotky, úprava plánu, volba na konci průvodce), kolik sekund byla aplikace na obrazovce a na které obrazovce se naposledy zavřela. Neposílá jméno, žádný text, IP adresu ani polohu. Účel: vědět, kolik lidí aplikaci používá, odkud jsou, co v ní používají a kde aplikace nefunguje nebo kde lidé odcházejí. Základ: oprávněný zájem. Uchováváme nejvýš 14 měsíců.</p>
 
 <h3>4d. Kolbiště podle GPS</h3>
 <p>Když si v Plánu → Nástroje → Kolbiště uložíš polohu kolbiště, aplikace ji změří z GPS telefonu a uloží jen do tvého zařízení (název, střed, rozměr, natočení a přiřazený parkur). Tvoje aktuální poloha pro navigaci ke kolbišti se nikam neposílá. Na server se polohy kolbišť dostanou jen tehdy, když sám uložíš zálohu do cloudu (Více → Záloha). Plán závodiště (GeoJSON, KML) se čte jen v zařízení. Když klepneš na odkaz Mapy.cz, Google Mapy nebo Apple Mapy, předají se souřadnice kolbiště té mapové službě.</p>
+
+<h3>4e. Skupiny a společné tréninky</h3>
+<p>Skupiny jsou pro přihlášené. Ve skupině vidí ostatní členové tvoje jméno ve skupině (z účtu Google, jde přepsat), parkury, které skupině pošleš, tvoje běhy v žebříčku parkuru skupiny (pes, velikost, čas, trestné body) a u tréninků kdy a kde trénink je, kdo ho vypsal, poznámku a kdo napsal Přijdu. Účel: společný trénink skupiny. Základ: plnění služby, o kterou žádáš přidáním do skupiny. Tréninky mažeme 60 dní po konání, skupinu se vším obsahem smaže její zakladatel; když ze skupiny odejdeš, tvoje běhy v žebříčcích zůstanou.</p>
+
+<h3>4f. Upozornění na telefon</h3>
+<p>Když si v nainstalované aplikaci zapneš upozornění, uložíme odběr zařízení, který vytvořil prohlížeč (adresa služby výrobce prohlížeče a klíče k šifrování zpráv), náhodné číslo instalace, jazyk, časové pásmo, vybraná témata (skupina, závody, parkur týdne) a u přihlášených identifikátor účtu. Kvůli připomenutím k tomu ukládáme nejbližší závod tvých psů a závody s hvězdičkou Chci jet (číslo závodu z kacr.info, název, den a uzávěrka přihlášek). Zprávy doručuje služba výrobce prohlížeče (Google, Apple, Mozilla), obsah je šifrovaný. Účel: upozornění, o která žádáš. Základ: souhlas, odvoláš ho vypnutím upozornění v aplikaci (Více → Nastavení), tím se odběr smaže.</p>
 
 <h3>5. Napsat autorovi</h3>
 <p>Uložíme hodnocení, text zprávy, nepovinný e-mail, jazyk, verzi aplikace, typ prohlížeče a náhodný identifikátor instalace. Zpráva se zároveň pošle e-mailem autorovi. Odpověď na otázku „Co ti v Pawkuru chybí?“ na úvodní obrazovce se uloží stejně, jen se autorovi neposílá e-mailem.
@@ -112,10 +118,10 @@ Stížnost můžeš podat u Úřadu pro ochranu osobních údajů (<a href="http
 
 <section id="en" lang="en">
 <h1>Privacy policy</h1>
-<p class="muted">Pawkur app · effective 5 October 2026, updated 8 October 2026</p>
+<p class="muted">Pawkur app · effective 5 October 2026, updated 9 October 2026</p>
 <div class="box">
 <b>In short:</b> Pawkur works without an account and without ads. Courses, dogs, runs, diary and settings stay on your phone only unless you sign in to an account.
-Only what you send yourself goes to the server (a result to a leaderboard, a shared course, a backup, a message to the author). We use no tracking cookies or advertising analytics, only an anonymous count of app opens (see 4c).
+Only what you send yourself goes to the server (a result to a leaderboard, a shared course, a backup, a message to the author). We use no tracking cookies or advertising analytics, only anonymous counts of app opens and use (see 4c).
 </div>
 
 <h2>Who processes the data</h2>
@@ -134,10 +140,14 @@ Purpose: leaderboards and the league. Legal basis: your consent given by sending
 <h3>4b. Account and sync (Sign in with Google)</h3>
 <p>Signing in is optional. When you sign in with Google we store your e-mail, the name from your Google account and an account ID. The app data (courses, dogs, runs, diary, kacr.info results and settings) is stored with the account so it is the same on all your devices.
 Purpose: syncing and restoring your data. Legal basis: providing the service you request by signing in. Kept while you use the account; delete it in the app with <b>More → Account → Delete data from account</b>; we delete the whole account on request.</p>
-<h3>4c. Anonymous usage count</h3>
-<p>Once a day the app sends a random installation ID (the same as for leaderboards), the date, whether it runs from the home screen icon, the language, the device type (Android, iPhone, computer), whether it is open inside another app's built-in browser (Facebook and similar), whether the install offer was shown and accepted, the number of app errors with the last error message without addresses, and the phone's time zone (for example Europe/Prague, which only tells the country). No name, IP address or location. Purpose: knowing how many people use the app, where they are from and where the app does not work. Legal basis: legitimate interest. Kept for at most 14 months.</p>
+<h3>4c. Anonymous usage counts</h3>
+<p>Once a day the app sends a random installation ID (the same as for leaderboards), the date, whether it runs from the home screen icon, the language, the device type (Android, iPhone, computer), whether it is open inside another app's built-in browser (Facebook and similar), whether the install offer was shown and accepted, the number of app errors with the last error message without addresses, and the phone's time zone (for example Europe/Prague, which only tells the country). During the day it also sends counts of how many times the main parts of the app were used that day (for example an opened course, 3D, a saved run, a course map from a photo, a plan edit, the choice at the end of the welcome guide), how many seconds the app was on screen and on which screen it was last closed. No name, no text, IP address or location. Purpose: knowing how many people use the app, where they are from, what they use and where the app does not work or where people leave. Legal basis: legitimate interest. Kept for at most 14 months.</p>
 <h3>4d. Rings by GPS</h3>
 <p>When you save a ring location in Plan → Tools → Ring, the app measures it with the phone's GPS and stores it only on your device (name, centre, size, orientation and the assigned course). Your current location used to guide you to the ring is not sent anywhere. Ring locations reach the server only if you save a cloud backup yourself (More → Backup). A venue plan file (GeoJSON, KML) is read only on the device. If you tap the Mapy.cz, Google Maps or Apple Maps link, the ring coordinates are passed to that map service.</p>
+<h3>4e. Groups and group trainings</h3>
+<p>Groups are for signed-in users. Other members of a group see your name in the group (from your Google account, you can change it), courses you send to the group, your runs on the group course leaderboard (dog, size, time, faults) and, for trainings, when and where the training is, who scheduled it, the note and who answered Going. Purpose: training together as a group. Legal basis: providing the service you request by joining a group. Trainings are deleted 60 days after they take place; the group founder deletes the group with all its content; if you leave a group, your runs stay on its leaderboards.</p>
+<h3>4f. Phone notifications</h3>
+<p>When you turn on notifications in the installed app, we store the device subscription created by the browser (the address of the browser maker's push service and the keys for encrypting messages), a random installation ID, the language, the time zone, the chosen topics (group, competitions, course of the week) and, if you are signed in, your account ID. For reminders we also store the nearest competition of your dogs and the competitions you starred with Want to go (the kacr.info competition number, name, date and entry deadline). Messages are delivered by the browser maker's push service (Google, Apple, Mozilla) and their content is encrypted. Purpose: the notifications you ask for. Legal basis: consent, which you withdraw by turning notifications off in the app (More → Settings); this deletes the subscription.</p>
 <h3>5. Write to the author</h3>
 <p>We store the rating, message, optional e-mail, language, app version, browser type and a random installation ID; the message is also e-mailed to the author. An answer to the question "What is Pawkur missing for you?" on the Home screen is stored the same way, but it is not e-mailed to the author.
 Purpose: to reply and improve the app. The e-mail is used only to reply. Legal basis: legitimate interest in answering your message; your consent for the e-mail.</p>
