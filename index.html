@@ -5850,6 +5850,7 @@ function touch(g){
   S.meta.dirty=true; save(); topbar(); undoUI();
 }
 function planApply(st){
+  drag=null; tap=null; /* Zpět a Znovu během tažení: tažení skončí, ať nepracuje se starou překážkou (3.3) */
   var sz=st.W!==S.W||st.H!==S.H;
   S.W=st.W; S.H=st.H; S.obs=st.obs; S.route=st.route; S.sides=st.sides; S.turns=st.turns; S.hp=st.hp; S.marks=st.marks||[]; S.chk=st.chk;
   UNDO_CUR=planSnap(); UNDO_G=null; RTE=null; copyOff();
@@ -6362,6 +6363,9 @@ svg.addEventListener('pointermove',function(e){
   if(!drag.moved) return;
   if(drag.lock){ if(!drag.told){ drag.told=1; toast('Překážka má zamknutou polohu. Odemkneš ji zámkem v panelu dole.'); } return; }
   var q=pt(e), o=getO(drag.id);
+  /* tažená překážka mezitím zmizela (Ctrl+Z nebo smazání během tažení na počítači): tažení končí, jinak každý pohyb myši
+     hodil chybu „Cannot set properties of null“ (74× za den u jednoho uživatele, opraveno ve 3.3) */
+  if(!o&&!drag.grp){ drag=null; tap=null; return; }
   /* přichycení po 0,5 m (stavba 4), bez něj po 0,1 m; celý výběr se posouvá o stejný kus jako tažená překážka */
   if(drag.grp){
     if(drag.locked&&!drag.told){ drag.told=1; toast(drag.grp.length?'Zamknuté překážky zůstanou na místě. Odemkneš je zámkem v liště výběru.':'Vybrané překážky mají zamknutou polohu. Odemkneš je zámkem v liště výběru.',3500); }

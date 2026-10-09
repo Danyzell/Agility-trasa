@@ -81,6 +81,23 @@ module.exports = async function ({ browser, base }) {
   await page.waitForTimeout(150);
   ok(await ev(() => $('undoAll').disabled && UNDO.length === 0), 'po načtení parkuru má být historie prázdná');
 
+    T.step('Ctrl+Z během tažení myší (počítač)');
+    /* 3.3: u uživatele na počítači 74× „Cannot set properties of null (setting 'x')“ – tažená překážka zmizela (Zpět během tažení)
+       a každý další pohyb myši hodil chybu. Položit skok, chytit ho myší, při tažení Ctrl+Z, dál hýbat, pustit. */
+    await page.click('#mBuild').catch(() => {}); await ev(() => { closeSheet(); tool = 'jump'; ui(); $('toast').hidden = true; });
+    /* skok položený jako klepnutím (nid, touch = krok do historie Zpět) na volném místě plochy */
+    const nid = await ev(() => { sel = null; let x = 3, y = 3; for (let i = 0; i < 200 && S.obs.some(o => Math.hypot(o.x - x, o.y - y) < 3); i++) { x = 3 + (i * 2.7) % (S.W - 6); y = 3 + Math.floor(i / 8) * 2.5 % (S.H - 6); }
+      const o = { id: nid(), type: 'jump', x, y, rot: 0 }; S.obs.push(o); touch(); render(); ui(); window.scrollTo(0, 0); return o.id; }); await page.waitForTimeout(300);
+    ok(nid != null, 'skok pro tažení se nepoložil');
+    const pos = await ev((id) => { const g = document.querySelector('#obs .ob[data-id="' + id + '"]'); if (!g) return null; const r = g.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }, nid);
+    if (pos) {
+      await page.mouse.move(pos.x, pos.y); await page.mouse.down(); await page.mouse.move(pos.x + 20, pos.y + 6, { steps: 4 });
+      await page.keyboard.press('Control+z'); await page.waitForTimeout(100);
+      await page.mouse.move(pos.x + 60, pos.y + 20, { steps: 6 }); await page.mouse.up(); await page.waitForTimeout(150);
+      const r = await ev((id) => ({ gone: !getO(id), drag: drag, err: (lsGet(ERRK, { n: 0 }) || {}).last || '' }), nid);
+      ok(r.gone && r.drag === null && !/setting 'x'/.test(r.err), 'Zpět během tažení: ' + JSON.stringify(r));
+    }
+
   } catch (e) { T.fail(e); }
   await T.ctx.close();
   return T.errs;
