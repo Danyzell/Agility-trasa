@@ -250,7 +250,7 @@ module.exports = async function ({ browser, base }) {
     let r = await ev(() => ({ h3: $('sheet').querySelector('h3').textContent, vers: [...document.querySelectorAll('#expVer button')].map(b => b.getAttribute('data-ver') + (b.classList.contains('on') ? '*' : '')).join(), hint: $('expHint').textContent, story: !!document.querySelector('#sheet [data-a="story"]') }));
     ok(r.h3 === 'Export a tisk' && r.vers === 'comp*,judge,build' && /Pro závodníka/.test(r.hint) && r.story, 'okno exportu: ' + JSON.stringify(r));
     const sv = await ev(() => ({ comp: fieldSvgString(EXPV.comp), judge: fieldSvgString(EXPV.judge), build: fieldSvgString(EXPV.build) }));
-    ok(!/class="leg"/.test(sv.comp) && !/class="jn"/.test(sv.comp) && /url\(#arr\)/.test(sv.comp) && /Start/.test(sv.comp), 'závodník: bez délek, běžná čísla');
+    ok(!/class="leg"/.test(sv.comp) && !/class="jn"/.test(sv.comp) && /class="pa"/.test(sv.comp) && /Start/.test(sv.comp), 'závodník: bez délek, běžná čísla');
     ok(/class="jn"/.test(sv.judge) && /arrJ/.test(sv.judge) && /START/.test(sv.judge) && !/class="leg"/.test(sv.judge), 'rozhodčí: kroužky a START');
     ok(/class="leg"/.test(sv.build) && /5,0 · 10,0/.test(sv.build) && !/class="jn"/.test(sv.build), 'stavitel: délky úseků a souřadnice');
     ok(await ev(() => !EXP.judge && !EXP.coords && !EXP.nolegs && document.querySelectorAll('#pth .leg').length === 2 && !$('marks').textContent.match(/5,0 · 10,0/)), 'po exportu zůstává běžný plánek bez souřadnic');
@@ -272,7 +272,7 @@ module.exports = async function ({ browser, base }) {
     ok(cvs.w === 1080 && cvs.h === 1920 && cvs.stats === 'délka,překážek,SČP' && cvs.kicker === 'Parkur A2', 'příběh 9:16: ' + JSON.stringify(cvs));
     ok(await ev(() => trLookup('Postav si ho v aplikaci Pawkur') === 'Build it in the Pawkur app' && trLookup('Vše') === 'All'), 'překlad výzvy v příběhu a Vše');
     await T.sheet('x');
-    ok(await ev(() => (fieldSvgString().match(/marker-end/g) || []).length === 2), 'export bez voleb je jako dřív');
+    ok(await ev(() => (fieldSvgString().match(/class="pa"/g) || []).length === 2), 'export bez voleb je jako dřív'); /* šipka v každém ze 2 úseků (3.3) */
   });
 
   await step('angličtina', async () => {

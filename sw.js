@@ -1,5 +1,5 @@
 /* Pawkur (dříve AgiPlan, HandlerMap a Agility trasa): offline a příjem plánku přes Sdílet */
-var CACHE='agility-trasa-3.2', FONTS='agility-fonts';
+var CACHE='agility-trasa-3.3', FONTS='agility-fonts';
 var CORE=['./','index.html','manifest.webmanifest','icon-192.png']; /* velké ikony (fotka, přes 0,5 MB) si bere jen instalace z manifestu, offline nejsou potřeba */
 /* 3D balíček (677 kB) se neukládá při instalaci, ale až při prvním použití 3D; pak funguje i offline */
 var LAZY=/\/v3d\/v3d\.js$/;

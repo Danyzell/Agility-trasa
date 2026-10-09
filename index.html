@@ -5921,7 +5921,7 @@ function fmt2(v){var s=v.toFixed(2); return LANG==='en'?s:s.replace('.',',');}
 /* jednotky: metry (výchozí) nebo stopy a yardy za sekundu (AKC, UKI); data se ukládají vždy v metrech */
 function UFT(){ return typeof SET==='object'&&SET&&SET.unit==='ft'; }
 function lenU(m){ return UFT()?fmt(m*3.28084)+' ft':fmt(m)+' m'; }
-function lenN(m){ return UFT()?fmt(m*3.28084):fmt(m); } /* délka úseku na plánu bez jednotky (3.3) */
+function lenN(m){ return UFT()?fmt(m*3.28084)+' ft':fmt(m); } /* délka úseku na plánu: metry jen číslem (3.3, jako Smarter Agility), stopy s „ft“, ať se nepletou s metry */
 function gridU(m){ return UFT()?Math.round(m*3.28084)+' ft':m+' m'; }
 function spdU(v){ return UFT()?fmt(v*1.09361)+' yd/s':fmt(v)+' m/s'; }
 /* rychlost pro SČP: Agility podle SET.spd, Jumping podle SET.spdJ, jinak o 0,5 m/s vyšší než Agility (jumping je bez zón, rozhodčí volí rychlejší čas;
@@ -11057,7 +11057,7 @@ function appShare(){
   dnCopy(APP_URL);
 }
 /* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
-var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.2';
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.3';
 var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
 function fbSave(){ lsSet(FBK,FB); }
 var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];
