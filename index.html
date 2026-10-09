@@ -1222,7 +1222,7 @@ h2{font-family:var(--body); font-weight:700; font-size:19px; letter-spacing:0;}
 #fullBtn .ff-out,body.fullfield #fullBtn .ff-in{display:none;}
 body.fullfield #fullBtn .ff-out{display:inline-flex;}
 body.fullfield .top,body.fullfield .nav,body.fullfield .plansum,body.fullfield #hint,body.fullfield #planTools,body.fullfield #toolsBtn,
-body.fullfield #v-plan>.row:not(#modeRow):not(#routeTools),body.fullfield #v-plan>h2,body.fullfield #routeList,body.fullfield #mkLegend{display:none!important;}
+body.fullfield #v-plan>.row:not(#modeRow):not(#routeTools),body.fullfield #v-plan>h2,body.fullfield #routeList,body.fullfield #mkLegend,body.fullfield #pSportRow{display:none!important;}
 body.fullfield main{height:100vh; height:100dvh; padding:calc(8px + env(safe-area-inset-top,0px)) 8px calc(8px + env(safe-area-inset-bottom,0px)); display:flex; flex-direction:column;}
 body.fullfield #v-plan{flex:1 1 auto; min-height:0; padding-bottom:0; gap:8px;}
 body.fullfield .fieldbox{flex:1 1 auto; min-height:0; display:flex; flex-direction:column;}
@@ -1265,6 +1265,9 @@ body.fullfield .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));}
   body[data-view="plan"] #planTools{order:2;}
   body[data-view="plan"] #v-plan>.modebar{order:3;}
   body[data-view="plan"] #buildTools{order:4;}
+  /* Parkur: Agility | Hoopers na šířku pod paletou: paleta zůstane nad panelem výběru, který je vpravo dole */
+  body[data-view="plan"] #buildTools{display:flex; flex-direction:column;}
+  body[data-view="plan"] #pSportRow{order:1; margin:6px 0 0;} body[data-view="plan"] #buildTools .msel-row{order:2;}
   body[data-view="plan"] #routeTools{order:5;}
   body[data-view="plan"] .plansum{order:6;}
   body[data-view="plan"] #hint{order:7;}
@@ -1331,6 +1334,10 @@ body.fullfield .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));}
 .sr-x .ico{flex:0 0 auto; width:44px; min-height:44px; padding:0; justify-content:center;} .sr-x .ico svg,.sr-b .ico svg{width:20px; height:20px;}
 .sr-x .ico.on,.sr-b .ico.on,#mselBtn.on{background:var(--accent); color:var(--on-accent); border-color:var(--accent);}
 .msel-row{margin-top:6px;} #mselBtn svg{width:18px; height:18px;}
+/* Parkur: Agility | Hoopers nad nabídkou překážek (3.1) */
+.psp-row{display:flex; align-items:center; gap:10px; margin:0 0 8px;}
+.psp-l{flex:0 0 auto; font-weight:700; font-size:13.5px; color:var(--muted);}
+.psp{flex:1 1 auto; display:flex; min-width:0;} .psp button{flex:1 1 0; min-width:0; padding:6px 8px;}
 #mselRow .sr-a b{font-size:14px; color:var(--text); min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 #mselRow .sr-b .btn{padding:8px 8px;} #mselRow .sr-a .btn{padding:8px 12px; flex:0 0 auto;}
 #field .cob{pointer-events:none;} #cmp{pointer-events:none;}
@@ -1402,6 +1409,8 @@ body.fullfield .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));}
       <input type="file" id="bgFile" accept="image/*" hidden>
     </div>
     <div id="buildTools">
+      <!-- disciplína parkuru přímo ve Stavbě (3.1): dřív šla změnit jen přes Nový nebo třídu u názvu parkuru a uživatel ji nenašel -->
+      <div class="psp-row" id="pSportRow"><span class="psp-l">Parkur</span><div class="seg psp" id="pSport" role="group" aria-label="Disciplína parkuru"><button data-ps="agility">Agility</button><button data-ps="hoopers">Hoopers</button></div></div>
       <div class="palette" id="palette"></div>
       <!-- vybraná překážka: panel plave dole nad spodní lištou (position:fixed), takže se plocha při výběru nehýbe -->
       <div class="selrow" id="selRow" role="group" aria-label="Vybraná překážka" hidden>
@@ -2978,7 +2987,14 @@ var I18N_TRI={exact:{
 "Na place zmáčkni START, když pes vyběhne, a STOP v cíli. Čas jde zadat i ručně.": "On the field press START when your dog sets off and STOP at the finish. You can also enter the time by hand.",
 "Použít a naklepat trasu": "Apply and tap the route", "Použít i s trasou": "Apply with the route",
 "Nejspolehlivější je použít překážky a trasu naklepat podle čísel na podkladu. Přečtenou trasu můžeš použít i rovnou.": "The most reliable way is to apply the obstacles and tap the route by the numbers on the underlay. You can also use the route that was read right away.", "3D zatím umí jen parkury agility. Oblouk, sud a plůtek ve 3D teprve chystáme.": "3D only supports agility courses so far. Hoops, barrels and gates in 3D are on the way.", "x, y = metry od levého a horního okraje": "x, y = metres from the left and top edge", "Datum a místo": "Date and venue", "SČP / MČP": "SCT / MCT", "Poznámky": "Notes", "délka": "length",
-"Nebo otevři odkaz": "Or open the link", "Kopírovat odkaz": "Copy the link", "Načítám parkur z odkazu…": "Loading the course from the link…"
+"Nebo otevři odkaz": "Or open the link", "Kopírovat odkaz": "Copy the link", "Načítám parkur z odkazu…": "Loading the course from the link…",
+/* 3.1: Parkur: Agility | Hoopers ve Stavbě */
+"Parkur": "Course", "Disciplína parkuru": "Course discipline", "Přepnout parkur na Hoopers?": "Switch the course to Hoopers?", "Přepnout parkur na agility?": "Switch the course to agility?",
+"Na ploše jsou překážky agility. Co s nimi?": "There are agility obstacles on the field. What should happen to them?", "Na ploše jsou překážky Hoopers. Co s nimi?": "There are Hoopers obstacles on the field. What should happen to them?",
+"Nový prázdný parkur Hoopers": "New empty Hoopers course", "Nový prázdný parkur agility": "New empty agility course",
+"Neuložené změny tohoto parkuru se ztratí.": "Unsaved changes to this course will be lost.", "Tenhle parkur zůstane, jak je uložený.": "This course stays as it is saved.",
+"Překážky zůstanou na místě a v nabídce budou oblouk, sud, plůtek, krátký tunel a prostor psovoda. Hodí se pro plánek z fotky.": "The obstacles stay in place and the menu will offer hoop, barrel, gate, chute and handling area. Handy for a plan from a photo.",
+"Překážky zůstanou na místě a v nabídce budou skoky, tunel, slalom, zóny a další překážky agility.": "The obstacles stay in place and the menu will offer jumps, tunnel, weave poles, contacts and other agility obstacles."
 },num:{
 "Vybráno: # překážka": "Selected: # obstacle", "Vybráno: # překážky": "Selected: # obstacles", "Vybráno: # překážek": "Selected: # obstacles", "Otočit výběr o #° doleva": "Rotate the selection #° left", "Otočit výběr o #° doprava": "Rotate the selection #° right",
 "Kopie: # překážka. Výběr je teď na kopiích.": "Copied # obstacle. The selection is now on the copies.", "Kopie: # překážky. Výběr je teď na kopiích.": "Copied # obstacles. The selection is now on the copies.", "Kopie: # překážek. Výběr je teď na kopiích.": "Copied # obstacles. The selection is now on the copies.",
@@ -2988,6 +3004,11 @@ var I18N_TRI={exact:{
 "# m · # překážka · SČP # s": "# m · # obstacle · SCT # s", "# m · # překážky · SČP # s": "# m · # obstacles · SCT # s", "# m · # překážek · SČP # s": "# m · # obstacles · SCT # s",
 "# m · # překážka": "# m · # obstacle", "# m · # překážky": "# m · # obstacles", "# m · # překážek": "# m · # obstacles", "Plocha bude # × # m.": "The field will be # × # m.", "Nejde: plocha # × # m by byla moc vysoká.": "Not possible: a # × # m field would be too tall.", "Parkur otočený o #°, plocha # × # m": "Course rotated by #°, field # × # m", "Parkur otočený o #°": "Course rotated by #°",
 "Posunuto. Překážky mimo plochu jsou přiražené ke kraji: #": "Moved. Obstacles outside the field were pushed to the edge: #",
+"Plocha # × # m a prostor psovoda uprostřed, třída H#.": "Field # × # m with the handling area in the middle, class H#.", "Plocha # × # m, třída A#.": "Field # × # m, class A#.",
+"Tenhle parkur jako Hoopers H#": "This course as Hoopers H#", "Tenhle parkur jako agility A#": "This course as agility A#",
+"Nový parkur Hoopers H#. V nabídce jsou oblouk, sud, plůtek, krátký tunel a prostor psovoda.": "New Hoopers course H#. The menu offers hoop, barrel, gate, chute and handling area.",
+"Nový parkur agility A#.": "New agility course A#.", "Parkur je teď Hoopers H#. Překážky na ploše zůstaly.": "The course is now Hoopers H#. The obstacles on the field stayed.",
+"Parkur je teď agility A#. Překážky na ploše zůstaly.": "The course is now agility A#. The obstacles on the field stayed.",
 "Posunout (#):": "Move (#):", "Postavit navíc (#):": "Add (#):", "Odstranit (#):": "Remove (#):", "# m doprava": "# m to the right", "# m doleva": "# m to the left", "# m dolů": "# m down", "# m nahoru": "# m up", "otočit o #°": "rotate by #°", "na # · # m, #°": "at # · # m, #°", "na # · # m": "at # · # m",
 "cvičení · # běh": "drill · # run", "cvičení · # běhy": "drill · # runs", "cvičení · # běhů": "drill · # runs", "# z # hotovo": "# of # done",
 "# běh ve skupině": "# run in the group", "# běhy ve skupině": "# runs in the group", "# běhů ve skupině": "# runs in the group",
@@ -5856,7 +5877,34 @@ function topbar(){
 var PAL_H=null;
 function palRender(){ PAL_H=isHoop(); $('palette').innerHTML=Object.keys(DEF).filter(function(k){ return !!HOOPT[k]===PAL_H; }).map(function(k){var d=DEF[k];
   var b='<button class="ob-btn" data-type="'+k+'" style="color:'+d.c+'"><svg viewBox="-9 -9 18 18">'+d.p+'</svg><span style="color:var(--text)">'+d.l+'</span></button>';
-  return k!=='jump'?b:b+Object.keys(JV).map(function(v){ return '<button class="ob-btn" data-type="jump:'+v+'" style="color:'+d.c+'"><svg viewBox="-9 -9 18 18">'+JV[v].p+'</svg><span style="color:var(--text)">'+JV[v].l+'</span></button>'; }).join('');}).join(''); }
+  return k!=='jump'?b:b+Object.keys(JV).map(function(v){ return '<button class="ob-btn" data-type="jump:'+v+'" style="color:'+d.c+'"><svg viewBox="-9 -9 18 18">'+JV[v].p+'</svg><span style="color:var(--text)">'+JV[v].l+'</span></button>'; }).join('');}).join(''); pSportUI(); }
+/* Parkur: Agility | Hoopers ve Stavbě (3.1). Ukazuje disciplínu parkuru na ploše (podle třídy), ne přepínač v horní liště.
+   Prázdná plocha se přepne hned na nový prázdný parkur stejné úrovně (A2 ↔ H2), u rozestavěného se aplikace zeptá:
+   nový prázdný parkur, nebo tenhle parkur jako druhá disciplína (překážky zůstanou, hodí se po plánku z fotky). */
+function pSportUI(){ var h=isHoop(); Array.prototype.forEach.call(document.querySelectorAll('#pSport button'),function(b){ var on=(b.getAttribute('data-ps')==='hoopers')===h; b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false'); }); }
+function clsTwin(c,h){ var m=/^[AH]([1-3])$/.exec(c||''); return (h?'H':'A')+(m?m[1]:'1'); }
+function sportSwitch(h){
+  if(h===isHoop()) return;
+  var cls=clsTwin(S.meta.cls,h), sz=newDefSize(cls).split('x'), W=+sz[0], H=+sz[1], dn=h?'Hoopers':'agility';
+  var nObs=S.obs.filter(function(o){ return o.type!=='ha'; }).length, lose=S.meta.dirty||!S.meta.id;
+  var pal=h?'oblouk, sud, plůtek, krátký tunel a prostor psovoda':'skoky, tunel, slalom, zóny a další překážky agility';
+  function fresh(k){ newCourse(cls,W,H,''); act(k); toast(h?'Nový parkur Hoopers '+cls+'. V nabídce jsou '+pal+'.':'Nový parkur agility '+cls+'.',4000); }
+  if(!nObs){ fresh('sport'); return; }
+  openSheet('<h3>Přepnout parkur na '+dn+'?</h3><p>Na ploše jsou překážky '+(h?'agility':'Hoopers')+'. Co s nimi?</p><div class="opts">'+
+    '<button class="opt" data-sw="new"><b>Nový prázdný parkur '+dn+'</b><span>Plocha '+W+' × '+H+' m'+(h?' a prostor psovoda uprostřed':'')+', třída '+cls+'.<span> '+(lose?'Neuložené změny tohoto parkuru se ztratí.':'Tenhle parkur zůstane, jak je uložený.')+'</span></span></button>'+
+    '<button class="opt" data-sw="conv"><b>Tenhle parkur jako '+dn+' '+cls+'</b><span>Překážky zůstanou na místě a v nabídce budou '+pal+'.'+(h?' Hodí se pro plánek z fotky.':'')+'</span></button>'+
+    '</div><div class="acts"><button class="btn" data-a="x">Zrušit</button></div>',
+    function(e){
+      var b=e.target.closest('[data-sw]');
+      if(b){ closeSheet();
+        if(b.getAttribute('data-sw')==='new'){ fresh('sport_new'); return; }
+        /* jen třída: překážky, trasa i podklad zůstanou; plán je pak jiný než uložený */
+        S.meta.cls=cls; S.meta.gen=false; S.meta.dirty=true; UNDO_SV=null; if(h!==isHoopS()) setSport(h?'hoopers':'agility',true);
+        save(); render(); ui(); topbar(); act('sport_conv'); toast('Parkur je teď '+dn+' '+cls+'. Překážky na ploše zůstaly.'); return; }
+      if(e.target.closest('[data-a]')) closeSheet();
+    });
+}
+$('pSport').onclick=function(e){ var b=e.target.closest('[data-ps]'); if(b) sportSwitch(b.getAttribute('data-ps')==='hoopers'); };
 palRender();
 
 function syncSides(){
@@ -6997,12 +7045,13 @@ function newDefSize(cls){ var q=HCFG[cls]; return q?q.W+'x'+q.H:'40x20'; }
 function newCourseSheet(){
   var cls=S.meta.cls||'A1'; if(isHoopS()!==isHoopC(cls)) cls=isHoopS()?'H1':'A1';
   var lose=S.obs.some(function(o){return o.type!=='ha';})&&(S.meta.dirty||!S.meta.id);
-  var clsOpt=function(c){ return '<option'+(c===cls?' selected':'')+'>'+c+'</option>'; };
+  /* nahoře Agility | Hoopers (3.1), ve výběru třídy jen třídy zvolené disciplíny */
   openSheet('<h3>Nový parkur</h3>'+(lose?'<p>Plocha se vyčistí a neuložené změny se ztratí.</p>':'')+
+    '<div class="seg wide nsp" id="nSp" role="group" aria-label="Disciplína"><button data-ns="agility">Agility</button><button data-ns="hoopers">Hoopers</button></div>'+
     '<label for="nSize">Plocha<select id="nSize"></select></label>'+
     '<div class="grid2" id="nOwn" hidden><label for="nW">Šířka (m)<input id="nW" type="number" inputmode="numeric" min="10" max="60" step="1" value="'+S.W+'"></label>'+
     '<label for="nH">Výška (m)<input id="nH" type="number" inputmode="numeric" min="10" max="40" step="1" value="'+S.H+'"></label></div>'+
-    '<label for="nCls">Třída<select id="nCls"><optgroup label="Agility">'+['A1','A2','A3'].map(clsOpt).join('')+'</optgroup><optgroup label="Hoopers">'+['H1','H2','H3'].map(clsOpt).join('')+'</optgroup></select></label>'+
+    '<label for="nCls">Třída<select id="nCls"></select></label>'+
     '<label for="nName">Název (nepovinný)<input id="nName" type="text" maxlength="60" autocomplete="off" placeholder="Nový parkur"></label>'+
     '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="ok">Začít</button></div>',
     function(e){
@@ -7019,7 +7068,12 @@ function newCourseSheet(){
     s.innerHTML=sizeOptsHTML(h)+'<option value="own">Vlastní šířka × výška</option>';
     if(!Array.prototype.some.call(s.options,function(o){return o.value===v;})) v=newDefSize($('nCls').value);
     s.value=v; $('nOwn').hidden=v!=='own'; }
-  fill(newDefSize(cls));
+  function clsFill(c){ var h=isHoopC(c), L=h?['H1','H2','H3']:['A1','A2','A3']; if(L.indexOf(c)<0) c=L[0];
+    $('nCls').innerHTML=L.map(function(x){ return '<option>'+x+'</option>'; }).join(''); $('nCls').value=c;
+    Array.prototype.forEach.call(document.querySelectorAll('#nSp button'),function(b){ var on=(b.getAttribute('data-ns')==='hoopers')===h; b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false'); }); }
+  clsFill(cls); fill(newDefSize(cls));
+  $('nSp').onclick=function(e){ var b=e.target.closest('[data-ns]'); if(!b) return; var h=b.getAttribute('data-ns')==='hoopers', c=$('nCls').value; if(h===isHoopC(c)) return;
+    clsFill(clsTwin(c,h)); fill($('nSize').value==='own'?'own':newDefSize($('nCls').value)); };
   $('nCls').onchange=function(){ if($('nSize').value!=='own') fill(newDefSize(this.value)); else fill('own'); };
   $('nSize').onchange=function(){ $('nOwn').hidden=this.value!=='own'; };
 }
@@ -10315,7 +10369,7 @@ function statsLoad(){
   },function(){});
 }
 /* souhrn první návštěvy za 14 dní: procenta z nových zařízení, která už počty akcí posílají */
-var ACT_L={onb:'průvodce',course:'parkur',v3d:'3D',runsave:'uložený běh',imp_open:'plánek z fotky',gen:'generátor',edit:'úprava plánu',save:'uložení parkuru',v_lib:'Parkury',v_run:'Běh',v_plan:'Plán',v_video:'Videa',v_more:'Více',dog:'nový pes',share:'sdílení',wk:'žebříček týdne',push:'upozornění',grp:'skupina',fx_3d:'po průvodci 3D',fx_run:'po průvodci Běh',onb_skip:'průvodce přeskočen'};
+var ACT_L={onb:'průvodce',course:'parkur',v3d:'3D',runsave:'uložený běh',imp_open:'plánek z fotky',gen:'generátor',edit:'úprava plánu',save:'uložení parkuru',v_lib:'Parkury',v_run:'Běh',v_plan:'Plán',v_video:'Videa',v_more:'Více',dog:'nový pes',share:'sdílení',wk:'žebříček týdne',push:'upozornění',grp:'skupina',fx_3d:'po průvodci 3D',fx_run:'po průvodci Běh',onb_skip:'průvodce přeskočen',sport:'disciplína v Plánu',sport_new:'disciplína: nový parkur',sport_conv:'disciplína: převod parkuru'};
 function statsActHTML(a){
   if(!a||!(+a.n>0)) return '';
   var m=+a.m||0, k=a.k||{}, pc=function(v){ return m?Math.round(100*(+v||0)/m)+' %':'–'; };
