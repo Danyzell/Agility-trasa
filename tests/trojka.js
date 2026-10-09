@@ -258,7 +258,7 @@ module.exports = async function ({ browser, base }) {
     const n = await ev(() => ({ h: $('sheet').querySelector('h3').textContent, li: $('sheet').querySelectorAll('li').length, v: APPV }));
     ok(n.h === 'Novinky v Pawkuru 3.0' && n.li >= 4 && /^3\.\d$/.test(n.v), 'novinky 3.0: ' + JSON.stringify(n));
     await ev(() => closeSheet());
-    const miss = await ev(() => ['Dnes', 'Plán na tento týden', 'Parkur týdne A2', 'cvičení · ještě nezkoušeno', 'cvičení · 3 běhy', '1 z 4 hotovo', 'zbývá 3 dny', 'dnes', 'poslal/a', '3 běhy ve skupině', 'Zaběhnout znovu',
+    const miss = await ev(() => ['Dnes', 'Plán na tento týden', 'Parkur týdne A2', 'cvičení · ještě nezkoušeno', 'cvičení · 3 běhy', '1 z 4 hotovo', 'zbývá 3 dny', 'dnes', 'posílá', '3 běhy ve skupině', 'Zaběhnout znovu',
       'Galerie', 'Nejlépe hodnocené', '31× otevřeno', 'bez hodnocení', 'Další (12)', '★ 4,6 · 9 hodnocení', 'Zveřejnit v galerii', 'Poslat skupině', 'Skupiny a trenér', 'Jsi člen', '12 členů', '4 členové', 'poslední parkur',
       'Žebříček skupiny', 'Upozornění', 'Posílat upozornění na tohle zařízení', 'Zapni si upozornění', 'Novinky v Pawkuru 3.0', 'Nepovedlo se: server 500', 'Běh je v žebříčku skupiny Moje parta', 'Jsi ve skupině Moje parta',
       'Skupinu se nepodařilo načíst (prázdná odpověď).', 'Nepovedlo se: prázdná odpověď', 'Smazat parkur', 'Zatím bez hodnocení', '★ 4,6 · 9 hodnocení', '31× otevřeno',

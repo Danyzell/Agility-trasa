@@ -223,6 +223,31 @@ module.exports = async function ({ browser, base }) {
     await ev(() => { zoom = 2; ui(); }); await page.click('#mView'); await w(100); r = await z(); ok(r.zoom === 1.5, 'z výchozích 200 % ve Stavbě zpět na výchozích 150 %: ' + JSON.stringify(r));
   });
 
+  await step('upozornění: nabídka po prvním uloženém běhu a karta na Domů', async () => {
+    const P = await phone(browser, { isMobile: true }); const calls = [];
+    await offline(P.ctx, { get_catalog: { version: 0 }, app_act: null, push_pubkey: 'B' + 'A'.repeat(86), push_sub_set: (a) => { calls.push(a); return true; }, push_comp_set: true, push_watch_set: 0 });
+    await P.ctx.addInitScript(() => { try { localStorage.setItem('agility-onb-v1', JSON.stringify({ done: 1, v: 2 })); localStorage.setItem('agility-news-v1', JSON.stringify('3.0')); localStorage.setItem('agility-instx-v1', JSON.stringify(Date.now())); localStorage.setItem('agility-ask-v1', JSON.stringify({ x: 1 }));
+      if (!sessionStorage.getItem('v1')) { sessionStorage.setItem('v1', '1'); localStorage.setItem('agility-visits-v1', JSON.stringify({ n: 1, at: Date.now() })); localStorage.setItem('agility-dogs-v1', JSON.stringify([{ id: 'd1', name: 'Fany', size: 'M', cls: 'A2' }])); }
+      window.PUSH_TEST = { pushManager: { getSubscription: () => Promise.resolve(window.PUSH_SUB || null), subscribe: () => { window.PUSH_SUB = { endpoint: 'https://push.example/abc', options: {}, unsubscribe() { window.PUSH_SUB = null; return Promise.resolve(true); }, toJSON() { return { endpoint: this.endpoint, keys: { p256dh: 'p'.repeat(40), auth: 'a'.repeat(22) } }; } }; return Promise.resolve(window.PUSH_SUB); } } };
+    } catch (e) {} });
+    const p = P.page; await p.goto(base + '/?pushnudge#home'); await p.waitForTimeout(600);
+    ok(await p.evaluate(() => !$('hmPush') && pushHomeHTML() === ''), 'první návštěva bez běhu: karta upozornění ještě ne');
+    await p.click('#v-home [data-h="wkrun"]'); await p.waitForTimeout(300);
+    await p.evaluate(() => { $('manT').value = '41'; RUN.f = 0; RUN.r = 1; }); await p.click('#saveRun'); await p.waitForTimeout(600);
+    /* běh na parkuru týdne nabídne žebříček; nabídka upozornění počká, až se okno zavře */
+    if (await p.evaluate(() => !!$('sheet').querySelector('.wksend'))) { await p.waitForTimeout(2500); ok(await p.evaluate(() => !/Upozornit tě/.test($('sheet').textContent)), 'nabídka upozornění nemá přebít okno žebříčku'); await p.click('#sheet [data-a="x"]'); }
+    await p.waitForFunction(() => !$('scrim').hidden && /Upozornit tě na nový parkur\?/.test($('sheet').textContent), null, { timeout: 6000 });
+    await p.click('#sheet [data-a="on"]'); await p.waitForTimeout(500);
+    const r = await p.evaluate(() => ({ on: PUSH.on, toast: $('toast').textContent, n: ACT.a.push_nudge, k: !!lsGet('agility-pushnudge-v1', 0) }));
+    ok(calls.length === 1 && r.on && r.toast === 'Upozornění jsou zapnutá.' && r.n === 1 && r.k, 'po prvním běhu nabídka a zapnutí: ' + JSON.stringify({ calls: calls.length, r }));
+    /* karta na Domů se ukáže po prvním běhu i na první návštěvě, když upozornění nejsou zapnutá */
+    ok(await p.evaluate(() => { PUSH.on = false; PUSH.x = 0; VISITS = { n: 1, at: Date.now() }; return pushHomeHTML() !== ''; }), 'karta upozornění po prvním běhu i na první návštěvě');
+    /* druhý běh už nabídku neotevře */
+    await p.evaluate(() => { $('manT').value = '40'; }); await p.click('#saveRun'); await p.waitForTimeout(3000);
+    ok(await p.evaluate(() => !/Upozornit tě/.test($('sheet').textContent) || $('scrim').hidden), 'nabídka jen jednou');
+    P.errs.forEach(x => T.errs.push(x)); await P.ctx.close();
+  });
+
   await T.ctx.close();
   return T.errs;
 };

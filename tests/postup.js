@@ -63,8 +63,8 @@ module.exports = async function ({ browser, base }) {
     await open('CZ');
     /* parkur z knihovny: Plán → stejné časy musí dát kalkulačka pro stejnou délku, třídu a disciplínu */
     const m = await ev(() => { const c = listFor('A2')[0], m = metrics(c.obs, c.route, 'A2', c.turns); return { len: Math.round(m.len * 10) / 10, sct: m.sct, mct: m.mct, spd: m.spd, disc: m.disc }; });
-    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="sct"]'); await w(200);
-    ok(await page.isVisible('#sheet #scLen') && await ev(() => moreTab === '' && !!$('scDisc') && !$('scSize')), 'kalkulačka se má otevřít jako list, bez velikosti (ta hraje roli jen v Británii)');
+    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="tools"]'); await page.click('#moreTabs [data-m="sct"]'); await w(200);
+    ok(await page.isVisible('#sheet #scLen') && await ev(() => moreTab === 'tools' && !!$('scDisc') && !$('scSize')), 'kalkulačka se má otevřít jako list, bez velikosti (ta hraje roli jen v Británii)');
     ok(/Zadej délku trati/.test(await page.textContent('#scOut')), 'bez délky výzva');
     await page.selectOption('#scCls', 'A2'); await page.selectOption('#scDisc', m.disc === 'Agility' ? 'A' : 'J');
     await page.fill('#scLen', String(m.len)); await w(100);
@@ -88,7 +88,7 @@ module.exports = async function ({ browser, base }) {
     await ev(() => { DOGS = [{ id: 'd1', name: 'Rex', size: 'M', cls: 'G5' }]; DOGC = 'd1'; saveDogs(); loadCourse(listFor('A2')[0], true); }); if (await page.isVisible('#scrim')) await T.sheet('ok');
     const m = await ev(() => { const m = curM(); return { len: Math.round(m.len * 10) / 10, sct: m.sct, mct: m.mct, uk: m.uk, spd: m.spd, disc: m.disc, mx: Math.round(ukSpd('G5', 'M', m.disc === 'Agility' ? 'A' : 'J') * 100) / 100 }; });
     ok(m.uk && m.mct === 0 && m.spd === m.mx && m.sct === Math.ceil(m.len / m.mx - 1e-9) + 10, 'Plán v Británii: rychlost z matice pro Medium a Grade 5: ' + JSON.stringify(m));
-    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="sct"]'); await w(200);
+    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="tools"]'); await page.click('#moreTabs [data-m="sct"]'); await w(200);
     const d0 = await ev(() => ({ cls: $('scCls').value, size: $('scSize').value, disc: !!$('scDisc') }));
     ok(d0.cls === 'G5' && d0.size === 'M' && d0.disc, 'výchozí třída a velikost podle psa: ' + JSON.stringify(d0));
     await page.selectOption('#scDisc', m.disc === 'Agility' ? 'A' : 'J'); await page.fill('#scLen', String(m.len)); await w(100);

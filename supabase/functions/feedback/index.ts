@@ -43,7 +43,7 @@ Deno.serve(async (req: Request) => {
     if (!/^[A-Za-z0-9_-]{8,64}$/.test(device)) return json({ error: 'Neplatné zařízení.' }, 400);
     /* proti zahlcení: nejvýš 5 zpráv z jednoho telefonu za den a 60 ze všech za hodinu */
     const day = new Date(Date.now() - 864e5).toISOString(), hour = new Date(Date.now() - 36e5).toISOString();
-    if (await count(`device=eq.${device}&created_at=gt.${day}`) >= 5) return json({ error: 'Dnes už jsi poslal(a) dost zpráv, zkus to zítra.' }, 429);
+    if (await count(`device=eq.${device}&created_at=gt.${day}`) >= 5) return json({ error: 'Na dnešek už je zpráv dost, zkus to zítra.' }, 429);
     if (await count(`created_at=gt.${hour}`) >= 60) return json({ error: 'Teď přišlo moc zpráv, zkus to za chvíli.' }, 429);
 
     const ins = await fetch(`${SBU}/rest/v1/feedback`, { method: 'POST', headers: { ...H, Prefer: 'return=representation' }, body: JSON.stringify(row) });

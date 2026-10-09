@@ -12,14 +12,15 @@ module.exports = async function ({ browser, base }) {
     await fresh();
     const nav = await ev(() => [...document.querySelectorAll('.nav button')].map(b => b.getAttribute('data-v')).join());
     ok(nav === 'home,plan,lib,run,more', 'spodní lišta: ' + nav);
-    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="video"]'); await page.waitForTimeout(200);
+    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="learn"]'); await page.click('#moreTabs [data-m="video"]'); await page.waitForTimeout(200);
     ok(await page.isVisible('#v-video') && await page.locator('#vidList button').count() > 3, 'Videa z Více se neotevřela');
   });
 
   await step('více ve třech skupinách', async () => {
     await page.click('.nav [data-v="more"]');
-    const r = await ev(() => ({ g: [...document.querySelectorAll('#moreTabs .mgrp')].map(x => x.textContent).join(), rows: [...document.querySelectorAll('#moreTabs .mrow:not([hidden])')].map(x => x.getAttribute('data-m')).join() }));
-    ok(r.g === 'Můj tým,Učení,Nástroje,Aplikace' && r.rows === 'acct,dogs,groups,diary,video,start,warm,coach,sct,listina,plus,set,about', 'Více: ' + JSON.stringify(r));
+    /* 3.1: 8 řádků; Učení a Pro rozhodčí a pořadatele jsou skupiny, Plus je v Účtu */
+    const r = await ev(() => ({ g: [...document.querySelectorAll('#moreTabs .mgrp')].map(x => x.textContent).join(), rows: [...document.querySelectorAll('#moreTabs .mrow')].filter(x => x.offsetParent !== null).map(x => x.getAttribute('data-m')).join() }));
+    ok(r.g === 'Můj tým,Učení a nástroje,Aplikace' && r.rows === 'acct,dogs,groups,diary,learn,tools,set,about', 'Více: ' + JSON.stringify(r));
     await page.click('#moreTabs [data-m="diary"]');
     ok(/Postup A1/.test(await page.textContent('#moreBody')) && /Statistiky/.test(await page.textContent('#moreBody h2')), 'Deník bez statistik');
     await page.click('#moreBack'); await page.click('#moreTabs [data-m="set"]');
@@ -49,7 +50,7 @@ module.exports = async function ({ browser, base }) {
   });
 
   await step('angličtina', async () => {
-    const miss = await ev(() => ['Můj tým', 'Učení', 'Aplikace', 'Deník a statistiky', 'Videa a technika', 'Trenéři a plánky', 'Nastavení a záloha', 'O aplikaci a podpora',
+    const miss = await ev(() => ['Můj tým', 'Učení', 'Aplikace', 'Deník a statistiky', 'Videa a technika', 'Plánky rozhodčích a knihy', 'Učení a nástroje', 'Pro rozhodčí a pořadatele', 'Nastavení a záloha', 'O aplikaci a podpora',
       'Rozbor a trénink', 'Venku', 'Fotka a sdílení', 'Výzvy, žebříčky a závody', 'Parkur týdne, Zahrada týdne, závody poblíž, výzva dne'].filter(t => trLookup(t) == null));
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
   });
