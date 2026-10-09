@@ -5585,8 +5585,10 @@ function calc(ob,rt,tu,pf){
       var qq=c[0]; for(var t=1;t<=16;t++){var w=bz(c[0],c[1],c[2],c[3],t/16); L+=dst(qq,w); qq=w; pts.push([w,L]);}
     });
     var m=pts[0][0]; for(var j=0;j<pts.length;j++) if(pts[j][1]>=L/2){m=pts[j][0]; break;}
+    /* šipka směru ve dvou třetinách úseku (popisek délky je v půlce): poloha a směr z dvou sousedních bodů */
+    var ar=null; for(j=1;j<pts.length;j++) if(pts[j][1]>=L*.67){ var qa=pts[j-1][0], qb=pts[j][0], ql=dst(qa,qb)||1; ar={x:qb.x,y:qb.y,dx:(qb.x-qa.x)/ql,dy:(qb.y-qa.y)/ql}; break; }
     total+=L;
-    segs.push({d:d,len:L,m:m,pcs:pcs});
+    segs.push({d:d,len:L,m:m,pcs:pcs,a:ar});
   }
   return {P:P,segs:segs,total:total,pf:{wr:WR,wl:WL,k:BZK}};
 }
@@ -5919,6 +5921,7 @@ function fmt2(v){var s=v.toFixed(2); return LANG==='en'?s:s.replace('.',',');}
 /* jednotky: metry (výchozí) nebo stopy a yardy za sekundu (AKC, UKI); data se ukládají vždy v metrech */
 function UFT(){ return typeof SET==='object'&&SET&&SET.unit==='ft'; }
 function lenU(m){ return UFT()?fmt(m*3.28084)+' ft':fmt(m)+' m'; }
+function lenN(m){ return UFT()?fmt(m*3.28084)+' ft':fmt(m); } /* délka úseku na plánu: metry jen číslem (3.3, jako Smarter Agility), stopy s „ft“, ať se nepletou s metry */
 function gridU(m){ return UFT()?Math.round(m*3.28084)+' ft':m+' m'; }
 function spdU(v){ return UFT()?fmt(v*1.09361)+' yd/s':fmt(v)+' m/s'; }
 /* rychlost pro SČP: Agility podle SET.spd, Jumping podle SET.spdJ, jinak o 0,5 m/s vyšší než Agility (jumping je bez zón, rozhodčí volí rychlejší čas;
@@ -6189,8 +6192,13 @@ function render(){
   var J=(!!PLANUI.judge||EXP.judge)&&!quiz, legs=!quiz&&!J&&!EXP.nolegs;
   c.segs.forEach(function(s,i){
     if(i+1>=showN) return;
-    h+='<path d="'+s.d+'" fill="none" stroke="'+(J?'var(--text)':qc?qc(i):'var(--zone)')+'" stroke-width="'+(J?'.08':qc?'.2':'.14')+'" stroke-dasharray="'+(J?'.45 .3':'.5 .35')+'" marker-end="url(#'+(J?'arrJ':'arr')+')"'+(qdim&&qdim(i)?' opacity=".25"':J?' opacity=".8"':'')+'/>'+
-      (legs?'<g class="leg" data-leg="'+i+'"><text x="'+r(s.m.x)+'" y="'+r(s.m.y)+'" font-size=".62" text-anchor="middle" fill="var(--muted)" stroke="var(--field)" stroke-width=".22" paint-order="stroke">'+lenU(s.len)+'</text></g>':'');
+    /* trasa jako na plánku ze Smarter Agility (3.3, uživatel: „naše má strašně hrubé a špatně se orientuje“): tenká plná tmavá čára,
+       malá plná šipka ve dvou třetinách úseku místo velké na konci u překážky, délka úseku jen číslem (jednotka je v hlavičce) */
+    var col=J?'var(--text)':qc?qc(i):'var(--text)', op=qdim&&qdim(i)?' opacity=".25"':J?' opacity=".8"':'';
+    h+='<path d="'+s.d+'" fill="none" stroke="'+col+'" stroke-width="'+(J?'.08':qc?'.2':'.09')+'"'+(J?' stroke-dasharray=".45 .3" marker-end="url(#arrJ)"':' stroke-linecap="round"')+op+'/>'+
+      (!J&&s.a?'<path class="pa" d="M'+r(s.a.x+s.a.dx*.32)+','+r(s.a.y+s.a.dy*.32)+'L'+r(s.a.x-s.a.dx*.22-s.a.dy*.2)+','+r(s.a.y-s.a.dy*.22+s.a.dx*.2)+'L'+r(s.a.x-s.a.dx*.22+s.a.dy*.2)+','+r(s.a.y-s.a.dy*.22-s.a.dx*.2)+'Z" fill="'+col+'"'+op+'/>':'')+
+      (legs?(function(){ var t=lenN(s.len), w=t.length*.31+.24; /* číslo v mezeře na čáře (podklad v barvě plochy), jinak čára prosvítá mezi číslicemi a z „7,6“ je „7;6“ */
+        return '<g class="leg" data-leg="'+i+'"><rect x="'+r(s.m.x-w/2)+'" y="'+r(s.m.y-.34)+'" width="'+r(w)+'" height=".66" rx=".16" fill="var(--field)"/><text x="'+r(s.m.x)+'" y="'+r(s.m.y+.2)+'" font-size=".56" text-anchor="middle" fill="var(--text)" fill-opacity=".8">'+t+'</text></g>'; })():'');
   });
   $('pth').innerHTML=h;
   var gr={}, b='';
@@ -11049,7 +11057,7 @@ function appShare(){
   dnCopy(APP_URL);
 }
 /* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
-var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.2';
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.3';
 var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
 function fbSave(){ lsSet(FBK,FB); }
 var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];

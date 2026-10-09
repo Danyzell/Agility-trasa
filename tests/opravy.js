@@ -23,7 +23,7 @@ module.exports = async function ({ browser, base }) {
     ok(await ev(() => !Object.keys(NEWC).length && document.querySelector('.nav .ndot').hidden), 'nová instalace hlásí „Nový parkur“');
 
     T.step('export v tréninku paměti');
-    const q = await ev(() => { setPanel('quiz'); quizTest(); const n = (fieldSvgString().match(/marker-end/g) || []).length, still = panel === 'quiz' && QZ.phase === 'test'; setPanel(null); return { n, route: S.route.length, still }; });
+    const q = await ev(() => { setPanel('quiz'); quizTest(); const n = (fieldSvgString().match(/class="pa"/g) || []).length, /* šipka každého úseku trasy (3.3: malá šipka v úseku místo marker-end) */ still = panel === 'quiz' && QZ.phase === 'test'; setPanel(null); return { n, route: S.route.length, still }; });
     ok(q.n === q.route - 1 && q.still, 'export během tréninku paměti nemá celou trasu: ' + JSON.stringify(q));
 
     T.step('animace ve Videích');
