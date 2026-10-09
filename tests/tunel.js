@@ -103,6 +103,68 @@ module.exports = async function ({ browser, base }) {
     await ev(() => close3d());
   });
 
+  await step('AR: položení, rohy a doladění', async () => {
+    await fresh(); await tunCourse();
+    /* výpočty položení (bez WebXR): rohy, model na stole, kompas, posun vůči telefonu */
+    const m = await ev(() => v3dLoad().then(M => {
+      const A = M.arMath, a = { x: 1, y: 0, z: 2 }, b = { x: 1 + 40 * Math.cos(.5), y: 0, z: 2 - 40 * Math.sin(.5) };
+      const yaw = A.cornerYaw(a, b), st = { x: 3, z: 7 }, k = 1, root = A.rootAt(a, { x: -st.x, y: 0, z: -st.z }, yaw, k);
+      /* bod plánu (px, pz) ve světě: root + otočení o yaw (souřadnice kolem startu) */
+      const w = (px, pz) => { const r = A.rot((px - st.x) * k, (pz - st.z) * k, yaw); return { x: root.x + r.x, z: root.z + r.z }; };
+      const c0 = w(0, 0), c1 = w(40, 0), c2 = w(0, 20);
+      const my = A.modelYaw({ x: 0, z: -1 }), mx = A.rot(1, 0, my), mz = A.rot(0, 1, my);
+      const ay = A.azYaw({ x: 0, z: -1 }, 90, 0), ax = A.rot(1, 0, ay);
+      const n1 = A.nudge({ x: 0, z: -1 }, 1, 0, .25), n2 = A.nudge({ x: 0, z: -1 }, 0, 1, .25);
+      return { yaw, c0, c1, c2, mx, mz, ax, n1, n2 };
+    }));
+    const near = (p, x, z) => Math.abs(p.x - x) < 1e-9 && Math.abs(p.z - z) < 1e-9;
+    ok(Math.abs(m.yaw - .5) < 1e-9 && near(m.c0, 1, 2) && near(m.c1, 1 + 40 * Math.cos(.5), 2 - 40 * Math.sin(.5)), 'rohy plánu neleží na zaměřených rozích: ' + JSON.stringify(m));
+    ok(Math.abs(Math.hypot(m.c2.x - 1, m.c2.z - 2) - 20) < 1e-9 && (m.c1.x - 1) * (m.c2.z - 2) - (m.c1.z - 2) * (m.c2.x - 1) > 0, 'plán je podle rohů zrcadlově: ' + JSON.stringify(m));
+    ok(near(m.mx, 1, 0) && near(m.mz, 0, 1), 'model na stole není jako mapa (x doprava, y k telefonu): ' + JSON.stringify(m));
+    ok(near(m.ax, 1, 0), 'kolbiště na východ při pohledu na sever nemíří doprava: ' + JSON.stringify(m));
+    ok(near(m.n1, .25, 0) && near(m.n2, 0, -.25), 'posun vůči telefonu: ' + JSON.stringify(m));
+    /* ovládání v aplikaci s podstrčeným AR: tlačítka volají api, nápovědy a doladění */
+    await ev(() => {
+      window.__ar = { calls: [], placed: false };
+      const api = { replace() { __ar.calls.push('replace'); }, corners() { __ar.calls.push('corners'); return true; }, rotate(d) { __ar.calls.push('rot' + d); },
+        nudge(x, z) { __ar.calls.push('mv' + x + ',' + z); }, setScale(md) { __ar.calls.push('scale' + md); }, play() { return true; },
+        end() { __ar.calls.push('end'); __ar.cb.onEnd(); }, get placed() { return __ar.placed; }, get length() { return 10; } };
+      ringsPut([{ id: 'ra', name: 'K', lat: 50.08, lng: 14.42, acc: 3, az: 100, azErr: 2, azT: 1, W: 40, H: 20, cid: S.meta.id, at: 1 }]);
+      return v3dLoad().then(M => { V3D.m = Object.assign({}, M, { startAR(ui, sp, cb) { __ar.sp = sp; __ar.cb = cb; return Promise.resolve(api); } }); AR.ql = false; });
+    });
+    await ev(() => arStart()); await page.waitForTimeout(100);
+    const s0 = await ev(() => ({ ui: !$('arUi').hidden, hint: $('arHint').textContent, az: __ar.sp.az, mag: ringAzMag(ringFor(S.meta.id)), fine: $('arFine').hidden, cor: !$('arUi').querySelector('[data-ar="corners"]').hidden }));
+    ok(s0.ui && /zelený kroužek/.test(s0.hint) && Math.abs(s0.az - s0.mag) < 1e-9 && s0.az < 96 && s0.az > 94 && s0.fine && s0.cor, 'start AR: ' + JSON.stringify(s0));
+    for (const sel of ['[data-ar="place"]', '[data-ar="corners"]']) await page.click('#arUi ' + sel);
+    await page.click('#arUi [data-ar="fine"]');
+    const s1 = await ev(() => ({ fine: $('arFine').hidden, on: $('arUi').querySelector('[data-ar="fine"]').classList.contains('on'), ex: $('arUi').querySelector('[data-ar="fine"]').getAttribute('aria-expanded') }));
+    ok(s1.fine && s1.on && s1.ex === 'true', 'doladění před položením nemá být vidět: ' + JSON.stringify(s1));
+    await ev(() => { __ar.placed = true; __ar.cb.onState('placedCorners', { d: 38.6, w: 40 }); });
+    const s2 = await ev(() => ({ fine: $('arFine').hidden, hint: $('arHint').textContent }));
+    ok(!s2.fine && s2.hint === 'Parkur stojí podle rohů kolbiště. Rohy jsou od sebe 38,6 m, na plánu 40 m.', 'po položení podle rohů: ' + JSON.stringify(s2));
+    const btns = await page.$$('#arFine button'); for (const b of btns) await b.click();
+    await page.click('#arUi [data-ar="model"]');
+    const s3 = await ev(() => ({ cor: $('arUi').querySelector('[data-ar="corners"]').hidden, calls: __ar.calls.slice() }));
+    ok(s3.cor && s3.calls.join(' ') === 'replace corners rot15 rot1 rot-1 rot-15 mv-1,0 mv0,1 mv0,-1 mv1,0 scaletrue', 'tlačítka AR: ' + JSON.stringify(s3));
+    await page.click('#arUi [data-ar="real"]');
+    await ev(() => { __ar.cb.onState('placedCornersOff', { d: 30.25, w: 40 }); });
+    const s4 = await ev(() => ({ cor: $('arUi').querySelector('[data-ar="corners"]').hidden, hint: $('arHint').textContent }));
+    ok(!s4.cor && /^Rohy jsou od sebe 30,3 m, ale plán má 40 m\./.test(s4.hint), 'nesedící rohy: ' + JSON.stringify(s4));
+    /* nové AR začíná ve skutečné velikosti a se zavřeným doladěním */
+    await page.click('#arUi [data-ar="model"]'); await page.click('#arUi [data-ar="end"]');
+    const s5 = await ev(() => ({ ui: $('arUi').hidden, api: AR.api }));
+    ok(s5.ui && s5.api === null, 'Zavřít AR: ' + JSON.stringify(s5));
+    await ev(() => arStart()); await page.waitForTimeout(100);
+    const s6 = await ev(() => ({ real: $('arUi').querySelector('[data-ar="real"]').classList.contains('on'), model: $('arUi').querySelector('[data-ar="model"]').classList.contains('on'), cor: !$('arUi').querySelector('[data-ar="corners"]').hidden, fine: AR.fine }));
+    ok(s6.real && !s6.model && s6.cor && !s6.fine, 'druhé AR zdědilo model nebo doladění: ' + JSON.stringify(s6));
+    await ev(() => AR.api.end());
+    /* angličtina nových textů */
+    const miss = await ev(() => ['Podle rohů', 'Doladit', 'Doladit polohu', 'Otočit doleva o 15°', 'Otočit doprava o 1°', 'Posunout dál o 25 cm', 'Posunout blíž o 25 cm', 'Posunout doleva o 25 cm', 'Posunout doprava o 25 cm',
+      'Parkur stojí podle rohů kolbiště. Rohy jsou od sebe 38,6 m, na plánu 40 m.', 'Rohy jsou od sebe 30,3 m, ale plán má 40 m. Zkontroluj rohy a zkus to znovu „Podle rohů“, nebo dorovnej v „Doladit“.']
+      .concat(Object.keys(AR_TXT).map(k => AR_TXT[k])).filter(t => trLookup(t) == null));
+    ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
+  });
+
   await step('AR na iPhonu (Quick Look)', async () => {
     await fresh(); await tunCourse();
     /* parkur jako model USDZ (zip), který iPhone položí na zem */

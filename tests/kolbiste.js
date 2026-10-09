@@ -127,8 +127,9 @@ module.exports = async function ({ browser, base }) {
     /* Stavba v terénu: zaškrtnuté natočení z kolbiště nahradí otočení podle oka */
     await T.tool('fld'); await page.waitForSelector('#ovFld');
     ok(await page.isChecked('#fdAz') && /Natočení z kolbiště/.test(await page.textContent('#fdBody')), 've Stavbě v terénu chybí natočení z kolbiště');
-    const r = await ev(() => { FLD.h = 100; $('fdCal').click(); return { h0: FLD.h0, az: ringFor(S.meta.id).az, cal: FLD.cal, saved: SET.fldH0 }; });
-    ok(r.cal && r.h0 === r.az && r.saved !== r.az, 'výchozí natočení ze zaměření: ' + JSON.stringify(r));
+    /* natočení kolbiště je zeměpisné, kompas magnetický: výchozí kurz = natočení − deklinace (v Brně asi 5,5°) */
+    const r = await ev(() => { FLD.h = 100; $('fdCal').click(); const g = ringFor(S.meta.id); return { h0: FLD.h0, az: g.az, mag: ringAzMag(g), dc: ringDecl(g), cal: FLD.cal, saved: SET.fldH0 }; });
+    ok(r.cal && Math.abs(r.h0 - r.mag) < 1e-6 && Math.abs(((r.az - r.h0 + 360) % 360) - r.dc) < 1e-6 && r.dc > 4.5 && r.dc < 7 && r.saved !== r.h0, 'výchozí natočení ze zaměření: ' + JSON.stringify(r));
     await ev(() => fldClose());
     /* bez natočení se kurz bere z kompasu jako dřív */
     const r2 = await ev(() => { fldOpen(); $('fdAz').checked = false; FLD.h = 123; $('fdCal').click(); const o = { h0: FLD.h0 }; fldClose(); return o; });
@@ -139,10 +140,43 @@ module.exports = async function ({ browser, base }) {
     ok(Math.abs(c[1] - 270) < .5 && c[2] === null && c[3] === 42, 'kurz kamery: ' + JSON.stringify(c));
   });
 
+  await step('deklinace kompasu (WMM2025)', async () => {
+    await fresh();
+    /* testovací hodnoty NOAA k WMM2025: rok, výška (km), šířka, délka, deklinace */
+    const NOAA = [[2025, 28, 89, -121, -99.77], [2025, 65, 43, 93, 0.50], [2025.5, 69, 38, -144, 12.93], [2026, 46, -24, -122, 14.01], [2026.5, 12, -79, 115, -137.58], [2027.5, 0, -13, -59, -17.49], [2028.5, 11, 34, 0, 1.57], [2029.5, 77, -18, 138, 4.45]];
+    const r = await ev(N => N.map(v => +(magDecl(v[2], v[3], v[0], v[1]) - v[4]).toFixed(3)), NOAA);
+    ok(r.every(d => Math.abs(d) < .01), 'deklinace nesedí na NOAA: ' + JSON.stringify(r));
+    const w = await ev(() => [magDecl(50.08, 14.42, 2026.8), magDecl(40.7, -74, 2026.8), magDecl(47.6, -122.3, 2026.8), magDecl(NaN, 1, 2026)]);
+    ok(w[0] > 4.5 && w[0] < 6 && w[1] < -11 && w[1] > -14 && w[2] > 14 && w[2] < 16 && w[3] === 0, 'Praha, New York, Seattle: ' + JSON.stringify(w));
+    /* staré kolbiště změřené kompasem (magnetické, ± 15°, bez azT) se při čtení jednou převede na zeměpisné; z GPS zůstane */
+    const m = await ev(() => {
+      localStorage.setItem(RINGK, JSON.stringify([{ id: 'r1', name: 'K', lat: 50.08, lng: 14.42, acc: 3, az: 100, azErr: 15, W: 40, H: 20, cid: null, at: 1 }, { id: 'r2', name: 'G', lat: 50.08, lng: 14.42, acc: 3, az: 100, azErr: 3, W: 40, H: 20, cid: null, at: 1 }]));
+      const a = ringsGet(), b = ringsGet(), st = JSON.parse(localStorage.getItem(RINGK));
+      return { d: ringDecl(a[0]), a0: a[0].az, t: a[0].azT, b0: b[0].az, s0: st[0].az, g: a[1].az, gt: a[1].azT, mag: ringAzMag(a[0]) };
+    });
+    ok(Math.abs(m.a0 - (100 + m.d)) < .06 && m.t === 1 && m.b0 === m.a0 && m.s0 === m.a0 && m.g === 100 && !m.gt && Math.abs(m.mag - 100) < .06, 'převod starého natočení z kompasu: ' + JSON.stringify(m));
+    /* měření kompasem: na obrazovce i v uložení zeměpisné natočení (kompas + deklinace) */
+    await ev(() => ringsPut([{ id: 'r3', name: 'C', lat: 50.08, lng: 14.42, acc: 3, az: null, W: 40, H: 20, cid: null, at: 1 }]));
+    await T.tool('ring'); await page.waitForSelector('#ovRing');
+    await ev(() => ringAz(ringById('r3'))); await page.click('[data-rgz="cmp"]');
+    const ori = await ev(() => { const n = 'ondeviceorientationabsolute' in window ? 'deviceorientationabsolute' : 'deviceorientation'; window.dispatchEvent(new DeviceOrientationEvent(n, { alpha: 260, beta: 0, gamma: 0, absolute: true })); return { hd: $('rgHd').textContent, h: RG.h, d: ringDecl(ringById('r3')) }; });
+    ok(ori.h === 100 && ori.hd.indexOf(Math.round(100 + ori.d) + '°') === 0, 'kompas ukazuje zeměpisné natočení: ' + JSON.stringify(ori));
+    await page.click('#rgOk'); await page.waitForTimeout(150);
+    const g3 = await ev(() => ringById('r3'));
+    ok(Math.abs(g3.az - (100 + ori.d)) < .06 && g3.azErr === 15 && g3.azT === 1, 'uložené natočení z kompasu: ' + JSON.stringify(g3));
+    /* navigace: směr z GPS je zeměpisný, kompas magnetický; šipka = směr − kompas − deklinace */
+    await T.ctx.setGeolocation({ latitude: 50.07, longitude: 14.42, accuracy: 5 });
+    await ev(() => ringNav(ringById('r3'))); await page.waitForTimeout(500);
+    const nav = await ev(() => { RG.h = 10; const n = 'ondeviceorientationabsolute' in window ? 'deviceorientationabsolute' : 'deviceorientation'; window.dispatchEvent(new DeviceOrientationEvent(n, { alpha: 350, beta: 0, gamma: 0, absolute: true })); return { tr: $('rgRot').getAttribute('transform'), d: ringDecl(ringById('r3')) }; });
+    const rot = parseFloat(String(nav.tr).replace(/^rotate\(/, ''));
+    ok(Math.abs(rot - (0 - 10 - nav.d)) < .05 || Math.abs(rot - (360 - 10 - nav.d)) < .05, 'šipka navigace s deklinací: ' + JSON.stringify(nav));
+    await ev(() => { ringStop(); $('rgClose').click(); });
+  });
+
   await step('angličtina', async () => {
     const miss = await ev(() => ['Kolbiště (GPS)', 'Uložit polohu kolbiště', 'Načíst plán závodiště', 'Natočení kolbiště', 'Projdu dva rohy (GPS)', 'Jsi na kolbišti', 'severovýchod',
       'Ulož si, kde stojí kolbiště, a aplikace tě k němu dovede. Zaměřené natočení použije Stavba v terénu a AR na place. Polohy zůstávají v tomhle zařízení a v záloze, kterou si sám uložíš.',
-      'Parkur stojí natočený podle kolbiště (kompas může o pár stupňů ujet, dorovnej šipkami).', 'přesnost ± 3 m', '12 měření', 'Kolbiště 3', 'Vzdálenost rohů podle GPS: 38,5 m (kolbiště má 40 m).', '120 m od tebe']
+      'Parkur stojí natočený podle kolbiště. Kompas může o pár stupňů ujet: dorovnej ho v „Doladit“, nebo polož parkur přesně „Podle rohů“.', 'přesnost ± 3 m', '12 měření', 'Kolbiště 3', 'Vzdálenost rohů podle GPS: 38,5 m (kolbiště má 40 m).', '120 m od tebe']
       .filter(t => trLookup(t) == null));
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
   });

@@ -293,7 +293,9 @@ select.btn{padding-right:8px;}
 .ar-hint{margin:calc(14px + env(safe-area-inset-top,0px)) 16px 0; align-self:center; max-width:520px; background:rgba(10,20,14,.72); padding:10px 16px; border-radius:16px; font-size:15px; text-align:center;}
 .ar-hint:empty{display:none;}
 .ar-bar{pointer-events:auto; display:flex; flex-direction:column; gap:8px; padding:12px 12px calc(14px + env(safe-area-inset-bottom,0px)); background:rgba(10,20,14,.72);}
-.ar-row{display:flex; gap:8px;} .ar-row .btn{flex:1; justify-content:center;}
+.ar-row{display:flex; gap:8px;} .ar-row .btn{flex:1; justify-content:center; padding-left:6px; padding-right:6px;}
+.ar-fine{display:flex; flex-direction:column; gap:8px;} .ar-fine[hidden]{display:none;}
+.arui .btn[data-ar="fine"].on{background:#35443a; border-color:#5fb487;}
 .arui .btn{background:#233026; color:#e5ebe2; border-color:#35443a;} .arui .btn.primary{background:#5fb487; color:#0b1a11; border-color:#5fb487;}
 .arui .seg{display:flex; background:#233026; border-color:#35443a;} .arui .seg button{flex:1; color:#c6d3c4;} .arui .seg button.on{background:#5fb487; color:#0b1a11;}
 /* na telefonu tři řádky: stav trasy a 2D | 3D, pod tím Přehrát a rychlost, dole pohledy přes celou šířku */
@@ -1670,7 +1672,11 @@ body.fullfield .runfab{display:none;}
   <div class="ar-hint" id="arHint" role="status"></div>
   <div class="ar-bar">
     <div class="seg" id="arScale" role="group" aria-label="Velikost"><button data-ar="real" class="on">1 : 1</button><button data-ar="model">Model na stůl</button></div>
-    <div class="ar-row"><button class="btn" data-ar="rotl" aria-label="Otočit doleva">↺ 15°</button><button class="btn" data-ar="rotr" aria-label="Otočit doprava">↻ 15°</button><button class="btn" data-ar="place">Položit znovu</button></div>
+    <div class="ar-row"><button class="btn" data-ar="place">Položit znovu</button><button class="btn" data-ar="corners">Podle rohů</button><button class="btn" data-ar="fine" aria-expanded="false" aria-controls="arFine">Doladit</button></div>
+    <div class="ar-fine" id="arFine" role="group" aria-label="Doladit polohu" hidden>
+      <div class="ar-row"><button class="btn" data-ar="rot" data-v="15" aria-label="Otočit doleva o 15°">↺ 15°</button><button class="btn" data-ar="rot" data-v="1" aria-label="Otočit doleva o 1°">↺ 1°</button><button class="btn" data-ar="rot" data-v="-1" aria-label="Otočit doprava o 1°">↻ 1°</button><button class="btn" data-ar="rot" data-v="-15" aria-label="Otočit doprava o 15°">↻ 15°</button></div>
+      <div class="ar-row"><button class="btn" data-ar="mv" data-x="-1" data-z="0" aria-label="Posunout doleva o 25 cm">◀</button><button class="btn" data-ar="mv" data-x="0" data-z="1" aria-label="Posunout dál o 25 cm">▲</button><button class="btn" data-ar="mv" data-x="0" data-z="-1" aria-label="Posunout blíž o 25 cm">▼</button><button class="btn" data-ar="mv" data-x="1" data-z="0" aria-label="Posunout doprava o 25 cm">▶</button></div>
+    </div>
     <div class="ar-row"><button class="btn primary" data-ar="play">Pustit psa</button><button class="btn" data-ar="end">Zavřít AR</button></div>
   </div>
 </div>
@@ -2049,7 +2055,7 @@ var I18N_EXTRA={exact:{
 "Uložit vybraná": "Save selected",
 "Uloženo 1 kolbiště": "1 ring saved",
 "Natočení z kolbiště": "Orientation from ring",
-"Parkur stojí natočený podle kolbiště (kompas může o pár stupňů ujet, dorovnej šipkami).": "The course stands oriented to the ring (the compass may be a few degrees off, adjust with the arrows).",
+"Parkur stojí natočený podle kolbiště. Kompas může o pár stupňů ujet: dorovnej ho v „Doladit“, nebo polož parkur přesně „Podle rohů“.": "The course stands oriented to the ring. The compass can be a few degrees off: adjust it in “Fine-tune”, or place the course exactly “By corners”.",
 "Z parkurů": "From courses",
 "Úseky ze skutečných parkurů, které se vejdou na tvou plochu a postavíš je z vlastního vybavení. Pořadí, otočky i zadní strany zůstanou jako na parkuru.": "Sections of real courses that fit your space and that you can build with your own equipment. The order, wraps and backsides stay as on the course.",
 "Z čeho vybírat": "Choose from",
@@ -2244,12 +2250,18 @@ var I18N_EXTRA={exact:{
 "Pustit psa": "Run the dog",
 "Zastavit psa": "Stop the dog",
 "Zavřít AR": "Close AR",
-"Otočit doleva": "Rotate left",
-"Otočit doprava": "Rotate right",
+"Podle rohů": "By corners",
+"Doladit": "Fine-tune",
+"Doladit polohu": "Fine-tune position",
 "Velikost": "Size",
 "Pomalu pohybuj telefonem a miř na zem, až se objeví zelený kroužek.": "Move the phone slowly and point at the ground until a green ring appears.",
 "Zamiř kroužek na místo startu a klepni na obrazovku.": "Aim the ring at the start spot and tap the screen.",
-"Zem zatím nenašel. Miř telefonem na trávník a pomalu s ním pohybuj.": "No ground found yet. Point the phone at the grass and move it slowly.",
+"Zem se zatím nenašla. Miř telefonem na zem a pomalu s ním pohybuj.": "No ground found yet. Point the phone at the ground and move it slowly.",
+"Zamiř kroužek na stůl nebo na zem a klepni. Model se položí středem.": "Aim the ring at a table or the floor and tap. The model is placed by its centre.",
+"Model stojí. Pusť psa, nebo ho natoč v „Doladit“.": "The model is set up. Run the dog, or turn it in “Fine-tune”.",
+"Dojdi do rohu kolbiště, který je na plánu vlevo nahoře, zamiř na něj zelený kroužek a klepni.": "Walk to the corner of the ring that is top left on the plan, aim the green circle at it and tap.",
+"Teď dojdi podél dlouhé strany do rohu vpravo nahoře, zamiř na něj zelený kroužek a klepni.": "Now walk along the long side to the top right corner, aim the green circle at it and tap.",
+"Rohy jsou moc blízko u sebe. Dojdi do rohu vpravo nahoře, na druhý konec dlouhé strany.": "The corners are too close together. Walk to the top right corner, at the other end of the long side.",
 "Parkur stojí. Projdi se po něm, nebo pusť psa.": "The course is set up. Walk around it, or run the dog.",
 "Hotovo. Pusť psa znovu, nebo parkur polož jinam.": "Done. Run the dog again, or place the course elsewhere.",
 "AR se nepodařilo spustit. Potřebuješ Chrome na Androidu s podporou ARCore.": "AR couldn't start. You need Chrome on Android with ARCore support.",
@@ -2687,6 +2699,15 @@ var I18N_EXTRA={exact:{
 /* novinky 2.7 */
 "Aplikace se teď jmenuje Pawkur, dřív AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.": "The app is now called Pawkur, formerly AgiPlan. Your courses, dogs and runs stayed as they were.",
 },num:{
+/* AR na place: rohy a doladění */
+"Parkur stojí podle rohů kolbiště. Rohy jsou od sebe # m, na plánu # m.": "The course stands by the ring corners. The corners are # m apart, # m on the plan.",
+"Rohy jsou od sebe # m, ale plán má # m. Zkontroluj rohy a zkus to znovu „Podle rohů“, nebo dorovnej v „Doladit“.": "The corners are # m apart, but the plan has # m. Check the corners and try “By corners” again, or adjust in “Fine-tune”.",
+"Otočit doleva o #°": "Rotate left #°",
+"Otočit doprava o #°": "Rotate right #°",
+"Posunout doleva o # cm": "Move left # cm",
+"Posunout doprava o # cm": "Move right # cm",
+"Posunout dál o # cm": "Move away # cm",
+"Posunout blíž o # cm": "Move closer # cm",
 /* Stavba 3 */
 "Plocha může mít #–# × #–# m.": "The field can be #–# × #–# m.",
 "Hoopers H# # × # m": "Hoopers H# # × # m",
@@ -9266,7 +9287,7 @@ function close3d(){ var was=$('ov3d').hidden===false; $('ov3d').hidden=true; if(
 $('p3dim').onclick=function(e){ var b=e.target.closest('[data-d]'); if(b&&b.getAttribute('data-d')==='2') close3d(); };
 $('dimBtn').onclick=function(){ open3d(false); };
 $('shareBtn').onclick=function(){ shareSheet(); }; /* Sdílet a Načíst kód přímo pod plochou, v Nástrojích ho lidé nenašli */
-/* AR na place (WebXR, Chrome na Androidu): parkur se položí kamerou na skutečný trávník */
+/* AR na place (WebXR, Chrome na Androidu): parkur se položí kamerou na skutečnou zem */
 var AR={api:null,st:'',ok:false};
 /* AR umí jen některé telefony (Chrome na Androidu s ARCore); jen tam se ukáže tlačítko a dopředu se načte 3D balíček,
    aby se AR spustilo hned klepnutím (prohlížeč chce start AR přímo z klepnutí) */
@@ -9275,10 +9296,23 @@ try{ var qa=document.createElement('a'); if(qa.relList&&qa.relList.supports&&qa.
 try{ if(!AR.ql&&navigator.xr&&navigator.xr.isSessionSupported) navigator.xr.isSessionSupported('immersive-ar').then(function(ok){
   if(!ok) return; AR.ok=true; ui(); v3dLoad().then(function(m){ V3D.m=m; },function(){});
 },function(){}); }catch(e){}
-function arHint(s){
-  AR.st=s; var t={scan:'Pomalu pohybuj telefonem a miř na zem, až se objeví zelený kroužek.',ready:'Zamiř kroužek na místo startu a klepni na obrazovku.',
-    noground:'Zem zatím nenašel. Miř telefonem na trávník a pomalu s ním pohybuj.',placed:'Parkur stojí. Projdi se po něm, nebo pusť psa.',placedAz:'Parkur stojí natočený podle kolbiště (kompas může o pár stupňů ujet, dorovnej šipkami).',done:'Hotovo. Pusť psa znovu, nebo parkur polož jinam.'}[s]||'';
-  var h=$('arHint'); if(h.getAttribute('data-s')!==s){ h.setAttribute('data-s',s); h.textContent=T(t); }
+var AR_TXT={scan:'Pomalu pohybuj telefonem a miř na zem, až se objeví zelený kroužek.',ready:'Zamiř kroužek na místo startu a klepni na obrazovku.',
+  readyModel:'Zamiř kroužek na stůl nebo na zem a klepni. Model se položí středem.',
+  noground:'Zem se zatím nenašla. Miř telefonem na zem a pomalu s ním pohybuj.',placed:'Parkur stojí. Projdi se po něm, nebo pusť psa.',
+  placedModel:'Model stojí. Pusť psa, nebo ho natoč v „Doladit“.',
+  placedAz:'Parkur stojí natočený podle kolbiště. Kompas může o pár stupňů ujet: dorovnej ho v „Doladit“, nebo polož parkur přesně „Podle rohů“.',
+  cornerA:'Dojdi do rohu kolbiště, který je na plánu vlevo nahoře, zamiř na něj zelený kroužek a klepni.',
+  cornerB:'Teď dojdi podél dlouhé strany do rohu vpravo nahoře, zamiř na něj zelený kroužek a klepni.',
+  cornerNear:'Rohy jsou moc blízko u sebe. Dojdi do rohu vpravo nahoře, na druhý konec dlouhé strany.',
+  done:'Hotovo. Pusť psa znovu, nebo parkur polož jinam.'};
+function arHint(s,info){
+  AR.st=s; info=info||{}; var n=function(v){ v=+v||0; return Math.abs(v-Math.round(v))<.05?String(Math.round(v)):fmt(v); }, t=AR_TXT[s]||'';
+  if(s==='placedCorners') t='Parkur stojí podle rohů kolbiště. Rohy jsou od sebe '+n(info.d)+' m, na plánu '+n(info.w)+' m.';
+  if(s==='placedCornersOff') t='Rohy jsou od sebe '+n(info.d)+' m, ale plán má '+n(info.w)+' m. Zkontroluj rohy a zkus to znovu „Podle rohů“, nebo dorovnej v „Doladit“.';
+  var h=$('arHint'), k=s+(info.d!=null?':'+info.d+':'+info.w:''); if(h.getAttribute('data-s')===k) return;
+  h.setAttribute('data-s',k); h.textContent=T(t);
+  /* doladění jen u položeného parkuru */
+  $('arFine').hidden=!(AR.fine&&AR.api&&AR.api.placed);
 }
 function arStart(){
   if(AR.api) return; if(!plusGate('Rozšířená realita')) return;
@@ -9287,19 +9321,29 @@ function arStart(){
   if(!C3.api) build3d();
   if(AR.ql){ arQuickLook(); return; }
   V3.on=false; $('p3play').textContent=T('Přehrát');
-  $('arUi').hidden=false; arHint('scan'); $('arUi').querySelector('[data-ar="play"]').textContent=T('Pustit psa');
+  /* každé AR začíná ve skutečné velikosti se zavřeným doladěním */
+  var ui=$('arUi'); AR.fine=false; ui.hidden=false; arHint('scan'); ui.querySelector('[data-ar="play"]').textContent=T('Pustit psa');
+  Array.prototype.forEach.call($('arScale').children,function(c){ c.classList.toggle('on',c.getAttribute('data-ar')==='real'); });
+  ui.querySelector('[data-ar="corners"]').hidden=false; arFineBtn();
   var cur=null, sp=course3dSpec(), rg=ringFor(S.meta.id);
-  /* kolbiště se zaměřeným natočením: parkur se při položení natočí podle kompasu (směr, kam míří kamera) */
-  if(rg&&rg.az!=null){ sp.az=rg.az; arCompass(true); }
-  try{ cur=V3D.m.startAR($('arUi'),sp,{onState:arHint,heading:function(){ return AR.h; },onEnd:function(){ arCompass(false); AR.api=null; $('arUi').hidden=true; if(C3.api) render3d(); }}); }
+  /* kolbiště se zaměřeným natočením: parkur se při položení natočí podle kompasu (směr, kam míří kamera).
+     Kompas ukazuje magnetický sever, natočení kolbiště je zeměpisné: převod přes deklinaci v místě kolbiště */
+  if(rg&&rg.az!=null){ sp.az=ringAzMag(rg); arCompass(true); }
+  try{ cur=V3D.m.startAR(ui,sp,{onState:arHint,heading:function(){ return AR.h; },onEnd:function(){ arCompass(false); AR.api=null; ui.hidden=true; if(C3.api) render3d(); }}); }
   catch(e){ cur=Promise.reject(e); }
-  cur.then(function(a){ AR.api=a; },function(){ arCompass(false); $('arUi').hidden=true; toast(T('AR se nepodařilo spustit. Potřebuješ Chrome na Androidu s podporou ARCore.'),5000); });
+  cur.then(function(a){ AR.api=a; },function(){ arCompass(false); ui.hidden=true; toast(T('AR se nepodařilo spustit. Potřebuješ Chrome na Androidu s podporou ARCore.'),5000); });
 }
+function arFineBtn(){ var b=$('arUi').querySelector('[data-ar="fine"]'); b.classList.toggle('on',!!AR.fine); b.setAttribute('aria-expanded',AR.fine?'true':'false'); $('arFine').hidden=!(AR.fine&&AR.api&&AR.api.placed); }
+/* kompas kamery: vyhlazený průměr směrů (jednotlivá čtení skáčou o pár stupňů) */
 function arCompass(on){
-  if(AR.ori){ window.removeEventListener(AR.ori.ev,AR.ori.fn); AR.ori=null; } AR.h=null;
+  if(AR.ori){ window.removeEventListener(AR.ori.ev,AR.ori.fn); AR.ori=null; } AR.h=null; AR.hs=null;
   if(!on) return;
-  var ev='ondeviceorientationabsolute' in window?'deviceorientationabsolute':'deviceorientation', fn=function(e){ var h=camHeading(e); if(h!=null) AR.h=h; };
+  var ev='ondeviceorientationabsolute' in window?'deviceorientationabsolute':'deviceorientation', fn=function(e){ var h=camHeading(e); if(h!=null) arHeadAdd(h); };
   AR.ori={ev:ev,fn:fn}; window.addEventListener(ev,fn);
+}
+function arHeadAdd(h){
+  var a=h*G2R, v=AR.hs; if(!v) v=AR.hs={x:Math.sin(a),y:Math.cos(a)}; else { v.x+=(Math.sin(a)-v.x)*.12; v.y+=(Math.cos(a)-v.y)*.12; }
+  AR.h=(Math.atan2(v.x,v.y)/G2R+360)%360;
 }
 function arQuickLook(){
   if(!V3D.m.quickLookBlob||AR.busy) return; AR.busy=true; toast(T('Připravuji AR, chvilku…'));
@@ -9314,8 +9358,11 @@ $('p3ar').onclick=arStart; $('arBtn').onclick=arStart;
 $('arUi').addEventListener('beforexrselect',function(e){ if(e.target.closest('.ar-bar')) e.preventDefault(); });
 $('arUi').addEventListener('click',function(e){
   var b=e.target.closest('[data-ar]'); if(!b||!AR.api) return; var a=b.getAttribute('data-ar');
-  if(a==='place') AR.api.place(); else if(a==='rotl') AR.api.rotate(15); else if(a==='rotr') AR.api.rotate(-15);
-  else if(a==='real'||a==='model'){ AR.api.setScale(a==='model'); Array.prototype.forEach.call($('arScale').children,function(c){ c.classList.toggle('on',c===b); }); }
+  if(a==='place') AR.api.replace(); else if(a==='corners') AR.api.corners();
+  else if(a==='fine'){ AR.fine=!AR.fine; arFineBtn(); }
+  else if(a==='rot') AR.api.rotate(+b.getAttribute('data-v'));
+  else if(a==='mv') AR.api.nudge(+b.getAttribute('data-x'),+b.getAttribute('data-z'));
+  else if(a==='real'||a==='model'){ AR.api.setScale(a==='model'); Array.prototype.forEach.call($('arScale').children,function(c){ c.classList.toggle('on',c===b); }); $('arUi').querySelector('[data-ar="corners"]').hidden=a==='model'; }
   else if(a==='play'){ var on=AR.api.play(); b.textContent=T(on?'Zastavit psa':'Pustit psa'); }
   else if(a==='end') AR.api.end();
 });
@@ -12631,7 +12678,8 @@ function fldOpen(){
   fldClose();
   FLD={k:0,ord:fldOrder(),h:null,h0:SET.fldH0==null?null:SET.fldH0,cal:false,step:SET.step||.75};
   /* kolbiště se zaměřeným natočením: směr dlouhé strany je známý, není třeba se podle něj otáčet */
-  var rg=ringFor(S.meta.id); FLD.az=rg&&rg.az!=null?rg.az:null; FLD.ring=rg;
+  /* kurzy ve Stavbě v terénu jsou z kompasu (magnetické), natočení kolbiště je zeměpisné */
+  var rg=ringFor(S.meta.id); FLD.az=rg&&rg.az!=null?ringAzMag(rg):null; FLD.ring=rg;
   var ov=document.createElement('div'); ov.className='ovsp'; ov.id='ovFld';
   ov.innerHTML='<div class="ovsp-top"><b>Stavba v terénu</b><span class="grow"></span><button class="btn" id="fdClose">Zavřít</button></div><div id="fdBody"></div>';
   document.body.appendChild(ov);
@@ -12649,7 +12697,7 @@ function fldAz(){ return FLD&&FLD.az!=null&&FLD.useAz!==false?FLD.az:null; }
 function fldClose(){ if(FLD&&FLD.onOri) window.removeEventListener(FLD.ev,FLD.onOri); var ov=$('ovFld'); if(ov) ov.parentNode.removeChild(ov); FLD=null; }
 function fldSetup(){
   $('fdBody').innerHTML='<p>Postav se do rohu plochy, který je na plánu <b>vlevo nahoře</b>, a otoč se čelem <b>podél dlouhé strany</b> (na plánu doprava). Telefon drž naplocho před sebou.</p>'+
-    (FLD.az!=null?'<label class="chk"><input type="checkbox" id="fdAz"'+(FLD.useAz!==false?' checked':'')+'> <span>Natočení z kolbiště <b translate="no">'+esc(FLD.ring.name)+'</b> ('+Math.round(FLD.az)+'°), nemusíš se otáčet</span></label>':'')+
+    (FLD.az!=null?'<label class="chk"><input type="checkbox" id="fdAz"'+(FLD.useAz!==false?' checked':'')+'> <span>Natočení z kolbiště <b translate="no">'+esc(FLD.ring.name)+'</b> ('+Math.round(FLD.ring.az)+'°), nemusíš se otáčet</span></label>':'')+
     fldMini(null)+
     '<label for="fdStep">Délka tvého kroku (m)<input id="fdStep" type="text" inputmode="decimal" autocomplete="off" value="'+numFld(FLD.step,2)+'"></label>'+
     '<p class="hint">Krok si změříš tak, že ujdeš 10 m a spočítáš kroky: délka = 10 / počet kroků. Kompas: <b id="fdCmp">čekám na signál…</b></p>'+
@@ -12711,7 +12759,10 @@ function fldLive(){
    az = kurz dlouhé strany ve stupních od severu ve směru plánu doprava (od rohu vlevo nahoře k rohu vpravo nahoře). */
 var RINGK='agility-rings-v1', RG=null;
 function ringOk(g){ return !!g&&typeof g==='object'&&typeof g.lat==='number'&&typeof g.lng==='number'&&isFinite(g.lat)&&isFinite(g.lng)&&Math.abs(g.lat)<=90&&Math.abs(g.lng)<=180; }
-function ringsGet(){ var L=lsGet(RINGK,[]); return Array.isArray(L)?L.filter(ringOk):[]; }
+function ringsGet(){ var L=lsGet(RINGK,[]); if(!Array.isArray(L)) return []; L=L.filter(ringOk);
+  /* dřív se natočení z kompasu ukládalo magneticky (± 15°, bez azT); převede se jednou na zeměpisné jako ostatní */
+  var mig=0; L.forEach(function(g){ if(g.az!=null&&g.azErr===15&&!g.azT){ g.az=Math.round(((g.az+ringDecl(g))%360+360)%360*10)/10; g.azT=1; mig++; } });
+  if(mig) ringsPut(L); return L; }
 function ringsPut(L){ lsSet(RINGK,L); }
 function ringFor(cid){ if(!cid) return null; var L=ringsGet(); for(var i=0;i<L.length;i++) if(L[i].cid===cid) return L[i]; return null; }
 function ringById(id){ var L=ringsGet(); for(var i=0;i<L.length;i++) if(L[i].id===id) return L[i]; return null; }
@@ -12721,6 +12772,37 @@ var GEO_R=6371008.8, G2R=Math.PI/180;
 function geoDist(a,b){ var dLa=(b.lat-a.lat)*G2R, dLo=(b.lng-a.lng)*G2R, s=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(a.lat*G2R)*Math.cos(b.lat*G2R)*Math.sin(dLo/2)*Math.sin(dLo/2); return 2*GEO_R*Math.asin(Math.min(1,Math.sqrt(s))); }
 function geoBrg(a,b){ var f1=a.lat*G2R, f2=b.lat*G2R, dl=(b.lng-a.lng)*G2R, y=Math.sin(dl)*Math.cos(f2), x=Math.cos(f1)*Math.sin(f2)-Math.sin(f1)*Math.cos(f2)*Math.cos(dl); return (Math.atan2(y,x)/G2R+360)%360; }
 function geoMove(p,brg,d){ var f1=p.lat*G2R, l1=p.lng*G2R, t=brg*G2R, k=d/GEO_R, f2=Math.asin(Math.sin(f1)*Math.cos(k)+Math.cos(f1)*Math.sin(k)*Math.cos(t)), l2=l1+Math.atan2(Math.sin(t)*Math.sin(k)*Math.cos(f1),Math.cos(k)-Math.sin(f1)*Math.sin(f2)); return {lat:f2/G2R,lng:((l2/G2R+540)%360)-180}; }
+/* Magnetická deklinace podle světového modelu WMM2025 (NOAA a BGS, platí 2025–2030): o kolik stupňů míří kompas
+   na východ od zeměpisného severu. GPS a mapy dávají zeměpisné kurzy, kompas v telefonu magnetické
+   (v Česku asi +5°, v Anglii +1°, v USA od −15° do +16°). Koeficienty g, h, dg, dh pro n = 1…12, m = 0…n. */
+function magDecl(lat,lng,year,alt){
+  if(!isFinite(lat)||!isFinite(lng)||Math.abs(lat)>89.9) return 0;
+  var rd=Math.PI/180;
+  var c=magDecl.c||(magDecl.c=('-29351.8 0 12 0 -1410.8 4545.4 9.7 -21.5 -2556.6 0 -11.6 0 2951.1 -3133.6 -5.2 -27.7 1649.3 -815.1 -8 -12.1 1361 0 -1.3 0 -2404.1 -56.6 -4.2 4 1243.8 237.5 0.4 -0.3 453.6 -549.5 -15.6 -4.1 895 0 -1.6 0 799.5 278.6 -2.4 -1.1 55.7 -133.9 -6 4.1 -281.1 212 5.6 1.6 12.1 -375.6 -7 -4.4 -233.2 0 0.6 0 368.9 45.4 1.4 -0.5 187.2 220.2 0 2.2 -138.7 -122.9 0.6 0.4 -142 43 2.2 1.7 20.9 106.1 0.9 1.9 64.4 0 -0.2 0 63.8 -18.4 -0.4 0.3 76.9 16.8 0.9 -1.6 -115.7 48.8 1.2 -0.4 -40.9 -59.8 -0.9 0.9 14.9 10.9 0.3 0.7 -60.7 72.7 0.9 0.9 79.5 0 0 0 -77 -48.9 -0.1 0.6 -8.8 -14.4 -0.1 0.5 59.3 -1 0.5 -0.8 15.8 23.4 -0.1 0 2.5 -7.4 -0.8 -1 -11.1 -25.1 -0.8 0.6 14.2 -2.3 0.8 -0.2 23.2 0 -0.1 0 10.8 7.1 0.2 -0.2 -17.5 -12.6 0 0.5 2 11.4 0.5 -0.4 -21.7 -9.7 -0.1 0.4 16.9 12.7 0.3 -0.5 15 0.7 0.2 -0.6 -16.8 -5.2 0 0.3 0.9 3.9 0.2 0.2 4.6 0 0 0 7.8 -24.8 -0.1 -0.3 3 12.2 0.1 0.3 -0.2 8.3 0.3 -0.3 -2.5 -3.3 -0.3 0.3 -13.1 -5.2 0 0.2 2.4 7.2 0.3 -0.1 8.6 -0.6 -0.1 -0.2 -8.7 0.8 0.1 0.4 -12.9 10 -0.1 0.1 -1.3 0 0.1 0 -6.4 3.3 0 0 0.2 0 0.1 0 2 2.4 0.1 -0.2 -1 5.3 0 0.1 -0.6 -9.1 -0.3 -0.1 -0.9 0.4 0 0.1 1.5 -4.2 -0.1 0 0.9 -3.8 -0.1 -0.1 -2.7 0.9 0 0.2 -3.9 -9.1 0 0 2.9 0 0 0 -1.5 0 0 0 -2.5 2.9 0 0.1 2.4 -0.6 0 0 -0.6 0.2 0 0.1 -0.1 0.5 -0.1 0 -0.6 -0.3 0 0 -0.1 -1.2 0 0.1 1.1 -1.7 -0.1 0 -1 -2.9 -0.1 0 -0.2 -1.8 -0.1 0 2.6 -2.3 -0.1 0 -2 0 0 0 -0.2 -1.3 0 0 0.3 0.7 0 0 1.2 1 0 -0.1 -1.3 -1.4 0 0.1 0.6 0 0 0 0.6 0.6 0.1 0 0.5 -0.1 0 0 -0.1 0.8 0 0 -0.4 0.1 0 0 -0.2 -1 -0.1 0 -1.3 0.1 0 0 -0.7 0.2 -0.1 -0.1').split(' ').map(Number)), t=(isFinite(year)?year:2025)-2025, h=alt||0;
+  /* zeměpisná šířka na elipsoidu WGS84 → geocentrická koule */
+  var a2=6378.137*6378.137, b2=6356.7523142*6356.7523142, c2=a2-b2, c4=a2*a2-b2*b2;
+  var sl=Math.sin(lat*rd), cl=Math.cos(lat*rd), sl2=sl*sl, cl2=cl*cl, q=Math.sqrt(a2-c2*sl2), q1=h*q, q2=Math.pow((q1+a2)/(q1+b2),2);
+  var ct=sl/Math.sqrt(q2*cl2+sl2), st=Math.sqrt(1-ct*ct), rr=Math.sqrt(h*h+2*q1+(a2*a2-c4*sl2)/(q*q)), d=Math.sqrt(a2*cl2+b2*sl2);
+  var ca=(h+d)/rr, sa=c2*cl*sl/(rr*d);
+  /* Schmidtovy přidružené Legendreovy funkce P a jejich derivace D podle kolatitudy */
+  var P=[[1]], D=[[0]], bt=0, bp=0, br=0, k=0, n, m;
+  for(n=1;n<=12;n++){
+    P[n]=[]; D[n]=[]; var ar=Math.pow(6371.2/rr,n+2);
+    for(m=0;m<=n;m++){
+      if(m===n){ var f=n===1?1:Math.sqrt((2*n-1)/(2*n)); P[n][m]=f*st*P[n-1][m-1]; D[n][m]=f*(st*D[n-1][m-1]+ct*P[n-1][m-1]); }
+      else{ var e=Math.sqrt(n*n-m*m), two=m<=n-2, g2=two?Math.sqrt((n-1)*(n-1)-m*m):0;
+        P[n][m]=((2*n-1)*ct*P[n-1][m]-(two?g2*P[n-2][m]:0))/e;
+        D[n][m]=((2*n-1)*(ct*D[n-1][m]-st*P[n-1][m])-(two?g2*D[n-2][m]:0))/e; }
+      var g=c[k]+t*c[k+2], hh=c[k+1]+t*c[k+3], cm=Math.cos(m*lng*rd), sm=Math.sin(m*lng*rd), u=g*cm+hh*sm; k+=4;
+      bt-=ar*u*D[n][m]; bp+=ar*m*(g*sm-hh*cm)*P[n][m]; br+=(n+1)*ar*u*P[n][m];
+    }
+  }
+  return Math.atan2(bp/st,-bt*ca-br*sa)/rd;
+}
+function yearNow(){ var d=new Date(), y=d.getFullYear(); return y+(d-new Date(y,0,1))/31557600000; }
+function ringDecl(g){ return g?magDecl(g.lat,g.lng,yearNow()):0; }
+/* natočení kolbiště je zeměpisné (sever podle map); pro kompas telefonu se převede na magnetické */
+function ringAzMag(g){ return g&&g.az!=null?((g.az-ringDecl(g))%360+360)%360:null; }
 /* průměr měření vážený přesností; přesnost průměru nejvýš o polovinu lepší než nejlepší měření (chyby GPS jdou za sebou) */
 function geoAvg(sm){
   if(!sm.length) return null;
@@ -12895,7 +12977,7 @@ function ringAzGps(g){
         $('rgOk').onclick=function(){
           /* střed z rohů: od rohu vlevo nahoře půl šířky po dlouhé straně a půl délky doprava od ní */
           var c=geoMove(geoMove(A,az,g.W/2),az+90,g.H/2), useC=Math.max(A.acc,B.acc)<(g.acc||99);
-          ringUpd(g.id,function(x){ x.az=Math.round(az*10)/10; x.azErr=Math.round(err*10)/10; if(useC){ x.lat=+c.lat.toFixed(7); x.lng=+c.lng.toFixed(7); x.acc=Math.round(Math.max(A.acc,B.acc)*10)/10; } });
+          ringUpd(g.id,function(x){ x.az=Math.round(az*10)/10; x.azErr=Math.round(err*10)/10; x.azT=1; if(useC){ x.lat=+c.lat.toFixed(7); x.lng=+c.lng.toFixed(7); x.acc=Math.round(Math.max(A.acc,B.acc)*10)/10; } });
           toast('Natočení uložené'); ringList();
         };
       });
@@ -12907,8 +12989,10 @@ function ringAzCmp(g){
   $('rgBody').innerHTML='<h3 class="rg-h">Natočení podle kompasu</h3><p>Postav se na dlouhou stranu kolbiště čelem tak, jak vede plán <b>doprava</b>. Telefon drž naplocho před sebou.</p>'+
     '<p class="rg-big"><b id="rgHd">čekám na kompas…</b></p>'+
     '<div class="acts"><button class="btn" data-rg="list">Zrušit</button><button class="btn primary" id="rgOk" disabled>Uložit natočení</button></div>';
-  ringCompass(function(){ if($('rgHd')){ $('rgHd').textContent=Math.round(RG.h)+'° ('+T(cardTxt(RG.h))+')'; $('rgOk').disabled=false; } });
-  $('rgOk').onclick=function(){ if(RG.h==null) return; var h=RG.h; ringUpd(g.id,function(x){ x.az=Math.round(h*10)/10; x.azErr=15; }); toast('Natočení uložené'); ringList(); };
+  /* kompas ukazuje magnetický sever; ukládá se zeměpisné natočení jako z GPS */
+  var dc=ringDecl(g), tru=function(){ return ((RG.h+dc)%360+360)%360; };
+  ringCompass(function(){ if($('rgHd')){ var t=tru(); $('rgHd').textContent=Math.round(t)+'° ('+T(cardTxt(t))+')'; $('rgOk').disabled=false; } });
+  $('rgOk').onclick=function(){ if(RG.h==null) return; var h=tru(); ringUpd(g.id,function(x){ x.az=Math.round(h*10)/10; x.azErr=15; x.azT=1; }); toast('Natočení uložené'); ringList(); };
 }
 /* navigace: šipka podle kompasu, vzdálenost, odkazy do map */
 function ringNav(g){
@@ -12921,10 +13005,10 @@ function ringNav(g){
     '<div class="acts"><a class="btn" target="_blank" rel="noopener" href="https://mapy.cz/zakladni?q='+g.lat+'%2C'+g.lng+'&amp;x='+g.lng+'&amp;y='+g.lat+'&amp;z=19">Mapy.cz</a>'+
     '<a class="btn" target="_blank" rel="noopener" href="'+(ios?'https://maps.apple.com/?daddr='+g.lat+','+g.lng+'&amp;dirflg=w':'https://www.google.com/maps/dir/?api=1&amp;destination='+g.lat+','+g.lng+'&amp;travelmode=walking')+'">'+(ios?'Apple Mapy':'Google Mapy')+'</a>'+
     '<button class="btn primary" data-rg="list">Hotovo</button></div>';
-  var brg=null;
+  var brg=null, dc=ringDecl(g);
   function draw(){
     if(!$('rgRot')||brg==null) return;
-    var rel=RG.h!=null?brg-RG.h:brg; $('rgRot').setAttribute('transform','rotate('+r(rel)+')'); if(RG.h!=null) $('rgN0').setAttribute('hidden',''); else $('rgN0').removeAttribute('hidden');
+    var rel=RG.h!=null?brg-RG.h-dc:brg; $('rgRot').setAttribute('transform','rotate('+r(rel)+')'); if(RG.h!=null) $('rgN0').setAttribute('hidden',''); else $('rgN0').removeAttribute('hidden');
   }
   ringCompass(draw);
   if(!navigator.geolocation){ $('rgDir').textContent=T(geoErrTxt('none')); return; }
@@ -13010,7 +13094,7 @@ function ringImpShow(){
 function ringImpSave(){
   var L=ringsGet(), n=0;
   Array.prototype.forEach.call($('rgBody').querySelectorAll('input[data-i]'),function(c){ if(!c.checked) return; var g=RG.imp[+c.getAttribute('data-i')]; if(!g) return;
-    L.push({id:'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:g.name,venue:g.venue,lat:+(+g.lat).toFixed(7),lng:+(+g.lng).toFixed(7),acc:1,az:g.az,azErr:g.az!=null?2:null,W:g.W||S.W,H:g.H||S.H,cid:null,cname:null,at:Date.now()}); n++; });
+    L.push({id:'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:g.name,venue:g.venue,lat:+(+g.lat).toFixed(7),lng:+(+g.lng).toFixed(7),acc:1,az:g.az,azErr:g.az!=null?2:null,azT:1,W:g.W||S.W,H:g.H||S.H,cid:null,cname:null,at:Date.now()}); n++; });
   ringsPut(L); RG.imp=null; toast(n===1?'Uloženo 1 kolbiště':'Uložená kolbiště: '+n); ringList();
 }
 
@@ -13266,7 +13350,7 @@ function gcSave(){
   var rec={id:'my-'+Date.now().toString(36),name:nm,cls:cls,author:'',W:d.W,H:d.H,obs:d.obs,route:d.route,sides:d.sides,turns:d.turns,hp:[],marks:[],src:'soubor '+String(GC.fname||'').slice(0,60)};
   var L=myDB(); L.push(rec); if(!mySave(L)) return;
   if(r.ring){ var R2=ringsGet(); R2.forEach(function(g){ if(g.cid===rec.id){ g.cid=null; g.cname=null; } });
-    R2.push({id:'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:(r.ring.name||nm).slice(0,60),venue:null,lat:+r.ring.lat.toFixed(7),lng:+r.ring.lng.toFixed(7),acc:1,az:r.ring.az,azErr:2,W:r.ring.W,H:r.ring.H,cid:rec.id,cname:nm,at:Date.now()});
+    R2.push({id:'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:(r.ring.name||nm).slice(0,60),venue:null,lat:+r.ring.lat.toFixed(7),lng:+r.ring.lng.toFixed(7),acc:1,az:r.ring.az,azErr:2,azT:1,W:r.ring.W,H:r.ring.H,cid:rec.id,cname:nm,at:Date.now()});
     ringsPut(R2); }
   GC=null; closeSheet(); if(isHoopC(cls)!==isHoopS()) setSport(isHoopC(cls)?'hoopers':'agility',true);
   loadCourse(rec,true); show('plan'); zoom=1; ui(); render(); act('geoimp'); toast('Parkur ze souboru je v Moje.'); /* celá plocha, ne přiblížení z minula */
