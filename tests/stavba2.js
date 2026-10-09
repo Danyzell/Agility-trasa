@@ -38,11 +38,11 @@ module.exports = async function ({ browser, base }) {
         return { h: Math.round($('specs').getBoundingClientRect().height), f: $('fciBar').textContent, w: Math.round($('fciBar').getBoundingClientRect().width), rows2: Math.abs(t[0] - t[1]) < 6 && Math.abs(t[2] - t[3]) < 6 && t[2] - t[0] > 12, txt: $('specs').textContent }; });
       await ev(() => { S.route = [1, 2, 3, 4]; syncSides(); render(); });
       ok(s1.h === s2.h && s1.w !== s2.w && /·/.test(s1.f) && s2.rows2 && /SČP/.test(s2.txt) && /MČP/.test(s2.txt), `${vw} px: souhrn mění výšku podle šířky FCI nebo nemá dva řádky: ` + JSON.stringify([s1, s2]));
-      /* skutečné klepnutí na skok: plocha zůstane, panel je dole nad lištou, celý na obrazovce */
+      /* skutečné klepnutí na skok: plocha zůstane, panel je dole u okraje (spodní lišta je ve Stavbě schovaná), celý na obrazovce */
       await ev(() => { sel = null; ui(); render(); });
       await T.tapField(16, 6); const f1 = await rect('field'); await page.waitForTimeout(60); const f2 = await rect('field');
-      const r = await ev(() => { const s = $('selRow').getBoundingClientRect(), n = document.querySelector('.nav').getBoundingClientRect(); return { sel, hidden: $('selRow').hidden, pos: getComputedStyle($('selRow')).position, top: Math.round(s.top), bottom: Math.round(s.bottom), navTop: Math.round(n.top), inner: innerHeight, pad: getComputedStyle($('v-plan')).paddingBottom }; });
-      ok(r.sel === 2 && !r.hidden && r.pos === 'fixed' && r.bottom <= r.navTop && r.top > 0 && f1.y === f2.y, `${vw} px: panel výběru není plovoucí nad lištou: ` + JSON.stringify(r));
+      const r = await ev(() => { const s = $('selRow').getBoundingClientRect(), nv = document.querySelector('.nav'); return { sel, hidden: $('selRow').hidden, pos: getComputedStyle($('selRow')).position, top: Math.round(s.top), bottom: Math.round(s.bottom), nav: getComputedStyle(nv).display, inner: innerHeight, pad: getComputedStyle($('v-plan')).paddingBottom }; });
+      ok(r.sel === 2 && !r.hidden && r.pos === 'fixed' && r.nav === 'none' && r.bottom <= r.inner && r.bottom >= r.inner - 24 && r.top > 0 && f1.y === f2.y, `${vw} px: panel výběru není plovoucí dole u okraje: ` + JSON.stringify(r));
       ok(parseInt(r.pad) >= 150, `${vw} px: stránka nemá dole místo pro panel: ` + r.pad);
       ok(/zrušíš výběr/.test(await page.textContent('#hint')), 'nápověda s vybranou překážkou');
     }
@@ -82,7 +82,8 @@ module.exports = async function ({ browser, base }) {
     await ev(() => { zoom = 4; ui(); render(); window.scrollTo(0, 0); const w = $('wrap'); w.scrollLeft = 0; w.scrollTop = 0; }); await page.waitForTimeout(100);
     const out = [];
     for (const s of spots) {
-      const okPos = await ev(({ x, y }) => { const svg = $('field'), m = svg.getScreenCTM(); if (!m) return false; const p = new DOMPoint(x, y).matrixTransform(m.inverse());
+      /* výběr překážky pod panelem teď stránku posune, ať překážka není zakrytá (3.2.1); pro další místo se stránka vrátí nahoru */
+      const okPos = await ev(({ x, y }) => { window.scrollTo(0, 0); const svg = $('field'), m = svg.getScreenCTM(); if (!m) return false; const p = new DOMPoint(x, y).matrixTransform(m.inverse());
         if (p.x < 1 || p.y < 1 || p.x > S.W - 1 || p.y > S.H - 1) return false; const o = getO(1); o.x = p.x; o.y = p.y; o.rot = 0; sel = null; ui(); render();
         const e = document.elementFromPoint(x, y); return !!(e && e.closest('.ob[data-id="1"]')); }, s);
       if (!okPos) { out.push(s.id + ':mimo'); continue; }

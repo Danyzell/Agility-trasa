@@ -65,7 +65,7 @@ module.exports = async function ({ browser, base }) {
     }
     ok(await ev(() => !PLANUI.traps), 'pasti se bez Plus zapnuly');
     /* kalkulačka a listina ve Více */
-    await ev(() => { moreTab = ''; show('more'); }); await page.click('#moreTabs [data-m="sct"]'); await page.waitForTimeout(150);
+    await ev(() => { moreTab = ''; show('more'); }); await page.click('#moreTabs [data-m="tools"]'); await page.click('#moreTabs [data-m="sct"]'); await page.waitForTimeout(150);
     ok(/Pawkur Plus/.test(await page.textContent('#sheet')), 'kalkulačka bez Plus'); await ev(() => closeSheet());
     await page.click('#moreTabs [data-m="listina"]'); await page.waitForTimeout(150);
     ok(/Pawkur Plus/.test(await page.textContent('#sheet')) && await ev(() => moreTab !== 'listina'), 'listina bez Plus'); await ev(() => closeSheet());

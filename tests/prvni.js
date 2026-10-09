@@ -139,8 +139,8 @@ module.exports = async function ({ browser, base }) {
     await ev(() => { $('fullBtn').click(); $('toast').hidden = true; window.scrollTo(0, 0); }); await w(300);
     /* klepnutí: Běh pro tenhle parkur, rada jen napoprvé */
     await page.click('#runFab'); await w(500);
-    const k = await ev(() => ({ view, name: $('cName').textContent, toast: $('toast').hidden ? '' : $('toast').textContent, n: ACT.a.run_fab }));
-    ok(k.view === 'run' && k.name === 'A2-03' && /^Na place zmáčkni START/.test(k.toast) && k.n === 1, 'klepnutí na Zaběhnout: ' + JSON.stringify(k));
+    const k = await ev(() => ({ view, name: $('cName').textContent, code: S.meta.code, toast: $('toast').hidden ? '' : $('toast').textContent, n: ACT.a.run_fab }));
+    ok(k.view === 'run' && k.name === 'Altair' && k.code === 'A2-03' && /^Na place zmáčkni START/.test(k.toast) && k.n === 1, 'klepnutí na Zaběhnout: ' + JSON.stringify(k));
     await ev(() => { $('toast').hidden = true; show('plan'); window.scrollTo(0, 0); }); await w(300); await page.click('#runFab'); await w(500);
     ok(await ev(() => view === 'run' && $('toast').hidden), 'rada se má ukázat jen napoprvé');
     /* parkur bez trasy: není co běžet */
@@ -221,6 +221,78 @@ module.exports = async function ({ browser, base }) {
     await page.click('#mView'); await w(100); r = await z(); ok(r.mode === 'view' && r.zoom === 2.5, 'vlastní přiblížení zůstává i v Prohlížet: ' + JSON.stringify(r));
     await page.click('#zOut'); await page.click('#zOut'); await page.click('#zOut'); await page.click('#mBuild'); await w(100); r = await z(); ok(r.mode === 'build' && r.zoom === 1, 'oddálení v Prohlížet (100 %) zůstane i ve Stavbě: ' + JSON.stringify(r));
     await ev(() => { zoom = 2; ui(); }); await page.click('#mView'); await w(100); r = await z(); ok(r.zoom === 1.5, 'z výchozích 200 % ve Stavbě zpět na výchozích 150 %: ' + JSON.stringify(r));
+  });
+
+  await step('upozornění: nabídka po prvním uloženém běhu a karta na Domů', async () => {
+    const P = await phone(browser, { isMobile: true }); const calls = [];
+    await offline(P.ctx, { get_catalog: { version: 0 }, app_act: null, push_pubkey: 'B' + 'A'.repeat(86), push_sub_set: (a) => { calls.push(a); return true; }, push_comp_set: true, push_watch_set: 0 });
+    await P.ctx.addInitScript(() => { try { localStorage.setItem('agility-onb-v1', JSON.stringify({ done: 1, v: 2 })); localStorage.setItem('agility-news-v1', JSON.stringify('3.0')); localStorage.setItem('agility-instx-v1', JSON.stringify(Date.now())); localStorage.setItem('agility-ask-v1', JSON.stringify({ x: 1 }));
+      if (!sessionStorage.getItem('v1')) { sessionStorage.setItem('v1', '1'); localStorage.setItem('agility-visits-v1', JSON.stringify({ n: 1, at: Date.now() })); localStorage.setItem('agility-dogs-v1', JSON.stringify([{ id: 'd1', name: 'Fany', size: 'M', cls: 'A2' }])); }
+      window.PUSH_TEST = { pushManager: { getSubscription: () => Promise.resolve(window.PUSH_SUB || null), subscribe: () => { window.PUSH_SUB = { endpoint: 'https://push.example/abc', options: {}, unsubscribe() { window.PUSH_SUB = null; return Promise.resolve(true); }, toJSON() { return { endpoint: this.endpoint, keys: { p256dh: 'p'.repeat(40), auth: 'a'.repeat(22) } }; } }; return Promise.resolve(window.PUSH_SUB); } } };
+    } catch (e) {} });
+    const p = P.page; await p.goto(base + '/?pushnudge#home'); await p.waitForTimeout(600);
+    ok(await p.evaluate(() => !$('hmPush') && pushHomeHTML() === ''), 'první návštěva bez běhu: karta upozornění ještě ne');
+    await p.click('#v-home [data-h="wkrun"]'); await p.waitForTimeout(300);
+    await p.evaluate(() => { $('manT').value = '41'; RUN.f = 0; RUN.r = 1; }); await p.click('#saveRun'); await p.waitForTimeout(600);
+    /* běh na parkuru týdne nabídne žebříček; nabídka upozornění počká, až se okno zavře */
+    if (await p.evaluate(() => !!$('sheet').querySelector('.wksend'))) { await p.waitForTimeout(2500); ok(await p.evaluate(() => !/Upozornit tě/.test($('sheet').textContent)), 'nabídka upozornění nemá přebít okno žebříčku'); await p.click('#sheet [data-a="x"]'); }
+    await p.waitForFunction(() => !$('scrim').hidden && /Upozornit tě na nový parkur\?/.test($('sheet').textContent), null, { timeout: 6000 });
+    await p.click('#sheet [data-a="on"]'); await p.waitForTimeout(500);
+    const r = await p.evaluate(() => ({ on: PUSH.on, toast: $('toast').textContent, n: ACT.a.push_nudge, k: !!lsGet('agility-pushnudge-v1', 0) }));
+    ok(calls.length === 1 && r.on && r.toast === 'Upozornění jsou zapnutá.' && r.n === 1 && r.k, 'po prvním běhu nabídka a zapnutí: ' + JSON.stringify({ calls: calls.length, r }));
+    /* karta na Domů se ukáže po prvním běhu i na první návštěvě, když upozornění nejsou zapnutá */
+    ok(await p.evaluate(() => { PUSH.on = false; PUSH.x = 0; VISITS = { n: 1, at: Date.now() }; return pushHomeHTML() !== ''; }), 'karta upozornění po prvním běhu i na první návštěvě');
+    /* druhý běh už nabídku neotevře */
+    await p.evaluate(() => { $('manT').value = '40'; }); await p.click('#saveRun'); await p.waitForTimeout(3000);
+    ok(await p.evaluate(() => !/Upozornit tě/.test($('sheet').textContent) || $('scrim').hidden), 'nabídka jen jednou');
+    P.errs.forEach(x => T.errs.push(x)); await P.ctx.close();
+  });
+
+  await step('jména parkurů: hvězdy a měsíce místo kódu, id beze změny', async () => {
+    await fresh('#lib');
+    const r = await ev(() => { const all = ['A1', 'A2', 'A3', 'H1', 'H2', 'H3'].map(c => listFor(c)).reduce((a, l) => a.concat(l), []), a2 = listFor('A2')[2], h1 = listFor('H1')[0];
+      return { n: all.length, uniq: new Set(all.map(c => c.name)).size, codes: all.every(c => /^[AH][1-3]-\d\d$/.test(c.code)), a2: [a2.name, a2.code, a2.id], h1: [h1.name, h1.code] }; });
+    ok(r.n === 114 && r.uniq === 114 && r.codes && r.a2.join() === 'Altair,A2-03,A2-03-v5' && r.h1.join() === 'Io,H1-01', 'jména v knihovně: ' + JSON.stringify(r));
+    await ev(() => { libTab = 'A2'; libRender(); window.scrollTo(0, 0); }); await w(100);
+    const card = await ev(() => { const b = document.querySelectorAll('#cards .card .meta b')[2]; return { t: b.childNodes[0].textContent, nk: (b.querySelector('.nk') || {}).textContent }; });
+    ok(card.t === 'Altair' && card.nk === 'A2-03', 'karta: jméno a malý kód: ' + JSON.stringify(card));
+    await page.click('#cards .pick >> nth=2'); await w(300);
+    const h = await ev(() => ({ name: $('cName').textContent, k: ($('cSub').querySelector('.k') || {}).textContent, pill: !!$('cSub').querySelector('.dpill'), r: ($('cSub').querySelector('.r') || {}).textContent }));
+    ok(h.name === 'Altair' && h.k === 'A2' && h.pill && /^\d+,\d m$/.test(h.r), 'hlavička Plánu: ' + JSON.stringify(h));
+    /* po úpravě autor a „upraveno“ místo náročnosti */
+    await ev(() => { S.meta.dirty = true; topbar(); });
+    const h2 = await ev(() => ({ name: $('cName').textContent, t: $('cSub').textContent }));
+    ok(h2.name === 'Altair *' && /^A2Generátor podle pravidel FCIupraveno$/.test(h2.t), 'hlavička upraveného parkuru: ' + JSON.stringify(h2));
+    await ev(() => { S.meta.dirty = false; topbar(); });
+  });
+
+  await step('skupina z odkazu bez přihlášení: náhled a otevření parkuru', async () => {
+    const G = await phone(browser, { isMobile: true }); const calls = [];
+    const src = await ev(() => { const c = listFor('A1')[0]; return { W: c.W, H: c.H, obs: c.obs, route: c.route, sides: [], turns: c.turns || [], hp: [], marks: [] }; });
+    await offline(G.ctx, { get_catalog: { version: 0 }, app_act: null,
+      group_peek: (a) => { calls.push(['peek', a.p_code]); return { code: 'XK4P2M', name: 'Agility Brno – středa', members: 12, courses: [{ id: 11, name: 'Středeční parkur 8', cls: 'A2', day: '2026-10-08', thumb: null }, { id: 12, name: 'Kruhy u lesa', cls: 'A1', day: '2026-10-01', thumb: null }] }; },
+      group_peek_course: (a) => { calls.push(['course', a.p_code, a.p_cid]); return { id: a.p_cid, name: 'Středeční parkur 8', cls: 'A2', data: src, day: '2026-10-08' }; } });
+    await G.ctx.addInitScript(() => { try { localStorage.setItem('agility-onb-v1', JSON.stringify({ done: 1, v: 2 })); localStorage.setItem('agility-news-v1', JSON.stringify('3.0')); localStorage.setItem('agility-instx-v1', JSON.stringify(Date.now())); localStorage.setItem('agility-ask-v1', JSON.stringify({ x: 1 })); } catch (e) {} });
+    const p = G.page; await p.goto(base + '/?skupina=xk4p2m#home');
+    await p.waitForFunction(() => !$('scrim').hidden && /Agility Brno/.test($('sheet').textContent), null, { timeout: 8000 });
+    const s = await p.evaluate(() => ({ h: $('sheet').querySelector('h3').textContent, n: $('sheet').querySelectorAll('[data-gpc]').length, g: !!$('sheet').querySelector('.gbtn[data-acct="in"]'), txt: $('sheet').textContent.replace(/\s+/g, ' ') }));
+    ok(calls[0] && calls[0][1] === 'XK4P2M' && s.h === 'Skupina Agility Brno – středa' && s.n === 2 && s.g && /12 členů · 2 parkury/.test(s.txt) && /bez přihlášení/.test(s.txt), 'náhled skupiny: ' + JSON.stringify(s));
+    ok(await p.evaluate(() => trLookup('12 členů') === '12 members' && trLookup('2 parkury') === '2 courses' && trLookup('1 parkur') === '1 course' && trLookup('5 parkurů') === '5 courses'), 'chybí anglický překlad počtu členů a parkurů');
+    await p.click('#sheet [data-gpc="11"]'); await p.waitForTimeout(500);
+    const o = await p.evaluate(() => ({ view, name: S.meta.name, cls: S.meta.cls, my: myDB().filter(x => x.gpeek === 'XK4P2M~11').length, pend: lsGet('agility-gjoin-v1', ''), act: ACT.a.gpeek, scrim: $('scrim').hidden }));
+    ok(o.view === 'plan' && o.name === 'Středeční parkur 8' && o.cls === 'A2' && o.my === 1 && o.pend === 'XK4P2M' && o.act === 1 && o.scrim, 'otevření parkuru z náhledu: ' + JSON.stringify(o));
+    /* druhé otevření stejného parkuru ho nezdvojí; v téže návštěvě se náhled znovu neotevře */
+    await p.evaluate(() => groupPeekOpen('XK4P2M', 11)); await p.waitForTimeout(400);
+    ok(await p.evaluate(() => myDB().filter(x => x.gpeek === 'XK4P2M~11').length === 1 && groupPendAsk() === true && $('scrim').hidden), 'parkur z náhledu jen jednou a náhled jen jednou za návštěvu');
+    G.errs.forEach(x => T.errs.push(x)); await G.ctx.close();
+    /* bez SQL na serveru: původní okno jen s kódem */
+    const H = await phone(browser, { isMobile: true });
+    await offline(H.ctx, { get_catalog: { version: 0 }, app_act: null });
+    await H.ctx.addInitScript(() => { try { localStorage.setItem('agility-onb-v1', JSON.stringify({ done: 1, v: 2 })); localStorage.setItem('agility-news-v1', JSON.stringify('3.0')); localStorage.setItem('agility-instx-v1', JSON.stringify(Date.now())); localStorage.setItem('agility-ask-v1', JSON.stringify({ x: 1 })); } catch (e) {} });
+    await H.page.goto(base + '/?skupina=XK4P2M#home');
+    await H.page.waitForFunction(() => !$('scrim').hidden && /Přidat se do skupiny/.test($('sheet').textContent), null, { timeout: 8000 });
+    ok(await H.page.evaluate(() => /XK4P2M/.test($('sheet').textContent) && !$('sheet').querySelector('[data-gpc]')), 'bez náhledu ze serveru původní okno s kódem');
+    H.errs.filter(x => !/Failed to load|net::ERR/.test(x)).forEach(x => T.errs.push(x)); await H.ctx.close();
   });
 
   await T.ctx.close();

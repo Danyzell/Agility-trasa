@@ -13,7 +13,7 @@ export function quickLookOK() {
 export function quickLookBlob(spec) {
   const scene = new THREE.Scene(), g = new THREE.Group(); scene.add(g);
   const C = buildCourse(g, spec, TIERS.low);
-  g.remove(C.dog);
+  g.remove(C.dog); if (C.hand) g.remove(C.hand);   /* psovod (Hoopers) má barvy ve vrcholech, ty USDZ neumí */
   /* instancované sítě (tečky trasy) USDZ neumí, ostatní materiály převést na standardní */
   const drop = [];
   g.traverse(o => {

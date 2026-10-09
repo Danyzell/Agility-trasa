@@ -1,16 +1,19 @@
 /* 3D parkur z Plánu: plocha, překážky v rozměrech FCI (výšky podle velikosti psa), čísla, pes běžící po trase.
-   mountCourse(canvas, spec, opts) → {length, render(d, view), resize(), dispose(), tier}
+   mountCourse(canvas, spec, opts) → {length, render(d, view), resize(), dispose(), tier, at(d), pose(d) (bez kreslení), scene, hand (psovod nebo null)}
    spec = { W, H, size: {jump, tire, lj, ljn} (m),
             obs: [{type, x, y, rot (°), nums: [1, 5], tunnel: [[x, y], ...]}],   // souřadnice plánu: y dolů = z v 3D
             path: [[x, y, h, idx], ...],   // dráha psa (h = výška nad zemí na zónových překážkách, idx = pořadí překážky)
             seesaw: [{x, y, rot, idx, sign}], jumps: [[x, y, h]] }
-   view: 'orbit' (volná kamera, táhnutí otáčí, dva prsty/kolečko přibližují) | 'chase' (za psem) | 'dog' (očima psa) | 'top' (shora) */
+   view: 'orbit' (volná kamera, táhnutí otáčí, dva prsty/kolečko přibližují) | 'chase' (za psem) | 'dog' (očima psa) | 'top' (shora)
+   Hoopers: typy hoop, barrel, gate, chute a ha (prostor psovoda); s prostorem psovoda v něm stojí psovod a otáčí se za psem. */
 import * as THREE from 'three';
 import { makeDog, poseDog } from './dog.js';
+import { makeHandler, poseHandler } from './handler.js';
 import { makeWorld, autoTier, TIERS, M, shadowAll } from './world.js';
 import * as ob from './obstacles.js';
 
-const DOG_STRIDE = 1.35;
+const DOG_STRIDE = 1.35, DOG_MS = 4.5;   // DOG_MS: rychlost průletu v aplikaci (m/s při 1×)
+const HOOPT = { hoop: 1, barrel: 1, gate: 1, chute: 1, ha: 1 };
 
 /* plocha, překážky, trasa a pes do skupiny parent (sdílí 3D v aplikaci i AR na place) */
 export function buildCourse(scene, spec, Q) {
@@ -44,11 +47,17 @@ export function buildCourse(scene, spec, Q) {
       else if (o.type === 'aframe') g = ob.aframe({});
       else if (o.type === 'dogwalk') g = ob.dogwalk({});
       else if (o.type === 'seesaw') { g = ob.seesaw({}); saws.push({ g, o }); }
+      else if (o.type === 'hoop') g = ob.hoop({});
+      else if (o.type === 'barrel') g = ob.barrel({});
+      else if (o.type === 'gate') g = ob.gate({});
+      else if (o.type === 'chute') g = ob.chute({});
+      else if (o.type === 'ha') g = ob.handlerArea({});
       if (!g) return;
       g.position.set(o.x, 0, o.y); g.rotation.y = -a; scene.add(g);
     }
-    /* číslo: cedulka vlevo před vstupem do překážky */
-    if (o.nums && o.nums.length) {
+    g.name = o.type;   /* testy hledají překážky podle druhu */
+    /* číslo: cedulka vlevo před vstupem do překážky (Hoopers níž, až je známá dráha psa) */
+    if (o.nums && o.nums.length && !HOOPT[o.type]) {
       const hl = o.type === 'tunnel' ? 0 : ({ weave: 3.3, aframe: 2.1, dogwalk: 5.4, seesaw: 1.85 })[o.type] || 0;
       const sx = -fz, sz = fx, back = hl + .6, side = o.type === 'jump' ? 1.15 : o.type === 'tire' || o.type === 'longjump' ? 1.05 : .75;
       let px = o.x - fx * back + sx * side, pz = o.y - fz * back + sz * side;
@@ -91,15 +100,41 @@ export function buildCourse(scene, spec, Q) {
     im.count = n; dots.add(im); scene.add(dots);
   }
 
+  /* Hoopers: čísla natočená k prostoru psovoda (FCI: dobře vidět z prostoru psovoda, mimo dráhu psa). Sud a plůtek mají číslo
+     připnuté nahoře (stranu pak volí psovod), oblouk a krátký tunel na zemi kousek před vstupem, na straně prostoru psovoda. */
+  const ha = (spec.obs || []).find(o => o.type === 'ha') || null;
+  (spec.obs || []).forEach(o => {
+    if (!HOOPT[o.type] || !o.nums || !o.nums.length) return;
+    const s = ob.numSign(o.nums.join('·')), big = o.nums.length > 1, a = o.rot * Math.PI / 180;
+    s.rotation.y = ha ? Math.atan2(ha.x - o.x, ha.y - o.y) : -a + Math.PI / 2;
+    if (o.type === 'barrel' || o.type === 'gate') {
+      const sc = big ? 1.2 : 1; s.scale.setScalar(sc); s.position.set(o.x, (o.type === 'barrel' ? .85 : .95) - .15 * sc, o.y);
+    } else {
+      /* směr prvního průchodu podle dráhy psa (bez trasy podle natočení překážky) */
+      const k = P.findIndex(q => q.i === o.nums[0] - 1); let fx = Math.cos(a), fz = Math.sin(a);
+      if (k >= 0 && P.length > 1) { const q0 = P[Math.max(0, k - 1)], q1 = P[Math.min(P.length - 1, k + 1)], l = Math.hypot(q1.x - q0.x, q1.z - q0.z); if (l > 1e-6) { fx = (q1.x - q0.x) / l; fz = (q1.z - q0.z) / l; } }
+      const side = ha && ((ha.x - o.x) * -fz + (ha.y - o.y) * fx) < 0 ? -1 : 1, back = (o.type === 'chute' ? .5 : 0) + .6;
+      s.scale.setScalar(big ? 1.6 : 1.4); s.position.set(o.x - fx * back - fz * side * .8, 0, o.y - fz * back + fx * side * .8);
+    }
+    scene.add(s);
+  });
+
   const dog = makeDog({ shells: Q.shells, shortShells: Q.shortShells }); scene.add(dog);
   dog.traverse(o => { if (o.isMesh && o.userData.shell === 0) o.castShadow = true; });
+  /* Hoopers: psovod stojí celý běh v prostoru psovoda, otáčí se za psem a ukazuje mu, kam dál */
+  let hand = null, HT = null;
+  if (ha) { hand = makeHandler({}); scene.add(hand); hand.traverse(m => { if (m.isMesh) m.castShadow = true; }); HT = handTrack(ha, at, P.length > 1 ? length : 0); }
 
+  /* krátký tunel (Hoopers) je vysoký jen 80 cm: v něm se pes trochu přikrčí, jinak by mu uši prošly látkou */
+  const chutes = (spec.obs || []).filter(o => o.type === 'chute').map(o => ({ x: o.x, y: o.y, c: Math.cos(o.rot * Math.PI / 180), s: Math.sin(o.rot * Math.PI / 180) }));
+  const duck = p => chutes.reduce((m, c) => { const u = (p.x - c.x) * c.c + (p.z - c.y) * c.s, v = -(p.x - c.x) * c.s + (p.z - c.y) * c.c;
+    return Math.abs(v) < .4 ? Math.max(m, Math.min(1, Math.max(0, (1.2 - Math.abs(u)) / .3))) : m; }, 0);
   /* pes a houpačky ve vzdálenosti d po trase */
   function pose(d) {
     const p = at(d), ah = at(d + .8), ny = at(d + .25);
     const yaw = Math.atan2(-(ny.z - p.z), ny.x - p.x);
     const slope = Math.atan2(ah.h - p.h, Math.max(.2, Math.hypot(ah.x - p.x, ah.z - p.z))) * (p.air ? 0 : 1);
-    dog.position.set(p.x, p.h, p.z); dog.rotation.y = yaw; dog.rotation.z = Math.max(-.6, Math.min(.6, slope));
+    dog.position.set(p.x, p.h - (chutes.length ? .1 * duck(p) : 0), p.z); dog.rotation.y = yaw; dog.rotation.z = Math.max(-.6, Math.min(.6, slope));
     poseDog(dog, (d / DOG_STRIDE) % 1, p.air, p.air ? .15 * (ah.h < p.h ? 1 : -1) : 0, d <= 0 || d >= length ? 1 : 0, 0, { time: d / 4.5 });
     /* houpačka: překlopí se, když pes přejde osu */
     saws.forEach(({ g, o }) => {
@@ -108,9 +143,37 @@ export function buildCourse(scene, spec, Q) {
       const want = (passed ? -o.sign : o.sign) * -g.userData.maxT, cur = g.userData.tilt;
       g.setTilt(cur + (want - cur) * .2);
     });
+    if (hand) {
+      if (!HT.n) { hand.position.set(ha.x, 0, ha.y); hand.rotation.y = Math.atan2(-(H / 2 - ha.y), W / 2 - ha.x); poseHandler(hand, { still: true }); }
+      else {
+        const f = Math.max(0, Math.min(HT.n - 1.0001, d / HT.step)), k = Math.floor(f), t = f - k, L = A => A[k] + (A[k + 1] - A[k]) * t;
+        const hx = L(HT.x), hz = L(HT.z), v = (HT.dist[k + 1] - HT.dist[k]) / HT.step * DOG_MS, hy = Math.atan2(-(p.z - hz), p.x - hx);
+        hand.position.set(hx, 0, hz); hand.rotation.y = hy;
+        /* paže ukazuje na stranu, kam pes míří (z pohledu psovoda: + = doprava); když běží přímo k němu nebo od něj, paže klesne */
+        const q = at(d + 1.5), mx = q.x - p.x, mz = q.z - p.z, ml = Math.hypot(mx, mz), rt = ml > 1e-3 ? (mx * Math.sin(hy) + mz * Math.cos(hy)) / ml : 0;
+        const pt = d > 0 && d < length ? Math.min(1, Math.max(0, (Math.abs(rt) - .2) / .35)) * .9 : 0;
+        poseHandler(hand, { phase: L(HT.ph) % 1, speed: Math.min(1, v / 4), point: pt, pointSide: rt > 0 ? -1 : 1, still: v < .05 });
+      }
+    }
     return p;
   }
-  return { length, at, pose, dog, start: P.length ? { x: P[0].x, z: P[0].z } : { x: W / 2, z: H / 2 } };
+  return { length, at, pose, dog, hand, start: P.length ? { x: P[0].x, z: P[0].z } : { x: W / 2, z: H / 2 } };
+}
+
+/* dráha psovoda v prostoru psovoda: krok ke psovi (střed těla nejvýš 0,4 m od středu čtverce 2 × 2 m, chodidla zůstanou uvnitř),
+   vyhlazená přes ±3 m dráhy psa, ať jen klidně přešlapuje; ph = fáze kroku (pomalu kratší kroky) */
+function handTrack(ha, at, length) {
+  if (!(length > 0)) return { n: 0 };
+  const step = .25, n = Math.ceil(length / step) + 1, rx = [], rz = [];
+  for (let k = 0; k < n; k++) { const p = at(k * step), dx = p.x - ha.x, dz = p.z - ha.y, l = Math.hypot(dx, dz) || 1; rx.push(ha.x + dx / l * .4); rz.push(ha.y + dz / l * .4); }
+  const R = 12, x = [], z = [], dist = [0], ph = [0];
+  for (let k = 0; k < n; k++) {
+    let sx = 0, sz = 0, c = 0;
+    for (let j = Math.max(0, k - R); j <= Math.min(n - 1, k + R); j++) { sx += rx[j]; sz += rz[j]; c++; }
+    x.push(sx / c); z.push(sz / c);
+    if (k) { const dd = Math.hypot(x[k] - x[k - 1], z[k] - z[k - 1]), v = dd / step * DOG_MS; dist.push(dist[k - 1] + dd); ph.push(ph[k - 1] + dd / (.6 + 1.5 * Math.min(1, v / 1.8))); }
+  }
+  return { n, step, x, z, dist, ph };
 }
 
 export function mountCourse(canvas, spec, opts = {}) {
@@ -199,6 +262,6 @@ export function mountCourse(canvas, spec, opts = {}) {
     });
     world.R.dispose(); try { world.R.forceContextLoss(); } catch (e) { }
   }
-  const api = { length, render, resize, dispose, at, get tier() { return world.tier; }, get pixelRatio() { return world.R.getPixelRatio(); }, onCamera: null };
+  const api = { length, render, resize, dispose, at, pose: C.pose, scene, hand: C.hand, get tier() { return world.tier; }, get pixelRatio() { return world.R.getPixelRatio(); }, onCamera: null };
   return api;
 }

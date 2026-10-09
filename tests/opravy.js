@@ -27,7 +27,7 @@ module.exports = async function ({ browser, base }) {
     ok(q.n === q.route - 1 && q.still, 'export během tréninku paměti nemá celou trasu: ' + JSON.stringify(q));
 
     T.step('animace ve Videích');
-    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="video"]'); await page.click('#vidList button >> nth=0'); await page.waitForTimeout(150);
+    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="learn"]'); await page.click('#moreTabs [data-m="video"]'); await page.click('#vidList button >> nth=0'); await page.waitForTimeout(150);
     await page.click('.nav [data-v="plan"]');
     ok(await ev(() => !VID.on), 'animace běží i po odchodu ze záložky Videa');
 
@@ -173,7 +173,7 @@ module.exports = async function ({ browser, base }) {
 
     T.step('rozcvička');
     await fresh();
-    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="warm"]');
+    await T.nav('more'); await page.click('#moreTabs [data-m="learn"]'); await page.click('#moreTabs [data-m="warm"]');
     await page.click('[data-wu="toggle"]'); const b1 = await page.$('[data-wu="toggle"]');
     await page.waitForTimeout(1300);
     ok(await ev(b => b.isConnected, b1), 'tlačítka rozcvičky se každou sekundu přestavují');

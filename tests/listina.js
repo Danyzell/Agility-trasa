@@ -139,7 +139,7 @@ module.exports = async function ({ browser, base }) {
     await ev(() => window.dispatchEvent(new Event('afterprint')));
     ok(await ev(() => !document.body.classList.contains('pr-listina') && $('prListina').hidden && !$('prListina').innerHTML), 'po tisku se listina neuklidila');
     /* vstupy: Více → Nástroje a tlačítko v Běhu */
-    ok(await ev(() => { const b = document.querySelector('#moreTabs [data-m="listina"]'); let g = b && b.previousElementSibling; while (g && !g.classList.contains('mgrp')) g = g.previousElementSibling; return b && /Výsledková listina/.test(b.textContent) && g && g.textContent === 'Nástroje'; }), 'Více → Nástroje → Výsledková listina');
+    ok(await ev(() => { const b = document.querySelector('#moreTabs [data-m="listina"]'); return b && /Výsledková listina/.test(b.textContent) && b.parentNode.getAttribute('data-hub') === 'tools' && /Pro rozhodčí a pořadatele/.test(document.querySelector('#moreTabs [data-m="tools"]').textContent); }), 'Více → Nástroje → Výsledková listina');
     await ev(() => show('run')); await page.waitForTimeout(100);
     ok(await page.isVisible('#listinaBtn'), 'tlačítko v Běhu');
     await page.click('#listinaBtn'); await page.waitForTimeout(150);
@@ -152,7 +152,7 @@ module.exports = async function ({ browser, base }) {
   await step('angličtina', async () => {
     const miss = await ev(() => ['Značky křížení', 'Přední křížení', 'Zadní křížení', 'Slepé křížení', 'Pozor', 'přední', 'zadní', 'slepé', 'pozor', 'Smazat značky', 'P přední, Z zadní, S slepé křížení, ! pozor',
       'Vyber druh značky a klepni na plochu, kam ji chceš dát. Klepnutím na značku ji smažeš.', 'Víc značek se na plánek nevejde.', 'Na plánku nejsou žádné značky.', 'Nástroje', 'Výsledková listina',
-      'Které běhy', 'Poslední běh psa', 'Všechny běhy', 'Tisk / PDF', 'Kopírovat jako text', 'Sdílet', 'Stavěl/a:', 'Délka', 'SČP', 'MČP', 'Hoopers · max. čas', 'Velikost', 'Bez psa', 'Místo', 'Pes', 'Vel.', 'Čas', 'Ch.', 'Odm.', 'Za čas', 'Celkem', 'Hodnocení', 'Hodn.', 'Psovod',
+      'Které běhy', 'Poslední běh psa', 'Všechny běhy', 'Tisk / PDF', 'Kopírovat jako text', 'Sdílet', 'Stavba:', 'Délka', 'SČP', 'MČP', 'Hoopers · max. čas', 'Velikost', 'Bez psa', 'Místo', 'Pes', 'Vel.', 'Čas', 'Ch.', 'Odm.', 'Za čas', 'Celkem', 'Hodnocení', 'Hodn.', 'Psovod',
       'Všechny uložené běhy.', 'Počítá se poslední uložený běh každého psa.', 'Řazení podle FCI: méně trestných bodů, pak rychlejší čas, diskvalifikace na konci.',
       'Listina se dělá z běhů uložených k parkuru. Nejdřív parkur ulož nebo načti z Parkurů.', 'K tomuhle parkuru zatím nejsou uložené běhy. Změř je v Běhu a ulož ke psům.',
       'Listina z běhů uložených k načtenému parkuru: všichni psi, kategorie podle třídy parkuru a velikosti psa, pořadí podle FCI. Hodí se na klubové závody a zkoušky.', 'Tisk tady nejde otevřít. Zkopíruj listinu jako text.'].filter(t => trLookup(t) == null));

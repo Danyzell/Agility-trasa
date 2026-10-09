@@ -84,7 +84,7 @@ module.exports = async function ({ browser, base }) {
   await step('náhodný', async () => { await page.click('.nav [data-v="lib"]'); await page.click('#randBtn'); });
   await step('otevřít parkur', async () => { await page.click('.nav [data-v="lib"]'); await page.click('#cards .pick >> nth=3'); T.ok(await T.ev(() => S.meta.id === listFor('A1')[3].id), 'parkur se neotevřel'); });
   for (const m of ['acct', 'dogs', 'diary', 'start', 'warm', 'coach', 'set', 'about'])
-    await step('více ' + m, async () => { await page.click('.nav [data-v="more"]'); await page.click(`#moreTabs [data-m="${m}"]`); });
+    await step('více ' + m, async () => { await page.click('.nav [data-v="more"]'); if (/^(start|warm|coach)$/.test(m)) await page.click('#moreTabs [data-m="learn"]'); await page.click(`#moreTabs [data-m="${m}"]`); });
   /* karta parkuru jen na dva řádky: délka a překážky, pod tím barevná náročnost a SČP */
   await step('krátké karty parkurů', async () => {
     await page.click('.nav [data-v="lib"]'); await page.click('#libTabs [data-c="A3"]');
@@ -97,8 +97,21 @@ module.exports = async function ({ browser, base }) {
   await step('více jako seznam', async () => {
     await page.click('.nav [data-v="more"]');
     T.ok(await page.isVisible('#moreTabs') && await page.isHidden('#moreHead') && await T.ev(() => moreTab === '' && $('moreBody').innerHTML === ''), 'Více nezačíná nabídkou');
-    const hs = await T.ev(() => [...document.querySelectorAll('#moreTabs [data-m]:not([hidden])')].map(b => b.getBoundingClientRect().height));
-    T.ok(hs.length === 13 && await T.ev(() => document.querySelectorAll('#moreTabs .mgrp').length === 4) && hs.every(h => h >= 52), 'řádky nabídky nemají 52 px: ' + hs);
+    /* 3.1: 8 řádků ve třech skupinách; Učení a Pro rozhodčí a pořadatele se otevřou na místě nabídky */
+    const hs = await T.ev(() => [...document.querySelectorAll('#moreTabs [data-m]')].filter(b => b.offsetParent !== null).map(b => b.getBoundingClientRect().height));
+    T.ok(hs.length === 8 && await T.ev(() => document.querySelectorAll('#moreTabs .mgrp').length === 3) && hs.every(h => h >= 52), 'nabídka Více má mít 8 řádků po 52 px: ' + hs);
+    await page.click('#moreTabs [data-m="learn"]');
+    T.ok(await T.ev(() => moreTab === 'learn' && $('moreTitle').textContent === 'Učení' && [...document.querySelectorAll('#moreTabs [data-m]')].filter(b => b.offsetParent !== null).map(b => b.getAttribute('data-m')).join() === 'video,start,warm,coach'), 'skupina Učení: ' + await T.ev(() => [...document.querySelectorAll('#moreTabs [data-m]')].filter(b => b.offsetParent !== null).map(b => b.getAttribute('data-m')).join()));
+    await page.click('#moreTabs [data-m="warm"]'); await page.click('#moreBack');
+    T.ok(await T.ev(() => moreTab === 'learn' && !$('moreTabs').hidden), 'Zpět z Rozcvičky má vrátit skupinu Učení');
+    await page.click('#moreBack'); T.ok(await T.ev(() => moreTab === '' && !$('moreTabs').hasAttribute('data-open')), 'Zpět ze skupiny má vrátit nabídku');
+    await page.click('#moreTabs [data-m="tools"]');
+    T.ok(await T.ev(() => [...document.querySelectorAll('#moreTabs [data-m]')].filter(b => b.offsetParent !== null).map(b => b.getAttribute('data-m')).join() === 'sct,listina' && $('moreTitle').textContent === 'Pro rozhodčí a pořadatele'), 'skupina Pro rozhodčí a pořadatele');
+    await page.click('#moreBack'); await page.click('#moreTabs [data-m="acct"]');
+    T.ok(await page.isVisible('#moreBody [data-mgo="plus"]'), 'Pawkur Plus má být v Účtu');
+    await page.click('#moreBody [data-mgo="plus"]'); T.ok(await T.ev(() => moreTab === 'plus' && $('moreTitle').textContent === 'Pawkur Plus'), 'Plus z Účtu');
+    await page.click('#moreBack'); T.ok(await T.ev(() => moreTab === 'acct'), 'Zpět z Plus má vrátit Účet');
+    await page.click('#moreBack');
     await page.click('#moreTabs [data-m="diary"]');
     T.ok(await page.isHidden('#moreTabs') && await page.isVisible('#moreBack') && await T.ev(() => $('moreTitle').textContent === 'Deník a statistiky' && moreTab === 'diary' && /Statistiky/.test($('moreBody').textContent)), 'sekce se neotevřela se Zpět a názvem');
     await page.click('#moreBack');
@@ -127,7 +140,7 @@ module.exports = async function ({ browser, base }) {
     await page.setViewportSize({ width: 390, height: 844 });
   });
   await step('video', async () => {
-    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="video"]'); await page.click('#vidList button >> nth=0');
+    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="learn"]'); await page.click('#moreTabs [data-m="video"]'); await page.click('#vidList button >> nth=0');
     await page.waitForFunction(() => V3D.api || V3D.fail || !V3D.gl, null, { timeout: 20000 }); await page.waitForTimeout(300);
     T.ok(await T.ev(() => V3D.api ? !$('vStage3').hidden : $('vStage').innerHTML.length > 0), 'animace se neukázala');
   });

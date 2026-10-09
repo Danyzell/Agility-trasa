@@ -63,14 +63,14 @@ module.exports = async function ({ browser, base }) {
     await open('CZ');
     /* parkur z knihovny: Plán → stejné časy musí dát kalkulačka pro stejnou délku, třídu a disciplínu */
     const m = await ev(() => { const c = listFor('A2')[0], m = metrics(c.obs, c.route, 'A2', c.turns); return { len: Math.round(m.len * 10) / 10, sct: m.sct, mct: m.mct, spd: m.spd, disc: m.disc }; });
-    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="sct"]'); await w(200);
-    ok(await page.isVisible('#sheet #scLen') && await ev(() => moreTab === '' && !!$('scDisc') && !$('scSize')), 'kalkulačka se má otevřít jako list, bez velikosti (ta hraje roli jen v Británii)');
+    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="tools"]'); await page.click('#moreTabs [data-m="sct"]'); await w(200);
+    ok(await page.isVisible('#sheet #scLen') && await ev(() => moreTab === 'tools' && !!$('scDisc') && !$('scSize')), 'kalkulačka se má otevřít jako list, bez velikosti (ta hraje roli jen v Británii)');
     ok(/Zadej délku trati/.test(await page.textContent('#scOut')), 'bez délky výzva');
     await page.selectOption('#scCls', 'A2'); await page.selectOption('#scDisc', m.disc === 'Agility' ? 'A' : 'J');
     await page.fill('#scLen', String(m.len)); await w(100);
     const o = await ev(() => ({ t: $('scOut').textContent, rows: [...document.querySelectorAll('#scOut .sc-tab tr')].slice(1).map(r => r.cells[0].textContent).join(), cur: (document.querySelector('#scOut tr.cur td') || {}).textContent, spd: $('scSpd').value }));
     ok(new RegExp('SČP' + m.sct + 's').test(o.t.replace(/\s+/g, '')) && new RegExp('MČP' + m.mct + 's').test(o.t.replace(/\s+/g, '')), 'SČP/MČP kalkulačky ≠ Plán: ' + JSON.stringify([m, o.t.slice(0, 80)]));
-    ok(o.rows === 'A0,A1,A2,A3' && o.cur === 'A2' && +o.spd === m.spd && /MČP 2,5 m\/s \(Agility\) a 3,0 m\/s \(Jumping\)/.test(o.t), 'tabulka všech tříd: ' + JSON.stringify(o));
+    ok(o.rows === 'A0,A1,A2,A3' && o.cur === 'A2' && +String(o.spd).replace(',', '.') === m.spd /* pole ukazuje číslo česky (3,5) */ && /MČP 2,5 m\/s \(Agility\) a 3,0 m\/s \(Jumping\)/.test(o.t), 'tabulka všech tříd: ' + JSON.stringify(o));
     /* vlastní rychlost přepíše třídu: 160 m / 4 m/s = 40 s, MČP 160 / 2,5 = 64 s (agility) */
     await page.fill('#scLen', '160'); await page.selectOption('#scDisc', 'A'); await page.fill('#scSpd', '4'); await w(100);
     const t2 = (await page.textContent('#scOut')).replace(/\s+/g, '');
@@ -88,12 +88,12 @@ module.exports = async function ({ browser, base }) {
     await ev(() => { DOGS = [{ id: 'd1', name: 'Rex', size: 'M', cls: 'G5' }]; DOGC = 'd1'; saveDogs(); loadCourse(listFor('A2')[0], true); }); if (await page.isVisible('#scrim')) await T.sheet('ok');
     const m = await ev(() => { const m = curM(); return { len: Math.round(m.len * 10) / 10, sct: m.sct, mct: m.mct, uk: m.uk, spd: m.spd, disc: m.disc, mx: Math.round(ukSpd('G5', 'M', m.disc === 'Agility' ? 'A' : 'J') * 100) / 100 }; });
     ok(m.uk && m.mct === 0 && m.spd === m.mx && m.sct === Math.ceil(m.len / m.mx - 1e-9) + 10, 'Plán v Británii: rychlost z matice pro Medium a Grade 5: ' + JSON.stringify(m));
-    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="sct"]'); await w(200);
+    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="tools"]'); await page.click('#moreTabs [data-m="sct"]'); await w(200);
     const d0 = await ev(() => ({ cls: $('scCls').value, size: $('scSize').value, disc: !!$('scDisc') }));
     ok(d0.cls === 'G5' && d0.size === 'M' && d0.disc, 'výchozí třída a velikost podle psa: ' + JSON.stringify(d0));
     await page.selectOption('#scDisc', m.disc === 'Agility' ? 'A' : 'J'); await page.fill('#scLen', String(m.len)); await w(100);
     const o = await ev(() => ({ t: $('scOut').textContent.replace(/\s+/g, ''), rows: [...document.querySelectorAll('#scOut .sc-tab tr')].slice(1).map(r => r.cells[0].textContent).join(), cols: document.querySelector('#scOut .sc-tab tr').cells.length, spd: $('scSpd').value, hint: $('sheet').querySelector('p.hint').textContent }));
-    ok(new RegExp('SČP' + m.sct + 's').test(o.t) && !/MČP/.test(o.t) && +o.spd === m.spd, 'britský SČP kalkulačky ≠ Plán: ' + JSON.stringify([m, o]));
+    ok(new RegExp('SČP' + m.sct + 's').test(o.t) && !/MČP/.test(o.t) && +String(o.spd).replace(',', '.') === m.spd /* pole ukazuje číslo česky (3,5) */, 'britský SČP kalkulačky ≠ Plán: ' + JSON.stringify([m, o]));
     ok(o.rows === 'Grade1,Grade2,Grade3,Grade4,Grade5,Grade6,Grade7'.replace(/Grade/g, 'Grade ') && o.cols === 3 && /rychlostpodlematice/.test(o.t) && /Course Time Matrix/.test(o.hint), 'tabulka gradeů bez MČP: ' + JSON.stringify(o));
     await ev(() => closeSheet());
   });

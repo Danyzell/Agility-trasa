@@ -27,7 +27,7 @@ module.exports = async function ({ browser, base }) {
     await setCourse([J(1, 5, 10), J(2, 12, 10), { id: 3, type: 'tunnel', x: 22, y: 10, rot: 0, len: 5 }], [1, 2, 3]);
     await T.tapField(5, 10);
     let r = await ev(() => ({ sel, hidden: $('selRow').hidden, x: $('posX').value, y: $('posY').value, rr: $('posR').value, maxX: $('posX').max, maxY: $('posY').max, snap: $('snapBtn').getAttribute('aria-pressed'), lock: $('lockBtn').getAttribute('aria-pressed') }));
-    ok(r.sel === 1 && !r.hidden && r.x === '5' && r.y === '10' && r.rr === '0' && r.maxX === '40' && r.maxY === '20' && r.snap === 'true' && r.lock === 'false', 'panel s polohou: ' + JSON.stringify(r));
+    ok(r.sel === 1 && !r.hidden && r.x === '5' && r.y === '10' && r.rr === '0' && r.snap === 'true' && r.lock === 'false', 'panel s polohou: ' + JSON.stringify(r));
     await page.fill('#posX', '7.3'); await page.fill('#posY', '11.6'); await w(80);
     r = await ev(() => ({ x: getO(1).x, y: getO(1).y, dirty: S.meta.dirty, und: UNDO.length }));
     ok(r.x === 7.3 && r.y === 11.6 && r.dirty && r.und === 2, 'zadání X a Y přesune překážku (každé pole je jeden krok Zpět): ' + JSON.stringify(r));
@@ -38,7 +38,13 @@ module.exports = async function ({ browser, base }) {
     await page.fill('#posR', '-1'); await w(60);
     ok(await ev(() => getO(1).rot === 359 && $('posR').value === '359'), 'otočení −1° = 359°: ' + await ev(() => getO(1).rot + '/' + $('posR').value));
     /* mimo plochu nejde */
-    await page.fill('#posX', '55'); await w(60); ok(await ev(() => getO(1).x === 40), 'X nad šířku plochy se má přirazit ke kraji: ' + await ev(() => getO(1).x));
+    /* 3.2: hodnota mimo plochu se nepoužije (dřív se překážka přirazila ke kraji), pole zčervená a po potvrzení přijde hláška */
+    await page.fill('#posX', '55'); await w(60);
+    let iv = await ev(() => ({ x: getO(1).x, inv: $('posX').getAttribute('aria-invalid') }));
+    ok(iv.x === 7.3 && iv.inv === 'true', 'X mimo plochu se nemá použít: ' + JSON.stringify(iv));
+    await page.dispatchEvent('#posX', 'change'); await w(60);
+    iv = await ev(() => ({ x: getO(1).x, v: $('posX').value, inv: $('posX').getAttribute('aria-invalid'), toast: $('toast').textContent }));
+    ok(iv.x === 7.3 && iv.v === '7,3' && iv.inv === 'false' && /^X musí být mezi 0 a 40 m \(plocha 40 × 20 m\)\.$/.test(iv.toast), 'po potvrzení hláška a původní hodnota: ' + JSON.stringify(iv));
     await page.fill('#posX', '7'); await w(60);
     /* zámek: prst s překážkou nepohne, pole X a Y jsou vypnutá, u překážky je zámek */
     await page.click('#lockBtn'); await w(60);
@@ -184,7 +190,7 @@ module.exports = async function ({ browser, base }) {
     await ev(() => { closeSheet(); S.meta.dirty = false; loadCourse(myDB()[0], true); $('toast').hidden = true; });
     await T.tool('share'); await page.click('#sheet [data-a="mk"]'); await w(300);
     r = await ev(() => ({ code: $('shOut').querySelector('.code').textContent, link: $('shOut').getAttribute('data-link'), a: ($('shOut').querySelector('.sh-link a') || {}).href, msg: $('shOut').getAttribute('data-msg'), btn: !!$('shOut').querySelector('[data-a="lnk"]') }));
-    ok(r.code === 'K7P2QX' && r.link === 'https://pawkur.cz/?kod=K7P2QX' && r.a === r.link && /zadej kód K7P2QX Nebo otevři odkaz: https:\/\/pawkur\.cz\/\?kod=K7P2QX$/.test(r.msg) && r.btn, 'kód s odkazem: ' + JSON.stringify(r));
+    ok(r.code === 'K7P2QX' && r.link === 'https://pawkur.cz/?kod=K7P2QX' && r.a === r.link && /zadej kód K7P2QX\. Nebo otevři odkaz: https:\/\/pawkur\.cz\/\?kod=K7P2QX$/.test(r.msg) && r.btn, 'kód s odkazem: ' + JSON.stringify(r));
     await ev(() => { window.__cp = null; copyText = function (t) { window.__cp = t; }; });
     await page.click('#shOut [data-a="lnk"]'); ok(await ev(() => window.__cp === 'https://pawkur.cz/?kod=K7P2QX'), 'Kopírovat odkaz');
     await ev(() => closeSheet());
@@ -200,7 +206,7 @@ module.exports = async function ({ browser, base }) {
     await page.fill('#cmpQ', 'druh'); await w(60); ok(await ev(() => document.querySelectorAll('#cmpPick [data-cid]').length === 1), 'hledání v seznamu');
     await page.click('#cmpPick [data-cid="my-cmp1"]'); await w(200);
     let r = await ev(() => ({ cmp: !!CMP, bar: !$('cmpBar').hidden, info: $('cmpInfo').textContent, cob: document.querySelectorAll('#cmp .cob').length, h3: $('sheet').querySelector('h3').textContent, t: $('sheet').textContent.replace(/\s+/g, ' '), on: document.querySelector('#planTools [data-t="cmp"]').classList.contains('on') }));
-    ok(r.cmp && r.bar && r.info === 'Šedě: Druhý parkur' && r.cob >= 8 && r.h3 === 'Co přestavět' && /Zůstává: 2 překážky/.test(r.t) && /Posunout \(1\)/.test(r.t) && /Skok č\. 2: 2,0 m dolů/.test(r.t) && /Postavit navíc \(1\)/.test(r.t) && /Skok č\. 4 na 30,0 · 15,0 m, 0°/.test(r.t) && /Odstranit \(1\)/.test(r.t) && /Skok č\. 4 na 8,0 · 16,0 m/.test(r.t) && r.on, 'rozdíly: ' + JSON.stringify(r));
+    ok(r.cmp && r.bar && r.info === 'Šedě: Druhý parkur' && r.cob >= 8 && r.h3 === 'Co přestavět' && /Zůstává: 2 překážky/.test(r.t) && /Posunout a upravit \(1\)/.test(r.t) && /Skok č\. 2: 2,0 m dolů/.test(r.t) && /Postavit navíc \(1\)/.test(r.t) && /Skok č\. 4 na 30,0 · 15,0 m, 0°/.test(r.t) && /Odstranit \(1\)/.test(r.t) && /Skok č\. 4 na 8,0 · 16,0 m/.test(r.t) && r.on, 'rozdíly: ' + JSON.stringify(r));
     await T.sheet('x');
     ok(await ev(() => fieldSvgString().indexOf('cob') < 0 && document.querySelectorAll('#cmp .cob').length >= 8), 'export má být bez šedého parkuru a po exportu šedý parkur zůstává');
     /* v Prohlížet zůstává, lišta Co přestavět otevře seznam, Skrýt porovnání zruší */
@@ -272,7 +278,7 @@ module.exports = async function ({ browser, base }) {
   await step('angličtina', async () => {
     const miss = await missEn(['Vybrat víc překážek', 'Zamknout polohu', 'Odemknout polohu', 'Přichytávat po 0,5 m', 'Vybráno: 2 překážky', 'Klepej na překážky', 'Celý parkur', 'Zrcadlit, otočit, posunout', 'Porovnat s jiným', 'Plánek rozhodčího', 'Export a tisk',
       '↔ Zrcadlit zleva doprava', '↻ Otočit o 90°', 'Plocha bude 20 × 40 m.', 'Parkur otočený o 90°, plocha 20 × 40 m', 'Parkur zrcadlený zleva doprava', 'Posunuto. Překážky mimo plochu jsou přiražené ke kraji: 2', 'Parkur posunutý: 2,0 m doprava; 1,0 m nahoru',
-      'Co přestavět', 'Šedě: Test B', 'Posunout (1):', 'Postavit navíc (1):', 'Odstranit (1):', 'Skok č. 2', '2,0 m dolů', 'otočit o 15°', 'na 30,0 · 15,0 m, 0°', 'na 8,0 · 16,0 m', 'Parkury jsou stejné.', 'Prohozeno: Test B je v Plánu, Test A šedě.',
+      'Co přestavět', 'Šedě: Test B', 'Posunout (1):', 'Posunout a upravit (1):', 'Vyměnit (1):', 'Postavit navíc (1):', 'Odstranit (1):', 'Skok č. 2', '2,0 m dolů', 'otočit o 15°', 'na 30,0 · 15,0 m, 0°', 'na 8,0 · 16,0 m', 'Parkury jsou stejné.', 'Prohozeno: Test B je v Plánu, Test A šedě.',
       'Plánek jako od rozhodčího: čísla v kroužcích, tenká trasa, START zeleně a CÍL červeně.', 'CÍL', 'Závodník', 'Rozhodčí', 'Stavitel', 'Obrázek do příběhu', 'Plánek rozhodčího: Test', 'Plánek: Test', 'Pořadí překážek', 'Datum a místo', 'Poznámky',
       'Nebo otevři odkaz', 'Kopírovat odkaz', 'Parkur Test z odkazu je v Moje.', 'Parkur Test z odkazu uložen do Moje', 'Načítám parkur z odkazu…', 'Kopie: 2 překážky. Výběr je teď na kopiích.', 'Smazáno: 2 překážky', 'Překážka má zamknutou polohu. Odemkneš ji zámkem v panelu dole.']);
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));

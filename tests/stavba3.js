@@ -42,7 +42,7 @@ module.exports = async function ({ browser, base }) {
     ok(r.cls === 'H1' && r.W === 30 && r.H === 30 && r.obs === 'ha' && r.sport === 'hoopers' && r.pal === 'hoop,barrel,gate,chute,ha' && r.sizes === '30x30,36x30,40x32', 'nový parkur Hoopers: ' + JSON.stringify(r));
     await ev(() => setSport('agility', true));
     /* Domů → Nový parkur otevře stejné okno jedním klepnutím */
-    await page.click('.nav [data-v="home"]'); await page.waitForTimeout(150);
+    await T.nav('home'); await page.waitForTimeout(150);
     await page.click('#v-home [data-h="new"]'); await page.waitForTimeout(150);
     ok(await ev(() => view === 'plan' && !$('scrim').hidden && !!$('nSize')), 'Nový parkur z Domů neotevřel okno');
     await T.sheet('x');
@@ -374,7 +374,7 @@ module.exports = async function ({ browser, base }) {
     ok(nTurn >= 2 && back && new RegExp('Natočeno překážek: ' + nTurn + '$').test(tt), 'natočení Hoopers podle trasy: ' + JSON.stringify({ turned, tt, after, gen }));
     if (barrel) ok(await ev(g => { const b = S.obs.find(o => o.type === 'barrel' && S.route.indexOf(o.id) >= 0); const w = +g.split(',').find(x => x.split(':')[0] === String(b.id)).split(':')[1]; return b.rot === (w + 40) % 360; }, gen), 'sud se natočil');
     /* jedna překážka (⟂ trasa) ve Stavbě: plůtek napříč jako v generátoru */
-    const gate = await ev(() => { const g = S.obs.find(o => o.type === 'gate' && S.route.indexOf(o.id) >= 0); if (!g) return null; const r0 = g.rot; g.rot = (g.rot + 70) % 360; mode = 'build'; sel = g.id; SELNEW = false; render(); ui(); return { id: g.id, r0 }; });
+    const gate = await ev(() => { const g = S.obs.find(o => o.type === 'gate' && S.route.indexOf(o.id) >= 0); if (!g) return null; const r0 = g.rot; g.rot = (g.rot + 70) % 360; mode = 'build'; sel = g.id; SELNEW = false; SELFULL = true; render(); ui(); return { id: g.id, r0 }; }); /* jako klepnutí na plůtek: celý panel (3.2) */
     if (gate) { await page.click('#rotP'); ok(await ev(gt => { const d = ((getO(gt.id).rot - gt.r0) % 360 + 360) % 360; return d <= 1.5 || d >= 358.5; }, gate), 'plůtek ⟂ trasa: ' + await ev(gt => getO(gt.id).rot, gate) + ' / ' + gate.r0); }
     /* plochy podle třídy v nabídce velikosti */
     ok(await ev(() => [...$('sizeSelect').options].slice(0, 3).map(o => o.textContent).join('|') === 'Hoopers H1 30 × 30 m|Hoopers H2 36 × 30 m|Hoopers H3 40 × 32 m'), 'plochy Hoopers v nabídce velikosti');
