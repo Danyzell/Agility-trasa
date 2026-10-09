@@ -11,9 +11,50 @@ module.exports = async function ({ browser, base }) {
   await step('spodní lišta a Videa', async () => {
     await fresh();
     const nav = await ev(() => [...document.querySelectorAll('.nav button')].map(b => b.getAttribute('data-v')).join());
-    ok(nav === 'home,plan,lib,run,more', 'spodní lišta: ' + nav);
+    ok(nav === 'home,lib,plan,run,more', 'spodní lišta: ' + nav);
     await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="learn"]'); await page.click('#moreTabs [data-m="video"]'); await page.waitForTimeout(200);
     ok(await page.isVisible('#v-video') && await page.locator('#vidList button').count() > 3, 'Videa z Více se neotevřela');
+  });
+
+  await step('spodní lišta: schovaná ve Stavbě a Trase, čas běhu, tečka na Domů', async () => {
+    await fresh('#lib');
+    const cur = () => ev(() => [...document.querySelectorAll('.nav button')].filter(b => b.getAttribute('aria-current') === 'page').map(b => b.getAttribute('data-v')).join());
+    const vis = () => ev(() => getComputedStyle(document.querySelector('.nav')).display !== 'none');
+    ok(await cur() === 'lib', 'aria-current má mít jen Parkury: ' + await cur());
+    /* parkur s překážkami: ve Stavbě a Trase je lišta schovaná, v Prohlížet zpátky */
+    await ev(() => { loadCourse(listFor('A2')[0], true); show('plan'); });
+    await page.click('#mView'); ok(await vis() && await cur() === 'plan', 'v Prohlížet má být lišta vidět');
+    await page.click('#mBuild'); ok(!(await vis()), 've Stavbě má být lišta schovaná');
+    await page.click('#mRoute'); ok(!(await vis()), 'v Trase má být lišta schovaná');
+    await page.click('#mView'); ok(await vis(), 'po návratu do Prohlížet má být lišta zpátky');
+    /* nový prázdný parkur: Prohlížet tam nejde, lišta zůstane jako cesta jinam; po první překážce se schová */
+    await page.click('#newBtn'); await page.waitForTimeout(150); if (await page.isVisible('#scrim')) await T.sheet('ok');
+    ok(await ev(() => S.obs.length === 0 && mode === 'build') && await vis(), 'na prázdné ploše ve Stavbě má lišta zůstat');
+    await T.tapField(10, 10);
+    ok(await ev(() => S.obs.length === 1) && !(await vis()), 'po první překážce se má lišta schovat');
+    await page.keyboard.press('Control+z'); await page.waitForTimeout(100);
+    ok(await ev(() => S.obs.length === 0) && await vis(), 'po vrácení poslední překážky má být lišta zpátky');
+    /* stopky běží a člověk odejde jinam: na záložce Běh je čas; po STOP tečka, dokud se běh neuloží nebo nesmaže */
+    await ev(() => { loadCourse(listFor('A2')[0], true); show('run'); $('toast').hidden = true; });
+    await page.click('#startBtn'); await page.click('.nav [data-v="lib"]'); await page.waitForTimeout(1300);
+    const run = () => ev(() => { const b = document.querySelector('.nav [data-v="run"]'); return { live: b.classList.contains('live'), t: b.querySelector('.nlbl').textContent, dot: !b.querySelector('.ndot').hidden }; });
+    let r = await run();
+    ok(r.live && /^[1-9] s$/.test(r.t) && !r.dot, 'běžící stopky na záložce Běh: ' + JSON.stringify(r));
+    await page.click('.nav [data-v="run"]'); r = await run();
+    ok(!r.live && r.t === 'Běh', 'v Běhu má být záložka zase Běh: ' + JSON.stringify(r));
+    await page.click('#startBtn'); await page.click('.nav [data-v="home"]'); r = await run();
+    ok(!r.live && r.t === 'Běh' && r.dot, 'zastavený neuložený běh má mít na záložce tečku: ' + JSON.stringify(r));
+    await page.click('.nav [data-v="run"]'); await page.click('#resetClock'); await page.click('.nav [data-v="lib"]'); r = await run();
+    ok(!r.dot, 'po smazání času tečka zmizí: ' + JSON.stringify(r));
+    /* tečka na Domů: dnes nebo zítra parkur od trenéra, který ještě není zaběhnutý */
+    const home = await ev(() => { AUTH = { uid: 'u-test' }; GTODAY = { at: Date.now(), uid: 'u-test', rows: [{ id: 1, day: localDate(), ran: false }] }; navHomeDot(); const d = document.querySelector('.nav [data-v="home"] .ndot'), a = !d.hidden;
+      GTODAY.rows[0].ran = true; navHomeDot(); const b = !d.hidden; GTODAY.rows[0].ran = false; navHomeDot(); return { a, b }; });
+    ok(home.a && !home.b, 'tečka na Domů: ' + JSON.stringify(home));
+    await page.click('.nav [data-v="home"]');
+    ok(await ev(() => document.querySelector('.nav [data-v="home"] .ndot').hidden), 'na Domů tečka nesvítí');
+    await ev(() => { AUTH = null; GTODAY = null; navHomeDot(); });
+    /* anglicky: záložka Běh je Run */
+    ok(await ev(() => trLookup('Běh') === 'Run'), 'chybí anglický překlad záložky Běh');
   });
 
   await step('více ve třech skupinách', async () => {

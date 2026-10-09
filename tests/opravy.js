@@ -173,7 +173,7 @@ module.exports = async function ({ browser, base }) {
 
     T.step('rozcvička');
     await fresh();
-    await page.click('.nav [data-v="more"]'); await page.click('#moreTabs [data-m="learn"]'); await page.click('#moreTabs [data-m="warm"]');
+    await T.nav('more'); await page.click('#moreTabs [data-m="learn"]'); await page.click('#moreTabs [data-m="warm"]');
     await page.click('[data-wu="toggle"]'); const b1 = await page.$('[data-wu="toggle"]');
     await page.waitForTimeout(1300);
     ok(await ev(b => b.isConnected, b1), 'tlačítka rozcvičky se každou sekundu přestavují');

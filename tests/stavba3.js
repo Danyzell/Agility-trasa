@@ -42,7 +42,7 @@ module.exports = async function ({ browser, base }) {
     ok(r.cls === 'H1' && r.W === 30 && r.H === 30 && r.obs === 'ha' && r.sport === 'hoopers' && r.pal === 'hoop,barrel,gate,chute,ha' && r.sizes === '30x30,36x30,40x32', 'nový parkur Hoopers: ' + JSON.stringify(r));
     await ev(() => setSport('agility', true));
     /* Domů → Nový parkur otevře stejné okno jedním klepnutím */
-    await page.click('.nav [data-v="home"]'); await page.waitForTimeout(150);
+    await T.nav('home'); await page.waitForTimeout(150);
     await page.click('#v-home [data-h="new"]'); await page.waitForTimeout(150);
     ok(await ev(() => view === 'plan' && !$('scrim').hidden && !!$('nSize')), 'Nový parkur z Domů neotevřel okno');
     await T.sheet('x');

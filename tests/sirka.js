@@ -69,8 +69,11 @@ module.exports = async function ({ browser, base }) {
     const z2 = await ev(() => zoom);
     ok(z1 === 1 && z2 === 2, 'přiblížení po otočení: ' + z1 + ' / ' + z2);
     ok(await ev(() => !!$('undoAll').closest('#modeRow') && !!$('redoAll').closest('#modeRow')), 'na výšku mají být Zpět a Znovu zase v řádku režimů');
+    ok(await ev(() => document.body.classList.contains('navhide') && getComputedStyle(document.querySelector('.nav')).display === 'none'), 'na výšku má být ve Stavbě spodní lišta schovaná');
+    await page.click('#mView'); await page.waitForTimeout(100);
     const nav = await rect('.nav');
-    ok(nav.w > 300 && nav.b > 780, 'na výšku má být lišta zase dole: ' + JSON.stringify(nav));
+    ok(nav.w > 300 && nav.b > 780, 'na výšku má být lišta v Prohlížet zase dole: ' + JSON.stringify(nav));
+    await ev(() => { mode = 'build'; ui(); });
   });
 
   await step('plocha přes celou obrazovku na výšku', async () => {
@@ -83,7 +86,10 @@ module.exports = async function ({ browser, base }) {
     ok(r.zoom > 2, 'na výšku má plocha vyplnit výšku (větší přiblížení): ' + r.zoom);
     ok(/šířku/.test(r.toast), 'chybí rada otočit telefon: ' + r.toast);
     await page.click('#fullBtn'); await page.waitForTimeout(300);
-    ok(await ev(() => !document.body.classList.contains('fullfield') && zoom === 2 && getComputedStyle(document.querySelector('.nav')).display !== 'none'), 'zavření celé obrazovky má vrátit lišty i přiblížení');
+    ok(await ev(() => !document.body.classList.contains('fullfield') && zoom === 2 && getComputedStyle(document.querySelector('.top')).display !== 'none' && document.body.classList.contains('navhide')), 'zavření celé obrazovky má vrátit horní lištu i přiblížení (spodní zůstane ve Stavbě schovaná)');
+    await page.click('#mView'); await page.waitForTimeout(100);
+    ok(await ev(() => getComputedStyle(document.querySelector('.nav')).display !== 'none'), 'v Prohlížet má být spodní lišta zpátky');
+    await ev(() => { mode = 'build'; ui(); });
     /* podruhé už bez rady, Escape a přechod jinam celou obrazovku zavřou */
     await ev(() => { $('toast').hidden = true; }); await page.click('#fullBtn'); await page.waitForTimeout(200);
     ok(await ev(() => $('toast').hidden), 'rada otočit telefon se má ukázat jen jednou');

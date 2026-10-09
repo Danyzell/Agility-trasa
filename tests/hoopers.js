@@ -58,7 +58,7 @@ module.exports = async function ({ browser, base }) {
   });
 
   await step('vlastní stavba', async () => {
-    await page.click('.nav [data-v="lib"]'); await page.click('[data-hnew]'); await page.waitForTimeout(200);
+    await T.nav('lib'); await page.click('[data-hnew]'); await page.waitForTimeout(200);
     const r = await ev(() => ({ cls: S.meta.cls, W: S.W, H: S.H, obs: S.obs.map(o => o.type).join(), pal: [...document.querySelectorAll('#palette .ob-btn')].map(b => b.getAttribute('data-type')).join() }));
     ok(r.cls === 'H1' && r.W === 30 && r.H === 30 && r.obs === 'ha' && r.pal === 'hoop,barrel,gate,chute,ha', 'nový parkur Hoopers: ' + JSON.stringify(r));
     /* prostor psovoda nejde přidat do trasy */

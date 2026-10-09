@@ -27,7 +27,7 @@ module.exports = async function ({ browser, base }) {
   ok(await ev(() => myDB().length === 1 && S.meta.id.indexOf('my-') === 0), 'parkur se neuložil do Moje');
 
   T.step('běh');
-  await page.click('.nav [data-v="run"]');
+  await T.nav('run');
   await page.fill('#manT', '12,34'); await page.evaluate(() => $('saveRun').scrollIntoView({ block: 'center' })); await page.click('#saveRun'); await page.waitForTimeout(150);
   ok(await ev(() => getMark(S.meta.id).runs.length === 1 && getMark(S.meta.id).runs[0].t === 12.34), 'běh se neuložil');
 

@@ -25,6 +25,8 @@ exports.phone = async function (browser, opts) {
     /* nástroj plánu: nabídka Nástroje se nejdřív rozbalí */
     async tool(t) { if (await page.isHidden('#planTools')) await page.click('#toolsBtn'); await page.click(`#planTools [data-t="${t}"]`); },
     async sheet(a) { await page.click(`#sheet [data-a="${a}"]`); await page.waitForTimeout(150); },
+    /* spodní lišta: ve Stavbě a Trase je schovaná, test se jako člověk nejdřív vrátí do Prohlížet */
+    async nav(v) { if (await page.evaluate(() => document.body.classList.contains('navhide'))) await page.click('#mView'); await page.click(`.nav [data-v="${v}"]`); },
   };
 };
 /* server Supabase se v testech nevolá; odpovědi RPC si sada může podstrčit

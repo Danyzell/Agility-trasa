@@ -76,7 +76,7 @@ module.exports = async function ({ browser, base }) {
   T.step('načtení jiného parkuru');
   await T.tapField(20, 17);
   ok(!(await ev(() => $('undoAll').disabled)), 'Zpět má být aktivní');
-  await page.click('.nav [data-v="lib"]'); await page.click('#cards .pick >> nth=1');
+  await T.nav('lib'); await page.click('#cards .pick >> nth=1');
   if (await page.isVisible('#scrim')) await T.sheet('ok');
   await page.waitForTimeout(150);
   ok(await ev(() => $('undoAll').disabled && UNDO.length === 0), 'po načtení parkuru má být historie prázdná');
