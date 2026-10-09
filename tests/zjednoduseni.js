@@ -19,7 +19,7 @@ module.exports = async function ({ browser, base }) {
   await step('více ve třech skupinách', async () => {
     await page.click('.nav [data-v="more"]');
     const r = await ev(() => ({ g: [...document.querySelectorAll('#moreTabs .mgrp')].map(x => x.textContent).join(), rows: [...document.querySelectorAll('#moreTabs .mrow:not([hidden])')].map(x => x.getAttribute('data-m')).join() }));
-    ok(r.g === 'Můj tým,Učení,Nástroje,Aplikace' && r.rows === 'acct,dogs,diary,video,start,warm,coach,sct,listina,plus,set,about', 'Více: ' + JSON.stringify(r));
+    ok(r.g === 'Můj tým,Učení,Nástroje,Aplikace' && r.rows === 'acct,dogs,groups,diary,video,start,warm,coach,sct,listina,plus,set,about', 'Více: ' + JSON.stringify(r));
     await page.click('#moreTabs [data-m="diary"]');
     ok(/Postup A1/.test(await page.textContent('#moreBody')) && /Statistiky/.test(await page.textContent('#moreBody h2')), 'Deník bez statistik');
     await page.click('#moreBack'); await page.click('#moreTabs [data-m="set"]');
@@ -44,8 +44,8 @@ module.exports = async function ({ browser, base }) {
   await step('nástroje ve skupinách', async () => {
     await fresh('#plan'); await page.click('#toolsBtn');
     const g = await ev(() => [...document.querySelectorAll('#planTools .tgrp')].map(x => x.textContent + ':' + (x.getBoundingClientRect().width > 300)).join());
-    ok(g === 'Rozbor a trénink:true,Venku:true,Fotka a sdílení:true', 'skupiny nástrojů přes celou šířku: ' + g);
-    ok(await page.locator('#planTools .tool').count() === 12, 'nástrojů má být dál 12');
+    ok(g === 'Rozbor a trénink:true,Venku:true,Celý parkur:true,Fotka a sdílení:true', 'skupiny nástrojů přes celou šířku: ' + g);
+    ok(await page.locator('#planTools .tool').count() === 15, 'nástrojů má být 15 (12 + celý parkur, porovnání, plánek rozhodčího)');
   });
 
   await step('angličtina', async () => {

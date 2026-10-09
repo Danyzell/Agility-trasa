@@ -62,7 +62,7 @@ module.exports = async function ({ browser, base }) {
     ok(c && !c.ok && !c.busy && c.chips === 7 && /Co ti v Pawkuru chybí\?/.test(c.txt) && /Víc parkurů/.test(c.txt) && /Něco jiného…/.test(c.txt), 'karta s otázkou: ' + JSON.stringify(c));
     ok(await page.isVisible('#hmAsk [data-ask="parkury"]') && await page.isVisible('#hmAsk [data-h="askx"]'), 'karta nemá viditelné volby nebo křížek');
     /* pod hlavičkou a dnem závodů, před Parkury pro tebe */
-    ok(await ev(() => { const c = $('hmAsk'), sec = document.querySelector('#v-home > .hm-sec'); return !!sec && !!(c.compareDocumentPosition(sec) & 4) && !!($('hmDay').compareDocumentPosition(c) & 4); }), 'karta má být mezi dnem závodů a Parkury pro tebe');
+    ok(await ev(() => { const c = $('hmAsk'), sec = [...document.querySelectorAll('#v-home > .hm-sec')].filter(x => /Parkury pro tebe/.test(x.textContent))[0]; /* od 3.0 je první sekce Dnes */ return !!sec && !!(c.compareDocumentPosition(sec) & 4) && !!($('hmDay').compareDocumentPosition(c) & 4); }), 'karta má být mezi dnem závodů a Parkury pro tebe');
     ok(sent.length === 0, 'samotné zobrazení karty nemá nic posílat');
   });
 

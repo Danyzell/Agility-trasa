@@ -27,12 +27,12 @@ exports.phone = async function (browser, opts) {
   };
 };
 /* server Supabase se v testech nevolá; odpovědi RPC si sada může podstrčit
-   (funkce dostane argumenty volání – rozparsované tělo požadavku) */
+   (funkce dostane argumenty volání – rozparsované tělo požadavku; může vrátit i Promise, třeba pro pomalou odpověď) */
 exports.offline = async function (ctx, rpc) {
   const body = r => { try { return JSON.parse(r.request().postData() || '{}'); } catch (e) { return {}; } };
   await ctx.route(u => !/^http:\/\/(127\.0\.0\.1|localhost)/.test(u.href), async r => {
     const m = r.request().url().match(/\/rest\/v1\/rpc\/(\w+)/), h = m && rpc && rpc[m[1]];
-    if (h) return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(typeof h === 'function' ? h(body(r)) : h) });
+    if (h) { const d = await Promise.resolve(typeof h === 'function' ? h(body(r)) : h); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(d) }); }
     return r.abort();
   });
 };
