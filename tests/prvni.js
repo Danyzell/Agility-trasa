@@ -149,6 +149,66 @@ module.exports = async function ({ browser, base }) {
     ok(!(await missEn(['Zaběhnout tenhle parkur na stopkách'])).length, 'chybí anglický popisek tlačítka');
   });
 
+  await step('Běh: po STOP lišta s Uložit běh', async () => {
+    await fresh('#lib'); await ev(() => { ACT = { day: localDate(), a: {} }; libTab = 'A1'; libRender(); window.scrollTo(0, 0); }); await w(150);
+    await page.click('#cards .pick >> nth=0'); await w(300); await ev(() => { closeSheet(); show('run'); }); await w(200);
+    ok(await ev(() => $('runBar').hidden), 'před startem je lišta schovaná');
+    await page.click('#startBtn'); await w(350); ok(await ev(() => $('runBar').hidden), 'při běžících stopkách je schovaná');
+    await page.click('#startBtn'); await w(200);
+    const r = await ev(() => { const b = $('runBar').getBoundingClientRect(), n = document.querySelector('.nav').getBoundingClientRect();
+      return { hid: $('runBar').hidden, t: $('rbT').textContent, g: $('rbG').textContent, above: b.bottom <= n.top, inside: b.left >= 0 && b.right <= innerWidth, h: b.height, saveBelow: $('saveRun').getBoundingClientRect().top > innerHeight }; });
+    ok(!r.hid && /^\d+,\d\d s$/.test(r.t) && /Výborně|Velmi dobře|Dobře|Bez ohodnocení|Diskvalifikace/.test(r.g) && r.above && r.inside && r.h >= 56, 'po STOP lišta s časem a hodnocením nad spodní navigací: ' + JSON.stringify(r));
+    ok(r.saveBelow, 'tlačítko Uložit běh ve formuláři je pod okrajem obrazovky, proto lišta');
+    await ev(() => { RUN.f = 1; resultRender(); }); ok(/trestné body 5,00|Dobře|Velmi dobře|Výborně/.test(await ev(() => $('rbG').textContent)), 'lišta se přepočítá po přidání chyby: ' + await ev(() => $('rbG').textContent));
+    await page.click('#rbSave'); await w(300);
+    ok(await ev(() => $('runBar').hidden && document.querySelectorAll('#hist li').length === 1 && ACT.a.run_bar === 1 && ACT.a.runsave === 1 && !$('v-run').classList.contains('hasbar')), 'uložení z lišty: běh v historii, lišta schovaná');
+  });
+
+  await step('Domů napoprvé: pozdrav, parkur týdne, dlaždice a Dnes, nic víc', async () => {
+    await ev(() => { localStorage.removeItem('agility-marks-v1'); localStorage.removeItem('agility-my-v1'); localStorage.removeItem('agility-acctask-v1'); localStorage.setItem('agility-visits-v1', JSON.stringify({ n: 1, at: Date.now() })); });
+    await fresh('#home');
+    const look = () => ev(() => ({ lite: homeLite(), wk: !!document.querySelector('#v-home .hm-wkc'), wkTxt: ((document.querySelector('#v-home .hm-wkc') || {}).textContent || '').replace(/\s+/g, ' '), cur: !!document.querySelector('#v-home .hm-cur[data-h="plan"]'), sup: !!document.querySelector('#v-home .hm-sup'),
+      plan: !!document.querySelector('#v-home [data-plck]'), nums: !!document.querySelector('#v-home .wk-nums'), more: !!$('hmMore'), skills: !!document.querySelector('#v-home .hm-skills'), cut: !!document.querySelector('#v-home .hm-cut, #v-home .hm-cutcar'), car: !!document.querySelector('#v-home .hm-car'), acct: !!document.querySelector('#v-home .hm-acct'),
+      h: document.documentElement.scrollHeight, blocks: [...document.querySelectorAll('#v-home > *')].filter(e => e.getBoundingClientRect().height > 0).length }));
+    let r = await look();
+    ok(r.lite && r.wk && /Parkur týdne/.test(r.wkTxt) && /Proletět ve 3D/.test(r.wkTxt) && /Zaběhnout/.test(r.wkTxt) && !r.cur && !r.sup && !r.plan && !r.nums && !r.more && !r.skills && !r.cut && r.car && !r.acct && r.h < 1400 && r.blocks <= 6, 'první návštěva: ' + JSON.stringify(r));
+    await page.click('#v-home [data-h="wkrun"]'); await w(300);
+    ok(await ev(() => view === 'run' && S.meta.id === weekCourse(homeCls()).id && ACT.a.home_run === 1), 'Zaběhnout z karty Parkur týdne otevře stopky s parkurem týdne');
+    /* po prvním uloženém běhu je Domů celé a nabídne přihlášení */
+    await ev(() => { $('manT').value = '41'; RUN.f = 0; RUN.r = 0; }); await page.click('#saveRun'); await w(250); await ev(() => { closeSheet(); show('home'); }); await w(200);
+    r = await look();
+    ok(!r.lite && !r.wk && r.cur && r.nums && r.acct, 'po prvním běhu celé Domů s kartou přihlášení: ' + JSON.stringify(r));
+    await page.click('#v-home [data-h="acctx"]'); await w(100);
+    ok(await ev(() => !document.querySelector('#v-home .hm-acct') && lsGet('agility-acctask-v1', 0) === 1), 'zavřená karta přihlášení se nevrací');
+    /* bez běhu, ale od třetí návštěvy je Domů celé */
+    await ev(() => { localStorage.removeItem('agility-marks-v1'); localStorage.setItem('agility-visits-v1', JSON.stringify({ n: 3, at: Date.now() })); }); await fresh('#home');
+    r = await look(); ok(!r.lite && !r.wk && r.nums, 'třetí návštěva bez běhu: celé Domů: ' + JSON.stringify(r));
+    await ev(() => { localStorage.setItem('agility-visits-v1', JSON.stringify({ n: 1, at: Date.now() })); });
+  });
+
+  await step('průvodce: Google jen jako odkaz pro ty, kdo už účet mají', async () => {
+    await page.goto('about:blank'); await page.goto(base + '/?onb#home'); await ev(() => localStorage.clear()); await page.goto('about:blank'); await page.goto(base + '/?onb#home'); await w(600);
+    const r = await ev(() => ({ onb: !!$('onb'), big: !!document.querySelector('#onb .gbtn'), link: !!document.querySelector('#onb .onb-acct .linkbtn[data-acct="in"]'), txt: ((document.querySelector('#onb .onb-acct') || {}).textContent || '').replace(/\s+/g, ' ') }));
+    ok(r.onb && !r.big && r.link && /^Už máš Pawkur na jiném telefonu\? Přihlásit se přes Google a data se přenesou\.$/.test(r.txt.trim()), 'krok 1 průvodce bez velkého tlačítka Google: ' + JSON.stringify(r));
+    await ev(() => onbClose(true));
+  });
+
+  await step('iPhone ve Facebooku: karta na Domů a přenos dat do Safari', async () => {
+    const F = await phone(browser, { isMobile: true, userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 [FBAN/FBIOS;FBAV/480.0]' });
+    const puts = [];
+    await offline(F.ctx, { get_catalog: { version: 0 }, app_act: null, backup_put: (a) => { puts.push(a); return true; } });
+    await F.ctx.addInitScript(() => { try { localStorage.setItem('agility-onb-v1', JSON.stringify({ done: 1, v: 2 })); localStorage.setItem('agility-news-v1', JSON.stringify('3.0')); localStorage.setItem('agility-instx-v1', JSON.stringify(Date.now())); localStorage.setItem('agility-ask-v1', JSON.stringify({ x: 1 })); localStorage.setItem('agility-dogs-v1', JSON.stringify([{ id: 'd1', name: 'Fany', size: 'M', cls: 'A2' }])); } catch (e) {} });
+    const p = F.page; await p.goto(base + '/#home'); await p.waitForTimeout(600);
+    const r = await p.evaluate(() => { const c = document.querySelector('#hmIab .hm-iab'); return { bar: !!document.querySelector('.iabbar'), card: !!c, txt: c ? c.textContent.replace(/\s+/g, ' ') : '', move: !!document.querySelector('#hmIab [data-iabmove]'), go: !!document.getElementById('iabGo'), acct: !!document.querySelector('#v-home .hm-acct'), below: c ? c.getBoundingClientRect().top > document.querySelector('#v-home .hm-top').getBoundingClientRect().top : false }; });
+    ok(!r.bar && r.card && /Otevřeno ve Facebooku/.test(r.txt) && /Otevřít v Safari/.test(r.txt) && r.move && !r.go && !r.acct && r.below, 'karta pro Facebook na iPhonu: ' + JSON.stringify(r));
+    await p.click('#hmIab [data-iabmove]'); await p.waitForTimeout(500);
+    const s = await p.evaluate(() => ({ h3: ($('sheet').querySelector('h3') || {}).textContent, link: ($('sheet').querySelector('p[translate="no"]') || {}).textContent, url: location.search }));
+    ok(puts.length === 1 && /^[a-z0-9]{12}$/.test(puts[0].p_key) && puts[0].p_data && s.h3 === 'Data jsou připravená' && s.link === 'https://pawkur.cz/?obnova=' + puts[0].p_key && s.url === '?obnova=' + puts[0].p_key, 'přenos do Safari: záloha pod klíčem a adresa s ?obnova=: ' + JSON.stringify({ puts: puts.length, s }));
+    await p.click('#sheet [data-a="x"]'); await p.click('#hmIab [data-iabx]'); await p.waitForTimeout(100);
+    ok(await p.evaluate(() => !document.querySelector('#hmIab .hm-iab')), 'karta jde zavřít');
+    F.errs.forEach(x => T.errs.push(x)); await F.ctx.close();
+  });
+
   await T.ctx.close();
   return T.errs;
 };

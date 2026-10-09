@@ -86,10 +86,11 @@ module.exports = async function ({ browser, base }) {
     if (await ev(() => donateOn())) await need('#v-home .hm-sup');
     await ev(() => { libTab = 'A1'; show('lib'); }); await page.waitForTimeout(100);
     for (const s of ['.top .sport button', '#libTabs button', '#libFilters .chip', '#libSort', '#randBtn']) await need(s);
-    if (await ev(() => donateOn())) await need('#supBtn', true);
     await ev(() => show('run')); await page.waitForTimeout(100);
     for (const s of ['#runDogs .chip', '#manT', '#runSpecs .smini']) await need(s);
     await need('#resetClock', true);
+    await ev(() => { moreTab = ''; show('more'); }); await page.waitForTimeout(100);
+    if (await ev(() => donateOn())) await need('#supBtn', true); /* srdíčko v horní liště je od 3.1 jen ve Více */
     await ev(() => { mode = 'route'; show('plan'); ui(); render(); }); await page.waitForTimeout(100);
     await need('#routeList .tu'); await need('#undoAll', true); await need('#toolsBtn', true); await need('#modeRow .seg button');
     await ev(() => { moreTab = 'set'; show('more'); }); await page.waitForTimeout(100);

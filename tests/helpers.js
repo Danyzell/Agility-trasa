@@ -3,7 +3,8 @@ exports.phone = async function (browser, opts) {
   const ctx = await browser.newContext(Object.assign({ viewport: { width: 390, height: 844 }, hasTouch: true, serviceWorkers: 'block' }, opts || {}));
   const page = await ctx.newPage();
   /* Domů: sbalené Výzvy, žebříčky a závody jsou ve starších testech rozbalené (sbalení testuje sada zjednoduseni) */
-  await ctx.addInitScript(() => { try { if (localStorage.getItem('agility-hmmore-v1') == null) localStorage.setItem('agility-hmmore-v1', '1'); } catch (e) {} });
+  /* Domů napoprvé (3.1) je zkrácené; starší testy počítají s celým Domů, tak se tváří jako třetí návštěva (první návštěvu testuje sada prvni) */
+  await ctx.addInitScript(() => { try { if (localStorage.getItem('agility-hmmore-v1') == null) localStorage.setItem('agility-hmmore-v1', '1'); if (localStorage.getItem('agility-visits-v1') == null) localStorage.setItem('agility-visits-v1', JSON.stringify({ n: 3, at: Date.now() })); } catch (e) {} });
   page.setDefaultTimeout(5000);
   const errs = [], st = { step: 'start' };
   page.on('console', m => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errs.push(`[${st.step}] konzole: ${m.text()}`); });
