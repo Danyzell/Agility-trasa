@@ -121,7 +121,7 @@ module.exports = async function ({ browser, base }) {
   await step('průvodce začíná psem', async () => {
     await page.goto('about:blank'); await page.goto(base + '/?onb#home'); await ev(() => localStorage.clear()); await page.goto('about:blank'); await page.goto(base + '/?onb#home'); await w(600);
     let r = await ev(() => ({ hero: !!document.querySelector('#onb .onb-hero .dava'), name: !!$('oName'), lang: document.querySelectorAll('#onb .onb-top [data-o="lang"]').length, theme: document.querySelectorAll('#onb [data-o="theme"]').length, h1: document.querySelector('#onb h1').textContent }));
-    ok(r.hero && r.name && r.lang === 2 && r.theme === 0 && r.h1 === 'Vítej v Pawkuru', 'první krok: obrázek psa, jméno, malý přepínač jazyka, bez přepínače vzhledu: ' + JSON.stringify(r));
+    ok(r.hero && r.name && r.lang === 4 && r.theme === 0 && r.h1 === 'Vítej v Pawkuru', 'první krok: obrázek psa, jméno, malý přepínač jazyka (3.4: CZ, EN, PL, DE), bez přepínače vzhledu: ' + JSON.stringify(r));
     /* rozepsané jméno přežije přepnutí jazyka (stránka se načte znovu) */
     await page.fill('#oName', 'Fany'); await page.click('#onb [data-o="lang"][data-v="en"]'); await w(800);
     r = await ev(() => ({ lang: LANG, step: ONB.step, v: $('oName') && $('oName').value, h1: document.querySelector('#onb h1').textContent }));

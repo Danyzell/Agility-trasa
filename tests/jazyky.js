@@ -21,6 +21,7 @@ module.exports = async function ({ browser, base }) {
     const T = await phone(browser, { isMobile: true, timezoneId: tz }); const { page, ok, ev } = T;
     await offline(T.ctx, { get_catalog: { version: 0 } });
     await T.ctx.addInitScript(() => { try { localStorage.setItem('agility-onb-v1', JSON.stringify({ done: 1, v: 2 })); localStorage.setItem('agility-news-v1', JSON.stringify('3.0')); localStorage.setItem('agility-instx-v1', JSON.stringify(Date.now())); localStorage.setItem('agility-ask-v1', JSON.stringify({ x: 1 }));
+      localStorage.setItem('agility-visits-v1', JSON.stringify({ n: 5, at: Date.now() })); /* plná Domů (Dnes, plán na týden) */
       if (localStorage.getItem('agility-dogs-v1') == null) localStorage.setItem('agility-dogs-v1', JSON.stringify([{ id: 'd1', name: 'Fany', size: 'M', cls: 'A2' }])); } catch (e) {} });
     const L = lang + ' ' + tz.split('/')[1];
     const step = async (label, fn) => { T.step(L + ': ' + label); try { await fn(); } catch (e) { T.errs.push(`[${L}: ${label}] krok selhal: ${String(e && e.message || e).split('\n')[0]}`); } };
@@ -37,6 +38,9 @@ module.exports = async function ({ browser, base }) {
       ok(r.loc === want[0] && r.rules === want[1], 'formát a pravidla podle jazyka a místa: ' + JSON.stringify(r));
       ok(r.home && r.home !== 'Domů' && r.home !== 'Home' && r.run !== 'Run', 'záložky nejsou přeložené: ' + JSON.stringify(r));
       ok(lang === 'pl' ? /8–9 paź/.test(r.date) : /8\.–9\. 10\./.test(r.date), 'datum závodu: ' + r.date);
+      /* Domů → Dnes: datum podle jazyka (9 paź, 9. Okt.), ne české 9. 10. */
+      const td = await ev(() => { const e = document.querySelector('#v-home .hm-tdh small'); return e ? e.textContent : ''; });
+      ok(td && !/\d\. \d+\.$/.test(td) && !/[ěščřžůťďň]/.test(td), 'datum Dnes na Domů: ' + td);
       const nav = await ev(() => [...document.querySelectorAll('.nav button')].map(b => b.innerText.trim()));
       ok(nav.every(t => t.length && t.length <= 9 && !/[ěščřžůťďň]/.test(t)), 'popisky spodní lišty: ' + JSON.stringify(nav));
       if (lang === 'pl') {
@@ -53,6 +57,9 @@ module.exports = async function ({ browser, base }) {
       await ev(() => { loadCourse(listFor('A2')[2], true); show('plan'); mode = 'view'; ui(); render(); $('toast').hidden = true; }); await page.waitForTimeout(200); await left('Plán');
       await page.click('#mBuild'); await page.waitForTimeout(150); await ev(() => { $('toast').hidden = true; }); await left('Stavba');
       await page.click('#mView'); await page.click('.nav [data-v="run"]'); await page.waitForTimeout(200); await ev(() => { $('toast').hidden = true; }); await left('Běh');
+      /* bez psů je v Běhu jen čip Přidat psa: dlouhý text (němčina) se zalomí, nesmí se uříznout */
+      const ch = await ev(() => { const keep = DOGS; DOGS = []; dogChips('runDogs'); const b = $('runDogs'), c = b.querySelector('[data-adddog]'), r = [Math.round(c.getBoundingClientRect().right), Math.round(b.getBoundingClientRect().right), b.scrollWidth, b.clientWidth]; DOGS = keep; dogChips('runDogs'); return r; });
+      ok(ch[0] <= ch[1] + 1 && ch[2] <= ch[3] + 1, 'Běh: čip Přidat psa je širší než řádek: ' + JSON.stringify(ch));
       await page.click('.nav [data-v="more"]'); await page.waitForTimeout(200); await left('Více');
       for (const m of ['set', 'dogs', 'diary', 'about']) { await ev((m) => { moreOpen(m); }, m); await page.waitForTimeout(200); await left('Více → ' + m); }
       await ev(() => { show('plan'); newCourseSheet(); }); await page.waitForTimeout(200); await left('okno Nový parkur'); await ev(() => closeSheet());
@@ -82,6 +89,16 @@ module.exports = async function ({ browser, base }) {
     await page.goto(base + '/?onb#home'); await page.waitForTimeout(600);
     const b = await ev(() => [...document.querySelectorAll('#onb .onb-lang [data-v]')].map(x => x.getAttribute('data-v') + ':' + x.textContent).join());
     ok(b === 'cs:CZ,en:EN,pl:PL,de:DE', 'průvodce nabízí čtyři jazyky: ' + b);
+    errs.push(...T.errs); await T.ctx.close();
+  }
+  /* úzký displej německy: čtyři jazyky a Überspringen se v horním řádku průvodce vejdou */
+  for (const w of [320, 360]) {
+    const T = await phone(browser, { viewport: { width: w, height: 700 } }); const { page, ok, ev } = T;
+    await offline(T.ctx, { get_catalog: { version: 0 } });
+    T.step('průvodce německy ' + w + ' px');
+    await page.goto(base + '/?lang=de&onb#home'); await page.waitForTimeout(600);
+    const r = await ev(() => { const t = document.querySelector('#onb .onb-top'), s = document.querySelector('#onb [data-o="skip"]'); return t && s ? [t.scrollWidth, t.clientWidth, Math.round(s.getBoundingClientRect().right), innerWidth, s.textContent] : null; });
+    ok(r && r[0] <= r[1] + 1 && r[2] <= r[3], w + ' px: horní řádek průvodce přetéká: ' + JSON.stringify(r));
     errs.push(...T.errs); await T.ctx.close();
   }
   /* úvodní stránka (web/): polský a německý prohlížeč dostane odkaz do aplikace bez ?lang=en (aplikace pozná jazyk sama) */

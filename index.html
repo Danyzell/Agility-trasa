@@ -144,6 +144,7 @@ select.btn{padding-right:8px;}
 .filters{display:flex; gap:6px; overflow-x:auto; padding-bottom:2px;}
 .chip{flex:0 0 auto; border:1px solid var(--border); background:var(--surface); color:var(--muted); border-radius:999px; padding:6px 12px; font-size:13.5px;}
 .chip.on{background:var(--text); color:var(--bg); border-color:var(--text);}
+.filters .chip[data-adddog]{flex-shrink:1; text-align:left;} /* jediný čip bez psů: dlouhý text (německy) se zalomí, neuřízne se */
 .progress{display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--muted);}
 .bar{flex:1; height:8px; border-radius:99px; background:var(--sunk); overflow:hidden;}
 .bar i{display:block; height:100%; background:var(--accent); border-radius:99px;}
@@ -413,7 +414,7 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 .kv.plain small{text-align:left; font-size:13px;}
 /* v1.6: mezičasy, předčítání */
 .spbtns{justify-content:center; flex-wrap:nowrap; gap:8px;} .spbtns .btn{padding-left:10px; padding-right:10px; font-size:13px; white-space:nowrap;}
-.spbtns .btn:not(#resetClock){flex:0 1 auto; min-width:0; white-space:normal; line-height:1.15;} /* němčina (Zwischenzeiten aus Video) se zalomí v tlačítku, stránka nepřeteče do strany */ @media (max-width:379px){ .spbtns{gap:5px;} .spbtns .btn{padding-left:7px; padding-right:7px; font-size:12.5px;} }
+.spbtns{align-items:stretch;} .spbtns .btn:not(#resetClock){flex:0 1 auto; min-width:0; white-space:normal; line-height:1.15;} /* němčina (Zwischenzeiten aus Video) se zalomí v tlačítku, stránka nepřeteče do strany; stejná výška drží tlačítka v jedné řadě */ @media (max-width:379px){ .spbtns{gap:5px;} .spbtns .btn{padding-left:7px; padding-right:7px; font-size:12.5px;} }
 .ovsp{position:fixed; inset:0; z-index:70; background:var(--bg); display:flex; flex-direction:column; gap:10px; padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px)); overflow:auto;}
 .ovsp-top{display:flex; align-items:center; gap:8px;}
 .ovsp-top b{font-family:var(--display); font-size:22px;}
@@ -1250,7 +1251,10 @@ h2{font-family:var(--body); font-weight:700; font-size:19px; letter-spacing:0;}
 .onb h1{font-family:var(--body); font-size:30px; line-height:1.15;}
 .onb-body.c{text-align:center;} .onb-body.c .lead{max-width:420px; margin:0 auto;} .onb-body.c label{text-align:left;}
 .onb-r{display:flex; align-items:center; gap:8px;}
-.onb-lang button{min-height:40px; padding:0 12px; font-size:13px;}
+.onb-lang button{min-height:40px; padding:0 9px; font-size:13px;}
+/* 3.4: čtyři jazyky a německé Überspringen se vejdou i na úzký displej (dřív by tlačítko Přeskočit vyjelo za okraj) */
+@media (max-width:379px){ .onb-r{gap:4px;} .onb-lang button{padding:0 7px;} .onb-r [data-o="skip"]{padding-left:8px; padding-right:8px;} }
+@media (max-width:339px){ .onb-top .dots{display:none;} .onb-top{justify-content:flex-end;} }
 .onb .dlooks{justify-content:center;} .onb .dlooks+.hint{margin-top:6px; text-align:center;}
 /* okno psa: obrázek psa (6 kreslených vzhledů nebo fotka) */
 .dpick{display:flex; align-items:center; gap:14px;}
@@ -7373,7 +7377,7 @@ function libRender(){
 /* nový prázdný parkur Hoopers: plocha podle třídy a prostor psovoda uprostřed */
 function hoopNew(){
   var c=(isHoopC(S.meta.cls)?S.meta.cls:'H1'), q=HCFG[c];
-  loadCourse({id:null,name:'Nový parkur Hoopers',cls:c,author:'',gen:false,W:q.W,H:q.H,obs:[{id:1,type:'ha',x:q.W/2,y:q.H/2,rot:0}],route:[],turns:[]},true);
+  loadCourse({id:null,name:T('Nový parkur Hoopers'),cls:c,author:'',gen:false,W:q.W,H:q.H,obs:[{id:1,type:'ha',x:q.W/2,y:q.H/2,rot:0}],route:[],turns:[]},true);
   mode='build'; zoom=1; ui(); render();
 }
 function findCourse(id){
@@ -7517,7 +7521,7 @@ function newCourse(cls,W,H,name){
   var hq=isHoopC(cls);
   planReset(); bgClear(); if(hq!==isHoopS()) setSport(hq?'hoopers':'agility',true);
   S.W=W; S.H=H; S.obs=hq?[{id:1,type:'ha',x:r1(W/2),y:r1(H/2),rot:0}]:[]; S.route=[]; S.sides=[]; S.turns=[]; S.hp=[]; S.marks=[]; S.chk=null; sel=null;
-  S.meta={id:null,name:name||(hq?'Nový parkur Hoopers':'Nový parkur'),cls:cls,author:'',gen:false,dirty:false};
+  S.meta={id:null,name:name||T(hq?'Nový parkur Hoopers':'Nový parkur'),cls:cls,author:'',gen:false,dirty:false}; /* výchozí název rovnou v jazyce aplikace: název je pak data parkuru a už se nepřekládá */
   mode='build'; zoom=1; setSizeSel(); drawGrid(); save(); render(); ui(); topbar(); resetRun(); undoReset();
   var w=$('wrap'); w.scrollLeft=0; w.scrollTop=0;
 }
@@ -13728,11 +13732,11 @@ function groupTodayLoad(force){
   },function(){});
   groupEvSoonLoad(uid);
 }
-function todayHTML(){
+function todayHTML(){ /* datum v cizím jazyce podle zvyklostí (Oct 9, 9 paź, 9. Okt.), česky 9. 10. */
   var now=new Date(), dn=['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota'][now.getDay()];
   var parts=[ '<div id="hmGroupEv">'+groupEvHTML()+'</div>', '<div id="hmGroupToday">'+groupTodayHTML()+'</div>', '<div id="hmDay">'+(KACR_OK?compDayHTML():'')+'</div>', isHoopS()||HM_LITE?'':planWeekHTML(), pushHomeHTML() ];
   if(!parts.join('').replace(/<div id="[a-zA-Z]+"><\/div>/g,'')) return '';
-  return '<div class="hm-sec hm-tdh"><h3>Dnes</h3><small><span>'+dn+'</span> '+now.getDate()+'. '+(now.getMonth()+1)+'.</small></div><div class="hm-today">'+parts.join('')+'</div>';
+  return '<div class="hm-sec hm-tdh"><h3>Dnes</h3><small><span>'+dn+'</span> '+(LANG==='cs'?now.getDate()+'. '+(now.getMonth()+1)+'.':now.toLocaleDateString(LOC,{day:'numeric',month:'short'}))+'</small></div><div class="hm-today">'+parts.join('')+'</div>';
 }
 $('v-home').addEventListener('click',function(e){
   var b=e.target.closest('[data-plgo],[data-gcopen],[data-gcboard],[data-h="pushon"],[data-h="pushx"]'); if(!b) return;
