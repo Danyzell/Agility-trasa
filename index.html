@@ -277,6 +277,9 @@ select.btn{padding-right:8px;}
 .fieldbox .dimbtn[hidden]{display:none;}
 .fieldbox .arbtn{background:var(--accent); color:var(--on-accent); border-color:var(--accent);} .fieldbox .arbtn svg{color:currentColor;}
 .fieldbox .dimbtn svg{width:20px; height:20px; color:var(--accent);}
+/* Sdílet vedle 3D: na telefonu do 410 px oba bez ikony, ať se lišta pod plochou vejde na jeden řádek i s náhradním písmem */
+.fieldbox .fbacts{display:inline-flex; gap:8px; margin-left:auto;}
+@media (max-width:410px){ .fieldbox .fbacts .dimbtn>[data-ic]{display:none;} .fieldbox .fbacts .dimbtn{padding:0 13px;} }
 .ov3d-hint{position:absolute; left:50%; top:calc(12px + env(safe-area-inset-top,0px)); transform:translateX(-50%); background:rgba(13,20,16,.72); color:#e5ebe2; padding:7px 14px; border-radius:999px; font-size:13px; pointer-events:none;}
 .ov3d-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)); background:#18201a; color:#e5ebe2; font-size:13px;}
 .ov3d-bar .btn{background:#233026; color:#e5ebe2; border-color:#35443a;}
@@ -1510,7 +1513,8 @@ body.fullfield .runfab{display:none;}
       <div class="zoom"><button class="btn" id="zOut" aria-label="Oddálit">−</button><span id="zLbl" class="num"></span><button class="btn" id="zIn" aria-label="Přiblížit">+</button></div>
       <span class="grow"></span>
       <button class="dimbtn" id="fullBtn" aria-pressed="false" title="Plocha přes celou obrazovku" aria-label="Plocha přes celou obrazovku"><span class="ff-in" data-ic="full"></span><span class="ff-out" data-ic="fullX"></span></button>
-      <button class="dimbtn" id="dimBtn" title="Zobrazit parkur ve 3D" aria-label="Zobrazit parkur ve 3D"><span data-ic="cube"></span><span class="dlbl">3D</span></button>
+      <!-- Sdílet a 3D drží u sebe: když se lišta nevejde (úzký telefon, náhradní písmo), zalomí se spolu doprava -->
+      <span class="fbacts"><button class="dimbtn" id="shareBtn" title="Sdílet parkur" aria-label="Sdílet parkur"><span data-ic="share"></span><span class="dlbl">Sdílet</span></button><button class="dimbtn" id="dimBtn" title="Zobrazit parkur ve 3D" aria-label="Zobrazit parkur ve 3D"><span data-ic="cube"></span><span class="dlbl">3D</span></button></span>
       <button class="dimbtn arbtn" id="arBtn" hidden title="Postavit parkur kamerou na skutečném place" aria-label="AR na place">📷 AR na place</button>
     </div>
     </div>
@@ -6268,6 +6272,7 @@ function ui(){
   /* při tréninku paměti by 3D prozradilo čísla překážek. 3D umí agility i Hoopers; AR na place zatím jen agility
      (Hoopers v AR nikdo nevyzkoušel na telefonu) */
   $('dimBtn').hidden=mode!=='view'||special;
+  $('shareBtn').hidden=mode!=='view';
   $('arBtn').hidden=!(typeof AR!=='undefined'&&AR.ok)||mode!=='view'||special||S.route.length<2||hoop;
   Array.prototype.forEach.call(document.querySelectorAll('#planTools .tool'),function(b){ if(/^(ana|traps|fld)$/.test(b.getAttribute('data-t'))) b.hidden=hoop; });
   $('mView').className=mode==='view'?'on':''; $('mBuild').className=mode==='build'?'on':''; $('mRoute').className=mode==='route'?'on':'';
@@ -9250,6 +9255,7 @@ function p3setView(v){ V3.view=v; Array.prototype.forEach.call($('p3view').child
 function close3d(){ var was=$('ov3d').hidden===false; $('ov3d').hidden=true; if(was) setTimeout(function(){ HM.emit('3dClosed'); },0); V3.on=false; cancelAnimationFrame(V3.raf); C3.gen++; close3dGL(); }
 $('p3dim').onclick=function(e){ var b=e.target.closest('[data-d]'); if(b&&b.getAttribute('data-d')==='2') close3d(); };
 $('dimBtn').onclick=function(){ open3d(false); };
+$('shareBtn').onclick=function(){ shareSheet(); }; /* Sdílet a Načíst kód přímo pod plochou, v Nástrojích ho lidé nenašli */
 /* AR na place (WebXR, Chrome na Androidu): parkur se položí kamerou na skutečný trávník */
 var AR={api:null,st:'',ok:false};
 /* AR umí jen některé telefony (Chrome na Androidu s ARCore); jen tam se ukáže tlačítko a dopředu se načte 3D balíček,
@@ -14195,7 +14201,7 @@ HM.on('courseSaved',function(){ act('save'); });
 var RUNFAB_IN=true, RUNHINTK='agility-runhint-v1'; SYNC_OWN[RUNHINTK]=1;
 function runFabUI(){ var b=$('runFab'); if(b) b.hidden=!(mode==='view'&&panel!=='side'&&panel!=='quiz'&&S.route.length>=2&&RUNFAB_IN!==false); runFabDodge(); }
 /* B10 (3.2): na malých telefonech by plovoucí Zaběhnout zakrylo Nový, výběr plochy nebo 3D; dokud je pod ním tlačítko, schová se */
-var RUNFAB_DODGE=['saveBtn','newBtn','sizeSelect','zOut','zIn','fullBtn','dimBtn','arBtn'], RUNFAB_RAF=0;
+var RUNFAB_DODGE=['saveBtn','newBtn','sizeSelect','zOut','zIn','fullBtn','shareBtn','dimBtn','arBtn'], RUNFAB_RAF=0;
 function runFabDodge(){
   var b=$('runFab'); if(!b||!RUNFAB_DODGE) return; if(b.hidden){ b.classList.remove('dodge'); return; } /* ui() běží i dřív, než se seznam nastaví */
   var r=b.getBoundingClientRect(), under=function(e){ if(!e||e.hidden||!e.offsetParent) return false; var q=e.getBoundingClientRect();
