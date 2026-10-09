@@ -9513,16 +9513,16 @@ function arStart(){
   if(AR.ql){ arQuickLook(); return; }
   V3.on=false; $('p3play').textContent=T('Přehrát');
   /* každé AR začíná ve skutečné velikosti se zavřeným doladěním */
-  var ui=$('arUi'); AR.fine=false; ui.hidden=false; arHint('scan'); ui.querySelector('[data-ar="play"]').textContent=T('Pustit psa');
+  var ov=$('arUi'); AR.fine=false; ov.hidden=false; arHint('scan'); ov.querySelector('[data-ar="play"]').textContent=T('Pustit psa');
   Array.prototype.forEach.call($('arScale').children,function(c){ c.classList.toggle('on',c.getAttribute('data-ar')==='real'); });
-  ui.querySelector('[data-ar="corners"]').hidden=false; arFineBtn();
+  ov.querySelector('[data-ar="corners"]').hidden=false; arFineBtn();
   var cur=null, sp=course3dSpec(), rg=ringFor(S.meta.id);
   /* kolbiště se zaměřeným natočením: parkur se při položení natočí podle kompasu (směr, kam míří kamera).
      Kompas ukazuje magnetický sever, natočení kolbiště je zeměpisné: převod přes deklinaci v místě kolbiště */
   if(rg&&rg.az!=null){ sp.az=ringAzMag(rg); arCompass(true); }
-  try{ cur=V3D.m.startAR(ui,sp,{onState:arHint,heading:function(){ return AR.h; },onEnd:function(){ arCompass(false); AR.api=null; ui.hidden=true; if(C3.api) render3d(); }}); }
+  try{ cur=V3D.m.startAR(ov,sp,{onState:arHint,heading:function(){ return AR.h; },onEnd:function(){ arCompass(false); AR.api=null; ov.hidden=true; if(C3.api) render3d(); }}); }
   catch(e){ cur=Promise.reject(e); }
-  cur.then(function(a){ AR.api=a; },function(){ arCompass(false); ui.hidden=true; toast(T('AR se nepodařilo spustit. Potřebuješ Chrome na Androidu s podporou ARCore.'),5000); });
+  cur.then(function(a){ AR.api=a; },function(){ arCompass(false); ov.hidden=true; toast(T('AR se nepodařilo spustit. Potřebuješ Chrome na Androidu s podporou ARCore.'),5000); });
 }
 function arFineBtn(){ var b=$('arUi').querySelector('[data-ar="fine"]'); b.classList.toggle('on',!!AR.fine); b.setAttribute('aria-expanded',AR.fine?'true':'false'); $('arFine').hidden=!(AR.fine&&AR.api&&AR.api.placed); }
 /* kompas kamery: vyhlazený průměr směrů (jednotlivá čtení skáčou o pár stupňů) */
