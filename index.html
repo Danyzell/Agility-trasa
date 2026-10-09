@@ -1,6 +1,8 @@
 <!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1f6b45"><meta name="description" content="Plánovač agility parkurů v telefonu: parkury podle FCI, 3D průlet, stopky, trénink doma a výsledky z kacr.info. Zdarma a bez reklam."><meta property="og:type" content="website"><meta property="og:site_name" content="Pawkur"><meta property="og:locale" content="cs_CZ"><meta property="og:url" content="https://pawkur.cz/"><meta property="og:title" content="Pawkur – plánovač agility parkurů v telefonu"><meta property="og:description" content="Parkury podle FCI, 3D průlet, stopky s hodnocením, trénink doma a výsledky z kacr.info. Zdarma, bez reklam. Otevři odkaz a nainstaluj na plochu."><meta property="og:image" content="https://pawkur.cz/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Pawkur – plánovač agility parkurů"><meta name="twitter:card" content="summary_large_image"><meta name="mobile-web-app-capable" content="yes"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>window.AGILITY_PWA=1;</script></head><body>
 <title>Pawkur</title>
-<script>try{var t0=JSON.parse(localStorage.getItem('agility-theme-v1'));if(t0==='light'||t0==='dark')document.documentElement.setAttribute('data-theme',t0);}catch(e){}</script>
+<script>try{var t0=JSON.parse(localStorage.getItem('agility-theme-v1'));if(t0==='light'||t0==='dark')document.documentElement.setAttribute('data-theme',t0);}catch(e){}
+/* polština a němčina (3.4): slovník je v samostatném souboru (i18n/pl.js, i18n/de.js) a načte se jen pro zvolený jazyk, dřív než hlavní skript (stejné pravidlo jako LANG níž) */
+try{(function(){var q=location.search.match(/[?&]lang=(cs|en|pl|de)\b/),l=q?q[1]:JSON.parse(localStorage.getItem('agility-lang-v1')||'null');if(!l&&!navigator.webdriver){var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();if(/^(pl|de)/.test(n))l=n.slice(0,2);}if(l==='pl'||l==='de')document.write('<script src="i18n/'+l+'.js?v=3.4"><\/script>');})();}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -410,7 +412,8 @@ textarea{font:inherit; font-size:13px; width:100%; min-height:90px; padding:8px 
 .kv.plain li{grid-template-columns:1fr;}
 .kv.plain small{text-align:left; font-size:13px;}
 /* v1.6: mezičasy, předčítání */
-.spbtns{justify-content:center; flex-wrap:nowrap; gap:8px;} .spbtns .btn{padding-left:10px; padding-right:10px; font-size:13px; white-space:nowrap;} @media (max-width:379px){ .spbtns{gap:5px;} .spbtns .btn{padding-left:7px; padding-right:7px; font-size:12.5px;} }
+.spbtns{justify-content:center; flex-wrap:nowrap; gap:8px;} .spbtns .btn{padding-left:10px; padding-right:10px; font-size:13px; white-space:nowrap;}
+.spbtns .btn:not(#resetClock){flex:0 1 auto; min-width:0; white-space:normal; line-height:1.15;} /* němčina (Zwischenzeiten aus Video) se zalomí v tlačítku, stránka nepřeteče do strany */ @media (max-width:379px){ .spbtns{gap:5px;} .spbtns .btn{padding-left:7px; padding-right:7px; font-size:12.5px;} }
 .ovsp{position:fixed; inset:0; z-index:70; background:var(--bg); display:flex; flex-direction:column; gap:10px; padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px)); overflow:auto;}
 .ovsp-top{display:flex; align-items:center; gap:8px;}
 .ovsp-top b{font-family:var(--display); font-size:22px;}
@@ -1729,19 +1732,22 @@ function plank(hl,w,zl){
 var WV='<line x1="-3.3" x2="3.3" stroke="currentColor" stroke-width=".04" opacity=".5"/>';
 for(var q=0;q<12;q++) WV+='<circle cx="'+r(-3.3+q*.6)+'" r=".1" fill="currentColor"/>';
 
-/* ---------- jazyk (čeština / angličtina) a vzhled (světlý / tmavý) ----------
-   Zdrojové texty jsou česky. V angličtině se překládají přes slovník:
+/* ---------- jazyk (čeština, angličtina, polština, němčina) a vzhled (světlý / tmavý) ----------
+   Zdrojové texty jsou česky. V jiném jazyce se překládají přes slovník:
    - exact: celý text uzlu (mezery sjednocené) → překlad
    - num:   text, kde čísla nahradí # (např. "Uloženo # parkurů") → překlad s # (nebo #1, #2… pro jiné pořadí)
    - re:    [regulární výraz, náhrada] pro texty se jmény; $1 = beze změny, @1 = přeložit i zachycenou část
-   Texty v DOM se překládají samy (MutationObserver), T() je pro plátno, řeč, PDF a nativní dialogy.
+   Angličtina je v tomhle souboru (I18N), polština a němčina v i18n/pl.js a i18n/de.js (I18NP, načte je skript v hlavičce);
+   co v nich chybí, se ukáže anglicky. Texty v DOM se překládají samy (MutationObserver), T() je pro plátno, řeč, PDF a nativní dialogy.
    Uživatelská data se nepřekládají: prvek s atributem translate="no" (nebo data-nt). */
-var LANGK='agility-lang-v1', THEMEK='agility-theme-v1';
+var LANGK='agility-lang-v1', THEMEK='agility-theme-v1', LANGS={cs:'Čeština',en:'English',pl:'Polski',de:'Deutsch'};
 /* výchozí jazyk podle telefonu; automatické testy (navigator.webdriver) běží česky */
-var LANG=(function(){ var q=location.search.match(/[?&]lang=(cs|en)\b/); if(q){ lsSet(LANGK,q[1]); return q[1]; } /* z úvodní stránky (web/) */ var v=lsGet(LANGK,null); if(v==='cs'||v==='en') return v; if(navigator.webdriver) return 'cs'; var n=((navigator.languages&&navigator.languages[0])||navigator.language||'cs').toLowerCase(); return /^(cs|sk)/.test(n)?'cs':'en'; })();
-var LOC=LANG==='en'?'en-GB':'cs-CZ';
+var LANG=(function(){ var q=location.search.match(/[?&]lang=(cs|en|pl|de)\b/); if(q){ lsSet(LANGK,q[1]); return q[1]; } /* z úvodní stránky (web/) */ var v=lsGet(LANGK,null); if(LANGS.hasOwnProperty(v)) return v; if(navigator.webdriver) return 'cs'; var n=((navigator.languages&&navigator.languages[0])||navigator.language||'cs').toLowerCase(); return /^(cs|sk)/.test(n)?'cs':/^pl/.test(n)?'pl':/^de/.test(n)?'de':'en'; })();
 /* časové pásmo telefonu (jen oblast, žádná poloha): Čech nebo Slovák s anglicky nastaveným telefonem dostane česká nebo slovenská pravidla */
 var TZ=(function(){ try{ return String(Intl.DateTimeFormat().resolvedOptions().timeZone||'').slice(0,40); }catch(e){ return ''; } })();
+/* formát data a čísel podle jazyka; němčina v Rakousku de-AT (Jänner), jinde de-DE; angličtina s pravidly USA en-US (nastaví se u pravidel) */
+var LOC=LANG==='en'?'en-GB':LANG==='pl'?'pl-PL':LANG==='de'?(TZ==='Europe/Vienna'?'de-AT':'de-DE'):'cs-CZ';
+var MON_PL=['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru']; /* polské zkratky měsíců (8–9 paź) */
 /* ---------- Pravidla podle země (Více → Nastavení → Pravidla). Třídy, postup do vyšší třídy, maximální čas.
    Vnitřní kódy tříd zůstávají A0–A3 (rakouské LK 1–3 jsou jen jiný název), parkury v knihovně jsou společné. ---------- */
 var RULESK='agility-rules-v1';
@@ -1810,27 +1816,31 @@ function usSct(len,lv,size,disc,spd){ if(!len) return 0; lv=usLvl(lv); var J=dis
 var UKV={L:{A:[3.7,4.5],J:[4.17,4.7]},I:{A:[3.6,4.45],J:[4.2,4.8]},M:{A:[3.57,4.35],J:[4.0,4.5]},S:{A:[3.25,4.1],J:[3.6,4.2]}};
 function ukSpd(cls,size,disc){ var v=UKV[size]||UKV.L, r=v[disc==='J'?'J':'A'], g=Math.max(1,Math.min(7,+String(cls).replace(/\D/g,'')||1)); return r[0]+(r[1]-r[0])*(g-1)/6; }
 function ukSct(len,cls,size,disc){ return len?Math.ceil(Math.round(len*10)/10/ukSpd(cls,size,disc)-1e-9)+10:0; }
-/* výchozí pravidla: podle jazyka aplikace, pak časového pásma (Česko, Slovensko, Amerika → AKC), pak jazyka telefonu */
-function rulesDefault(){ var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase(); if(LANG==='cs') return /^sk/.test(n)?'SK':'CZ'; if(TZ==='Europe/Prague') return 'CZ'; if(TZ==='Europe/Bratislava') return 'SK'; if(/^America\//.test(TZ)) return 'US'; return /^de-at/.test(n)?'AT':/^de/.test(n)?'DE':/^pl/.test(n)?'PL':/^en-gb/.test(n)?'UK':'FCI'; }
+/* výchozí pravidla: podle jazyka aplikace (čeština, polština, němčina; Vídeň → Rakousko, Švýcarsko jen FCI), pak časového pásma
+   (Česko, Slovensko, Amerika → AKC), pak jazyka telefonu */
+function rulesDefault(){ var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase(); if(LANG==='cs') return /^sk/.test(n)?'SK':'CZ';
+  if(LANG==='pl') return 'PL'; if(LANG==='de') return TZ==='Europe/Vienna'?'AT':TZ==='Europe/Zurich'?'FCI':'DE';
+  if(TZ==='Europe/Prague') return 'CZ'; if(TZ==='Europe/Bratislava') return 'SK'; if(/^America\//.test(TZ)) return 'US'; return /^de-at/.test(n)?'AT':/^de/.test(n)?'DE':/^pl/.test(n)?'PL':/^en-gb/.test(n)?'UK':'FCI'; }
 var RCC=(function(){ var v=lsGet(RULESK,null); return RULES[v]?v:rulesDefault(); })(), RU=RULES[RCC]; RU.cc=RCC;
+if(LANG==='en'&&RU.us) LOC='en-US'; /* americké datum (10/9/2026) */
 var KACR_OK=!!RU.kacr; /* kacr.info má smysl pro Česko a Slovensko */
-/* česká specifika (čeští trenéři, téma První závody) se neukazují jen cizincům: anglicky a bez českých nebo slovenských pravidel */
-var CZONLY=LANG==='en'&&!KACR_OK;
+/* česká specifika (čeští trenéři, téma První závody) se neukazují jen cizincům: v jiném jazyce než česky a bez českých nebo slovenských pravidel */
+var CZONLY=LANG!=='cs'&&!KACR_OK;
 function clsL(c){ return (RU.clsL&&RU.clsL[c])||c; }
 /* třída parkuru v knihovně pro třídu psa (britské gradey: 1–2 → A1, 3–5 → A2, 6–7 → A3; AKC Novice → A1, Open → A2, Excellent a Master → A3) */
 function courseClsOf(c){ var m=/^G(\d)$/.exec(c||''); if(m) return +m[1]<=2?'A1':+m[1]<=5?'A2':'A3'; m=/^U(\d)$/.exec(c||''); if(m) return +m[1]<=1?'A1':+m[1]<=2?'A2':'A3'; return c; }
 var CLS_RE=/^(A[0-3]|G[1-7]|U[1-4])$/; /* všechny kódy tříd psa ze všech pravidel */
 function clsOpts(cur){ var L=RU.cls.slice(); if(cur&&L.indexOf(cur)<0&&CLS_RE.test(cur)) L.push(cur); return L.map(function(k){ return '<option value="'+k+'"'+(k===cur?' selected':'')+'>'+clsL(k)+'</option>'; }).join(''); }
-var I18N={exact:{},num:{},re:[]};
+var I18N={exact:{},num:{},re:[]}, I18NP=null, PLURAL=null; /* I18NP: slovník polštiny nebo němčiny (i18n/pl.js, de.js); I18N: angličtina, u polštiny a němčiny záloha */
 function i18nNorm(s){ return String(s).replace(/ /g,' ').replace(/\s+/g,' ').trim(); }
 var I18N_NUM=/\d+(?:[.,]\d+)?/g;
-function i18nAdd(d){
-  if(!d) return;
+function i18nAdd(d,D){
+  if(!d) return; D=D||I18N;
   var k;
-  if(d.exact) for(k in d.exact) if(d.exact[k]!=null&&d.exact[k]!=='') I18N.exact[i18nNorm(k)]=d.exact[k];
-  if(d.num) for(k in d.num) if(d.num[k]!=null&&d.num[k]!=='') I18N.num[i18nNorm(k)]=d.num[k];
+  if(d.exact) for(k in d.exact) if(d.exact[k]!=null&&d.exact[k]!=='') D.exact[i18nNorm(k)]=d.exact[k];
+  if(d.num) for(k in d.num) if(d.num[k]!=null&&d.num[k]!=='') D.num[i18nNorm(k)]=d.num[k];
   /* u regulárního výrazu si pamatujeme nejdelší pevný kus textu – rychlé předběžné vyřazení */
-  if(d.re) d.re.forEach(function(x){ try{ var lit=x[0].split(/\\.|\([^)]*\)[?*+]?|[\^$|]/).sort(function(a,b){return b.length-a.length;})[0]||''; I18N.re.push([new RegExp(x[0]),x[1],lit]); }catch(e){} });
+  if(d.re) d.re.forEach(function(x){ try{ var lit=x[0].split(/\\.|\([^)]*\)[?*+]?|[\^$|]/).sort(function(a,b){return b.length-a.length;})[0]||''; D.re.push([new RegExp(x[0]),x[1],lit]); }catch(e){} });
 }
 function i18nNumOut(n){ return LANG==='en'?String(n).replace(',','.'):n; }
 /* americká angličtina (3.4, anglicky s pravidly USA): jen náhrady slov ve výstupu anglického slovníku, slovník se nezdvojuje.
@@ -1842,21 +1852,28 @@ var US_EN=LANG==='en'&&RU.us?[[/\bseesaw/g,'teeter'],[/\bSeesaw/g,'Teeter'],[/\b
   [/\b([Rr]ecogni|[Oo]rgani|[Ss]ummari|[Cc]ustomi|[Mm]inimi|[Mm]aximi|[Pp]ersonali|[Aa]naly)s(e|es|ed|ing|er|ers|ation)\b/g,'$1z$2']]:null;
 function usEn(s){ for(var i=0;i<US_EN.length;i++) s=s.replace(US_EN[i][0],US_EN[i][1]); return s; }
 function trLookup(s,depth){
-  var r=trIn(s,depth);
+  var r=trDict(s,depth);
   /* délky ve stopách a yardech (Nastavení → Jednotky): slovník zná texty s metry, jednotka se po překladu vrátí za číslo ve stejném pořadí */
-  if(r==null&&/\d (yd|ft)\b/.test(s)){ var U=[], s2=String(s).replace(/(\d) (yd|ft)(\/s)?\b/g,function(x,d,u,ps){ U.push(u); return d+' m'+(ps||''); }); r=trIn(s2,depth);
+  if(r==null&&/\d (yd|ft)\b/.test(s)){ var U=[], s2=String(s).replace(/(\d) (yd|ft)(\/s)?\b/g,function(x,d,u,ps){ U.push(u); return d+' m'+(ps||''); }); r=trDict(s2,depth);
     if(r!=null){ var ui=0; r=r.replace(/(\d) m(\/s)?\b/g,function(x,d,ps){ var u=U[ui++]; return d+' '+(u||'m')+(ps||''); }); } }
   return r!=null&&US_EN?usEn(r):r;
 }
-function trIn(s,depth){
+/* polština a němčina: nejdřív jejich slovník, chybějící text anglicky; polština pak opraví množné číslo po 2–4 */
+function trDict(s,depth){
   var k=i18nNorm(s); if(!k) return null;
-  var v=I18N.exact[k]; if(v!=null) return v;
+  var r=I18NP?trIn(I18NP,k,depth):null; if(r==null) r=trIn(I18N,k,depth);
+  return r!=null&&PLURAL?plFix(r):r;
+}
+/* polština: po číslech končících 2–4 (kromě 12–14) první pád množného čísla: 22 przeszkody, ne 22 przeszkód (čeština má 5+ jako 22) */
+function plFix(s){ return String(s).replace(/(^|[^\d,.])(\d+)(\s+)([^\s\d.,:;!?()]+)/g,function(m,a,n,sp,w){ var u=+n%10, t=+n%100; return u>=2&&u<=4&&!(t>=12&&t<=14)&&PLURAL.hasOwnProperty(w)?a+n+sp+PLURAL[w]:m; }); }
+function trIn(D,k,depth){
+  var v=D.exact[k]; if(v!=null) return v;
   if(/\d/.test(k)){
-    var nums=k.match(I18N_NUM), nk=k.replace(I18N_NUM,'#'); v=I18N.num[nk];
+    var nums=k.match(I18N_NUM), nk=k.replace(I18N_NUM,'#'); v=D.num[nk];
     if(v!=null){ var i=0; return v.replace(/#([1-9])?/g,function(m,d){ var n=d?nums[+d-1]:nums[i++]; return n==null?'':i18nNumOut(n); }); }
   }
-  for(var j=0;j<I18N.re.length;j++){
-    var R=I18N.re[j]; if(R[2]&&k.indexOf(R[2])<0) continue;
+  for(var j=0;j<D.re.length;j++){
+    var R=D.re[j]; if(R[2]&&k.indexOf(R[2])<0) continue;
     var m=k.match(R[0]);
     if(m){ return R[1].replace(/([$@])([1-9])/g,function(x,t,d){ var g=m[+d]; if(g==null) return '';
         if(/^\d+(?:[.,]\d+)?$/.test(g)) return i18nNumOut(g);
@@ -1887,6 +1904,13 @@ i18nAdd({exact:{
 "Pro zvolenou výšku skoku a disciplínu podle tabulek AKC.": "For the chosen jump height and discipline, from the AKC tables.",
 "Výška skoku": "Jump height", "Délka trati (yd)": "Course length (yd)", "Rychlost (yd/s)": "Speed (yd/s)", "Podle AKC": "Per AKC", "Kruh (spodní okraj otvoru)": "Tyre (bottom of the opening)",
 "Yardy (AKC)": "Yards (AKC)",
+/* Novinky ve verzi 3.4 (O aplikaci) */
+"Novinky ve verzi 3.4": "What's new in 3.4", "Polština a němčina (Více → Nastavení → Jazyk)": "Polish and German (More → Settings → Language)",
+"Pravidla USA (AKC): třídy Novice až Master, Standard a JWW, čas podle tabulek AKC, délky v yardech": "US rules (AKC): Novice to Master, Standard and JWW, course times from the AKC tables, lengths in yards",
+"Sdílení kódem i s polohou kolbiště pro AR na place a stavbu v terénu": "Sharing by code including the ring location, for AR on the field and Build on the field",
+"3D: pohled Za psem šikmo ze strany, pes v tunelu se schová": "3D: Chase view from the side, the dog disappears inside tunnels",
+/* starší novinky po přejmenování na Pawkur (slovník znal jen AgiPlan) */
+"Nový název Pawkur": "New name Pawkur", "Nový název HandlerMap (dnes Pawkur)": "New name HandlerMap (now Pawkur)",
 /* odkaz na pravidla pod postupem v Deníku: dosud přeložené jen pro Česko a Slovensko */
 "Podle ÖKV Agilityreglement 2026 (znění může být novější, ověř na": "According to the ÖKV Agilityreglement 2026 (the wording may be newer, check at",
 "Podle VDH Prüfungsordnung Agility 2026 (znění může být novější, ověř na": "According to the VDH Prüfungsordnung Agility 2026 (the wording may be newer, check at",
@@ -3261,8 +3285,10 @@ i18nAdd({re:[["^(.+?) · Generátor podle pravidel FCI Hoopers$","@1 · Generato
   "Podklad se k parkuru neuložil, v telefonu je málo místa.": "The background wasn't saved with the course, the phone is low on space."}});
 function i18nStart(){
   i18nAdd(I18N_EXTRA); i18nAdd(I18N_POSTUP); i18nAdd(I18N_PES); i18nAdd(I18N_TRI);
-  document.documentElement.lang=LANG==='en'?'en':'cs';
-  if(LANG!=='en'||!window.MutationObserver) return;
+  /* slovník polštiny nebo němčiny ze souboru i18n/*.js (window.I18N_L); bez něj (offline poprvé) zůstane anglická záloha */
+  if(window.I18N_L&&I18N_L.lang===LANG&&(LANG==='pl'||LANG==='de')){ I18NP={exact:{},num:{},re:[]}; i18nAdd(I18N_L,I18NP); if(LANG==='pl'&&I18N_L.plural) PLURAL=I18N_L.plural; }
+  document.documentElement.lang=LANG;
+  if(LANG==='cs'||!window.MutationObserver) return;
   trTree(document.body);
   new MutationObserver(function(ms){
     for(var i=0;i<ms.length;i++){ var m=ms[i];
@@ -3272,7 +3298,8 @@ function i18nStart(){
     }
   }).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:TR_ATTRS});
 }
-function setLang(l){ if(l!=='cs'&&l!=='en') return; lsSet(LANGK,l); if(l!==LANG){ try{ location.reload(); }catch(e){} } }
+function setLang(l){ if(!LANGS.hasOwnProperty(l)) return; lsSet(LANGK,l); if(l!==LANG){ try{ /* ?lang= z odkazu by po načtení vrátil původní jazyk */
+  var u=location.href.replace(/([?&])lang=[a-z]{2}\b&?/,'$1').replace(/[?&](#|$)/,'$1'); if(u!==location.href) location.replace(u); else location.reload(); }catch(e){} } }
 
 /* vzhled: 'system' | 'light' | 'dark' */
 var THEME=lsGet(THEMEK,'system');
@@ -5042,6 +5069,9 @@ i18nAdd({
 "na": "for",
 "trénink?": "training?",
 "zaběhnuto": "courses run",
+"zaběhnutý parkur": "course run",
+"zaběhnuté parkury": "courses run",
+"zaběhnutých parkurů": "courses run",
 "m/s průměr": "m/s average",
 "čisté běhy": "clean runs",
 "Začni": "Start",
@@ -7525,7 +7555,7 @@ var GNAME={V:'Výborně',VD:'Velmi dobře',D:'Dobře',BO:'Bez ohodnocení',DIS:'
 var GNAME_US={V:'Kvalifikace (Q)',VD:'Bez kvalifikace (NQ)',D:'Bez kvalifikace (NQ)',BO:'Bez kvalifikace (NQ)',DIS:'Vyřazení (NQ)'};
 function gName(g){ return (RU.us?GNAME_US:GNAME)[g]||g; }
 /* zkratka hodnocení na displeji: v angličtině podle FCI (Excellent, Very good, Good, Not classified), s pravidly USA Q a NQ; uložený kód zůstává český */
-function gTxt(g){ if(RU.us&&g) return g==='V'?'Q':'NQ'; return LANG==='en'&&{V:'EXC',VD:'VG',D:'G',BO:'NC'}[g]||g; }
+function gTxt(g){ if(RU.us&&g) return g==='V'?'Q':'NQ'; var L={en:{V:'EXC',VD:'VG',D:'G',BO:'NC'},pl:{V:'D',VD:'BD',D:'DB',BO:'BO'},de:{V:'V',VD:'SG',D:'G',BO:'oB'}}[LANG]; return L&&L[g]||g; } /* polsky Doskonała, Bardzo dobra, Dobra, Bez oceny; německy Vorzüglich, Sehr gut, Gut, ohne Bewertung */
 function tick(){
   var t=clockT(), m=curM(), c=$('clock');
   c.textContent=fmt2(t);
@@ -7741,7 +7771,7 @@ function listinaPage(){
     '<div class="row"><button class="btn primary" data-ls="print">Tisk / PDF</button><button class="btn" data-ls="copy">Kopírovat jako text</button><button class="btn" data-ls="share">Sdílet</button></div>';
 }
 function listinaPrint(){
-  var el=$('prListina'); el.innerHTML=listinaHTML(); if(LANG==='en') trTree(el); el.hidden=false; document.body.classList.add('pr-listina');
+  var el=$('prListina'); el.innerHTML=listinaHTML(); if(LANG!=='cs') trTree(el); el.hidden=false; document.body.classList.add('pr-listina');
   var done=function(){ document.body.classList.remove('pr-listina'); el.hidden=true; el.innerHTML=''; window.removeEventListener('afterprint',done); };
   window.addEventListener('afterprint',done); setTimeout(done,90000);
   try{ window.print(); }catch(e){ done(); toast('Tisk tady nejde otevřít. Zkopíruj listinu jako text.'); }
@@ -7856,7 +7886,7 @@ function homeRender(){
     (isHoopS()?'<button data-h="lib">'+IC.book+'<span>Knihovna</span></button><button data-h="run">'+IC.timer+'<span>Běh</span></button>'
              :'<button data-h="imp">'+IC.photo+'<span>Plánek z fotky</span></button><button data-h="lib">'+IC.book+'<span>Knihovna</span></button>')+'</div>'+
     '<div class="hm-row">'+(runs.length
-      ?'<p class="hm-mini"><b>'+doneN+'</b> '+T('zaběhnuto')+' · <b>'+(avg?fmt(avg):'–')+'</b> '+T('m/s')+' · <b>'+(runs.length?T(clean+' %'):'–')+'</b> '+T('čisté')+(st?' · '+T('série '+st+(st===1?' den':st<5?' dny':' dní'))+' 🔥':'')+'</p>'
+      ?'<p class="hm-mini"><b>'+doneN+'</b> '+(LANG==='cs'?'zaběhnuto':T(czN(doneN,'zaběhnutý parkur','zaběhnuté parkury','zaběhnutých parkurů').replace(/^\d+ /,'')))+' · <b>'+(avg?fmt(avg):'–')+'</b> '+T('m/s')+' · <b>'+(runs.length?T(clean+' %'):'–')+'</b> '+T('čisté')+(st?' · '+T('série '+st+(st===1?' den':st<5?' dny':' dní'))+' 🔥':'')+'</p>'
       :'<p class="hm-mini">'+(d?esc(d.name)+' čeká na první měřený běh. Stopky ukážou rychlost i čisté běhy.':'Změř první běh ve stopkách a tady uvidíš rychlost a čisté běhy.')+'</p>')+
     (donateOn()&&!lite?'<button class="hm-sup" data-h="sup" aria-label="Podpořit aplikaci">'+IC.heartF+'<span>Podpořit</span></button>':'')+'</div></div>';
   h+='<div id="hmInst"></div><div id="hmIab"></div>'+acctHomeHTML()+todayHTML(); /* Dnes: parkur od skupiny, den závodů (#hmDay), plán na týden, nabídka upozornění */
@@ -10064,8 +10094,8 @@ function compDate(c){
   var d=new Date(c.from+'T12:00:00'), e=c.to&&c.to!==c.from?new Date(c.to+'T12:00:00'):null;
   var wd=T(compDays()[d.getDay()])+(e?'–'+T(compDays()[e.getDay()]):'');
   var dt=e?(d.getMonth()===e.getMonth()?d.getDate()+'.–'+e.getDate()+'. '+(e.getMonth()+1)+'.':d.getDate()+'. '+(d.getMonth()+1)+'.–'+e.getDate()+'. '+(e.getMonth()+1)+'.'):d.getDate()+'. '+(d.getMonth()+1)+'.';
-  if(LANG==='en'){ /* anglicky 8–9 Oct, 30 Sep – 1 Oct */
-    var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  if(LANG==='en'||LANG==='pl'){ /* anglicky 8–9 Oct, 30 Sep – 1 Oct, polsky 8–9 paź; německy zůstává 8.–9. 10. */
+    var M=LANG==='pl'?MON_PL:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     dt=e?(d.getMonth()===e.getMonth()?d.getDate()+'–'+e.getDate()+' '+M[e.getMonth()]:d.getDate()+' '+M[d.getMonth()]+' – '+e.getDate()+' '+M[e.getMonth()]):d.getDate()+' '+M[d.getMonth()];
   }
   return '<span translate="no">'+wd+'</span><small translate="no">'+dt+'</small>';
@@ -11233,7 +11263,7 @@ function appShare(){
   dnCopy(APP_URL);
 }
 /* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
-var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.3';
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.4';
 var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
 function fbSave(){ lsSet(FBK,FB); }
 var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];
@@ -11355,6 +11385,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
     h='<div class="morego"><button class="btn" data-mgo="fb">'+IC.mail+'<span>Napsat autorovi</span></button>'+(donateOn()?'<button class="btn primary" data-mgo="donate">'+IC.heartF+'<span>Podpořit aplikaci</span></button>':'')+'</div>'+
       '<div id="statsBox"></div><div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>Pawkur '+APPV+'</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
       '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
+      '<h4>Novinky ve verzi 3.4</h4><ul class="news"><li>Polština a němčina (Více → Nastavení → Jazyk)</li><li>Pravidla USA (AKC): třídy Novice až Master, Standard a JWW, čas podle tabulek AKC, délky v yardech</li><li>Sdílení kódem i s polohou kolbiště pro AR na place a stavbu v terénu</li><li>3D: pohled Za psem šikmo ze strany, pes v tunelu se schová</li></ul>'+
       '<h4>Novinky ve verzi 3.0</h4><ul class="news"><li>Dnes na Domů: parkur od trenéra, den závodů a plán na týden se zaškrtáváním</li><li>Galerie parkurů: zveřejni parkur přes Sdílet, otevírej a hodnoť parkury ostatních</li><li>Skupiny a trenér: skupina na kód, parkur poslaný skupině se ukáže členům na Domů a jejich běhy se sejdou v žebříčku</li><li>Upozornění na telefonu: parkur od skupiny, zítra závodíš a nový parkur týdne (Více → Nastavení)</li><li>Oslava čistého běhu s obrázkem na sdílení, cesta k postupu v Deníku, Tento týden s čísly a grafem, tlačítka se spodní hranou</li><li>Stavba: přesná poloha a zámek překážky, přichycení po 0,5 m se vzdálenostmi, zrcadlit, otočit a posunout celý parkur, výběr víc překážek, porovnání s jiným parkurem, plánek jako od rozhodčího, export pro závodníka, rozhodčího a stavitele, obrázek do příběhu, sdílení odkazem</li></ul>'+
       '<h4>Novinky ve verzi 2.3</h4><ul class="news"><li>Účet: přihlášení přes Google a automatická synchronizace dat mezi telefonem a počítačem</li><li>AR na place: parkur kamerou na skutečném trávníku (Chrome na Androidu)</li><li>Náhled odkazu pro Facebook</li></ul>'+
       '<h4>Novinky ve verzi 2.2</h4><ul class="news"><li>3D parkur a přepínač 2D / 3D v Plánu</li><li>Pes ve 3D kličkuje slalomem podle pravidel FCI</li><li>Délka tunelu 2–6 m (nový tunel 5 m)</li><li>Google Pay, Apple Pay a uložení QR platby do galerie</li><li>Zásady ochrany osobních údajů</li></ul>'+
@@ -11803,14 +11834,14 @@ function sayStop(){ try{speechSynthesis.cancel();}catch(e){} SAY=null; var g=$('
 function sayRoute(){
   sayStop(); show('plan');
   if(SET.sayHs!==false&&(S.sides||[]).filter(Boolean).length<S.route.length){ var g0=calc(); ANA.hsd=handSides({obs:S.obs,route:S.route,turns:S.turns},g0,flowStats(S.obs,S.route,S.turns,g0)); }
-  var voice=null; try{ var vv=speechSynthesis.getVoices(); voice=(LANG==='en'?vv.filter(function(v){return /^en-GB/i.test(v.lang);})[0]||vv.filter(function(v){return /^en/i.test(v.lang);})[0]:vv.filter(function(v){return /^cs/i.test(v.lang);})[0])||null; }catch(e){}
+  var voice=null; try{ var vv=speechSynthesis.getVoices(); voice=(LANG==='en'?vv.filter(function(v){return /^en-GB/i.test(v.lang);})[0]||vv.filter(function(v){return /^en/i.test(v.lang);})[0]:vv.filter(function(v){return v.lang&&v.lang.toLowerCase().indexOf(LANG)===0;})[0])||null; /* hlas v jazyku aplikace (cs, pl, de) */ }catch(e){}
   var tok={}; SAY=tok;
   var bar=document.createElement('div'); bar.className='saybar'; bar.id='sayBar'; bar.innerHTML='<span id="sayTxt">Čtu trasu…</span><button class="btn" id="sayStop">Zastavit</button>'; document.body.appendChild(bar);
   $('sayStop').onclick=sayStop;
   var g=document.createElementNS(NS,'g'); g.setAttribute('id','sayG'); $('field').appendChild(g);
   var geo=calc();
   S.route.forEach(function(id,i){
-    var u=new SpeechSynthesisUtterance(sayText(i,SET.sayHs!==false)); u.lang=LANG==='en'?'en-GB':'cs-CZ'; if(voice) u.voice=voice; u.rate=SET.sayRate||1;
+    var u=new SpeechSynthesisUtterance(sayText(i,SET.sayHs!==false)); u.lang=LOC; if(voice) u.voice=voice; u.rate=SET.sayRate||1;
     u.onstart=function(){ if(SAY!==tok) return; var p=geo.P[i].en; g.innerHTML='<circle cx="'+r(p.x)+'" cy="'+r(p.y)+'" r="1.4" fill="none" stroke="var(--accent)" stroke-width=".3"/>'; var tx=$('sayTxt'); if(tx) tx.textContent=(i+1)+' z '+S.route.length+': '+DEF[getO(id).type].l;
       if(zoom>1){ var wr=$('wrap'), sc=$('field').clientWidth/S.W; wr.scrollLeft=p.x*sc-wr.clientWidth/2; wr.scrollTop=p.y*sc-wr.clientHeight/2; } };
     if(i===S.route.length-1) u.onend=function(){ if(SAY===tok) setTimeout(sayStop,600); };
@@ -13103,7 +13134,7 @@ function ringNav(g){
   ringStop();
   var ios=iosInfo().ios;
   $('rgBody').innerHTML='<h3 class="rg-h">Cesta ke kolbišti <span translate="no">'+esc(g.name)+'</span></h3>'+
-    '<div class="fdnav"><svg viewBox="-50 -50 100 100" class="fdarrow"><circle r="46" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/><g id="rgRot"><path d="M0,-38 L14,-8 L5,-8 L5,30 L-5,30 L-5,-8 L-14,-8 Z" fill="var(--accent)"/></g><text id="rgN0" y="-40" text-anchor="middle" font-size="9" fill="var(--muted)" hidden translate="no">'+(LANG==='en'?'N':'S')+'</text></svg>'+
+    '<div class="fdnav"><svg viewBox="-50 -50 100 100" class="fdarrow"><circle r="46" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/><g id="rgRot"><path d="M0,-38 L14,-8 L5,-8 L5,30 L-5,30 L-5,-8 L-14,-8 Z" fill="var(--accent)"/></g><text id="rgN0" y="-40" text-anchor="middle" font-size="9" fill="var(--muted)" hidden translate="no">'+(LANG==='cs'?'S':'N')+'</text></svg>'+
     '<div class="fddist"><b class="num" id="rgDist">…</b><span id="rgDir">Hledám polohu…</span><span id="rgAccN"></span></div></div>'+
     '<p class="hint">Telefon drž naplocho. Šipka míří ke středu kolbiště; bez kompasu ukazuje směr od severu (sever nahoře).</p>'+
     '<div class="acts"><a class="btn" target="_blank" rel="noopener" href="https://mapy.cz/zakladni?q='+g.lat+'%2C'+g.lng+'&amp;x='+g.lng+'&amp;y='+g.lat+'&amp;z=19">Mapy.cz</a>'+
@@ -13545,7 +13576,7 @@ function pushKey(){
 }
 function pushSubSend(sub){
   var j=sub.toJSON?sub.toJSON():sub, keys=j.keys||{};
-  var args={p_device:devId(),p_endpoint:String(j.endpoint||''),p_p256dh:String(keys.p256dh||''),p_auth:String(keys.auth||''),p_topics:PUSH.topics||{},p_lang:LANG,p_tz:TZ};
+  var args={p_device:devId(),p_endpoint:String(j.endpoint||''),p_p256dh:String(keys.p256dh||''),p_auth:String(keys.auth||''),p_topics:PUSH.topics||{},p_lang:LANG==='cs'?'cs':'en',p_tz:TZ}; /* server zatím píše česky nebo anglicky */
   var p=AUTH?authTok().then(function(t){ return sbCall('push_sub_set',args,t); },function(){ return sbCall('push_sub_set',args); }):sbCall('push_sub_set',args);
   return p.then(function(){ PUSH.on=true; PUSH.ep=args.p_endpoint; PUSH.at=Date.now(); PUSH.uid=AUTH?AUTH.uid:''; pushSave(); pushCompSync(true); pushWatchSync(true); });
 }
@@ -13590,7 +13621,7 @@ function pushCompSync(force){
   sbCall('push_comp_set',{p_device:devId(),p_day:c?c.from:null,p_name:c?String(c.name).slice(0,80):''}).then(function(){ PUSH.comp=k; pushSave(); },function(){});
 }
 function pushTest(){
-  return fetch(SB_URL+'/functions/v1/push',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({job:'test',device:devId(),lang:LANG})})
+  return fetch(SB_URL+'/functions/v1/push',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({job:'test',device:devId(),lang:LANG==='cs'?'cs':'en'})})
     .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if(!r.ok||!j||!j.ok) throw new Error((j&&j.error)||('server '+r.status)); return j; }); });
 }
 /* Více → Nastavení: zapnutí, témata, zkouška */
@@ -14034,7 +14065,7 @@ function evHM(d){ return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).s
 function evDayTxt(d){
   var today=localDate(), ld=localDate(d); if(ld===today) return T('dnes'); if(ld===dayAdd(today,1)) return T('zítra');
   var wd=T(compDays()[d.getDay()]);
-  if(LANG==='en') return wd+' '+d.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+  if(LANG==='en'||LANG==='pl') return wd+' '+d.getDate()+' '+(LANG==='pl'?MON_PL:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])[d.getMonth()];
   return wd+' '+d.getDate()+'. '+(d.getMonth()+1)+'.';
 }
 function groupEvLoad(gid){
@@ -14425,7 +14456,7 @@ function moreOpen(t,arg){ moreTab=t; MORE_ARG=arg||null; if(view!=='more') show(
 /* ---------- Nastavení ---------- */
 function settingsHTML(){
   function seg(attr,cur,opts,label){ return '<div class="seg wide" role="group" aria-label="'+label+'">'+opts.map(function(o){ return '<button data-'+attr+'="'+o[0]+'" class="'+(o[0]===cur?'on':'')+'"'+(o[2]?' translate="no"':'')+'>'+o[1]+'</button>'; }).join('')+'</div>'; }
-  return '<div class="panel set"><b>Jazyk</b>'+seg('lang',LANG,[['cs','Čeština',1],['en','English',1]],'Jazyk')+'<p class="hint">Language: Czech or English.</p></div>'+
+  return '<div class="panel set"><b>Jazyk</b>'+seg('lang',LANG,[['cs','Čeština',1],['en','English',1],['pl','Polski',1],['de','Deutsch',1]],'Jazyk')+'<p class="hint" translate="no">Language · Język · Sprache</p></div>'+
     '<div class="panel set"><b>Pravidla</b><select class="btn" id="rulesSel" aria-label="Pravidla">'+Object.keys(RULES).map(function(k){ return '<option value="'+k+'"'+(k===RCC?' selected':'')+'>'+RULES[k].l+'</option>'; }).join('')+'</select>'+
       '<p class="hint">Třídy, postup do vyšší třídy, maximální čas a závody se řídí pravidly vybrané země. Parkury a kontrola FCI jsou společné.</p></div>'+
     '<div class="panel set"><b>Vzhled</b>'+seg('theme',THEME,[['system','Podle systému'],['light','Světlý'],['dark','Tmavý']],'Vzhled')+'<p class="hint">Tmavý vzhled je šetrnější k očím večer a k baterii telefonu.</p></div>'+
@@ -14539,7 +14570,7 @@ function onbLooks(){
    vzhled (světlý / tmavý) se řídí systémem a mění se ve Více → Nastavení. */
 function onbRender(){
   var o=$('onb'), s=ONB.step, d=onbDog(), h='<div class="onb-top"><div class="dots" aria-hidden="true"><i'+(s===1?' class="on"':'')+'></i><i'+(s===2?' class="on"':'')+'></i><i'+(s===3?' class="on"':'')+'></i></div><div class="onb-r">'+
-    (s===1?'<div class="seg onb-lang" role="group" aria-label="Jazyk / Language"><button data-o="lang" data-v="cs" class="'+(LANG==='cs'?'on':'')+'" translate="no">CZ</button><button data-o="lang" data-v="en" class="'+(LANG==='en'?'on':'')+'" translate="no">EN</button></div>':'')+
+    (s===1?'<div class="seg onb-lang" role="group" aria-label="Jazyk / Language / Język / Sprache">'+[['cs','CZ'],['en','EN'],['pl','PL'],['de','DE']].map(function(x){ return '<button data-o="lang" data-v="'+x[0]+'" class="'+(LANG===x[0]?'on':'')+'" translate="no">'+x[1]+'</button>'; }).join('')+'</div>':'')+
     '<button class="btn ghost" data-o="skip">Přeskočit</button></div></div><div class="onb-body'+(s<3?' c':'')+'">';
   if(s===1){
     h+='<div class="onb-hero">'+dogAva({id:d.id,look:ONB.look==null?dogLook(d):ONB.look},ONB.pic!==undefined?ONB.pic:dogPic(d))+'</div><h1>Vítej v Pawkuru</h1><p class="lead">Parkury, stopky a deník pro tebe a tvého psa. Jak se jmenuje?</p>'+

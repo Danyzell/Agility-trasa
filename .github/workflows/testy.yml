@@ -8,7 +8,7 @@ on:
 jobs:
   testy:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -40,6 +40,7 @@ jobs:
           (cd /tmp/web && git rm -rq --ignore-unmatch . >/dev/null 2>&1 || true)
           cp index.html sw.js manifest.webmanifest privacy.html terms.html og.jpg hero.webp icon-192.png icon-512.png icon-maskable-512.png /tmp/web/
           mkdir -p /tmp/web/v3d && cp v3d/v3d.js /tmp/web/v3d/
+          mkdir -p /tmp/web/i18n && cp i18n/pl.js i18n/de.js /tmp/web/i18n/
           cp -r web /tmp/web/web
           printf 'pawkur.cz\n' > /tmp/web/CNAME
           touch /tmp/web/.nojekyll

@@ -290,7 +290,7 @@ footer .sp{flex:1;}
 (function(){
   var APP='https://pawkur.cz/';
   var q=location.search.match(/[?&]lang=(cs|en)/), nav=(navigator.language||'').toLowerCase();
-  var lang=q?q[1]:(/^(cs|sk)/.test(nav)?'cs':'en');
+  var lang=q?q[1]:(/^(cs|sk)/.test(nav)?'cs':'en'), auto=!q; /* jazyk podle prohlížeče, ne volbou */
   var CS={}; /* původní české texty, aby šlo přepnout zpět */
   function apply(l){
     document.documentElement.lang=l;
@@ -302,11 +302,11 @@ footer .sp{flex:1;}
     });
     document.title=l==='en'?'Pawkur – agility courses in your pocket':'Pawkur – agility parkury v telefonu';
     document.getElementById('langBtn').textContent=l==='en'?'CS':'EN';
-    /* odkazy do aplikace nesou jazyk, aplikace si ho pamatuje */
-    document.querySelectorAll('a[data-app]').forEach(function(a){ a.setAttribute('href', APP+(l==='en'?'?lang=en':'')); });
+    /* odkazy do aplikace nesou jazyk, aplikace si ho pamatuje; polský a německý prohlížeč bez volby jazyka dostane aplikaci polsky a německy (pozná sama) */
+    document.querySelectorAll('a[data-app]').forEach(function(a){ a.setAttribute('href', APP+(l==='en'&&!(auto&&/^(pl|de)/.test(nav))?'?lang=en':'')); });
   }
   apply(lang);
-  document.getElementById('langBtn').onclick=function(){ lang=lang==='en'?'cs':'en'; apply(lang); try{ history.replaceState(null,'','?lang='+lang); }catch(e){} };
+  document.getElementById('langBtn').onclick=function(){ lang=lang==='en'?'cs':'en'; auto=false; apply(lang); try{ history.replaceState(null,'','?lang='+lang); }catch(e){} };
   document.getElementById('yr').textContent=new Date().getFullYear();
 })();
 </script>
