@@ -32,13 +32,15 @@ export function buildCourse(scene, spec, Q) {
   scene.add(ring);
 
   /* překážky */
-  const saws = [];
+  const saws = [], tubes = [];
   (spec.obs || []).forEach(o => {
     const a = o.rot * Math.PI / 180, fx = Math.cos(a), fz = Math.sin(a);
     let g = null;
     if (o.type === 'tunnel') {
       g = ob.tunnel({ points: o.tunnel && o.tunnel.length > 1 ? o.tunnel : [[o.x - fx * 2.25, o.y - fz * 2.25], [o.x + fx * 2.25, o.y + fz * 2.25]] });
       scene.add(g);
+      const { curve, length: tl } = g.userData, n = Math.max(8, Math.ceil(tl / .1));
+      tubes.push({ len: tl, pts: Array.from({ length: n + 1 }, (_, k) => { const q = curve.getPointAt(k / n); return { x: q.x, z: q.z, s: tl * k / n }; }) });
     } else {
       if (o.type === 'jump') g = o.v === 'wall' ? ob.wall({ h: size.jump || .6 }) : o.v === 'oxer' ? ob.oxer({ h: size.jump || .6 }) : ob.jump({ h: size.jump || .6 });
       else if (o.type === 'tire') g = ob.tire({ h: size.tire || .8 });
@@ -130,8 +132,13 @@ export function buildCourse(scene, spec, Q) {
   const duck = p => chutes.reduce((m, c) => { const u = (p.x - c.x) * c.c + (p.z - c.y) * c.s, v = -(p.x - c.x) * c.s + (p.z - c.y) * c.c;
     return Math.abs(v) < .4 ? Math.max(m, Math.min(1, Math.max(0, (1.2 - Math.abs(u)) / .3))) : m; }, 0);
   /* pes a houpačky ve vzdálenosti d po trase */
+  /* pes uvnitř tunelu (dál než 30 cm od vstupu i výstupu): látka je neprůhledná, pes se schová. Dřív mu hlava (74 cm)
+     trčela ven z tunelu ⌀ 60 cm */
+  const inTube = p => tubes.some(t => { let best = 1e9, s = 0; t.pts.forEach(q => { const dd = (q.x - p.x) ** 2 + (q.z - p.z) ** 2; if (dd < best) { best = dd; s = q.s; } });
+    return best < .25 * .25 && s > .3 && s < t.len - .3; });
   function pose(d) {
     const p = at(d), ah = at(d + .8), ny = at(d + .25);
+    p.tun = tubes.length > 0 && inTube(p); dog.visible = !p.tun;
     const yaw = Math.atan2(-(ny.z - p.z), ny.x - p.x);
     const slope = Math.atan2(ah.h - p.h, Math.max(.2, Math.hypot(ah.x - p.x, ah.z - p.z))) * (p.air ? 0 : 1);
     dog.position.set(p.x, p.h - (chutes.length ? .1 * duck(p) : 0), p.z); dog.rotation.y = yaw; dog.rotation.z = Math.max(-.6, Math.min(.6, slope));
@@ -238,12 +245,27 @@ export function mountCourse(canvas, spec, opts = {}) {
   resize();
 
   const look = new THREE.Vector3();
+  /* průměrný směr běhu kolem vzdálenosti d (0,8 m zpátky až 0,8 m dopředu), jednotkový vektor v rovině x–z */
+  function heading(d) {
+    let sx = 0, sz = 0;
+    for (let k = -2; k <= 1; k++) { const a = at(d + k * .4), b = at(d + k * .4 + .4), dx = b.x - a.x, dz = b.z - a.z, l = Math.hypot(dx, dz); if (l > 1e-4) { sx += dx / l; sz += dz / l; } }
+    const l = Math.hypot(sx, sz); if (l > 1e-3) return { x: sx / l, z: sz / l };
+    const a = at(d), b = at(d + .5), m = Math.hypot(b.x - a.x, b.z - a.z); return m > 1e-4 ? { x: (b.x - a.x) / m, z: (b.z - a.z) / m } : { x: 1, z: 0 };
+  }
   function render(d, view) {
-    const p = C.pose(d), ah = at(d + .8), bk = at(d - 4);
+    const p = C.pose(d), ah = at(d + .8);
     /* kamera */
-    dog.visible = view !== 'dog' && P.length > 1;
+    dog.visible = view !== 'dog' && P.length > 1 && !p.tun;
     if (view === 'dog') { camera.fov = 75; camera.up.set(0, 1, 0); const f = at(d + .35); camera.position.set(f.x, f.h + .55, f.z); look.set(ah.x + (ah.x - p.x) * 4, ah.h + .3, ah.z + (ah.z - p.z) * 4); camera.lookAt(look); }
-    else if (view === 'chase') { camera.fov = 55; camera.up.set(0, 1, 0); camera.position.set(bk.x, Math.max(bk.h, p.h) + 2.4, bk.z); look.set(p.x, p.h + .4, p.z); camera.lookAt(look); }
+    else if (view === 'chase') {
+      /* za psem šikmo ze strany (asi 45°) a nízko jako televizní kamera: přímo zezadu a shora (dřív 4 m po trase zpátky
+         a 2,4 m nad zemí) se tělo běžícího psa zkrátilo do svislé čárky, jako by stál na zadních, a po otočce kolem křídla
+         byl bod po trase zpátky před psem. Směr je průměr směru trasy kolem psa, kamera v zatáčkách plynule obkrouží. */
+      const hd = heading(d), sx = -hd.z, sz = hd.x;
+      camera.fov = 52; camera.up.set(0, 1, 0);
+      camera.position.set(p.x - hd.x * 2.6 + sx * 2.8, Math.max(p.h, 0) + 1.25, p.z - hd.z * 2.6 + sz * 2.8);
+      look.set(p.x + hd.x * .5, p.h + .45, p.z + hd.z * .5); camera.lookAt(look);
+    }
     else if (view === 'top') placeTop(topH);
     else placeOrbit(orb.dist);
     camera.updateProjectionMatrix();
@@ -262,6 +284,6 @@ export function mountCourse(canvas, spec, opts = {}) {
     });
     world.R.dispose(); try { world.R.forceContextLoss(); } catch (e) { }
   }
-  const api = { length, render, resize, dispose, at, pose: C.pose, scene, hand: C.hand, get tier() { return world.tier; }, get pixelRatio() { return world.R.getPixelRatio(); }, onCamera: null };
+  const api = { length, render, resize, dispose, at, pose: C.pose, scene, hand: C.hand, dog: C.dog, camera, get tier() { return world.tier; }, get pixelRatio() { return world.R.getPixelRatio(); }, onCamera: null };
   return api;
 }
