@@ -71,7 +71,7 @@ module.exports = async function ({ browser, base }) {
     ok(/<img src="\.\.\/icon-192\.png"/.test(logo) && !/<svg/.test(logo), 'úvodní stránka: v hlavičce má být stejná fotka otisku jako ikona aplikace');
     ok(/\.logo i\{[^}]*overflow:hidden/.test(web) && /\.logo i img\{[^}]*object-fit:cover/.test(web), 'úvodní stránka: fotka má vyplnit dlaždici loga');
     const ics = [...web.matchAll(/<div class="ic">([\s\S]*?)<\/div>/g)].map(m => m[1]);
-    ok(ics.length === 6 && ics.every(s => /^<svg /.test(s) && !/[\u{1F300}-\u{1FAFF}☀-➿]/u.test(s)), 'úvodní stránka: ikony funkcí mají být čárové SVG, ne emoji');
+    ok(ics.length === 7 && ics.every(s => /^<svg /.test(s) && !/[\u{1F300}-\u{1FAFF}☀-➿]/u.test(s)), 'úvodní stránka: ikony funkcí mají být čárové SVG, ne emoji');
   });
 
   await step('cíle pro palec 44 px (390 px, dotyk)', async () => {
