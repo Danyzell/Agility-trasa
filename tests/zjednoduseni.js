@@ -44,8 +44,8 @@ module.exports = async function ({ browser, base }) {
   await step('nástroje ve skupinách', async () => {
     await fresh('#plan'); await page.click('#toolsBtn');
     const g = await ev(() => [...document.querySelectorAll('#planTools .tgrp')].map(x => x.textContent + ':' + (x.getBoundingClientRect().width > 300)).join());
-    ok(g === 'Rozbor a trénink:true,Venku:true,Fotka a sdílení:true', 'skupiny nástrojů přes celou šířku: ' + g);
-    ok(await page.locator('#planTools .tool').count() === 12, 'nástrojů má být dál 12');
+    ok(g === 'Rozbor a trénink:true,Venku:true,Celý parkur:true,Fotka a sdílení:true', 'skupiny nástrojů přes celou šířku: ' + g);
+    ok(await page.locator('#planTools .tool').count() === 15, 'nástrojů má být 15 (12 + celý parkur, porovnání, plánek rozhodčího)');
   });
 
   await step('angličtina', async () => {
