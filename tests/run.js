@@ -5,7 +5,7 @@ const path = require('path');
 const { chromium } = require('playwright');
 const start = require('./server');
 
-const SUITES = ['smoke', 'flows', 'undo', 'opravy', 'ctecka', 'sw', 'tyden', 'v3d', 'sekvence', 'kacr', 'zahrada', 'pasti', 'pamet', 'zavody', 'pece', 'autor', 'tunel', 'ucet', 'kolbiste', 'stavba', 'stavba2', 'stavba3', 'denik', 'zjednoduseni', 'hoopers', 'anglictina', 'postup', 'pravidla', 'listina', 'presun', 'plus', 'otazka', 'vzhled', 'vzhled2', 'sirka', 'privetivy', 'trojka', 'vzhled3', 'stavba4', 'prvni', 'kalendar', 'planovac', 'geoparkur', 'planovac2', 'play'];
+const SUITES = ['smoke', 'flows', 'undo', 'opravy', 'ctecka', 'sw', 'tyden', 'v3d', 'sekvence', 'kacr', 'zahrada', 'pasti', 'pamet', 'zavody', 'pece', 'autor', 'tunel', 'ucet', 'kolbiste', 'stavba', 'stavba2', 'stavba3', 'denik', 'zjednoduseni', 'hoopers', 'anglictina', 'postup', 'pravidla', 'listina', 'presun', 'plus', 'otazka', 'vzhled', 'vzhled2', 'sirka', 'privetivy', 'trojka', 'vzhled3', 'stavba4', 'prvni', 'kalendar', 'planovac', 'geoparkur', 'planovac2'];
 
 (async () => {
   const pick = process.argv.slice(2).filter(a => SUITES.includes(a));

@@ -37,8 +37,7 @@ jobs:
           # špatný token dřív končil zeleně a s „beze změn“; teď je chyba vidět
           git clone --depth 1 "https://x-access-token:${TOK}@github.com/Danyzell/pawkur-web.git" /tmp/web || { echo "::error::PAWKUR_WEB_TOKEN nefunguje (GitHub ho odmítl). Vytvoř nový token s Contents: Read and write pro Danyzell/pawkur-web a ulož ho znovu do Settings → Secrets and variables → Actions."; exit 1; }
           (cd /tmp/web && git rm -rq --ignore-unmatch . >/dev/null 2>&1 || true)
-          cp index.html sw.js manifest.webmanifest privacy.html terms.html smazani-uctu.html og.jpg hero.webp icon-192.png icon-512.png icon-maskable-512.png /tmp/web/
-          if [ -d .well-known ]; then cp -r .well-known /tmp/web/.well-known; fi # assetlinks.json pro aplikaci z Google Play (TWA)
+          cp index.html sw.js manifest.webmanifest privacy.html terms.html og.jpg hero.webp icon-192.png icon-512.png icon-maskable-512.png /tmp/web/
           mkdir -p /tmp/web/v3d && cp v3d/v3d.js /tmp/web/v3d/
           cp -r web /tmp/web/web
           printf 'pawkur.cz\n' > /tmp/web/CNAME

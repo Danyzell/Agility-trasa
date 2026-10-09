@@ -2278,11 +2278,6 @@ var I18N_EXTRA={exact:{
 "Smazat data z účtu?": "Delete data from account?",
 "Smažou se data uložená na serveru u tvého účtu. V tomhle zařízení zůstanou a odhlásíš se.": "The data stored on the server for your account will be deleted. It stays on this device and you'll be signed out.",
 "Data z účtu smazána": "Account data deleted",
-"Smazat účet": "Delete account",
-"Smazat účet?": "Delete account?",
-"Účet je smazaný.": "Your account has been deleted.",
-"Teď máš všechno zdarma.": "Everything is free for now.",
-"Smaže se tvůj účet a všechno, co je u něj na serveru: synchronizovaná data, profil, skupiny, které vlastníš, tvoje parkury a tréninky ve skupinách, sdílené parkury a upozornění. Data v tomhle zařízení zůstanou a odhlásíš se. Vrátit to nejde.": "This deletes your account and everything stored with it on the server: synced data, profile, groups you own, your courses and training sessions in groups, shared courses and notifications. The data on this device stays and you will be signed out. This cannot be undone.",
 "Data se v tomhle zařízení zůstanou, jen se přestanou synchronizovat.": "The data stays on this device, it just stops syncing.",
 "Data v tomhle zařízení zůstanou, jen se přestanou synchronizovat.": "The data stays on this device, it just stops syncing.",
 "Synchronizuji…": "Syncing…",
@@ -8208,9 +8203,6 @@ HM.open=function(id,arg){ if(!HM.screens[id]) return; moreOpen('mod:'+id,arg); }
 var NATIVE=(typeof window.AgilityNative==='object'&&window.AgilityNative)?window.AgilityNative:null;
 var IS_APK=!!NATIVE||location.protocol==='file:';
 var APK_LITE=IS_APK&&!NATIVE; /* aplikace pro Android bez přístupu k souborům telefonu */
-/* aplikace z Google Play (Trusted Web Activity, start_url ./?src=twa): bez plateb mimo Google Play (Podpora přes Stripe a převod,
-   nákup Plus), to pravidla Play u digitálního obsahu nedovolují. sessionStorage: TWA sdílí úložiště s Chromem, web v Chromu se nemění. */
-var IS_TWA=(function(){ try{ if(/[?&]src=twa(&|$)/.test(location.search)||/^android-app:\/\/cz\.pawkur\./.test(document.referrer||'')) sessionStorage.setItem('agility-twa','1'); return sessionStorage.getItem('agility-twa')==='1'; }catch(e){ return false; } })();
 var IS_PWA=!!window.AGILITY_PWA; /* aplikace nainstalovaná z webu (GitHub Pages): soubory i server */
 var IS_SRV=IS_APK||IS_PWA;
 var APP_URL='https://pawkur.cz/'; /* hlavní adresa aplikace (stará github.io běží dál) */
@@ -10757,19 +10749,16 @@ function acctHTML(){
     '<p class="hint" id="syncSt">'+syncText()+'</p>'+
     '<div class="row"><button class="btn primary" data-acct="sync">Synchronizovat teď</button><button class="btn" data-acct="out">Odhlásit</button></div>'+
     '<p class="hint">Parkury, psi, běhy, deník a nastavení se synchronizují samy při každé změně a při otevření aplikace. Po odhlášení zůstanou data v tomhle zařízení.</p>'+
-    '<p class="hint"><button class="linkbtn" data-acct="del">Smazat účet</button></p></div>'+acctPlusRow();
+    '<p class="hint"><button class="linkbtn" data-acct="del">Smazat data z účtu</button></p></div>'+acctPlusRow();
 }
 /* Pawkur Plus je od 3.1 v Účtu (v nabídce Více zbylo 8 řádků) */
-function acctPlusRow(){ if(IS_TWA&&!plusActive()) return ''; /* v aplikaci z Google Play se Plus nekupuje, všechno je zdarma */
-  return '<div class="mlist acct-plus"><button class="mrow" data-mgo="plus"><span class="mic">'+IC.star+'</span><span class="ml"><b>Pawkur Plus</b><small>'+(plusActive()?'Aktivní':'Co Plus přidává a jak ho zapnout')+'</small></span><span class="mch">'+IC.chev+'</span></button></div>'; }
+function acctPlusRow(){ return '<div class="mlist acct-plus"><button class="mrow" data-mgo="plus"><span class="mic">'+IC.star+'</span><span class="ml"><b>Pawkur Plus</b><small>'+(plusActive()?'Aktivní':'Co Plus přidává a jak ho zapnout')+'</small></span><span class="mch">'+IC.chev+'</span></button></div>'; }
 function acctAct(a){
   if(a==='in') authIn();
   else if(a==='sync') syncNow();
   else if(a==='out') ask('Odhlásit?','Data v tomhle zařízení zůstanou, jen se přestanou synchronizovat.','Odhlásit',function(){ authOut(false); toast(T('Odhlášeno')); });
-  /* smazání účtu (Google Play): účet i všechno u něj na serveru (delete_my_account); bez té funkce na serveru aspoň data jako dřív */
-  else if(a==='del') ask('Smazat účet?','Smaže se tvůj účet a všechno, co je u něj na serveru: synchronizovaná data, profil, skupiny, které vlastníš, tvoje parkury a tréninky ve skupinách, sdílené parkury a upozornění. Data v tomhle zařízení zůstanou a odhlásíš se. Vrátit to nejde.','Smazat účet',function(){
-    authTok().then(function(tok){ return sbCall('delete_my_account',{},tok).then(function(){ return 'acct'; },function(e){ if(!/server 404/.test(e.message)) throw e; return sbCall('sync_delete',{},tok).then(function(){ return 'data'; }); }); })
-      .then(function(k){ authOut(false); toast(T(k==='acct'?'Účet je smazaný.':'Data z účtu smazána')); },function(e){ toast(T('Nepovedlo se')+': '+e.message); });
+  else if(a==='del') ask('Smazat data z účtu?','Smažou se data uložená na serveru u tvého účtu. V tomhle zařízení zůstanou a odhlásíš se.','Smazat',function(){
+    authTok().then(function(tok){ return sbCall('sync_delete',{},tok); }).then(function(){ authOut(false); toast(T('Data z účtu smazána')); },function(e){ toast(T('Nepovedlo se')+': '+e.message); });
   },true);
 }
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-acct]'); if(b) acctAct(b.getAttribute('data-acct')); });
@@ -10796,7 +10785,7 @@ var FIRST=(function(){ var f=+lsGet(FIRSTK,0)||0; if(!f){ f=Date.now(); lsSet(FI
 var PLUS_FEATS=[['3D průlet a rozšířená realita','cube'],['Rozbor, pasti a stavba v terénu','gauge'],['Kde ztrácíš body a rozhodčí z kacr.info','chart'],['Kalkulačka SČP a výsledková listina','timer'],['Neomezené vlastní parkury (zdarma 5)','star']];
 /* den spuštění platby jako místní půlnoc; neplatné datum (např. 2026-13-01) = 0, a pak se nic nezamyká */
 function plusFrom(){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(PLUS_FROM||''); if(!m) return 0; var d=new Date(+m[1],+m[2]-1,+m[3]); return d.getMonth()===+m[2]-1&&d.getDate()===+m[3]?d.getTime():0; }
-function plusReady(){ return !IS_TWA&&!!PLUS_LINK&&plusFrom()>0; } /* v aplikaci z Google Play se Plus nekupuje (bez plateb mimo Play) a nic se nezamyká */
+function plusReady(){ return !!PLUS_LINK&&plusFrom()>0; }
 /* 14 dní od prvního otevření, nejdřív ale ode dne, kdy jde Plus koupit: nikdo nepřijde o funkce dřív, než má jak zaplatit */
 function trialEnd(){ return Math.max(FIRST,plusFrom())+TRIAL_DAYS*864e5; }
 function plusActive(){ return (+PLUS.until||0)>Date.now(); }
@@ -10818,13 +10807,13 @@ function trialSync(){
 function plusGate(feature){ if(plusOK()) return true; plusSheet(feature); return false; }
 function plusStatus(){
   if(plusActive()) return 'Máš Pawkur Plus do '+new Date(PLUS.until).toLocaleDateString(LOC)+'.';
-  if(!plusReady()) return IS_TWA?'Teď máš všechno zdarma.':'Teď máš všechno zdarma. Až půjde Plus koupit, dostaneš ještě '+TRIAL_DAYS+' dní na vyzkoušení.';
+  if(!plusReady()) return 'Teď máš všechno zdarma. Až půjde Plus koupit, dostaneš ještě '+TRIAL_DAYS+' dní na vyzkoušení.';
   if(plusTrial()) return 'Zkoušíš všechno zdarma, zbývá '+czN(plusDays(),'den','dny','dní')+'.';
   return 'Zkušební doba skončila. Základ zůstává zdarma, Plus je za '+PLUS_PRICE+'.';
 }
 function plusBuyHTML(){
   if(plusActive()) return (PLUS_PORTAL?'<a class="btn" href="'+esc(PLUS_PORTAL)+'" target="_blank" rel="noopener">Spravovat předplatné</a>':'')+'<button class="btn" data-plus="refresh">Obnovit stav</button>';
-  if(!plusReady()){ var rf=AUTH?'<button class="btn" data-plus="refresh">Už mám Plus</button>':''; return IS_APK||IS_TWA?rf:'<p class="hint">Platba se připravuje.</p>'+rf; }
+  if(!plusReady()){ var rf=AUTH?'<button class="btn" data-plus="refresh">Už mám Plus</button>':''; return IS_APK?rf:'<p class="hint">Platba se připravuje.</p>'+rf; }
   if(IS_APK) return '<p class="hint">Plus se kupuje a spravuje na <a href="https://pawkur.cz/" target="_blank" rel="noopener">pawkur.cz</a>. Po zaplacení se přihlas stejným účtem Google i tady.</p><button class="btn" data-plus="refresh">Už mám Plus</button>';
   if(!AUTH) return '<button class="btn gbtn" data-acct="in">'+GLOGO+'<span>Přihlásit přes Google a pokračovat</span></button><p class="hint">Plus se váže k účtu, abys ho měl na všech zařízeních.</p>';
   return '<button class="btn primary" data-plus="buy">Koupit Plus za '+PLUS_PRICE+'</button><button class="btn" data-plus="refresh">Už mám Plus</button>';
@@ -10837,9 +10826,7 @@ function plusSheet(feature){
     function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
 }
 function plusHTML(){
-  var top='<div class="panel plus-box"><b>'+plusStatus()+'</b><p class="hint">Základ aplikace je zdarma napořád: parkury, plán, stopky, trénink doma a deník. Plus přidává:</p>'+plusFeatsHTML();
-  if(IS_TWA) return top+'</div>'; /* aplikace z Google Play: bez ceny, nákupu a správy předplatného */
-  return top+
+  return '<div class="panel plus-box"><b>'+plusStatus()+'</b><p class="hint">Základ aplikace je zdarma napořád: parkury, plán, stopky, trénink doma a deník. Plus přidává:</p>'+plusFeatsHTML()+
     '<div class="row plus-acts">'+plusBuyHTML()+'</div>'+
     '<p class="hint">'+PLUS_PRICE+', platí se jednou ročně, zrušíš kdykoli a Plus doběhne do konce zaplaceného roku. Platbu zajišťuje Stripe, aplikace číslo karty nevidí. <a href="terms.html" target="_blank" rel="noopener">Obchodní podmínky</a> · <a href="privacy.html" target="_blank" rel="noopener">Ochrana soukromí</a></p></div>';
 }
@@ -11025,7 +11012,7 @@ function czIban(acc){
    Dokud není nic vyplněné, Podpořit se v aplikaci neukazuje. */
 var DONATE={acc:'1220369023/3030', iban:'', name:'', msg:'Podpora Pawkur', url:'https://buy.stripe.com/aFa3cvh1x7wKbAub7U4ko03'}, DN_AMT=100;
 function dnIban(){ var i=String(DONATE.iban||'').replace(/\s+/g,'').toUpperCase(); return /^CZ\d{22}$/.test(i)?i:czIban(DONATE.acc); }
-function donateOn(){ return !IS_TWA&&!!(dnIban()||/^https:\/\//.test(DONATE.url||'')); } /* v aplikaci z Google Play Podpora není */
+function donateOn(){ return !!(dnIban()||/^https:\/\//.test(DONATE.url||'')); }
 function spayd(amt){
   var i=dnIban(); if(!i) return '';
   var cl=function(s,n){ return String(s||'').replace(/\*/g,' ').replace(/[^\x20-\x7e -ſ]/g,'').trim().slice(0,n); };
@@ -11126,7 +11113,7 @@ var VISITS=visitTick();
 document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') VISITS=visitTick(); });
 var ASK_IOS=/iP(hone|ad|od)/.test(navigator.userAgent||'')||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 var ASK_OPTS=[['parkury','Víc parkurů'],['snaz','Jednodušší ovládání'],['klub','Sdílení s klubem a kamarády'],['upoz','Připomínky na telefonu']]
-  .concat(IS_APK||IS_TWA?[]:[['play',ASK_IOS?'Aplikace z App Storu':'Aplikace z Google Play']]).concat([['nic','Nic, je to super'],['jine','Něco jiného…']]), ASK_BUSY=false;
+  .concat(IS_APK?[]:[['play',ASK_IOS?'Aplikace z App Storu':'Aplikace z Google Play']]).concat([['nic','Nic, je to super'],['jine','Něco jiného…']]), ASK_BUSY=false;
 function askHomeHTML(){
   if(!VISITS||VISITS.n<2||!IS_SRV||lsGet(ASKK,null)) return '';
   /* nadpis a křížek v řádku, odpovědi pod nimi přes celou šířku karty */
@@ -14465,7 +14452,7 @@ catSync();
       function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
   };
   window.pwaInstUI=function(){
-    var inst=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true||IS_APK||IS_TWA;
+    var inst=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true||IS_APK;
     var el=document.getElementById('pwaInst');
     var ios=/iP(hone|ad|od)/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
     if(el){
@@ -14502,7 +14489,7 @@ catSync();
   var NUDK='agility-instnudge-v1';
   function instNudge(){
     if(lsGet(NUDK,0)||INAPP||instHid()) return;
-    if((window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true||IS_APK||IS_TWA) return;
+    if((window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true||IS_APK) return;
     var ios=/iP(hone|ad|od)/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1), iosSaf=ios&&!/CriOS|FxiOS|EdgiOS/.test(UA);
     if(!ev&&!iosSaf&&!ANDR) return; /* počítač bez nabídky Chromu: nic */
     setTimeout(function(){
