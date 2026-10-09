@@ -1828,9 +1828,11 @@ function ukSpd(cls,size,disc){ var v=UKV[size]||UKV.L, r=v[disc==='J'?'J':'A'], 
 function ukSct(len,cls,size,disc){ return len?Math.ceil(Math.round(len*10)/10/ukSpd(cls,size,disc)-1e-9)+10:0; }
 /* výchozí pravidla: podle jazyka aplikace (čeština, polština, němčina; Vídeň → Rakousko, Švýcarsko jen FCI), pak časového pásma
    (Česko, Slovensko, Amerika → AKC), pak jazyka telefonu */
+/* časová pásma USA (i Aljaška, Havaj a Portoriko); Kanada a Latinská Amerika mají jiná pravidla (AAC, FCI), ne AKC */
+var US_TZ=/^(America\/(New_York|Detroit|Chicago|Denver|Boise|Phoenix|Los_Angeles|Anchorage|Juneau|Sitka|Metlakatla|Yakutat|Nome|Adak|Menominee|Puerto_Rico|Indiana\/\w+|Kentucky\/\w+|North_Dakota\/\w+|Indianapolis|Fort_Wayne|Louisville|Knox_IN|Shiprock|Atka)|Pacific\/Honolulu|US\/\w+)$/;
 function rulesDefault(){ var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase(); if(LANG==='cs') return /^sk/.test(n)?'SK':'CZ';
   if(LANG==='pl') return 'PL'; if(LANG==='de') return TZ==='Europe/Vienna'?'AT':TZ==='Europe/Zurich'?'FCI':'DE';
-  if(TZ==='Europe/Prague') return 'CZ'; if(TZ==='Europe/Bratislava') return 'SK'; if(/^America\//.test(TZ)) return 'US'; return /^de-at/.test(n)?'AT':/^de/.test(n)?'DE':/^pl/.test(n)?'PL':/^en-gb/.test(n)?'UK':'FCI'; }
+  if(TZ==='Europe/Prague') return 'CZ'; if(TZ==='Europe/Bratislava') return 'SK'; if(US_TZ.test(TZ)) return 'US'; return /^de-at/.test(n)?'AT':/^de/.test(n)?'DE':/^pl/.test(n)?'PL':/^en-gb/.test(n)?'UK':'FCI'; }
 var RCC=(function(){ var v=lsGet(RULESK,null); return RULES[v]?v:rulesDefault(); })(), RU=RULES[RCC]; RU.cc=RCC;
 if(LANG==='en'&&RU.us) LOC='en-US'; /* americké datum (10/9/2026) */
 var KACR_OK=!!RU.kacr; /* kacr.info má smysl pro Česko a Slovensko */

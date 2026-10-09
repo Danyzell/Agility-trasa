@@ -136,6 +136,13 @@ module.exports = async function ({ browser, base }) {
     });
     await done(T);
   }
+  for (const [tz, cc] of [['America/Mexico_City', 'FCI'], ['America/Toronto', 'FCI'], ['America/Sao_Paulo', 'FCI'], ['America/Indiana/Indianapolis', 'US'], ['Pacific/Honolulu', 'US']]) {
+    const T = await open('en', { tz }); const { ok, ev } = T;
+    await run(T, 'výchozí pravidla v pásmu ' + tz, async () => {
+      ok(await ev(() => RCC) === cc, tz + ' má dát ' + cc + ', ne ' + await ev(() => RCC));
+    });
+    await done(T);
+  }
   {
     const T = await open('cs', { tz: 'America/New_York' }); const { ok, ev } = T;
     await run(T, 'česky v Americe: česká pravidla', async () => {
