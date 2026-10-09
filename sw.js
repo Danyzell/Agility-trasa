@@ -54,7 +54,7 @@ self.addEventListener('notificationclick',function(e){
   var u; try{ u=new URL((e.notification.data&&e.notification.data.url)||'./',self.registration.scope).href; }catch(x){ u=self.registration.scope; }
   if(u.indexOf(self.registration.scope)!==0) u=self.registration.scope;
   e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(function(cs){
-    for(var i=0;i<cs.length;i++){ if(cs[i].url.indexOf(self.registration.scope)===0&&'focus' in cs[i]){ if(cs[i].navigate) cs[i].navigate(u); return cs[i].focus(); } }
+    for(var i=0;i<cs.length;i++){ if(cs[i].url.indexOf(self.registration.scope)===0&&'focus' in cs[i]){ if(cs[i].navigate) cs[i].navigate(u).catch(function(){}); /* okno, které service worker neřídí, přesměrovat neumí; aspoň se zaměří */ return cs[i].focus(); } }
     if(self.clients.openWindow) return self.clients.openWindow(u);
   }));
 });

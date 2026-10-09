@@ -10,6 +10,7 @@ module.exports = async function ({ browser, base }) {
   const thumb = { W: 30, H: 20, o: ['jump', 4, 10, 90, 'tunnel', 10, 5, 0, 'jump', 16, 12, 45, 'weave', 22, 8, 0], r: [1, 2, 3, 4], t: '..l' };
   const data = { W: 30, H: 20, obs: [{ id: 1, type: 'jump', x: 4, y: 10, rot: 90 }, { id: 2, type: 'tunnel', x: 10, y: 5, rot: 0 }, { id: 3, type: 'jump', x: 16, y: 12, rot: 45 }], route: [1, 2, 3], sides: [], turns: [], hp: [], marks: [] };
   const rec = (n, f) => (a) => { calls.push([n, a]); return typeof f === 'function' ? f(a) : f; };
+  let slowBoard = false;
   const rpc = {
     get_catalog: { version: 0 }, week_board: { rows: [], total: 0 }, league_board: { rows: [] },
     gallery_list: rec('gallery_list', (a) => ({ total: 2, rows: [
@@ -29,7 +30,10 @@ module.exports = async function ({ browser, base }) {
     group_join: rec('group_join', (a) => ({ id: 1, code: a.p_code, name: 'Agility Brno – středa', role: 'member', members: 13 })),
     group_course_get: rec('group_course_get', (a) => ({ id: a.p_cid, gid: 1, name: 'Středeční parkur 8', cls: 'A2', author: 'Petra H.', data, day: today, note: '' })),
     group_run_put: rec('group_run_put', true), group_post: rec('group_post', 42), group_member_set: rec('group_member_set', true), group_my_name_set: rec('group_my_name_set', 'Dan K.'),
-    group_board: rec('group_board', [{ name: 'Lucie', dog: 'Bára', size: 'M', t: 38.12, pen: 0, g: 'V', f: 0, r: 0, me: false }, { name: 'Dan', dog: 'Fany', size: 'M', t: 39.5, pen: 0, g: 'V', f: 0, r: 0, me: true }, { name: 'Petra H.', dog: 'Max', size: 'L', t: null, pen: 0, g: 'DIS', f: 0, r: 0, me: false }]),
+    /* žebříček parkuru 11 má tři řádky (se slowBoard přijde pozdě), parkuru 9 jeden */
+    group_board: rec('group_board', (a) => { const rows = a.p_cid === 9 ? [{ name: 'Lucie', dog: 'Bára', size: 'M', t: 30.1, pen: 0, g: 'V', f: 0, r: 0, me: false }]
+      : [{ name: 'Lucie', dog: 'Bára', size: 'M', t: 38.12, pen: 0, g: 'V', f: 0, r: 0, me: false }, { name: 'Dan', dog: 'Fany', size: 'M', t: 39.5, pen: 0, g: 'V', f: 0, r: 0, me: true }, { name: 'Petra H.', dog: 'Max', size: 'L', t: null, pen: 0, g: 'DIS', f: 0, r: 0, me: false }];
+      return slowBoard && a.p_cid === 11 ? new Promise(res => setTimeout(() => res(rows), 500)) : rows; }),
     push_pubkey: 'B' + 'x'.repeat(86), push_sub_set: rec('push_sub_set', 7), push_sub_del: rec('push_sub_del', true), push_comp_set: rec('push_comp_set', true),
   };
   await offline(T.ctx, rpc);
@@ -183,6 +187,70 @@ module.exports = async function ({ browser, base }) {
     ok(/addEventListener\('push'/.test(sw) && /notificationclick/.test(sw) && /pushsubscriptionchange/.test(sw) && /agility-trasa-3\.0/.test(sw), 'sw.js umí push, klepnutí a obnovu odběru');
   });
 
+  await step('kontrola 3.0: poškozené odpovědi, zavřená okna, odhlášení, galerie bez přihlášení, Hoopers', async () => {
+    await fresh('#home'); await w(300);
+    /* poškozený parkur z galerie skončí hláškou (ne chybou stránky) a tlačítko se odemkne */
+    const gc0 = rpc.get_course; rpc.get_course = rec('get_course', () => [{ data: 'rozbité' }]);
+    await ev(() => { libTab = 'gal'; show('lib'); }); await w(400); await ev(() => galOpen(1)); await w(200);
+    await page.click('#sheet [data-a="open"]'); await w(400);
+    const g = await ev(() => ({ toast: $('toast').textContent, btn: $('sheet').querySelector('[data-a="open"]').textContent, dis: $('sheet').querySelector('[data-a="open"]').disabled }));
+    ok(g.toast === 'Načtení se nepovedlo: parkur je poškozený' && g.btn === 'Otevřít v Plánu' && !g.dis, 'poškozený parkur z galerie: hláška a odemčené tlačítko: ' + JSON.stringify(g));
+    rpc.get_course = gc0;
+    /* hodnocení odeslané z okna, které se hned zavřelo, nepřepíše okno dalšího parkuru */
+    await ev(() => { closeSheet(); galOpen(0); $('sheet').querySelector('[data-grate="5"]').click(); closeSheet(); galOpen(1); }); await w(400);
+    ok(last('gallery_rate').p_code === 'K7P2QX' && last('gallery_rate').p_stars === 5 && await ev(() => $('sheet').querySelector('h3').textContent === 'Trénink serpentiny'), 'odpověď na hodnocení nechá otevřené okno jiného parkuru');
+    await ev(() => closeSheet());
+    /* parkur skupiny s poškozenými daty, skupina s prázdnými záznamy, žebříček s prázdným řádkem, založení bez odpovědi */
+    const cg0 = rpc.group_course_get; rpc.group_course_get = rec('group_course_get', () => ({ data: 5 }));
+    await ev(() => groupCourseOpen(99, 'X')); await w(400);
+    ok(await ev(() => $('toast').textContent === 'Načtení se nepovedlo: parkur je poškozený' && view === 'lib'), 'poškozený parkur skupiny skončí hláškou');
+    rpc.group_course_get = cg0;
+    const gd0 = rpc.group_detail; rpc.group_detail = rec('group_detail', (a) => ({ id: a.p_id, code: 'XK4P2M', name: 'Děravá', role: 'member', owner: false, members: [null, { uid: 'u2', name: 'Dan', role: 'member', me: true }], courses: [null, 'x', { id: 5, name: 'Jeden', cls: 'A1', day: today, runs: 'x' }] }));
+    await ev(() => { moreTab = 'groups'; show('more'); groupOpen(1, 'courses'); }); await w(400);
+    ok(await ev(() => document.querySelectorAll('#moreBody .item.gc').length === 1 && /1 člen/.test(document.querySelector('#moreBody .grp-h').textContent)), 'prázdné záznamy ve skupině se přeskočí');
+    rpc.group_detail = gd0;
+    const gb0 = rpc.group_board; rpc.group_board = rec('group_board', () => [null, { name: 'L', dog: 'B', size: 'M', t: 30, pen: 0, g: 'V', me: false }]);
+    await ev(() => groupBoard(5, 'Jeden')); await w(400);
+    ok(await ev(() => document.querySelectorAll('#gbList .wkrow').length === 1), 'prázdný záznam v žebříčku se přeskočí');
+    rpc.group_board = gb0; await ev(() => closeSheet());
+    const gn0 = rpc.group_create; rpc.group_create = rec('group_create', () => ({}));
+    await ev(() => groupNewSheet()); await page.fill('#gNew', 'Prázdná'); await page.click('#sheet [data-a="ok"]'); await w(400);
+    const n = await ev(() => ({ toast: $('toast').textContent, dis: $('sheet').querySelector('[data-a="ok"]').disabled, id: GRP.id }));
+    ok(n.toast === 'Nepovedlo se: prázdná odpověď' && !n.dis && n.id === 1, 'založení bez odpovědi serveru: hláška a odemčené tlačítko: ' + JSON.stringify(n));
+    rpc.group_create = gn0; await ev(() => closeSheet());
+    /* pomalý žebříček parkuru 11 nepřepíše později otevřený žebříček parkuru 9 */
+    slowBoard = true; await ev(() => { groupBoard(11, 'A'); closeSheet(); groupBoard(9, 'B'); }); await w(900); slowBoard = false;
+    ok(await ev(() => document.querySelectorAll('#gbList .wkrow').length === 1 && $('sheet').querySelector('.hint').textContent === 'B'), 'pomalá odpověď žebříčku nepřepíše novější okno');
+    await ev(() => closeSheet());
+    /* odhlášení: skupiny a uložené parkury skupin zmizí; po přihlášení jiného účtu se uložené řádky neukážou */
+    await ev(() => { authOut(true); }); await w(200);
+    const o = await ev(() => ({ id: GRP.id, list: GRP.list, rows: GTODAY.rows.length, stored: lsGet('agility-gtoday-v1', { rows: [1] }).rows.length, body: /Skupiny jsou pro přihlášené/.test($('moreBody').textContent) }));
+    ok(o.id === 0 && o.list === null && o.rows === 0 && o.stored === 0 && o.body, 'po odhlášení: ' + JSON.stringify(o));
+    const s = await ev(() => { lsSet('agility-auth-v1', { at: 'tok', rt: 'ref', exp: Math.floor(Date.now() / 1000) + 7200, uid: 'u2', email: 'dan@example.com', name: 'Dan' }); AUTH = lsGet('agility-auth-v1', null);
+      GTODAY = { at: Date.now(), uid: 'jiny', rows: [{ gid: 1, gname: 'Cizí', id: 77, name: 'Cizí parkur', cls: 'A2', day: localDate(), by: 'P', runs: 0, ran: false, thumb: null }] }; GT_TRY = 0; show('home');
+      return { gc: document.querySelectorAll('#hmGroupToday .hm-gc').length, hidden: getComputedStyle($('hmGroupToday')).display }; });
+    ok(s.gc === 0 && s.hidden === 'none', 'uložené parkury skupin jiného účtu se neukážou a prázdný obal nenechá mezeru: ' + JSON.stringify(s));
+    await w(500);
+    ok(await ev(() => GTODAY.uid === 'u2' && document.querySelectorAll('#hmGroupToday .hm-gc').length === 2), 'po načtení ze serveru jsou parkury skupin účtu zpátky');
+    /* galerie → Moje bez přihlášení: vysvětlení místo chyby, server se nevolá */
+    await ev(() => { AUTH = null; GAL.key = ''; libTab = 'gal'; show('lib'); }); await w(300);
+    const n0 = calls.filter(c => c[0] === 'gallery_list').length;
+    await page.click('#cards [data-gsort="mine"]'); await w(300);
+    const m = await ev(() => ({ st: GAL.st, txt: $('galCards').textContent.trim() }));
+    ok(m.st === 'ok' && /po přihlášení/.test(m.txt) && calls.filter(c => c[0] === 'gallery_list').length === n0, 'Moje v galerii bez přihlášení: ' + JSON.stringify(m));
+    await ev(() => { AUTH = lsGet('agility-auth-v1', null); GAL.sort = 'new'; GAL.key = ''; });
+    /* Hoopers: filtr třídy agility se v galerii Hoopers zruší */
+    await ev(() => { GAL.cls = 'A2'; setSport('hoopers', true); libRender(); }); await w(200);
+    const hg = last('gallery_list');
+    ok(await ev(() => GAL.cls === '' && document.querySelector('#cards [data-gcls=""]').classList.contains('on')) && hg.p_sport === 'hoopers' && hg.p_cls === null, 'filtr A2 se v galerii Hoopers zruší: ' + JSON.stringify(hg));
+    await ev(() => { setSport('agility', true); libTab = 'A2'; });
+    /* chybová hláška při zapnutí upozornění má úvod (ne holé „server 500“) */
+    const pk0 = rpc.push_pubkey; rpc.push_pubkey = 'bad';
+    await ev(() => { PUSH.key = ''; PUSH.on = false; pushSave(); moreTab = 'set'; show('more'); }); await w(200); await page.click('#pushOn'); await w(500);
+    ok(await ev(() => $('toast').textContent === 'Nepovedlo se: server pro upozornění ještě není připravený' && !$('pushOn').checked && !$('pushOn').disabled), 'chyba při zapnutí upozornění má srozumitelnou hlášku');
+    rpc.push_pubkey = pk0;
+  });
+
   await step('novinky 3.0 a angličtina', async () => {
     await ev(() => { localStorage.removeItem('agility-news-v1'); newsCheck(); }); await w(200);
     const n = await ev(() => ({ h: $('sheet').querySelector('h3').textContent, li: $('sheet').querySelectorAll('li').length, v: APPV }));
@@ -191,11 +259,20 @@ module.exports = async function ({ browser, base }) {
     const miss = await ev(() => ['Dnes', 'Plán na tento týden', 'Parkur týdne A2', 'cvičení · ještě nezkoušeno', 'cvičení · 3 běhy', '1 z 4 hotovo', 'zbývá 3 dny', 'dnes', 'poslal/a', '3 běhy ve skupině', 'Zaběhnout znovu',
       'Galerie', 'Nejlépe hodnocené', '31× otevřeno', 'bez hodnocení', 'Další (12)', '★ 4,6 · 9 hodnocení', 'Zveřejnit v galerii', 'Poslat skupině', 'Skupiny a trenér', 'Jsi člen', '12 členů', '4 členové', 'poslední parkur',
       'Žebříček skupiny', 'Upozornění', 'Posílat upozornění na tohle zařízení', 'Zapni si upozornění', 'Novinky v Pawkuru 3.0', 'Nepovedlo se: server 500', 'Běh je v žebříčku skupiny Moje parta', 'Jsi ve skupině Moje parta',
+      'Skupinu se nepodařilo načíst (prázdná odpověď).', 'Nepovedlo se: prázdná odpověď', 'Smazat parkur', 'Zatím bez hodnocení', '★ 4,6 · 9 hodnocení', '31× otevřeno',
       ...[...new DOMParser().parseFromString(newsCheck.toString().match(/<ul class="news">.*?<\/ul>/)[0], 'text/html').querySelectorAll('li')].map(l => l.textContent)].filter(t => trLookup(t) == null));
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
     await ev(() => localStorage.setItem('agility-lang-v1', JSON.stringify('en'))); await fresh('#home');
-    const e = await ev(() => ({ h: document.querySelector('#v-home .hm-tdh h3').textContent, sub: document.querySelector('#hmPlan .pl-go span').textContent, tab: document.querySelector('#libTabs [data-c="gal"]').textContent, when: document.querySelector('#hmGroupToday .cd-when') && document.querySelector('#hmGroupToday .cd-when').textContent }));
-    ok(e.h === 'Today' && e.sub === 'drill · not tried yet' && e.tab === 'Gallery' && /today/.test(e.when || ''), 'Dnes a galerie anglicky: ' + JSON.stringify(e));
+    const e = await ev(() => ({ h: document.querySelector('#v-home .hm-tdh h3').textContent, drill: document.querySelector('#hmPlan .pl-go b').textContent, sub: document.querySelector('#hmPlan .pl-go span').textContent, tab: document.querySelector('#libTabs [data-c="gal"]').textContent, when: document.querySelector('#hmGroupToday .cd-when') && document.querySelector('#hmGroupToday .cd-when').textContent }));
+    ok(e.h === 'Today' && e.drill === 'Box' && e.sub === 'drill · not tried yet' && e.tab === 'Gallery' && /today/.test(e.when || ''), 'Dnes a galerie anglicky: ' + JSON.stringify(e));
+    /* okno parkuru z galerie: hodnocení a počet otevření anglicky (dva kusy textu, každý se překládá zvlášť) */
+    await ev(() => { libTab = 'gal'; show('lib'); }); await w(400);
+    const ec = await ev(() => document.querySelector('#galCards .card .ln').textContent.replace(/\s+/g, ' '));
+    ok(ec === 'A2 · 182.4 m · 20 obstacles', 'karta galerie anglicky: ' + ec);
+    await ev(() => galOpen(0)); await w(300);
+    const er = await ev(() => $('sheet').querySelector('.gal-rate > span').textContent);
+    ok(/^★ 4\.6 · 9 ratings · opened 31×$/.test(er), 'hodnocení v okně parkuru anglicky: ' + er);
+    await ev(() => closeSheet());
     await ev(() => localStorage.setItem('agility-lang-v1', JSON.stringify('cs')));
   });
 
