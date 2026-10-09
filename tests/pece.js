@@ -6,7 +6,9 @@ module.exports = async function ({ browser, base }) {
   await offline(T.ctx, { get_catalog: { version: 0 } });
   const step = async (label, fn) => { T.step(label); try { await fn(); } catch (e) { T.errs.push(`[${label}] krok selhal: ${String(e && e.message || e).split('\n')[0]}`); } };
   const fresh = async () => { await page.goto('about:blank'); await page.goto(base + '/#plan'); await page.waitForTimeout(300); await page.click('.nav [data-v="run"]'); await ev(() => { $('toast').hidden = true; }); };
-  const saveRun = async (t) => { await page.fill('#manT', t); await page.evaluate(() => $('saveRun').scrollIntoView({ block: 'center' })); await page.click('#saveRun'); await page.waitForTimeout(200); };
+  const saveRun = async (t) => { await page.fill('#manT', t); await page.evaluate(() => $('saveRun').scrollIntoView({ block: 'center' })); await page.click('#saveRun'); await page.waitForTimeout(200);
+    /* čistý běh nejdřív oslaví (3.0): okno zavřít, ať jde klepnout na připomínku */
+    if (await ev(() => !!$('sheet').querySelector('.cele'))) { await page.click('#sheet .cele [data-a="x"]'); await page.waitForTimeout(200); } };
 
   await step('rozcvička', async () => {
     await fresh();

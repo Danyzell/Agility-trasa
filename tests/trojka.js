@@ -77,6 +77,8 @@ module.exports = async function ({ browser, base }) {
     ok(o.view === 'plan' && o.gcid === 11 && o.gname === 'Agility Brno – středa' && o.my === 1 && o.nm === 'Středeční parkur 8' && last('group_course_get').p_cid === 11, 'otevření parkuru skupiny do Moje a Plánu: ' + JSON.stringify(o));
     /* uložený běh jde do žebříčku skupiny */
     await ev(() => { show('run'); $('manT').value = '4,2'; }); await page.click('#saveRun'); await w(400); /* parkur ze 3 překážek: SČP kolem 6 s */
+    ok(await ev(() => !!$('sheet').querySelector('.cele')), 'čistý běh na parkuru skupiny se oslavil');
+    await page.click('#sheet .cele [data-a="x"]'); await w(200);
     const rp = last('group_run_put');
     ok(rp && rp.p_cid === 11 && rp.p_dog === 'Fany' && rp.p_size === 'M' && rp.p_t === 4.2 && rp.p_g === 'V' && rp.p_pen === 0, 'běh poslaný do žebříčku skupiny: ' + JSON.stringify(rp));
     /* podruhé otevřený parkur skupiny se nekopíruje */

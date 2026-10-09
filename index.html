@@ -1284,6 +1284,27 @@ body.fullfield .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));}
   body[data-view="run"] .clock{font-size:clamp(52px,10vw,92px);}
 }
 
+/* 3.0, vzhled 5–8: Tento týden s čísly a sloupci, cesta k postupu, oslava čistého běhu, tlačítka, která se dají zmáčknout */
+.wk-nums{display:flex; gap:8px; margin:0 16px 10px;} .wk-nums div{flex:1; min-width:0; background:var(--surface); border:1px solid color-mix(in srgb,var(--border) 75%,transparent); box-shadow:var(--shadow); border-radius:16px; padding:10px 6px 8px; display:flex; flex-direction:column; align-items:center; gap:2px;}
+.wk-nums b{font-family:var(--display); font-size:28px; line-height:1; font-variant-numeric:tabular-nums;} .wk-nums small{font-size:11.5px; color:var(--muted); text-align:center; line-height:1.2;}
+.hm-week{align-items:flex-end;} .hm-week div{display:flex; flex-direction:column; justify-content:flex-end; height:64px;} .hm-week i{height:34px; min-height:6px; border-radius:7px;}
+.ppath{position:relative; display:flex; align-items:center; gap:6px; margin:4px 0 2px;} .ppath:before{content:""; position:absolute; left:14px; right:56px; top:50%; height:2px; background:var(--border); z-index:0;}
+.ppath i{position:relative; z-index:1; width:28px; height:28px; border-radius:50%; border:2px solid var(--border); background:var(--surface); display:grid; place-items:center; font-style:normal; font-size:14px; font-weight:700; color:var(--on-accent); flex:0 0 auto;}
+.ppath i.on{background:var(--accent); border-color:var(--accent);} .ppath b{position:relative; z-index:1; margin-left:auto; background:var(--text); color:var(--bg); border-radius:999px; padding:4px 11px; font-size:13px; flex:0 0 auto;}
+.cele{position:relative; text-align:center; display:flex; flex-direction:column; align-items:center; gap:8px; padding-top:6px;}
+.cele-cv{position:absolute; left:-16px; top:-18px; width:calc(100% + 32px); height:260px; pointer-events:none;}
+.cele-dog{position:relative;} .cele-dog .dava{width:88px; height:88px; box-shadow:0 0 0 4px var(--lime,#c6f432);}
+.cele h3{margin:4px 0 0; font-size:30px;} .cele-sub{margin:0; color:var(--muted);}
+.cele-nums{display:flex; gap:10px; margin:6px 0 2px; flex-wrap:wrap; justify-content:center;} .cele-nums div{min-width:120px; background:var(--sunk); border-radius:16px; padding:10px 14px; display:flex; flex-direction:column; align-items:center;}
+.cele-nums b{font-family:var(--display); font-size:30px; line-height:1.05; font-variant-numeric:tabular-nums;} .cele-nums span{font-size:12.5px; color:var(--muted);}
+.cele-ser{margin:0; font-weight:600;} .cele .acts{width:100%; justify-content:center; margin-top:6px;}
+.btn.primary{box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 70%,#000), 0 6px 14px color-mix(in srgb,var(--accent) 22%,transparent);}
+.btn.primary:active{transform:translateY(2px); box-shadow:0 1px 0 color-mix(in srgb,var(--accent) 70%,#000);}
+.hm-go:not(.sec):not(.ok){box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 70%,#000); transition:transform .1s,box-shadow .1s;} .hm-go:not(.sec):not(.ok):active{transform:translateY(2px); box-shadow:0 1px 0 color-mix(in srgb,var(--accent) 70%,#000);}
+.startbtn{box-shadow:0 6px 0 color-mix(in srgb,var(--accent) 70%,#000), 0 10px 22px color-mix(in srgb,var(--accent) 28%,transparent);} .startbtn:active{transform:translateY(4px); box-shadow:0 2px 0 color-mix(in srgb,var(--accent) 70%,#000);}
+.startbtn.stop{box-shadow:0 6px 0 color-mix(in srgb,var(--bad) 70%,#000), 0 10px 22px color-mix(in srgb,var(--bad) 28%,transparent);} .startbtn.stop:active{box-shadow:0 2px 0 color-mix(in srgb,var(--bad) 70%,#000);}
+.hm-acts button:active{transform:translateY(2px); box-shadow:0 1px 0 rgba(120,90,40,.16);} .hm-acts button.pri{box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 70%,#000);} .hm-acts button.pri:active{box-shadow:0 1px 0 color-mix(in srgb,var(--accent) 70%,#000);}
+.counter .pm button:active,.seg button:active{transform:translateY(1px);}
 </style>
 
 <header class="top">
@@ -2821,6 +2842,7 @@ var I18N_PES={exact:{
 ]};
 /* Pawkur 3.0: Dnes, plán na týden, galerie parkurů, skupiny a trenér, upozornění */
 var I18N_TRI={exact:{
+"Čistý běh!": "Clean run!", "pod SČP": "under SCT", "nad SČP": "over SCT", "Sdílet": "Share", "běh": "run", "běhy": "runs", "běhů": "runs", "čistý": "clean", "čisté": "clean", "čistých": "clean", "den s tréninkem": "training day", "dny s tréninkem": "training days", "dní s tréninkem": "training days",
 "Dnes": "Today", "neděle": "Sunday", "pondělí": "Monday", "úterý": "Tuesday", "středa": "Wednesday", "čtvrtek": "Thursday", "pátek": "Friday", "sobota": "Saturday",
 "dnes": "today", "zítra": "tomorrow", "včera": "yesterday", "poslal/a": "posted by", "stavěl/a": "built by", "rozhodčí": "judge", "od": "since", "(ty)": "(you)",
 "Plán na tento týden": "Plan for this week", "Hotovo": "Done", "cvičení · ještě nezkoušeno": "drill · not tried yet", "Zaběhnout znovu": "Run again", "Otevřít": "Open", "Žebříček": "Leaderboard", "Znovu": "Again",
@@ -2876,9 +2898,11 @@ var I18N_TRI={exact:{
 "cvičení · # běh": "drill · # run", "cvičení · # běhy": "drill · # runs", "cvičení · # běhů": "drill · # runs", "# z # hotovo": "# of # done",
 "# běh ve skupině": "# run in the group", "# běhy ve skupině": "# runs in the group", "# běhů ve skupině": "# runs in the group",
 "# člen": "# member", "# členové": "# members", "# členů": "# members", "#× otevřeno": "opened #×", "Další (#)": "More (#)", "★ # (#)": "★ # (#)", "★ # · # hodnocení": "★ # · # ratings",
-"Zkoušek bylo dost, zkus to za hodinu.": "That's enough tests, try again in an hour.", "server #": "server #"
+"Zkoušek bylo dost, zkus to za hodinu.": "That's enough tests, try again in an hour.", "server #": "server #",
+"#. čistý běh": "clean run no. #"
 },re:[
 ["^Parkur týdne (A[123])$","Course of the week $1"],
+["^Čistý běh na parkuru (.+): (.+) s$","Clean run on course $1: $2 s"],
 ["^Galerie teď nejde načíst \\((.+)\\)\\.$","The gallery can't be loaded right now (@1)."],
 ["^Hodnocení se neuložilo: (.+)$","The rating wasn't saved: @1"],
 ["^Parkur (.+) je uložený v Moje$","Course $1 is saved in Mine"],
@@ -6929,6 +6953,7 @@ function wakeRel(){ var l=WAKE; WAKE=null; if(l&&l!=='?') l.release().catch(func
 document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&Object.keys(WAKE_WHY).length) wakeGet(); });
 function resetRun(){cancelAnimationFrame(RUN.raf); wakeSet('run',false); RUN={t0:0,acc:0,on:false,f:0,r:0,raf:0}; $('manT').value=''; $('disChk').checked=false; if(view==='run') runRender();}
 $('startBtn').onclick=function(){
+  vib(RUN.on?[20,30,20]:35); /* krátké zavibrování při startu i zastavení (3.0) */
   if(RUN.on){RUN.acc+=(performance.now()-RUN.t0)/1000; RUN.on=false; cancelAnimationFrame(RUN.raf); wakeSet('run',false); $('manT').value=fmt2(RUN.acc);}
   else {$('manT').value=''; RUN.acc=0; RUN.sp=null; RUN.t0=performance.now(); RUN.on=true; RUN.raf=requestAnimationFrame(tick); wakeSet('run',true);}
   runRender();
@@ -6957,13 +6982,17 @@ $('saveRun').onclick=function(){
   var dg=curDog();
   var rec={d:Date.now(),t:Math.round(t*100)/100,f:RUN.f,r:RUN.r,tot:e.tot,g:e.g,sct:m.sct,mct:m.mct,len:Math.round(m.len*10)/10,dog:dg?dg.id:null,cls:S.meta.cls};
   if(RUN.sp&&RUN.sp.length===S.route.length) rec.sp=RUN.sp.slice();
+  var firstToday=!activeDays()[localDate()]; /* první trénink dneška: po uložení může vzniknout série (menší oslava) */
   runs.push(rec);
   setMark(S.meta.id,{runs:runs,done:true}); topbar(); resetRun(); runRender(); toast('Běh uložen: '+GNAME[e.g]);
-  /* běh na Parkuru týdne (neupraveném): nabídnout odeslání do žebříčku; tot už obsahuje i trestné body za čas */
+  /* běh na Parkuru týdne (neupraveném): nabídnout odeslání do žebříčku; tot už obsahuje i trestné body za čas.
+     Oslava čistého běhu (3.0) má přednost, odeslání se nabídne po jejím zavření. */
+  var wkGo=null;
   if(e.g!=='DIS'&&!S.meta.dirty){
-    if(S.meta.id===('zahrada-'+weekKey())) wkSend(rec,'Z');
-    else if(['A1','A2','A3'].indexOf(S.meta.cls)>=0){ var wc=weekCourse(S.meta.cls); if(wc&&wc.id===S.meta.id) wkSend(rec,S.meta.cls); }
+    if(S.meta.id===('zahrada-'+weekKey())) wkGo=function(){ wkSend(rec,'Z'); };
+    else if(['A1','A2','A3'].indexOf(S.meta.cls)>=0){ var wc=weekCourse(S.meta.cls); if(wc&&wc.id===S.meta.id) wkGo=function(){ wkSend(rec,S.meta.cls); }; }
   }
+  if(!celebrate(rec,firstToday,wkGo)&&wkGo) wkGo();
   HM.emit('runSaved',{cid:S.meta.id,idx:runs.length-1,run:rec});
 };
 $('hist').onclick=function(e){
@@ -7179,11 +7208,17 @@ function homeRender(){
   if(ch) mo+='<div class="hm-sec"><h3>Výzva dne</h3></div><div class="hm-ch"><div class="ic">🎯</div><div class="tx"><b>Zaběhni čistě pod SČP</b><span>'+esc(ch.c.name)+' · '+ch.c.route.length+' překážek</span></div>'+
     (ch.ok?'<span class="hm-go ok" style="display:grid;place-items:center">Splněno ✓</span>':'<button class="hm-go" data-h="ch">Start</button>')+'</div>';
   var moSum='<summary class="hm-sum"><span class="tx"><b>'+(KACR_OK?'Výzvy, žebříčky a závody':'Výzvy a žebříčky')+'</b><span>'+(KACR_OK?'Parkur týdne, Zahrada týdne, závody poblíž':'Parkur týdne, Zahrada týdne')+(ch?', výzva dne':'')+'</span></span><span class="hm-chev" aria-hidden="true">'+IC.chev+'</span></summary>';
-  /* tento týden (pondělí až neděle) */
-  var t=new Date(); t.setHours(12,0,0,0); var mon=new Date(t); mon.setDate(t.getDate()-((t.getDay()+6)%7)), today=localDate(t), wk='';
-  ['Po','Út','St','Čt','Pá','So','Ne'].forEach(function(n,i){ var x=new Date(mon); x.setDate(mon.getDate()+i); var k=localDate(x);
-    wk+='<div class="'+(k===today?'today':'')+'"><i class="'+(days[k]?'on':'')+'"></i>'+n+'</div>'; });
-  h+='<div class="hm-sec"><h3>Tento týden</h3><button data-h="diary">Deník ›</button></div><div class="hm-week">'+wk+'</div>';
+  /* tento týden (pondělí až neděle): velká čísla (běhy, čisté, dny s tréninkem) a sloupce běhů po dnech (3.0) */
+  var t=new Date(), mon, today, wk='', perDay=[0,0,0,0,0,0,0], keys=[], i7; t.setHours(12,0,0,0); mon=new Date(t); mon.setDate(t.getDate()-((t.getDay()+6)%7)); today=localDate(t);
+  for(i7=0;i7<7;i7++){ var x7=new Date(mon); x7.setDate(mon.getDate()+i7); keys.push(localDate(x7)); }
+  var wkRuns=runs.filter(function(x){ if(!x.d) return false; var j=keys.indexOf(localDate(new Date(x.d))); if(j<0) return false; perDay[j]++; return true; });
+  var wkClean=wkRuns.filter(function(x){ return x.tot===0&&x.g!=='DIS'; }).length, wkDays=keys.filter(function(k){ return days[k]; }).length, mx=Math.max.apply(null,perDay)||1;
+  ['Po','Út','St','Čt','Pá','So','Ne'].forEach(function(n,i){ var k=keys[i], on=!!days[k], hgt=perDay[i]?Math.round(34+perDay[i]/mx*66):on?34:12;
+    wk+='<div class="'+(k===today?'today':'')+'"><i class="'+(on?'on':'')+'" style="height:'+hgt+'%"'+(perDay[i]?' title="'+czN(perDay[i],'běh','běhy','běhů')+'"':'')+'></i>'+n+'</div>'; });
+  var wd=function(n,a,b,c){ return czN(n,a,b,c).replace(/^\d+ /,''); };
+  h+='<div class="hm-sec"><h3>Tento týden</h3><button data-h="diary">Deník ›</button></div>'+
+    '<div class="wk-nums"><div><b>'+wkRuns.length+'</b><small>'+wd(wkRuns.length,'běh','běhy','běhů')+'</small></div><div><b>'+wkClean+'</b><small>'+wd(wkClean,'čistý','čisté','čistých')+'</small></div><div><b>'+wkDays+'</b><small>'+wd(wkDays,'den s tréninkem','dny s tréninkem','dní s tréninkem')+'</small></div></div>'+
+    '<div class="hm-week">'+wk+'</div>';
   if(!isHoopS()) h+='<details class="hm-more" id="hmMore"'+(lsGet(HMMORE,0)?' open':'')+'>'+moSum+mo+'</details>'; /* týdenní výzvy a liga jsou agility */
   $('v-home').innerHTML=h;
   if($('hmMore')) $('hmMore').ontoggle=function(){ lsSet(HMMORE,this.open?1:0); };
@@ -9553,10 +9588,12 @@ function dogProfHTML(x,meta){
 }
 function promoHTML(){
   var ps=promoState(curDog()), bar=function(n,need){ return '<div class="bar"><i style="width:'+Math.round(Math.min(n,need)/need*100)+'%"></i></div>'; };
+  /* cesta k postupu (3.0): řada kroužků, jeden za zkoušku, splněné zaškrtnuté, na konci cíl s třídou; u víc než 12 zkoušek zůstává pruh */
+  var path=function(n,need,to){ if(need>12) return bar(n,need); var h='<div class="ppath" aria-hidden="true">'; for(var i=0;i<need;i++) h+='<i class="'+(i<n?'on':'')+'">'+(i<n?'✓':'')+'</i>'; return h+'<b translate="no">'+esc(to)+'</b></div>'; };
   var h=ps.steps.map(function(s){
-    var st=s.st, h='<div class="prog"><b>'+'Postup '+clsL(st.from)+' → '+clsL(st.to)+': '+st.l+'</b>'+bar(s.n,st.need)+
+    var st=s.st, h='<div class="prog"><b>'+'Postup '+clsL(st.from)+' → '+clsL(st.to)+': '+st.l+'</b>'+path(s.n,st.need,clsL(st.to))+
       '<span class="hint">'+s.n+' z '+st.need+' zkoušek'+(st.judges?' · rozhodčích: '+s.jn+' (potřeba aspoň '+st.judges+')':'')+'</span>';
-    if(s.jump) h+=bar(s.jump.n,s.jump.need)+'<span class="hint">Jumping: '+s.jump.n+' z '+s.jump.need+'</span>';
+    if(s.jump) h+=path(s.jump.n,s.jump.need,'J')+'<span class="hint">Jumping: '+s.jump.n+' z '+s.jump.need+'</span>';
     if(s.alt) h+='<span class="hint">Nebo: '+st.alt.l+' ('+s.alt.n+' z '+st.alt.need+')</span>';
     if(s.done) h+='<span class="hint">podmínka splněna</span>';
     if(s.nk) h+='<span class="hint">Z toho z kacr.info: '+s.nk+'.'+(s.noJudge?' U některých ještě chybí rozhodčí, doplní se po načtení podrobností.':'')+'</span>';
@@ -12572,6 +12609,46 @@ function groupPostSheet(gid){
 /* start: odběr upozornění, parkury skupin a případný odkaz na skupinu (až po novinkách nebo průvodci) */
 setTimeout(function(){ pushSync(); groupTodayLoad(false); },2500);
 setTimeout(function(){ if(groupPendAsk()) return; var n=0, t=setInterval(function(){ if(groupPendAsk()||++n>10) clearInterval(t); },3000); },1500);
+
+/* ---------- Pawkur 3.0, vzhled 5–8: oslava čistého běhu (konfety, tvář psa, čas pod SČP, Sdílet; menší za sérii), vibrace ---------- */
+function vib(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(e){} }
+/* konfety na plátně v okně: pár vteřin padajících lístků v barvách aplikace; při omezení pohybu nic */
+function confetti(cv,ms){
+  if(!cv||!cv.getContext) return; if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var W=cv.width=cv.offsetWidth||320, H=cv.height=cv.offsetHeight||240, x=cv.getContext('2d'), C=['#2f9e62','#e5a23a','#c6f432','#3f7fc1','#e5484d','#f2c94c'], P=[], i, t0=null, last=null;
+  for(i=0;i<70;i++) P.push({x:Math.random()*W,y:-20-Math.random()*H*.7,w:6+Math.random()*6,h:8+Math.random()*8,c:C[i%C.length],vy:70+Math.random()*90,vx:(Math.random()-.5)*50,a:Math.random()*6.28,va:(Math.random()-.5)*6});
+  function step(ts){ if(t0==null) t0=ts; var dt=Math.min(.05,(ts-(last==null?ts:last))/1000); last=ts; var el=(ts-t0)/1000, fade=Math.max(0,Math.min(1,(ms/1000-el)/.6));
+    x.clearRect(0,0,W,H);
+    P.forEach(function(p){ p.y+=p.vy*dt; p.x+=p.vx*dt+Math.sin(el*3+p.a)*10*dt; p.a+=p.va*dt;
+      x.save(); x.translate(p.x,p.y); x.rotate(p.a); x.globalAlpha=fade; x.fillStyle=p.c; x.fillRect(-p.w/2,-p.h/2,p.w,p.h); x.restore(); });
+    if(el*1000<ms&&document.body.contains(cv)) requestAnimationFrame(step); else x.clearRect(0,0,W,H); }
+  requestAnimationFrame(step);
+}
+/* čistý běh: okno s konfetami, tváří psa, časem a rozdílem proti SČP, Sdílet obrázek; bez čistého běhu jen menší oslava za novou sérii dní (hláška).
+   Vrací true, když se okno otevřelo; co má přijít po něm (odeslání do žebříčku parkuru týdne) dostane „after“ a zavolá se po zavření. */
+function celebrate(rec,firstToday,after){
+  var d=curDog(), st=streak(activeDays()), clean=rec.g!=='DIS'&&rec.tot===0;
+  var ser=firstToday&&st>=2?'Trénujete '+st+(st<5?' dny':' dní')+' v řadě. Jen tak dál!':'';
+  if(!clean){ if(ser){ toast('🔥 '+ser,3500); vib([20,40,20]); } return false; }
+  var under=rec.sct>0?Math.round((rec.sct-rec.t)*100)/100:null, nClean=allRuns(d&&d.id).filter(function(x){ return x.g!=='DIS'&&x.tot===0; }).length;
+  var sh={garden:false,kicker:'Čistý běh',title:S.meta.name,course:{W:S.W,H:S.H,obs:S.obs,route:S.route,turns:S.turns},sub:(S.meta.cls||'')+' · '+fmt(rec.len)+' m · '+nPrek(S.route.length),
+    stats:[[fmt2(rec.t)+' s','čas']].concat(under!=null?[[(under>=0?'−':'+')+fmt2(Math.abs(under))+' s',under>=0?'pod SČP':'nad SČP']]:[]),
+    who:(d?d.name:'')+(nClean>1?' · '+nClean+'. čistý běh':''),line:ser,text:'Čistý běh na parkuru '+S.meta.name+': '+fmt2(rec.t)+' s',file:'cisty-beh-'+localDate()};
+  var fin=function(){ if(after){ var f=after; after=null; setTimeout(f,30); } };
+  var hs=function(e){ if(e.target!==$('scrim')) return; $('scrim').removeEventListener('click',hs); fin(); }; /* zavření klepnutím vedle okna */
+  $('scrim').addEventListener('click',hs);
+  openSheet('<div class="cele"><canvas class="cele-cv" aria-hidden="true"></canvas><div class="cele-dog">'+dogAva(d)+'</div><h3>Čistý běh!</h3>'+
+    '<p class="cele-sub"><span translate="no">'+esc(d?d.name+' · ':'')+esc(S.meta.name)+'</span>'+(nClean>1?' · <span>'+nClean+'. čistý běh</span>':'')+'</p>'+
+    '<div class="cele-nums"><div><b>'+fmt2(rec.t)+' s</b><span>čas</span></div>'+(under!=null?'<div><b>'+(under>=0?'−':'+')+fmt2(Math.abs(under))+' s</b><span>'+(under>=0?'pod SČP':'nad SČP')+'</span></div>':'')+'</div>'+
+    (ser?'<p class="cele-ser">🔥 '+ser+'</p>':'')+
+    '<div class="acts"><button class="btn" data-a="x">Zavřít</button><button class="btn primary" data-a="share">Sdílet</button></div></div>',
+    function(e){ var b=e.target.closest('[data-a]'); if(!b) return;
+      if(b.getAttribute('data-a')==='share'){ shareImage(sh); return; }
+      $('scrim').removeEventListener('click',hs); closeSheet(); fin(); });
+  $('toast').hidden=true; /* hláška „Běh uložen“ by překrývala okno */
+  confetti($('sheet').querySelector('.cele-cv'),2800); vib([40,60,40,60,90]);
+  return true;
+}
 
 /* ---------- HandlerMap 2.0: nastavení (jazyk, vzhled), průvodce prvním spuštěním, novinky ---------- */
 (function(){ var bm=$('brandMark'); if(bm) bm.innerHTML=IC.brand; })();

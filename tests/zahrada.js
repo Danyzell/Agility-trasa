@@ -21,6 +21,8 @@ module.exports = async function ({ browser, base }) {
     const t = await ev(() => Math.max(5, Math.round(curM().sct * 0.9 * 100) / 100));
     await page.fill('#manT', String(t).replace('.', ','));
     await page.evaluate(() => $('saveRun').scrollIntoView({ block: 'center' })); await page.click('#saveRun'); await page.waitForTimeout(250);
+    /* čistý běh nejdřív oslaví (3.0); nabídka žebříčku přijde po zavření oslavy */
+    if (await ev(() => !!$('sheet').querySelector('.cele'))) { await page.click('#sheet .cele [data-a="x"]'); await page.waitForTimeout(250); }
     return t;
   };
 
