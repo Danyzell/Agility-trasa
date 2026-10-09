@@ -14465,7 +14465,7 @@ catSync();
       function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
   };
   window.pwaInstUI=function(){
-    var inst=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true||IS_APK;
+    var inst=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true||IS_APK||IS_TWA;
     var el=document.getElementById('pwaInst');
     var ios=/iP(hone|ad|od)/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
     if(el){
@@ -14502,7 +14502,7 @@ catSync();
   var NUDK='agility-instnudge-v1';
   function instNudge(){
     if(lsGet(NUDK,0)||INAPP||instHid()) return;
-    if((window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true||IS_APK) return;
+    if((window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true||IS_APK||IS_TWA) return;
     var ios=/iP(hone|ad|od)/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1), iosSaf=ios&&!/CriOS|FxiOS|EdgiOS/.test(UA);
     if(!ev&&!iosSaf&&!ANDR) return; /* počítač bez nabídky Chromu: nic */
     setTimeout(function(){

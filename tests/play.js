@@ -36,6 +36,8 @@ module.exports = async function ({ browser, base }) {
     ok(r.st === 'Teď máš všechno zdarma.' && r.row === '' && !r.ask, 'v aplikaci z Play zůstala zmínka o nákupu: ' + JSON.stringify(r));
     await ev(() => show('home')); await page.waitForTimeout(150);
     ok(!(await page.isVisible('[data-h="sup"]')) && !(await page.isVisible('#supBtn')), 'na Domů zůstalo Podpořit');
+    await ev(() => { if (window.pwaInstUI) pwaInstUI(); });
+    ok(!(await page.isVisible('#pwaInst')), 'aplikace z Play nabízí instalaci aplikace');
     await ev(() => { moreTab = ''; show('more'); }); await page.waitForTimeout(150);
     const more = await page.textContent('#moreBody');
     ok(!/Podpořit|buy\.stripe|Platba se připravuje/.test(more), 've Více zůstala platba: ' + more.slice(0, 200));
