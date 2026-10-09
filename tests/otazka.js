@@ -8,6 +8,8 @@ const { phone, offline } = require('./helpers');
 module.exports = async function ({ browser, base }) {
   /* pevné časové pásmo: anglický telefon v Česku by měl česká pravidla a na Domů navíc závody z kacr.info */
   const T = await phone(browser, { timezoneId: 'Europe/London' }); const { page, ok, ev } = T;
+  /* tahle sada počítá návštěvy sama: výchozí „třetí návštěvu“ z helpers (označenou test:1) při každém otevření zahodí */
+  await T.ctx.addInitScript(() => { try { const v = JSON.parse(localStorage.getItem('agility-visits-v1') || 'null'); if (v && v.test) localStorage.removeItem('agility-visits-v1'); } catch (e) {} });
   await offline(T.ctx, { get_catalog: { version: 0 } });
   /* funkce feedback: odpověď si krok nastaví (stav a tělo, nebo 'abort' = přerušené spojení); hold pozdrží odpověď, dokud ji test nepustí */
   const OK = { status: 200, body: { ok: true, mailed: false } }, sent = []; let reply = OK, hold = null;
@@ -62,7 +64,7 @@ module.exports = async function ({ browser, base }) {
     ok(c && !c.ok && !c.busy && c.chips === 7 && /Co ti v Pawkuru chybí\?/.test(c.txt) && /Víc parkurů/.test(c.txt) && /Něco jiného…/.test(c.txt), 'karta s otázkou: ' + JSON.stringify(c));
     ok(await page.isVisible('#hmAsk [data-ask="parkury"]') && await page.isVisible('#hmAsk [data-h="askx"]'), 'karta nemá viditelné volby nebo křížek');
     /* pod hlavičkou a dnem závodů, před Parkury pro tebe */
-    ok(await ev(() => { const c = $('hmAsk'), sec = [...document.querySelectorAll('#v-home > .hm-sec')].filter(x => /Parkury pro tebe/.test(x.textContent))[0]; /* od 3.0 je první sekce Dnes */ return !!sec && !!(c.compareDocumentPosition(sec) & 4) && !!($('hmDay').compareDocumentPosition(c) & 4); }), 'karta má být mezi dnem závodů a Parkury pro tebe');
+    ok(await ev(() => { const c = $('hmAsk'), sec = [...document.querySelectorAll('#v-home > .hm-sec')].filter(x => /Parkury pro tebe/.test(x.textContent))[0]; /* od 3.0 je první sekce Dnes */ return !!sec && !!(c.compareDocumentPosition(sec) & 4) && !!(($('hmDay') || document.querySelector('#v-home .hm-top')).compareDocumentPosition(c) & 4) /* 3.1: napoprvé je Dnes prázdné, tak aspoň pod hlavičkou */; }), 'karta má být mezi dnem závodů a Parkury pro tebe');
     ok(sent.length === 0, 'samotné zobrazení karty nemá nic posílat');
   });
 

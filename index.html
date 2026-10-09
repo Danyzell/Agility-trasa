@@ -5737,7 +5737,7 @@ if(typeof S.meta.id!=='string') S.meta.id=null;
 var BG=lsGet('agility-bg-v1',null), panel=null, QZ=null, hpDraw=null, MKT=null; /* MKT: vybraný druh značky křížení (front/rear/blind/warn) */
 var SET=lsGet(SETK,{spd:{A1:3.0,A2:3.5,A3:4.0}});
 var MK=lsGet(MKK,{});
-var mode='view', tool='jump', sel=null, zoom=(window.innerWidth<600?2:1), drag=null, tap=null, view='plan';
+var mode='view', tool='jump', sel=null, zoom=(window.innerWidth<600?1.5:1), drag=null, tap=null, view='plan';
 /* stavba 4: výběr víc překážek (MSEL), porovnání s jiným parkurem (CMP: {c, name}) a vzhled jen pro export (EXP: plánek rozhodčího, souřadnice, bez délek úseků) */
 var MSEL={on:false,ids:[]}, CMP=null, CMP_NEXT=null, EXP={judge:false,coords:false,nolegs:false};
 var svg=$('field');
@@ -6140,6 +6140,14 @@ function render(){
     : '<li class="empty">Zatím žádná trasa. Přepni na Trasa a klepej na překážky v pořadí.</li>';
   if(panel==='side'){var n=sideChanges().length; $('sideInfo').textContent='Změny strany: '+n+(n<2?' (FCI chce aspoň 2)':'');}
 }
+/* přiblížení podle režimu na telefonu (3.1): Prohlížet 150 % (skoro celý parkur, čísla jdou číst; 200 % ukázalo 5 z 19 překážek),
+   Stavba a Trasa 200 %. Výchozí hodnota se přepne jen tehdy, když je přiblížení ještě výchozí; co si člověk nastavil sám, zůstává
+   i po přepnutí režimu. Na šířku a na celou obrazovku se přiblížení řídí jinak (landSet). */
+var ZOOM_D={view:1.5,build:2,route:2};
+function zoomFor(m,from){
+  from=from||mode; if(innerWidth>=600||isLand()||ZOOM_FULL!=null) return;
+  if(ZOOM_D[m]&&zoom===ZOOM_D[from]) zoom=ZOOM_D[m];
+}
 function ui(){
   var special=panel==='side'||panel==='quiz';
   if(mode==='view'&&!S.obs.length) mode='build'; /* prázdná plocha: rovnou stavět */
@@ -6286,9 +6294,9 @@ $('palette').addEventListener('click',function(e){
   var b=e.target.closest('.ob-btn'); if(!b) return;
   var t=b.getAttribute('data-type'); tool=(tool===t)?null:t; ui();
 });
-$('mView').onclick=function(){mode='view'; sel=null; ui(); render();};
-$('mBuild').onclick=function(){mode='build'; ui(); render();};
-$('mRoute').onclick=function(){mode='route'; sel=null; ui(); render();};
+$('mView').onclick=function(){zoomFor('view'); mode='view'; sel=null; ui(); render();};
+$('mBuild').onclick=function(){zoomFor('build'); mode='build'; ui(); render();};
+$('mRoute').onclick=function(){zoomFor('route'); mode='route'; sel=null; ui(); render();};
 /* přiblížení tlačítky: střed toho, co je na ploše vidět, zůstane uprostřed (dřív se plocha přiblížila k levému hornímu rohu) */
 function zoomBy(d){
   var wr=$('wrap'), w0=svg.clientWidth||1, h0=svg.clientHeight||1, fx=(wr.scrollLeft+wr.clientWidth/2)/w0, fy=(wr.scrollTop+wr.clientHeight/2)/h0;
@@ -7023,7 +7031,7 @@ function findCourse(id){
 }
 function loadCourse(c,quiet){
   function go(){
-    planReset(); bgClear();
+    var pm=mode; planReset(); bgClear(); zoomFor('view',pm); /* otevřený parkur se prohlíží na 150 % (telefon) */
     S.W=c.W||40; S.H=c.H||20; setSizeSel();
     S.obs=c.obs.map(function(o){var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.type==='tunnel'&&o.bend) n.bend=o.bend; if(o.type==='tunnel'&&o.len) n.len=o.len; if(o.type==='jump'&&JV[o.v]) n.v=o.v; if(o.lock) n.lock=1; return n;}); S.route=c.route.slice(); sel=null;
     S.sides=(c.sides||[]).slice(); S.turns=(c.turns||[]).slice(); S.hp=(c.hp||[]).map(function(p){return p.slice();}); S.marks=(c.marks||[]).map(function(m){return {t:m.t,x:m.x,y:m.y};}); if(panel==='quiz'){quizStop(); panel=null;}

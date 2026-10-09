@@ -209,6 +209,20 @@ module.exports = async function ({ browser, base }) {
     F.errs.forEach(x => T.errs.push(x)); await F.ctx.close();
   });
 
+  await step('Plán na telefonu: Prohlížet 150 %, Stavba a Trasa 200 %, vlastní přiblížení zůstává', async () => {
+    await fresh('#lib'); await ev(() => { libTab = 'A2'; libRender(); }); await w(100);
+    await page.click('#cards .pick >> nth=1'); await w(300);
+    const z = () => ev(() => ({ mode, zoom, lbl: $('zLbl').textContent }));
+    let r = await z(); ok(r.mode === 'view' && r.zoom === 1.5 && r.lbl === '150 %', 'po otevření parkuru Prohlížet na 150 %: ' + JSON.stringify(r));
+    await page.click('#mBuild'); await w(100); r = await z(); ok(r.mode === 'build' && r.zoom === 2, 'Stavba na 200 %: ' + JSON.stringify(r));
+    await page.click('#mView'); await w(100); r = await z(); ok(r.mode === 'view' && r.zoom === 1.5, 'zpět v Prohlížet 150 %: ' + JSON.stringify(r));
+    await page.click('#mBuild'); await page.click('#zIn'); await w(100); r = await z(); ok(r.zoom === 2.5, 'přiblížení ve Stavbě: ' + JSON.stringify(r));
+    await page.click('#mRoute'); await w(100); r = await z(); ok(r.mode === 'route' && r.zoom === 2.5, 'vlastní přiblížení zůstává i v Trase: ' + JSON.stringify(r));
+    await page.click('#mView'); await w(100); r = await z(); ok(r.mode === 'view' && r.zoom === 2.5, 'vlastní přiblížení zůstává i v Prohlížet: ' + JSON.stringify(r));
+    await page.click('#zOut'); await page.click('#zOut'); await page.click('#zOut'); await page.click('#mBuild'); await w(100); r = await z(); ok(r.mode === 'build' && r.zoom === 1, 'oddálení v Prohlížet (100 %) zůstane i ve Stavbě: ' + JSON.stringify(r));
+    await ev(() => { zoom = 2; ui(); }); await page.click('#mView'); await w(100); r = await z(); ok(r.zoom === 1.5, 'z výchozích 200 % ve Stavbě zpět na výchozích 150 %: ' + JSON.stringify(r));
+  });
+
   await T.ctx.close();
   return T.errs;
 };
