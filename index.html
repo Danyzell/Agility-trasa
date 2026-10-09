@@ -3677,6 +3677,10 @@ i18nAdd({
 "Uložit běh": "Save run", "čistý běh": "clean run", "Parkur týdne": "Course of the week", "Ulož si běhy i na další telefon": "Keep your runs on your other phone too", "Po přihlášení přes Google budeš mít parkury, psy a běhy na každém zařízení.": "After signing in with Google you will have your courses, dogs and runs on every device.",
 "Už máš Pawkur na jiném telefonu?": "Already using Pawkur on another phone?", "Přihlásit se přes Google": "Sign in with Google", "a data se přenesou.": "and your data will carry over.",
 "Otevřeno ve Facebooku": "Opened inside Facebook", "Otevřeno v Instagramu": "Opened inside Instagram", "Otevřeno v Messengeru": "Opened inside Messenger",
+"Parkur se uložil jen tady, ve vestavěném prohlížeči. V aplikaci Pawkur ho zatím nemáš.": "The course is saved only here, in this built-in browser. It is not in your Pawkur app yet.",
+"Otevři odkaz v Chromu, parkur se tam načte sám.": "Open the link in Chrome and the course loads there by itself.",
+"Klepni na ⋯ vpravo nahoře, zvol Otevřít v Safari a parkur se tam načte sám.": "Tap ⋯ at the top right, choose Open in Safari and the course loads there by itself.",
+"Nebo v aplikaci Pawkur otevři Plán → Sdílet a zadej kód": "Or in the Pawkur app open Plan → Share and enter the code",
 "Tady jde Pawkur jen prohlížet. Ikona na ploše a upozornění jdou z Chromu.": "Here you can only browse Pawkur. The home screen icon and notifications need Chrome.",
 "Tady jde Pawkur jen prohlížet. Ikona na ploše a upozornění jdou ze Safari: klepni na ⋯ vpravo nahoře a zvol Otevřít v Safari.": "Here you can only browse Pawkur. The home screen icon and notifications need Safari: tap ⋯ at the top right and choose Open in Safari.",
 "Přenést data do Safari": "Move my data to Safari", "Data jsou připravená": "Your data is ready", "Teď klepni na ⋯ vpravo nahoře a zvol Otevřít v Safari. Parkury, pes i běhy se tam přenesou samy.": "Now tap ⋯ at the top right and choose Open in Safari. Your courses, dog and runs will carry over by themselves.",
@@ -4408,7 +4412,7 @@ i18nAdd({
 "A course with code @1 doesn't exist."
 ],
 [
-"^Parkur (.+?) uložen do Moje$",
+"^Parkur (?!.* z odkazu uložen do Moje$)(.+?) uložen do Moje$",
 "Course @1 saved to Mine"
 ],
 [
@@ -8208,6 +8212,9 @@ HM.open=function(id,arg){ if(!HM.screens[id]) return; moreOpen('mod:'+id,arg); }
 var NATIVE=(typeof window.AgilityNative==='object'&&window.AgilityNative)?window.AgilityNative:null;
 var IS_APK=!!NATIVE||location.protocol==='file:';
 var APK_LITE=IS_APK&&!NATIVE; /* aplikace pro Android bez přístupu k souborům telefonu */
+/* vestavěný prohlížeč Facebooku, Messengeru, Instagramu…: vlastní úložiště, aplikace v něm nejde nainstalovat */
+var IAB_RE=/FBAN|FBAV|FB_IAB|FBIOS|Instagram|Messenger|BytedanceWebview|musical_ly|LinkedInApp|Snapchat|Line\/|; wv\)/i;
+function inAppBrowser(){ return IAB_RE.test(navigator.userAgent||'')&&!IS_APK; }
 var IS_PWA=!!window.AGILITY_PWA; /* aplikace nainstalovaná z webu (GitHub Pages): soubory i server */
 var IS_SRV=IS_APK||IS_PWA;
 var APP_URL='https://pawkur.cz/'; /* hlavní adresa aplikace (stará github.io běží dál) */
@@ -8671,7 +8678,10 @@ function codeLoad(code){
   return codeImport(code).then(function(rec){ loadCourse(rec,true); toast('Parkur '+rec.name+' z odkazu uložen do Moje'); return rec; },
     function(err){ if(err&&err.silent) return null; toast(err&&err.soft?err.message:'Parkur z odkazu se nepodařilo načíst: '+err.message,4000); return null; });
 }
-(function(){ var m=location.search.match(/[?&]kod=([A-Za-z0-9]{6})(?![A-Za-z0-9])/); if(!m) return; try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){} var code=m[1].toUpperCase(); setTimeout(function(){ codeLoad(code); },700); })();
+/* ve vestavěném prohlížeči (Messenger, Facebook…) kód v adrese zůstane: Otevřít v Chromu nebo v Safari ho tak předá dál.
+   Dřív se hned smazal a do Chromu přišla adresa bez parkuru. Po načtení okno, že parkur je jen tady a jak ho dostat do aplikace. */
+(function(){ var m=location.search.match(/[?&]kod=([A-Za-z0-9]{6})(?![A-Za-z0-9])/); if(!m) return; var iab=inAppBrowser(); if(!iab){ try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){} } var code=m[1].toUpperCase();
+  setTimeout(function(){ codeLoad(code).then(function(rec){ if(rec&&iab&&window.iabCodeSheet) iabCodeSheet(code); }); },700); })();
 
 
 /* ---------- animace techniky ---------- */
@@ -13732,7 +13742,7 @@ function groupJoin(code){
     .then(null,function(err){ toast('Přidat se nepovedlo: '+err.message,4000); throw err; });
 }
 /* odkaz ?skupina=KÓD (od trenéra): kód se pamatuje i přes přihlášení Googlem a pak se nabídne přidání */
-(function(){ var m=location.search.match(/[?&]skupina=([A-Za-z0-9]{6})\b/); if(!m) return; try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){} lsSet(GJOINK,m[1].toUpperCase()); })();
+(function(){ var m=location.search.match(/[?&]skupina=([A-Za-z0-9]{6})\b/); if(!m) return; if(!inAppBrowser()){ try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){} } lsSet(GJOINK,m[1].toUpperCase()); })();
 /* náhled skupiny z odkazu bez přihlášení (3.1): název, počet členů a parkury skupiny; parkur jde otevřít hned,
    přihlášení až pro přidání (žebříček, tréninky). Bez SQL na serveru (404) se ukáže původní okno jen s kódem. */
 var GPEEK=null, GPEEK_SHOWN=false;
@@ -14444,7 +14454,7 @@ catSync();
   /* Instalovat: Chrome nabídne vlastní okno (tlačítko na Domů a v O aplikaci); jinde (iPhone, Samsung Internet, Firefox,
      Chrome po odmítnutém okně) karta s návodem pro daný prohlížeč. Zavřená karta se vrátí po 14 dnech. */
   var UA=navigator.userAgent||'', ANDR=/Android/i.test(UA);
-  var INAPP=/FBAN|FBAV|FB_IAB|FBIOS|Instagram|Messenger|BytedanceWebview|musical_ly|LinkedInApp|Snapchat|Line\/|; wv\)/i.test(UA)&&!window.IS_APK;
+  var INAPP=inAppBrowser();
   function instSteps(){
     if(/SamsungBrowser/.test(UA)) return ['Ťukni na ikonu se šipkou dolů v adresním řádku, nebo na ≡ dole vpravo.','Vyber Přidat stránku na (Přidat stránku do).','Zvol Domovská obrazovka a potvrď Přidat.'];
     if(/Firefox/.test(UA)) return ['Ťukni na ⋮ (vpravo nahoře nebo dole).','Vyber Přidat na domovskou obrazovku (nebo Instalovat).','Potvrď Přidat.'];
@@ -14538,11 +14548,23 @@ catSync();
     };
     window.iabUI();
     /* Android: poprvé se odkaz sám přepne do Chromu (tam jde aplikace nainstalovat). Jen jednou na zařízení: bez Chromu
-       se vrátí sem (browser_fallback_url) a zůstane pruh s tlačítkem. Automatické testy jen s ?iabauto. */
-    if(andr&&!lsGet('agility-iabgo-v1',0)&&(!navigator.webdriver||/[?&]iabauto\b/.test(location.search))){
-      lsSet('agility-iabgo-v1',1);
+       se vrátí sem (browser_fallback_url) a zůstane pruh s tlačítkem. Odkaz s kódem parkuru nebo skupiny se přepne
+       i později, jednou pro každý kód (bez Chromu se vrátí se stejným kódem a podruhé už ne). Automatické testy jen s ?iabauto. */
+    var linkC=(location.search.match(/[?&](?:kod|skupina)=([A-Za-z0-9]{6})/)||[])[1]||'';
+    if(linkC) linkC=linkC.toUpperCase();
+    if(andr&&(!lsGet('agility-iabgo-v1',0)||(linkC&&lsGet('agility-iabgo-kod','')!==linkC))&&(!navigator.webdriver||/[?&]iabauto\b/.test(location.search))){
+      lsSet('agility-iabgo-v1',1); if(linkC) lsSet('agility-iabgo-kod',linkC);
       setTimeout(function(){ (window.IAB_OPEN||function(u){ location.href=u; })(intent); },400);
     }
+    /* parkur z odkazu otevřeného tady: je uložený jen ve vestavěném prohlížeči, ne v Chromu ani v aplikaci na ploše */
+    window.iabCodeSheet=function(code){
+      var t=$('toast'); if(t) t.hidden=true; /* „uloženo do Moje“ by překrylo text okna, okno říká víc */
+      openSheet('<h3>'+T(iabApp)+'</h3><p>'+T('Parkur se uložil jen tady, ve vestavěném prohlížeči. V aplikaci Pawkur ho zatím nemáš.')+'</p>'+
+        '<p>'+T(andr?'Otevři odkaz v Chromu, parkur se tam načte sám.':'Klepni na ⋯ vpravo nahoře, zvol Otevřít v Safari a parkur se tam načte sám.')+'</p>'+
+        '<p class="hint">'+T('Nebo v aplikaci Pawkur otevři Plán → Sdílet a zadej kód')+' <b translate="no">'+esc(code)+'</b>.</p>'+
+        '<div class="acts"><button class="btn" data-a="x">'+T('Zavřít')+'</button>'+(andr?'<a class="btn primary" id="iabCodeGo" style="text-decoration:none" href="'+esc(intent)+'">'+T('Otevřít v Chromu')+'</a>':'')+'</div>',
+        function(e){ if(e.target.closest('[data-a="x"]')) closeSheet(); });
+    };
   }
   /* přesun na novou adresu pawkur.cz: stará adresa (github.io) nabídne přenos dat (záloha do cloudu pod klíčem), nová adresa
      si zálohu podle ?obnova=KLÍČ sama načte. Obě adresy běží dál, nikomu nic nezmizí. Testy: ?oldhost */

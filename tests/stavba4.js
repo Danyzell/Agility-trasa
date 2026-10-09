@@ -196,6 +196,35 @@ module.exports = async function ({ browser, base }) {
     await ev(() => closeSheet());
   });
 
+  await step('odkaz ?kod= v Messengeru: kód zůstane v adrese, do Chromu se předá, okno v Plánu', async () => {
+    /* Messenger otevírá odkazy ve vlastním prohlížeči s vlastním úložištěm: dřív se kód z adresy hned smazal a do Chromu
+       přišlo jen pawkur.cz bez parkuru; karta „Otevřeno v Messengeru“ byla jen na Domů a odkaz s kódem otevře Plán */
+    const course = [{ code: 'M3SS3N', name: 'Parkur z Messengeru', cls: 'A2', author: '', data: { W: 40, H: 20, obs: [J(1, 5, 10), J(2, 15, 10), J(3, 25, 10)], route: [1, 2, 3] } }];
+    const run = async (ua, q) => {
+      const c = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, serviceWorkers: 'block', userAgent: ua });
+      await offline(c, { get_catalog: { version: 0 }, get_course: () => course });
+      /* zařízení už jednou do Chromu přepnuté (jako u britského rozhodčího): nový odkaz s kódem se má přepnout znovu, ale jen jednou */
+      await c.addInitScript(() => { window.__iab = []; window.IAB_OPEN = u => window.__iab.push(u); try { localStorage.setItem('agility-iabgo-v1', '1'); if (localStorage.getItem('agility-onb-v1') == null) localStorage.setItem('agility-onb-v1', JSON.stringify({ done: 1, v: 2 })); } catch (e) {} });
+      const p = await c.newPage(), errs = [], out = []; p.on('pageerror', e => errs.push(e.message));
+      for (let i = 0; i < 2; i++) {
+        await p.goto('about:blank'); await p.goto(base + '/' + q + '#home'); await p.waitForTimeout(1600);
+        out.push(await p.evaluate(() => ({ url: location.search, auto: window.__iab.slice(), my: myDB().filter(x => x.src === 'kód M3SS3N').length, view,
+          sheet: $('scrim').hidden ? '' : $('sheet').textContent, go: ($('iabCodeGo') || {}).href || '' })));
+      }
+      await c.close(); return { out, errs };
+    };
+    const a = await run('Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36 [FB_IAB/MESSENGER;FBAV/480.0.0.0;]', '?kod=M3SS3N&iabauto');
+    const [a1, a2] = a.out;
+    ok(/kod=M3SS3N/.test(a1.url) && a1.my === 1 && a1.view === 'plan', 'Android Messenger: parkur se má uložit a kód zůstat v adrese: ' + JSON.stringify(a1));
+    ok(a1.auto.length === 1 && /^intent:\/\/[^#]+\/\?kod=M3SS3N&iabauto#Intent;scheme=https;package=com\.android\.chrome;/.test(a1.auto[0]) && a2.auto.length === 0, 'Android Messenger: přepnutí do Chromu s kódem jednou: ' + JSON.stringify([a1.auto, a2.auto]));
+    ok(/Otevřeno v Messengeru/.test(a1.sheet) && /Otevři odkaz v Chromu/.test(a1.sheet) && /M3SS3N/.test(a1.sheet) && /^intent:\/\/.*kod=M3SS3N/.test(a1.go), 'Android Messenger: okno s Otevřít v Chromu: ' + JSON.stringify([a1.sheet.slice(0, 160), a1.go]));
+    ok(a2.my === 1 && /Otevřeno v Messengeru/.test(a2.sheet), 'Android Messenger podruhé: parkur jen jednou a okno znovu: ' + JSON.stringify(a2).slice(0, 200));
+    const i = await run('Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 [FBAN/MessengerForiOS;FBAV/480.0;FBDV/iPhone15,2]', '?kod=M3SS3N');
+    const i1 = i.out[0];
+    ok(/kod=M3SS3N/.test(i1.url) && i1.my === 1 && !i1.auto.length && /Otevřít v Safari/.test(i1.sheet) && !i1.go, 'iPhone Messenger: kód v adrese a návod na Safari: ' + JSON.stringify(i1).slice(0, 260));
+    ok(!a.errs.length && !i.errs.length, 'chyby stránky: ' + a.errs.concat(i.errs).join(' | '));
+  });
+
   await step('porovnání dvou parkurů: šedý parkur, co přestavět, prohození, export bez něj', async () => {
     await fresh(); await ev(() => mySave([]));
     await ev(() => { const L = myDB(); L.push({ id: 'my-cmp1', name: 'Druhý parkur', cls: 'A2', author: '', W: 40, H: 20, obs: [{ id: 1, type: 'jump', x: 5, y: 10, rot: 0 }, { id: 2, type: 'jump', x: 15, y: 12, rot: 0 }, { id: 3, type: 'tunnel', x: 25, y: 10, rot: 0, len: 5 }, { id: 4, type: 'jump', x: 30, y: 15, rot: 0 }], route: [1, 2, 3, 4], sides: [], turns: [] }); mySave(L); });
@@ -282,6 +311,10 @@ module.exports = async function ({ browser, base }) {
       'Plánek jako od rozhodčího: čísla v kroužcích, tenká trasa, START zeleně a CÍL červeně.', 'CÍL', 'Závodník', 'Rozhodčí', 'Stavitel', 'Obrázek do příběhu', 'Plánek rozhodčího: Test', 'Plánek: Test', 'Pořadí překážek', 'Datum a místo', 'Poznámky',
       'Nebo otevři odkaz', 'Kopírovat odkaz', 'Parkur Test z odkazu je v Moje.', 'Parkur Test z odkazu uložen do Moje', 'Načítám parkur z odkazu…', 'Kopie: 2 překážky. Výběr je teď na kopiích.', 'Smazáno: 2 překážky', 'Překážka má zamknutou polohu. Odemkneš ji zámkem v panelu dole.']);
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
+    /* obecné „Parkur X uložen do Moje“ chytalo i „… z odkazu uložen do Moje“ (anglicky zůstalo „z odkazu“, bez diakritiky to missEn nepozná) */
+    ok(await ev(() => trLookup('Parkur Nedlo Oct 2026 z odkazu uložen do Moje') === 'Course Nedlo Oct 2026 from the link saved to Mine' && trLookup('Parkur Test uložen do Moje') === 'Course Test saved to Mine'), 'překlad hlášky o parkuru z odkazu: ' + await ev(() => trLookup('Parkur Nedlo Oct 2026 z odkazu uložen do Moje')));
+    const missIab = await missEn(['Parkur se uložil jen tady, ve vestavěném prohlížeči. V aplikaci Pawkur ho zatím nemáš.', 'Otevři odkaz v Chromu, parkur se tam načte sám.', 'Klepni na ⋯ vpravo nahoře, zvol Otevřít v Safari a parkur se tam načte sám.', 'Nebo v aplikaci Pawkur otevři Plán → Sdílet a zadej kód']);
+    ok(!missIab.length, 'chybí anglický překlad okna pro Messenger: ' + missIab.join(' | '));
     ok(await ev(() => trLookup('Skok č. 2') === 'Jump no. 2' && trLookup('Vybráno: 1 překážka') === 'Selected: 1 obstacle' && trLookup('Parkur otočený o 180°') === 'Course rotated by 180°' && trLookup('Parkur posunutý: 2,0 m doprava; 1,0 m nahoru') === 'Course moved: 2,0 m to the right; 1,0 m up'), 'překlady s čísly (čísla se při české aplikaci nemění): ' + await ev(() => [trLookup('Skok č. 2'), trLookup('Vybráno: 1 překážka'), trLookup('Parkur otočený o 180°'), trLookup('Parkur posunutý: 2,0 m doprava; 1,0 m nahoru')].join(' | ')));
   });
 
