@@ -1,6 +1,6 @@
 -- Trojka: opravy po kontrole serverové části 3.0 (9. 10. 2026). Navazuje na 20261009090000_trojka.sql, které už na produkci běží.
 -- Idempotentní (create or replace, add column if not exists, revoke), nic nemaže ani nepřejmenovává; jde pustit opakovaně.
--- Spustit v Supabase → SQL editor (nebo přes MCP execute_sql) na projektu wtjyjknaibsamgczvaxy.
+-- Spuštěno 9. 10. 2026 přes MCP execute_sql na projektu wtjyjknaibsamgczvaxy (revoke, pub_at, gallery_publish, group_join, group_rename).
 
 -- =========================================================================================
 -- 1) DÍRA (střední): push_daily() a push_weekly() mohl volat každý přihlášený uživatel přes /rest/v1/rpc/.
@@ -53,8 +53,8 @@ end $$;
 -- 3) Logické chyby ve skupinách:
 --    a) group_join: limit 20 skupin se uplatnil i na člena, který se jen znovu přidal do své skupiny (odkaz ?skupina=),
 --       teď se počítá jen při skutečném přidání.
---    b) group_delete, group_rename, group_course_delete vracely null, když volající neměl právo (nebo řádek nebyl);
---       aplikace to brala jako úspěch („Skupina smazána“, „Přejmenováno“). Teď vyhodí chybu, kterou aplikace ukáže.
+--    b) group_rename vracelo null, když volající neměl právo (nebo řádek nebyl); aplikace to brala jako úspěch („Přejmenováno“).
+--       Teď vyhodí chybu, kterou aplikace ukáže; u group_delete a group_course_delete výsledek kontroluje aplikace (viz níž).
 --    Podpisy, návratové typy i práva (grant authenticated) zůstávají; create or replace je zachová.
 -- =========================================================================================
 create or replace function public.group_join(p_code text)
@@ -75,38 +75,9 @@ begin
   return json_build_object('id', g.id, 'code', g.code, 'name', g.name, 'role', group_role(g.id), 'members', (select count(*) from group_members where group_id = g.id));
 end $$;
 
-create or replace function public.group_delete(p_id bigint)
-returns boolean language plpgsql security definer set search_path = public as $$
-declare uid uuid := auth.uid();
-begin
-  if uid is null then raise exception 'not signed in'; end if;
-  delete from groups where id = p_id and owner = uid;
-  if not found then raise exception 'jen zakladatel'; end if;
-  return true;
-end $$;
-
-create or replace function public.group_rename(p_id bigint, p_name text)
-returns boolean language plpgsql security definer set search_path = public as $$
-declare uid uuid := auth.uid(); v_name text := left(trim(regexp_replace(regexp_replace(coalesce(p_name, ''), '[[:cntrl:]]', '', 'g'), '\s+', ' ', 'g')), 40);
-begin
-  if uid is null then raise exception 'not signed in'; end if;
-  if char_length(v_name) < 2 then raise exception 'krátký název'; end if;
-  update groups set name = v_name where id = p_id and owner = uid;
-  if not found then raise exception 'jen zakladatel'; end if;
-  return true;
-end $$;
-
-create or replace function public.group_course_delete(p_cid bigint)
-returns boolean language plpgsql security definer set search_path = public as $$
-declare uid uuid := auth.uid();
-begin
-  if uid is null then raise exception 'not signed in'; end if;
-  delete from group_courses c where c.id = p_cid
-    and (c.user_id = uid or exists (select 1 from groups g where g.id = c.group_id and g.owner = uid)
-         or exists (select 1 from group_members m where m.group_id = c.group_id and m.user_id = uid and m.role = 'trainer'));
-  if not found then raise exception 'parkur nenalezen'; end if;
-  return true;
-end $$;
+-- group_delete a group_course_delete zůstávají v původní podobě (vrací null bez práva): aplikace od 3.0 výsledek kontroluje
+-- (r !== true = chyba „jen zakladatel“ / „parkur nenalezen“). Přepis s raise exception přes MCP neprošel (příkaz delete
+-- uvnitř těla funkce chce potvrzení), a pro chování aplikace není potřeba.
 
 -- =========================================================================================
 -- 4) Kontrola práv po opravě (jen čtení; má vrátit false u anon i authenticated pro push_daily, push_weekly, push_flush_call):

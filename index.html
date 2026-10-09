@@ -12447,7 +12447,7 @@ document.addEventListener('click',function(e){
   var co=e.target.closest('[data-gco]'); if(co){ groupCourseOpen(+co.getAttribute('data-gco'),GRP.detail?GRP.detail.name:''); return; }
   var cb=e.target.closest('[data-gcb]'); if(cb){ groupBoard(+cb.getAttribute('data-gcb'),cb.getAttribute('data-gcname')||''); return; }
   var cd=e.target.closest('[data-gcd]'); if(cd){ var cid=+cd.getAttribute('data-gcd');
-    ask('Smazat parkur ze skupiny?','Zmizí členům z Domů i se žebříčkem.','Smazat',function(){ gCall('group_course_delete',{p_cid:cid}).then(function(){ GTODAY.rows=GTODAY.rows.filter(function(x){ return +x.id!==cid; }); lsSet(GTK,GTODAY); groupOpen(GRP.id,'courses'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); },true); return; }
+    ask('Smazat parkur ze skupiny?','Zmizí členům z Domů i se žebříčkem.','Smazat',function(){ gCall('group_course_delete',{p_cid:cid}).then(function(r){ if(r!==true) throw new Error('parkur nenalezen'); GTODAY.rows=GTODAY.rows.filter(function(x){ return +x.id!==cid; }); lsSet(GTK,GTODAY); groupOpen(GRP.id,'courses'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); },true); return; }
   var gm=e.target.closest('[data-gm]'); if(gm){ var uid=gm.getAttribute('data-gm'), role=gm.getAttribute('data-gr');
     var go=function(){ gCall('group_member_set',{p_id:GRP.id,p_user:uid,p_role:role}).then(function(){ groupOpen(GRP.id,'members'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); };
     if(role==='out') ask('Vyhodit ze skupiny?','Člen přestane vidět parkury skupiny.','Vyhodit',go,true); else go(); return; }
@@ -12461,9 +12461,10 @@ document.addEventListener('click',function(e){
   else if(a==='share'){ if(g) shareTxt(T('Přidej se do skupiny')+' „'+g.name+'“ '+T('v aplikaci Pawkur')+': '+APP_URL+'?skupina='+g.code+' ('+T('kód')+' '+g.code+')'); }
   else if(a==='post') groupPostSheet(GRP.id);
   else if(a==='myname'){ var nm=$('gMyName').value.trim(); gCall('group_my_name_set',{p_name:nm}).then(function(){ toast('Jméno uloženo'); groupOpen(GRP.id,'set'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); }
-  else if(a==='rename'){ var nn=$('gName').value.trim(); if(nn.length<2){ toast('Název má mít aspoň 2 znaky.'); return; } gCall('group_rename',{p_id:GRP.id,p_name:nn}).then(function(){ toast('Přejmenováno'); GRP.list=null; groupOpen(GRP.id,'set'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); }
+  else if(a==='rename'){ var nn=$('gName').value.trim(); if(nn.length<2){ toast('Název má mít aspoň 2 znaky.'); return; } gCall('group_rename',{p_id:GRP.id,p_name:nn}).then(function(r){ if(r!==true) throw new Error('jen zakladatel'); toast('Přejmenováno'); GRP.list=null; groupOpen(GRP.id,'set'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); }
+  /* smazání a přejmenování: server bez práva vrátí null (ne true), proto se výsledek kontroluje a ukáže chyba */
   else if(a==='del') ask('Smazat skupinu?','Smaže se skupina, její parkury i žebříčky, pro všechny členy. Nejde to vrátit.','Smazat',function(){
-    gCall('group_delete',{p_id:GRP.id}).then(function(){ GRP.id=0; GRP.detail=null; GRP.list=null; groupsPaint(); groupsLoad(true); groupTodayLoad(true); toast('Skupina smazána'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); },true);
+    gCall('group_delete',{p_id:GRP.id}).then(function(r){ if(r!==true) throw new Error('jen zakladatel'); GRP.id=0; GRP.detail=null; GRP.list=null; groupsPaint(); groupsLoad(true); groupTodayLoad(true); toast('Skupina smazána'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); },true);
   else if(a==='leave') ask('Odejít ze skupiny?','Přestaneš vidět její parkury. Vrátit se můžeš kódem.','Odejít',function(){
     gCall('group_leave',{p_id:GRP.id}).then(function(){ GRP.id=0; GRP.detail=null; GRP.list=null; groupsPaint(); groupsLoad(true); groupTodayLoad(true); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); },true);
 });
