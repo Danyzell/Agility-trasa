@@ -55,6 +55,8 @@ Stav k 9. 10. 2026. Nové sezení: přečti tenhle soubor, `SPOLUPRACE.md` a `RE
 - 6. 10. ráno: 366 zařízení, s ikonou na ploše jen 12 (3 %, čeština 7 %, angličtina 1 %), 45 účtů. Většina přichází z Facebooku.
 - SQL pro rozbor: `with d as (select dev, count(*) days, bool_or(standalone) inst, max(lang) lang from public.app_open group by dev) select count(*), count(*) filter (where inst) from d;`
 
+- Verze 3.1 (uživatel 9. 10. po rozboru dat: „Co dál udělat vylepšit“, pak „1-3 udělej“): 1) měření první návštěvy (`act`, `app_act`, `app_open.act`, souhrn `act14` v Návštěvnosti; SQL `20261009150000_pocty_akci.sql` je na serveru, ověřené testovacím voláním v bloku, který se vrátil), 2) Plánek z fotky: Použít a naklepat trasu jako hlavní tlačítko, Použít i s trasou vedle, 3) první zážitek po průvodci: parkur týdne ve 3D nebo v Běhu. Data na začátku: 859 zařízení od 5. 10., jiný den se vrátilo 65 (7,6 %), nainstalovalo 53 (česky 9 %, anglicky 4 %), anglicky 59 %, sdílení kódem 1, výsledky do žebříčku týdne 0. Za pár dní se podívat do Návštěvnosti, co noví lidé dělají a kde končí, a podle toho další krok (instalace na iPhonu a v angličtině, bod 4 z rozboru).
+
 ## Co dál (navrženo, čeká na rozhodnutí uživatele)
 
 0. ~~Supabase → Authentication → URL Configuration → Redirect URLs: přidat `https://pawkur.cz/**`~~ hotovo 8. 10. (viz #60).

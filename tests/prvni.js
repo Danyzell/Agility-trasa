@@ -1,0 +1,126 @@
+/* Pawkur 3.1: měření první návštěvy (anonymní počty akcí za den, odeslání přes app_act, souhrn pro autora v Návštěvnosti)
+   a první zážitek po průvodci (parkur týdne pro třídu psa rovnou ve 3D nebo v Běhu). Plánek z fotky s naklepáním trasy
+   testuje sada ctecka. */
+const { phone, offline } = require('./helpers');
+
+module.exports = async function ({ browser, base }) {
+  const T = await phone(browser, { isMobile: true }); const { page, ok, ev } = T;
+  const acts = [];
+  await offline(T.ctx, { get_catalog: { version: 0 }, app_act: (a) => { acts.push(a); return null; } });
+  /* bez průvodce, kromě kroků, které si ho vyžádají přes ?onb */
+  await T.ctx.addInitScript(() => { try {
+    if (!/onb/.test(location.search) && localStorage.getItem('agility-onb-v1') == null) localStorage.setItem('agility-onb-v1', JSON.stringify({ done: 1, v: 2 }));
+    if (localStorage.getItem('agility-news-v1') == null) localStorage.setItem('agility-news-v1', JSON.stringify('3.0'));
+    localStorage.setItem('agility-instx-v1', JSON.stringify(Date.now())); localStorage.setItem('agility-ask-v1', JSON.stringify({ x: 1 }));
+  } catch (e) {} });
+  const step = async (label, fn) => { T.step(label); try { await fn(); } catch (e) { T.errs.push(`[${label}] krok selhal: ${String(e && e.message || e).split('\n')[0]}`); } };
+  const w = (ms) => page.waitForTimeout(ms);
+  const fresh = async (h) => { await page.goto('about:blank'); await page.goto(base + '/' + (h || '#home')); await w(400); await ev(() => { closeSheet(); $('toast').hidden = true; }); };
+  const missEn = (list) => ev(l => l.filter(t => { const v = trLookup(t); return v == null || /[ěščřžýáíéůúňťď]/.test(v); }), list);
+  /* průvodce od začátku: jméno psa, třída A2, poslední krok */
+  const onbToLast = async () => {
+    await page.goto('about:blank'); await page.goto(base + '/?onb#home'); await ev(() => localStorage.clear()); await page.goto('about:blank'); await page.goto(base + '/?onb#home'); await w(600);
+    await page.fill('#oName', 'Fany'); await page.click('#onb [data-o="next"]'); await w(150);
+    await page.selectOption('#oCls', 'A2'); await page.click('#onb [data-o="dog"]'); await w(150);
+  };
+
+  await step('počty akcí: obrazovky, parkur, úprava, běh; spuštění se nepočítá', async () => {
+    await fresh(); await w(2400); /* ACT_BOOT: obrazovka a parkur při spuštění nejsou akce */
+    let a = await ev(() => (ACT && ACT.a) || {});
+    ok(!a.v_home && !a.course, 'spuštění aplikace se počítá jako akce: ' + JSON.stringify(a));
+    await ev(() => { ACT = { day: localDate(), a: {} }; actStore(); });
+    await page.click('.nav [data-v="lib"]'); await w(100);
+    await ev(() => { S.meta.dirty = false; loadCourse(listFor('A1')[1], true); mode = 'build'; ui(); });
+    await ev(() => { const o = S.obs[0]; o.x = Math.min(S.W, o.x + 1); touch(); render(); });
+    await ev(() => { show('run'); $('manT').value = '40'; RUN.f = 0; RUN.r = 0; }); await page.click('#saveRun'); await w(250);
+    if (await ev(() => !!$('sheet').querySelector('.cele'))) { await page.click('#sheet .cele [data-a="x"]'); await w(150); }
+    a = await ev(() => ACT.a);
+    ok(a.v_lib === 1 && a.v_plan >= 1 && a.v_run >= 1 && a.course === 1 && a.edit === 1 && a.runsave === 1, 'počty akcí: ' + JSON.stringify(a));
+    ok(await ev(() => JSON.parse(localStorage.getItem('agility-act-v1')).a.runsave === 1 && !!SYNC_OWN['agility-act-v1']), 'počty se ukládají v zařízení a nesynchronizují se s účtem');
+    /* jen krátké kódy; nový den začíná od nuly */
+    await ev(() => { act('Bad Key'); act('x'.repeat(17)); act('<b>'); });
+    ok(await ev(() => !Object.keys(ACT.a).some(k => !/^[a-z0-9_]{1,16}$/.test(k))), 'počítadlo vzalo neplatný klíč: ' + JSON.stringify(await ev(() => Object.keys(ACT.a))));
+    await ev(() => { ACT.day = '2000-01-01'; act('gen'); });
+    ok(await ev(() => ACT.day === localDate() && JSON.stringify(ACT.a) === '{"gen":1}'), 'nový den nezačal od nuly: ' + JSON.stringify(await ev(() => ACT)));
+  });
+
+  await step('odeslání přes app_act: součty dne, obrazovka, bez opakování, 404 vypne', async () => {
+    await ev(() => { ACT = { day: localDate(), a: { v_plan: 2, course: 1, sec: 45 } }; actStore(); show('plan'); ACT_SENT = ''; ACT_OFF = false; });
+    /* v testu (navigator.webdriver) se bez PING_TEST nic neposílá */
+    const n0 = acts.length; await ev(() => actSend(false)); await w(200);
+    ok(acts.length === n0, 'v testu se počty odeslaly bez PING_TEST');
+    await ev(() => { window.PING_TEST = 1; actSend(false); }); await w(300);
+    const last = acts[acts.length - 1] || {}, dev = await ev(() => devId());
+    ok(acts.length === n0 + 1 && last.p_dev === dev && last.p_act && last.p_act.course === 1 && last.p_act.sec === 45 && last.p_act.last === 'plan' && last.p_act.v_plan >= 2, 'odeslané počty: ' + JSON.stringify(last));
+    await ev(() => actSend(false)); await w(200);
+    ok(acts.length === n0 + 1, 'stejné součty se poslaly znovu');
+    /* při odchodu z aplikace (keepalive) */
+    await ev(() => { act('gen'); clearTimeout(ACT_T); ACT_T = 0; actSend(true); }); await w(300);
+    ok(acts.length === n0 + 2 && acts[acts.length - 1].p_act.gen === 1, 'odeslání při odchodu: ' + JSON.stringify(acts[acts.length - 1]));
+    /* další akce se pošle nejdřív za 20 s, ne hned */
+    ok(await ev(() => { act('ana'); return !!ACT_T; }), 'po akci se odeslání nenaplánovalo');
+    await ev(() => { clearTimeout(ACT_T); ACT_T = 0; });
+    /* server bez funkce app_act: odesílání se do konce návštěvy vypne */
+    await page.route('**/rpc/app_act', r => r.fulfill({ status: 404, contentType: 'application/json', body: '{}' }));
+    await ev(() => { act('quiz'); clearTimeout(ACT_T); ACT_T = 0; actSend(false); }); await w(300);
+    ok(await ev(() => ACT_OFF === true), 'po 404 se odesílání nevyplo');
+    await page.unroute('**/rpc/app_act');
+    await ev(() => { ACT_OFF = false; window.PING_TEST = 0; clearTimeout(ACT_T); ACT_T = 0; });
+  });
+
+  await step('souhrn první návštěvy pro autora', async () => {
+    const h = await ev(() => { const d = document.createElement('div'); d.innerHTML = statsActHTML({ n: 10, m: 8, back: 2, k: { onb: 6, course: 4, v3d: 2, fx_3d: 2, runsave: 1 }, sec: 95, last: { home: 3, plan: 2, onb: 1 } }); return d.textContent; });
+    ok(/noví za 14 dní: 10, z toho s počty akcí 8/.test(h) && /průvodce 75 %/.test(h) && /parkur 50 %/.test(h) && /3D 25 %/.test(h) && /uložený běh 13 %/.test(h) && /po průvodci 3D 25 %/.test(h) &&
+      /Medián času na obrazovce: 1,6 min/.test(h) && /Vrátili se jiný den: 20 %/.test(h) && /Kde skončili ti, kdo se nevrátili: home 3 · plan 2 · onb 1/.test(h), 'souhrn: ' + h);
+    ok(await ev(() => statsActHTML(null) === '' && statsActHTML({ n: 0 }) === ''), 'bez dat má být souhrn prázdný');
+  });
+
+  await step('první zážitek: parkur týdne pro třídu psa ve 3D', async () => {
+    await onbToLast();
+    const r = await ev(() => ({ h1: document.querySelector('#onb h1').textContent, map: document.querySelectorAll('#onb .onb-wk svg path').length, title: document.querySelector('#onb .onb-wkt b').textContent, line: document.querySelector('#onb .onb-wkt span').textContent,
+      two: [...document.querySelectorAll('#onb .onb-two [data-v]')].map(b => b.getAttribute('data-v')).join(), pri: document.querySelector('#onb .onb-two .pri').getAttribute('data-v'), sub: document.querySelector('#onb .onb-two .pri span').textContent,
+      more: [...document.querySelectorAll('#onb .onb-more [data-v]')].map(b => b.getAttribute('data-v')).join(), home: !!document.querySelector('#onb .onb-foot [data-v="home"]'), wide: document.documentElement.scrollWidth <= innerWidth }));
+    ok(r.h1 === 'Čím začneš?' && r.map > 0 && r.title === 'Parkur týdne A2' && /^\d+(,\d)? m · \d+ překáž(ka|ky|ek) · SČP \d+ s$/.test(r.line) && r.two === '3d,run' && r.pri === '3d' && r.sub === 'Jak ho poběží Fany' && r.more === 'imp,lib,new' && r.home && r.wide, 'poslední krok průvodce: ' + JSON.stringify(r));
+    await page.click('#onb .onb-two [data-v="3d"]');
+    await page.waitForFunction(() => !$('ov3d').hidden, null, { timeout: 20000 });
+    const o = await ev(() => ({ onb: !!$('onb'), id: S.meta.id, wk: weekCourse('A2').id, a: ACT.a }));
+    ok(!o.onb && o.id === o.wk && o.a.onb === 1 && o.a.fx_3d === 1 && o.a.v3d >= 1, 'po průvodci parkur týdne ve 3D: ' + JSON.stringify(o));
+    await page.click('#p3dim [data-d="2"]'); await w(300);
+    const c = await ev(() => ({ ov: $('ov3d').hidden, view, toast: $('toast').textContent }));
+    ok(c.ov && c.view === 'plan' && c.toast === 'Parkur týdne máš v Plánu. Zaběhni ho v Běhu a pošli čas do žebříčku.', 'po zavření 3D rada, co dál: ' + JSON.stringify(c));
+    /* rada jen po prvním 3D z průvodce */
+    await ev(() => { $('toast').hidden = true; $('toast').textContent = ''; open3d(false); }); await page.waitForFunction(() => !$('ov3d').hidden, null, { timeout: 20000 });
+    await page.click('#p3dim [data-d="2"]'); await w(300);
+    ok(await ev(() => !/Parkur týdne máš v Plánu/.test($('toast').textContent)), 'rada po 3D se ukázala znovu');
+  });
+
+  await step('první zážitek: Zaběhnout', async () => {
+    await onbToLast();
+    await page.click('#onb .onb-two [data-v="run"]'); await w(600);
+    const o = await ev(() => ({ onb: !!$('onb'), view, id: S.meta.id, wk: weekCourse('A2').id, toast: $('toast').textContent, a: ACT.a, ov: $('ov3d').hidden }));
+    ok(!o.onb && o.view === 'run' && o.id === o.wk && o.ov && /^Na place zmáčkni START, když pes vyběhne, a STOP v cíli\./.test(o.toast) && o.a.onb === 1 && o.a.fx_run === 1, 'po průvodci Běh s parkurem týdne: ' + JSON.stringify(o));
+    /* Přeskočit se počítá zvlášť */
+    await page.goto('about:blank'); await page.goto(base + '/?onb#home'); await ev(() => localStorage.clear()); await page.goto('about:blank'); await page.goto(base + '/?onb#home'); await w(600);
+    await page.click('#onb [data-o="skip"]'); await w(150);
+    ok(await ev(() => !$('onb') && ACT.a.onb_skip === 1 && !ACT.a.onb), 'přeskočený průvodce: ' + JSON.stringify(await ev(() => ACT.a)));
+  });
+
+  await step('Hoopers bez parkuru týdne, 360 px a angličtina', async () => {
+    await fresh(); await ev(() => { setSport('hoopers', true); onbOpen(3); }); await w(150);
+    ok(await ev(() => !document.querySelector('#onb .onb-wk') && !document.querySelector('#onb .onb-two') && /Všechno najdeš i později/.test(document.querySelector('#onb .onb-or').textContent) && document.querySelectorAll('#onb .onb-more [data-v]').length === 3), 'Hoopers: poslední krok bez parkuru týdne a 3D');
+    await ev(() => { onbClose(false); setSport('agility', true); });
+    await page.setViewportSize({ width: 360, height: 640 }); await ev(() => { DOGS = [{ id: 'd1', name: 'Fany', size: 'M', cls: 'A2' }]; DOGC = 'd1'; saveDogs(); onbOpen(3); }); await w(150);
+    const r = await ev(() => { const b = [...document.querySelectorAll('#onb .onb-two .opt')].map(x => x.getBoundingClientRect()); return { wide: document.documentElement.scrollWidth <= innerWidth, row: b.length === 2 && Math.abs(b[0].top - b[1].top) < 2, h: b.map(x => Math.round(x.height)) }; });
+    ok(r.wide && r.row && r.h.every(x => x >= 44), '360 px: ' + JSON.stringify(r));
+    await ev(() => onbClose(false)); await page.setViewportSize({ width: 390, height: 844 });
+    const miss = await missEn(['Proletět ve 3D', 'Zaběhnout', 'Stopky a hodnocení', 'Z pohledu psa i shora', 'Jak ho poběží Fany', 'Nebo:', 'Parkur týdne A2', '151,2 m · 19 překážek · SČP 44 s',
+      'Parkur týdne máš v Plánu. Zaběhni ho v Běhu a pošli čas do žebříčku.', 'Na place zmáčkni START, když pes vyběhne, a STOP v cíli. Čas jde zadat i ručně.',
+      'Použít a naklepat trasu', 'Použít i s trasou', 'Trasa 1–12 přečtená z čísel na plánku.', 'Nejspolehlivější je použít překážky a trasu naklepat podle čísel na podkladu. Přečtenou trasu můžeš použít i rovnou.',
+      'Překážky z obrázku: 12. Teď na ně klepej v pořadí podle čísel na podkladu. Chybějící doplníš v režimu Stavba.']);
+    ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
+    ok(await ev(() => trLookup('Jak ho poběží Fany') === 'How Fany will run it'), 'překlad Jak ho poběží: ' + await ev(() => trLookup('Jak ho poběží Fany')));
+  });
+
+  await T.ctx.close();
+  return T.errs;
+};
