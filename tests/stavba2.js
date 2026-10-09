@@ -82,7 +82,8 @@ module.exports = async function ({ browser, base }) {
     await ev(() => { zoom = 4; ui(); render(); window.scrollTo(0, 0); const w = $('wrap'); w.scrollLeft = 0; w.scrollTop = 0; }); await page.waitForTimeout(100);
     const out = [];
     for (const s of spots) {
-      const okPos = await ev(({ x, y }) => { const svg = $('field'), m = svg.getScreenCTM(); if (!m) return false; const p = new DOMPoint(x, y).matrixTransform(m.inverse());
+      /* výběr překážky pod panelem teď stránku posune, ať překážka není zakrytá (3.2.1); pro další místo se stránka vrátí nahoru */
+      const okPos = await ev(({ x, y }) => { window.scrollTo(0, 0); const svg = $('field'), m = svg.getScreenCTM(); if (!m) return false; const p = new DOMPoint(x, y).matrixTransform(m.inverse());
         if (p.x < 1 || p.y < 1 || p.x > S.W - 1 || p.y > S.H - 1) return false; const o = getO(1); o.x = p.x; o.y = p.y; o.rot = 0; sel = null; ui(); render();
         const e = document.elementFromPoint(x, y); return !!(e && e.closest('.ob[data-id="1"]')); }, s);
       if (!okPos) { out.push(s.id + ':mimo'); continue; }
