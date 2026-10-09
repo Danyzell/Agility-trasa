@@ -153,5 +153,37 @@ module.exports = async function ({ browser, base }) {
     } catch (e) { T.fail(e); }
     errs.push(...T.errs); await T.ctx.close();
   }
+  /* 5) agility ve 3D: pes uvnitř tunelu je schovaný (dřív mu hlava trčela z tunelu ⌀ 60 cm) a pohled Za psem je šikmo
+     zezadu a nízko (dřív přímo zezadu a 2,4 m shora: pes zkrácený do svislé čárky, jako by stál na zadních) */
+  {
+    const T = await phone(browser); const { page } = T; page.setDefaultTimeout(30000);
+    await offline(T.ctx, { get_catalog: { version: 0 } });
+    try {
+      T.step('Za psem a tunel'); await page.goto(base + '/#plan'); await page.waitForTimeout(300);
+      const ok = await T.ev(() => { closeSheet(); const c = listFor('A2').find(c => c.route.some(id => (c.obs.find(o => o.id === id) || {}).type === 'tunnel'));
+        if (c) { loadCourse(c, true); mode = 'view'; ui(); render(); } $('toast').hidden = true; return !!c; });
+      T.ok(ok, 'v knihovně A2 chybí parkur s tunelem');
+      await T.ev(() => open3d(false));
+      await page.waitForFunction(() => C3.api && C3.api.dog, null, { timeout: 30000 });
+      const r = await T.ev(() => {
+        const A = C3.api, L = A.length; let tun = 0, hid = 0;
+        for (let d = 0; d < L; d += .25) { const p = A.pose(d); if (p.tun) { tun++; A.render(d, 'orbit'); if (!A.dog.visible) hid++; } }
+        const cam = []; p3setView('chase');
+        for (let d = 3; d < L - 3; d += 4) {
+          const a = A.at(d - .8), m = A.at(d), b = A.at(d + .8), u = Math.atan2(m.z - a.z, m.x - a.x), v = Math.atan2(b.z - m.z, b.x - m.x);
+          if (Math.abs(Math.atan2(Math.sin(v - u), Math.cos(v - u))) > .35 || m.air || A.pose(d).tun) continue;   /* jen rovné úseky na zemi mimo tunel */
+          A.render(d, 'chase'); const c = A.camera.position, p = A.pose(d), hx = b.x - a.x, hz = b.z - a.z, hl = Math.hypot(hx, hz) || 1;
+          const back = ((c.x - p.x) * hx + (c.z - p.z) * hz) / hl, side = Math.abs((c.x - p.x) * hz - (c.z - p.z) * hx) / hl, up = c.y - p.h;
+          cam.push({ d: +d.toFixed(1), back: +back.toFixed(2), side: +side.toFixed(2), up: +up.toFixed(2), vis: A.dog.visible });
+        }
+        return { tun, hid, cam };
+      });
+      T.ok(r.tun > 3 && r.hid === r.tun, 'pes v tunelu má být schovaný: ' + JSON.stringify({ uvnitř: r.tun, schovaný: r.hid }));
+      const bad = r.cam.filter(c => !(c.back < -1.5 && c.side > 1.5 && c.up > .8 && c.up < 1.7 && c.vis));
+      T.ok(r.cam.length >= 5 && !bad.length, 'kamera Za psem má být šikmo zezadu a nízko: ' + JSON.stringify(bad.slice(0, 4)) + ' z ' + r.cam.length);
+      await T.ev(() => close3d());
+    } catch (e) { T.fail(e); }
+    errs.push(...T.errs); await T.ctx.close();
+  }
   return errs;
 };
