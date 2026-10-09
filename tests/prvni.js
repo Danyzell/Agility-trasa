@@ -139,8 +139,8 @@ module.exports = async function ({ browser, base }) {
     await ev(() => { $('fullBtn').click(); $('toast').hidden = true; window.scrollTo(0, 0); }); await w(300);
     /* klepnutí: Běh pro tenhle parkur, rada jen napoprvé */
     await page.click('#runFab'); await w(500);
-    const k = await ev(() => ({ view, name: $('cName').textContent, toast: $('toast').hidden ? '' : $('toast').textContent, n: ACT.a.run_fab }));
-    ok(k.view === 'run' && k.name === 'A2-03' && /^Na place zmáčkni START/.test(k.toast) && k.n === 1, 'klepnutí na Zaběhnout: ' + JSON.stringify(k));
+    const k = await ev(() => ({ view, name: $('cName').textContent, code: S.meta.code, toast: $('toast').hidden ? '' : $('toast').textContent, n: ACT.a.run_fab }));
+    ok(k.view === 'run' && k.name === 'Altair' && k.code === 'A2-03' && /^Na place zmáčkni START/.test(k.toast) && k.n === 1, 'klepnutí na Zaběhnout: ' + JSON.stringify(k));
     await ev(() => { $('toast').hidden = true; show('plan'); window.scrollTo(0, 0); }); await w(300); await page.click('#runFab'); await w(500);
     ok(await ev(() => view === 'run' && $('toast').hidden), 'rada se má ukázat jen napoprvé');
     /* parkur bez trasy: není co běžet */
@@ -246,6 +246,24 @@ module.exports = async function ({ browser, base }) {
     await p.evaluate(() => { $('manT').value = '40'; }); await p.click('#saveRun'); await p.waitForTimeout(3000);
     ok(await p.evaluate(() => !/Upozornit tě/.test($('sheet').textContent) || $('scrim').hidden), 'nabídka jen jednou');
     P.errs.forEach(x => T.errs.push(x)); await P.ctx.close();
+  });
+
+  await step('jména parkurů: hvězdy a měsíce místo kódu, id beze změny', async () => {
+    await fresh('#lib');
+    const r = await ev(() => { const all = ['A1', 'A2', 'A3', 'H1', 'H2', 'H3'].map(c => listFor(c)).reduce((a, l) => a.concat(l), []), a2 = listFor('A2')[2], h1 = listFor('H1')[0];
+      return { n: all.length, uniq: new Set(all.map(c => c.name)).size, codes: all.every(c => /^[AH][1-3]-\d\d$/.test(c.code)), a2: [a2.name, a2.code, a2.id], h1: [h1.name, h1.code] }; });
+    ok(r.n === 114 && r.uniq === 114 && r.codes && r.a2.join() === 'Altair,A2-03,A2-03-v5' && r.h1.join() === 'Io,H1-01', 'jména v knihovně: ' + JSON.stringify(r));
+    await ev(() => { libTab = 'A2'; libRender(); window.scrollTo(0, 0); }); await w(100);
+    const card = await ev(() => { const b = document.querySelectorAll('#cards .card .meta b')[2]; return { t: b.childNodes[0].textContent, nk: (b.querySelector('.nk') || {}).textContent }; });
+    ok(card.t === 'Altair' && card.nk === 'A2-03', 'karta: jméno a malý kód: ' + JSON.stringify(card));
+    await page.click('#cards .pick >> nth=2'); await w(300);
+    const h = await ev(() => ({ name: $('cName').textContent, k: ($('cSub').querySelector('.k') || {}).textContent, pill: !!$('cSub').querySelector('.dpill'), r: ($('cSub').querySelector('.r') || {}).textContent }));
+    ok(h.name === 'Altair' && h.k === 'A2' && h.pill && /^\d+,\d m · \d+ překáž/.test(h.r), 'hlavička Plánu: ' + JSON.stringify(h));
+    /* po úpravě autor a „upraveno“ místo náročnosti */
+    await ev(() => { S.meta.dirty = true; topbar(); });
+    const h2 = await ev(() => ({ name: $('cName').textContent, t: $('cSub').textContent }));
+    ok(h2.name === 'Altair *' && /^A2Generátor podle pravidel FCIupraveno$/.test(h2.t), 'hlavička upraveného parkuru: ' + JSON.stringify(h2));
+    await ev(() => { S.meta.dirty = false; topbar(); });
   });
 
   await T.ctx.close();

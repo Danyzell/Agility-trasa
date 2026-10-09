@@ -49,6 +49,10 @@ button{cursor:pointer;}
 .ctitle{flex:1; min-width:0; text-align:left; border:0; background:none; padding:2px 0;}
 .ctitle b{display:block; font-family:var(--display); font-size:21px; font-weight:700; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .ctitle span{display:block; font-size:12.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+/* podnadpis parkuru: štítek třídy, náročnost a délka (3.1) */
+#cSub.nv{display:flex; align-items:center; gap:6px; margin-top:3px; min-width:0;}
+#cSub.nv .k{flex:0 0 auto; font-size:11.5px; font-weight:800; letter-spacing:.02em; color:var(--on-accent); background:var(--accent); border-radius:6px; padding:1px 6px; line-height:1.35;}
+#cSub.nv .dpill{flex:0 0 auto;} #cSub.nv .r{flex:0 1 auto; min-width:0;} #cSub.nv .up{flex:0 0 auto;} #cSub.nv .up::before{content:'· ';}
 .iconbtn{width:40px; height:40px; flex:0 0 auto; display:grid; place-items:center; border:1px solid var(--border); border-radius:10px; background:var(--surface); color:var(--muted);}
 .iconbtn svg{width:21px; height:21px;}
 .iconbtn[aria-pressed="true"].fav{color:var(--zone); border-color:var(--zone);}
@@ -141,6 +145,7 @@ select.btn{padding-right:8px;}
 .card .pick svg{display:block; width:100%; height:auto; background:var(--field);}
 .card .meta{padding:7px 9px 9px; display:flex; flex-direction:column; gap:1px;}
 .card .meta b{font-family:var(--display); font-size:17px; font-weight:600; line-height:1.15;}
+.card .meta b .nk{font-family:var(--body); font-size:11px; font-weight:700; color:var(--muted); margin-left:6px; letter-spacing:.02em; vertical-align:2px;}
 .card .meta span{font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .card .meta .ft{white-space:normal;}
 .cards .cutf{grid-column:1/-1;}
@@ -3653,7 +3658,7 @@ i18nAdd({
 "SČP": "SCT",
 "MČP (max.)": "MCT (max.)",
 "Generátor podle pravidel FCI": "Generator following FCI rules",
-"Vygenerováno v aplikaci": "Generated in the app",
+"Vygenerováno v aplikaci": "Generated in the app", "upraveno": "edited",
 "Autor neuveden": "Author not given",
 "⇄ z druhé strany": "⇄ from the other side",
 "Bližším koncem": "Near end",
@@ -5939,7 +5944,12 @@ function nKus(n){ return czN(n,'kus vybavení','kusy vybavení','kusů vybavení
 function topbar(){
   var m=S.meta, mk=getMark(m.id);
   $('cName').textContent=crsName(m)+(m.dirty&&m.id?' *':'');
-  $('cSub').textContent=(isHoopC(m.cls)?'Hoopers ':'')+m.cls+' · '+authorLine(m)+(m.dirty&&m.id?' · upraveno':'');
+  /* pod jménem štítek třídy; parkur z knihovny má náročnost a délku, ostatní autora (3.1) */
+  var hp=isHoopC(m.cls), st=null, cm=null, sub='<span class="k" translate="no">'+(hp?'Hoopers ':'')+esc(m.cls||'')+'</span>';
+  if(m.code&&!m.dirty&&S.route.length>1){ cm=curM(); if(!hp){ try{ st=cStats({id:m.id,cls:m.cls,obs:S.obs,route:S.route,turns:S.turns}); }catch(e){} } }
+  if(cm) sub+=(st?'<i class="dpill d'+diffLvl(st.diff)+'">'+diffLabel(st.diff)+'</i>':'')+'<span class="r">'+fmt(cm.len)+' m · '+nPrek(cm.n)+'</span>';
+  else sub+='<span class="r">'+esc(authorLine(m))+'</span>'+(m.dirty&&m.id?'<span class="r up">upraveno</span>':'');
+  $('cSub').className='nv'; $('cSub').innerHTML=sub;
   var fb=$('favBtn'), db=$('doneBtn');
   fb.setAttribute('aria-pressed',mk.fav?'true':'false'); fb.innerHTML=mk.fav?IC.starF:IC.star;
   db.setAttribute('aria-pressed',mk.done?'true':'false');
@@ -6961,11 +6971,15 @@ function getC(c){
   if(typeof PREDB==='object'&&PREDB[c]) return DB[c]=decDB(PREDB[c]);
   return DB[c]=genClass(c);
 }
+/* jména parkurů z knihovny (3.1, návrh schválený uživatelem): místo kódu A2-03 hvězda (agility) nebo měsíc (Hoopers), kód zůstává malý
+   u karty. Id parkuru (a tím běhy, oblíbené a zaběhnuté) se nemění; mění se jen zobrazené jméno. */
+var CNAMES={A1:'Electra Maia Merope Alcyone Taygeta Celaeno Sterope Atlas Pleione Algol Algieba Denebola Zosma Alphard Mirfak Hamal Menkar Diphda Ankaa Fomalhaut Sadr Albireo Gienah Enif Markab Scheat Alpheratz Mirach Almach Schedar'.split(' '),A2:'Vega Sirius Altair Rigel Deneb Spica Capella Polaris Arcturus Antares Aldebaran Procyon Regulus Castor Pollux Mira Bellatrix Mizar Alcor Canopus Achernar Hadar Shaula Alnair Alioth Dubhe Merak Alkaid Atria Avior'.split(' '),A3:'Kochab Thuban Eltanin Rastaban Nunki Sabik Izar Alphecca Acrux Mimosa Gacrux Alnilam Alnitak Mintaka Saiph Meissa Elnath Alhena Wasat Mebsuta Tejat Propus Adhara Wezen Aludra Mirzam Furud Sargas Ruchbah Caph'.split(' '),H1:'Io Europa Ganymed Kallisto Titan Rhea Dione Tethys'.split(' '),H2:'Mimas Enceladus Iapetus Hyperion Phoebe Miranda Ariel Umbriel'.split(' '),H3:'Titania Oberon Triton Nereid Proteus Charon Phobos Deimos'.split(' ')};
+function codeName(code){ var m=/^([AH][1-3])-(\d\d)$/.exec(code||''); if(!m) return null; var L=CNAMES[m[1]]; return L&&L[+m[2]-1]||null; }
 function listFor(tab){
   if(tab==='hoop') return listFor('H1').concat(listFor('H2'),listFor('H3'));
   if(tab==='my') return myDB().filter(function(c){ return isHoopC(c.cls)===isHoopS(); }).map(function(c){return {id:c.id,name:c.name,cls:c.cls,author:c.author,gen:false,W:c.W,H:c.H,obs:c.obs,route:c.route,sides:c.sides,hp:c.hp,marks:c.marks,turns:c.turns,src:c.src,gcid:c.gcid,gname:c.gname};});
   if(tab==='tr') return (catGroup('tr')||TRC).map(function(c){return {id:c.id,name:c.name,cls:c.cls,author:c.author,gen:false,W:c.W||40,H:c.H||20,obs:c.obs,route:c.route,turns:c.turns,src:c.src};});
-  return getC(tab).map(function(c){return {id:c.id||c.name,name:c.name,cls:tab,author:c.author||'',gen:!c.author,W:c.W||40,H:c.H||20,obs:c.obs,route:c.route,turns:c.turns,len:c.len,src:c.src};});
+  return getC(tab).map(function(c){var nm=codeName(c.name); return {id:c.id||c.name,name:nm||c.name,code:nm?c.name:'',cls:tab,author:c.author||'',gen:!c.author,W:c.W||40,H:c.H||20,obs:c.obs,route:c.route,turns:c.turns,len:c.len,src:c.src};});
 }
 /* náhled parkuru se skutečnou dráhou psa, i se smyčkami otoček */
 function thumb(c,geo){
@@ -7010,7 +7024,7 @@ function libRender(){
     /* karta jen na dva řádky: délka a počet překážek, pod tím barevná náročnost a SČP. Podrobná čísla (oblouky, křížení, otočky, MČP) jsou v Plánu v Rozboru */
     return '<div class="card'+(c.id===S.meta.id?' cur':'')+'">'+
       '<button class="pick" data-id="'+esc(c.id)+'">'+thumb(c,geo)+
-      '<div class="meta"><b translate="no">'+esc(crsName(c))+'</b><span class="ln">'+fmt(m.len)+' m · '+nPrek(m.n)+'</span>'+
+      '<div class="meta"><b translate="no">'+esc(crsName(c))+(c.code?'<small class="nk">'+esc(c.code)+'</small>':'')+'</b><span class="ln">'+fmt(m.len)+' m · '+nPrek(m.n)+'</span>'+
       '<span class="ln l2">'+(st?'<i class="dpill d'+diffLvl(st.diff)+'">'+diffLabel(st.diff)+'</i>':'')+(m.hoop?'<span>Hoopers '+esc(c.cls)+'</span>':'<span>SČP '+m.sct+' s</span>')+'</span></div></button>'+
       (srcOk?'<a class="src" href="'+esc(c.src)+'" target="_blank" rel="noopener">Původní plánek</a>':'')+
       (isNewC(c.id)||mk.done?'<div class="tags">'+(isNewC(c.id)?'<span class="new-tag">Nový</span>':'')+(mk.done?'<span class="done-tag">'+(bb?'✓ <span translate="no">'+gTxt(bb.g)+'</span>':'✓ zaběhnuto')+'</span>':'')+'</div>':'')+
@@ -7046,7 +7060,7 @@ function loadCourse(c,quiet){
     S.W=c.W||40; S.H=c.H||20; setSizeSel();
     S.obs=c.obs.map(function(o){var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.type==='tunnel'&&o.bend) n.bend=o.bend; if(o.type==='tunnel'&&o.len) n.len=o.len; if(o.type==='jump'&&JV[o.v]) n.v=o.v; if(o.lock) n.lock=1; return n;}); S.route=c.route.slice(); sel=null;
     S.sides=(c.sides||[]).slice(); S.turns=(c.turns||[]).slice(); S.hp=(c.hp||[]).map(function(p){return p.slice();}); S.marks=(c.marks||[]).map(function(m){return {t:m.t,x:m.x,y:m.y};}); if(panel==='quiz'){quizStop(); panel=null;}
-    S.meta={id:c.id,name:c.name,cls:c.cls,author:c.author||'',gen:!!c.gen,dirty:false}; S.chk=null;
+    S.meta={id:c.id,name:c.name,cls:c.cls,author:c.author||'',gen:!!c.gen,dirty:false}; if(c.code) S.meta.code=c.code; S.chk=null;
     if(c.gcid){ S.meta.gcid=+c.gcid; S.meta.gname=String(c.gname||''); } /* parkur skupiny: uložený běh jde do žebříčku skupiny */
     if(isHoopC(c.cls)!==isHoopS()) setSport(isHoopC(c.cls)?'hoopers':'agility',true);
     newSeen(c.id);
