@@ -231,6 +231,89 @@ export function longjump(o = {}) {
   return g;
 }
 
+/* ---------- Hoopers (FCI Hoopers Regulations): oblouk, sud, plůtek, krátký tunel a prostor psovoda ----------
+   Pes je bere ve směru osy x jako ostatní překážky; nohy oblouku a síť plůtku leží podél z (jako v plánu). */
+const legM = () => mat('#8a9097', .45, .5);
+/* opěrka u paty (oblouk, plůtek): krátká noha podél x, FCI nejvýš 70 cm */
+function foot(g, z) { const f = new THREE.Mesh(new THREE.BoxGeometry(.6, .022, .045), legM()); f.position.set(0, .011, z); g.add(f); }
+
+/* oblouk: šířka 90 cm (jako v plánu), spodní díl 50 cm v kontrastní barvě, nahoře půlkruh – celkem 95 cm (FCI: 80–100 × 90–120 cm),
+   trubka 3,2 cm, bez příčky mezi nohama */
+export function hoop(o = {}) {
+  const W = o.width || .9, r = W / 2, leg = o.leg || .5, t = .016; let g = new THREE.Group();
+  const lm = mat(o.legColor || '#f5f5f2', .45), am = mat(o.color || '#e07b2c', .4), jm = mat('#3a3f46', .5);
+  for (const s of [-1, 1]) {
+    const p = new THREE.Mesh(new THREE.CylinderGeometry(t, t, leg, 10), lm); p.position.set(0, leg / 2, s * r); g.add(p);
+    const j = new THREE.Mesh(new THREE.CylinderGeometry(t + .006, t + .006, .07, 10), jm); j.position.set(0, leg, s * r); g.add(j);   // spojka nohy a oblouku
+    foot(g, s * r);
+  }
+  const arch = new THREE.Mesh(new THREE.TorusGeometry(r, t, 8, 36, Math.PI), am); arch.rotation.y = Math.PI / 2; arch.position.y = leg; g.add(arch);
+  shadowAll(g); g = mergeByMaterial(g); g.userData = { width: W, h: leg + r };
+  return g;
+}
+
+/* sud: plastový barel ⌀ 60 cm (jako v plánu), výška 85 cm (FCI: ⌀ 45–70 cm, 65–110 cm), kontrastní pruhy, obruče a víko se zátkou */
+export function barrel(o = {}) {
+  const r = o.r || .3, h = o.h || .85; let g = new THREE.Group();
+  const bm = mat(o.color || '#4e7d34', .5), dm = mat('#3d6629', .55), wm = mat('#f2f2ee', .5);
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h - .02, 32), bm); body.position.y = (h - .02) / 2; g.add(body);
+  for (const y of [.3, .58]) { const b = new THREE.Mesh(new THREE.CylinderGeometry(r + .003, r + .003, .06, 32, 1, true), wm); b.position.y = y; g.add(b); }
+  for (const y of [.02, h * .44, h - .02]) { const b = new THREE.Mesh(new THREE.TorusGeometry(r, .012, 6, 32), dm); b.rotation.x = Math.PI / 2; b.position.y = y; g.add(b); }
+  const lid = new THREE.Mesh(new THREE.CylinderGeometry(r - .01, r - .01, .02, 32), dm); lid.position.y = h - .01; g.add(lid);
+  const bung = new THREE.Mesh(new THREE.CylinderGeometry(.035, .035, .02, 12), wm); bung.position.set(r * .5, h + .005, 0); g.add(bung);
+  shadowAll(g); g = mergeByMaterial(g); g.userData = { r, h };
+  return g;
+}
+
+/* plůtek: rám 110 × 95 cm z trubek (FCI: 90–130 × 90–110 cm), uvnitř síť, přes kterou pes vidí psovoda; opěrky napříč.
+   Síť leží podél z, pes ho míjí podél sítě (FCI: jen ve směru překážky, ne přes kratší stranu). */
+let netTex = null;
+function gateNet() {
+  if (netTex) return netTex;
+  netTex = canvasTex(64, 64, (x, W) => { x.clearRect(0, 0, W, W); x.fillStyle = 'rgba(60,48,90,.22)'; x.fillRect(0, 0, W, W); x.strokeStyle = 'rgba(28,24,40,.85)'; x.lineWidth = 5; x.strokeRect(0, 0, W, W); });
+  netTex.wrapS = netTex.wrapT = THREE.RepeatWrapping; return netTex;
+}
+export function gate(o = {}) {
+  const W = o.width || 1.1, H = o.h || .95, t = .016, gap = .03; let g = new THREE.Group();
+  const fm = mat(o.color || '#7b5ea7', .45);
+  for (const s of [-1, 1]) { const p = new THREE.Mesh(new THREE.CylinderGeometry(t, t, H, 10), fm); p.position.set(0, H / 2, s * W / 2); g.add(p); foot(g, s * W / 2); }
+  for (const y of [gap, H]) { const b = new THREE.Mesh(new THREE.CylinderGeometry(t, t, W, 10), fm); b.rotation.x = Math.PI / 2; b.position.y = y; g.add(b); }
+  shadowAll(g); g = mergeByMaterial(g);
+  const tex = gateNet(); tex.repeat.set(W / .08, (H - gap) / .08);
+  const net = new THREE.Mesh(new THREE.PlaneGeometry(W, H - gap), new THREE.MeshStandardMaterial({ map: tex, transparent: true, side: THREE.DoubleSide, roughness: .8, depthWrite: false }));
+  net.rotation.y = Math.PI / 2; net.position.y = (H + gap) / 2; net.receiveShadow = true; g.add(net);
+  g.userData = { width: W, h: H };
+  return g;
+}
+
+/* krátký tunel (chute): látková trubice ⌀ 80 cm, délka 1 m (FCI 80 × 80 × 100 cm), obruče a nožky rámu mimo dráhu psa */
+export function chute(o = {}) {
+  const r = .4, L = o.len || 1, g = new THREE.Group();
+  const cloth = new THREE.MeshStandardMaterial({ color: o.color || '#2f6fd0', roughness: .6, side: THREE.DoubleSide });
+  const tube = new THREE.Mesh(new THREE.CylinderGeometry(r, r, L, 32, 1, true).rotateZ(Math.PI / 2), cloth); tube.position.y = r; g.add(tube);
+  const fr = new THREE.Group(), rib = mat(o.rib || '#1c4fa0', .5);
+  for (let k = 0; k <= 4; k++) { const m = new THREE.Mesh(new THREE.TorusGeometry(r + .004, k % 4 ? .01 : .02, 6, 32), rib); m.rotation.y = Math.PI / 2; m.position.set(-L / 2 + k * L / 4, r, 0); fr.add(m); }
+  for (const s of [-1, 1]) { const f = new THREE.Mesh(new THREE.BoxGeometry(.05, .03, 2 * r + .3), legM()); f.position.set(s * L / 2, .015, 0); fr.add(f); }
+  g.add(mergeByMaterial(fr)); shadowAll(g);
+  g.userData = { r, length: L };
+  return g;
+}
+
+/* prostor psovoda: čtverec 2 × 2 m vyznačený hadicí ⌀ 5 cm (FCI: hadice 2–7 cm nebo páska), uvnitř lehce podbarvený; není to překážka */
+export function handlerArea(o = {}) {
+  const S = o.size || 2, r = .025, col = o.color || '#e2b007'; let g = new THREE.Group();
+  const hm = mat(col, .7);
+  for (const s of [-1, 1]) {
+    const a = new THREE.Mesh(new THREE.CylinderGeometry(r, r, S + 2 * r, 8), hm); a.rotation.z = Math.PI / 2; a.position.set(0, r, s * S / 2); g.add(a);
+    const b = new THREE.Mesh(new THREE.CylinderGeometry(r, r, S + 2 * r, 8), hm); b.rotation.x = Math.PI / 2; b.position.set(s * S / 2, r, 0); g.add(b);
+  }
+  shadowAll(g); g = mergeByMaterial(g);
+  const fill = new THREE.Mesh(new THREE.PlaneGeometry(S, S).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: col, transparent: true, opacity: .2, roughness: 1, depthWrite: false }));
+  fill.position.y = .009; fill.receiveShadow = true; g.add(fill);
+  g.userData = { size: S };
+  return g;
+}
+
 /* ---------- číslo překážky (cedulka na stojánku) ---------- */
 export function numSign(n) {
   const tx = canvasTex(128, 128, x => { x.fillStyle = '#fff'; x.fillRect(0, 0, 128, 128); x.fillStyle = '#1f6b45'; x.font = '800 92px sans-serif'; x.textAlign = 'center'; x.fillText(String(n), 64, 98); });
