@@ -1,5 +1,5 @@
 /* Pawkur (dříve AgiPlan, HandlerMap a Agility trasa): offline a příjem plánku přes Sdílet */
-var CACHE='agility-trasa-2.9', FONTS='agility-fonts';
+var CACHE='agility-trasa-3.0', FONTS='agility-fonts';
 var CORE=['./','index.html','manifest.webmanifest','icon-192.png']; /* velké ikony (fotka, přes 0,5 MB) si bere jen instalace z manifestu, offline nejsou potřeba */
 /* 3D balíček (677 kB) se neukládá při instalaci, ale až při prvním použití 3D; pak funguje i offline */
 var LAZY=/\/v3d\/v3d\.js$/;
@@ -40,4 +40,26 @@ self.addEventListener('fetch',function(e){
     return; }
   if(LAZY.test(u.pathname)){ e.respondWith(caches.open(CACHE).then(function(c){ return c.match(e.request).then(function(r){ if(r) return r; return fetch(e.request).then(function(n){ if(n&&n.ok) e.waitUntil(c.put(e.request,n.clone()).catch(function(){})); return n; }); }); })); return; }
   e.respondWith(caches.match(e.request).then(function(r){ return r||fetch(e.request); }));
+});
+/* upozornění (3.0): zpráva ze serveru {title, body, url, tag}; klepnutí otevře (nebo přepne na) aplikaci na dané adrese */
+self.addEventListener('push',function(e){
+  var d={}; try{ d=e.data?e.data.json():{}; }catch(x){ d={body:e.data?e.data.text():''}; }
+  if(!d||typeof d!=='object') d={};
+  var o={body:String(d.body||''),icon:'icon-192.png',data:{url:String(d.url||'./')}};
+  if(d.tag) o.tag=String(d.tag);
+  e.waitUntil(self.registration.showNotification(String(d.title||'Pawkur'),o));
+});
+self.addEventListener('notificationclick',function(e){
+  e.notification.close();
+  var u; try{ u=new URL((e.notification.data&&e.notification.data.url)||'./',self.registration.scope).href; }catch(x){ u=self.registration.scope; }
+  if(u.indexOf(self.registration.scope)!==0) u=self.registration.scope;
+  e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(function(cs){
+    for(var i=0;i<cs.length;i++){ if(cs[i].url.indexOf(self.registration.scope)===0&&'focus' in cs[i]){ if(cs[i].navigate) cs[i].navigate(u); return cs[i].focus(); } }
+    if(self.clients.openWindow) return self.clients.openWindow(u);
+  }));
+});
+/* prohlížeč odběr obnovil (nový klíč, vypršení): přihlásit znovu stejným klíčem; nový odběr pošle aplikace na server při dalším otevření */
+self.addEventListener('pushsubscriptionchange',function(e){
+  var old=e.oldSubscription, key=old&&old.options&&old.options.applicationServerKey; if(!key) return;
+  e.waitUntil(self.registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:key}).catch(function(){}));
 });

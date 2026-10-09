@@ -604,6 +604,35 @@ body.at-home main{padding-top:0; padding-left:0; padding-right:0;}
 .care .ic{font-size:20px;} .care .btn{padding:8px 11px;}
 .hist .hvid{display:inline-block; margin-top:2px; font-size:12.5px; font-weight:700; color:var(--accent); text-decoration:none;}
 .hist button.on{color:var(--accent);}
+/* Pawkur 3.0: Dnes (parkur od skupiny, plán na týden, nabídka upozornění), galerie, skupiny, upozornění v nastavení */
+.hm-today{display:flex; flex-direction:column; gap:12px;}
+.hm-today .hm-day,.hm-today .hm-inst{margin-bottom:0;}
+.hm-plan{align-items:flex-start;} .pl-list{display:flex; flex-direction:column; gap:4px; margin-top:8px;}
+.pl-row{display:flex; align-items:center; gap:6px; border-radius:12px; background:var(--sunk); padding:2px 6px 2px 2px;}
+.pl-row.on .pl-go b{text-decoration:line-through; color:var(--muted);}
+.pl-ck{display:grid; place-items:center; width:44px; height:44px; flex:0 0 auto; cursor:pointer;} .pl-ck input{width:22px; height:22px; margin:0; accent-color:var(--accent);}
+.pl-go{flex:1; min-width:0; text-align:left; border:0; background:none; padding:6px 4px; font:inherit; color:inherit; display:flex; flex-direction:column; min-height:44px; justify-content:center;}
+.pl-go b{font-size:14.5px; line-height:1.25; display:block;} .pl-go span{font-size:12px; color:var(--muted); display:block;}
+.hm-gc{flex-wrap:wrap; align-items:flex-start;} .hm-gc .gc-m{display:block; width:84px; height:52px; border-radius:12px; overflow:hidden; background:var(--field); flex:0 0 auto;} .hm-gc .gc-m svg{width:100%; height:100%; display:block;}
+.hm-gc>.cd-acts{flex-basis:100%; margin-top:2px;} .hm-gc .cd-when{display:block; font-size:12px; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:.03em;}
+.hm-push{align-items:flex-start;} .hm-push .hm-go{margin-top:10px;}
+#v-lib.gal-on #libFilters,#v-lib.gal-on .libmeta,#v-lib.gal-on .librow,#v-lib.gal-on #catBar{display:none;}
+.galbar{grid-column:1/-1; display:flex; flex-direction:column; gap:8px;} .galbar .galq{flex-wrap:nowrap;} .galbar .galq input{flex:1; min-width:0; padding:9px 11px; border:1px solid var(--border); border-radius:10px; background:var(--surface); font-size:15px; color:var(--text);}
+.galcards{grid-column:1/-1; display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px;} .galcards .empty-state,.galcards .galmore{grid-column:1/-1;}
+.card.gal.hid{opacity:.6;} .card.gal .meta .l2{display:flex; justify-content:space-between; gap:6px;}
+.gal-th{border-radius:14px; overflow:hidden; background:var(--field); border:1px solid var(--border);} .gal-th svg{width:100%; height:auto; display:block;}
+.gal-rate{display:flex; flex-direction:column; gap:4px;} .gal-rate>span{font-size:13.5px; color:var(--muted);}
+.grp-h{display:flex; flex-direction:column; gap:6px;} .grp-h>span{font-size:13.5px; color:var(--muted);}
+.grp-code{display:flex; flex-direction:column; gap:8px; margin-top:4px;} .grp-code>span{font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px;}
+.grp-tabs{margin:12px 0;}
+.item.grp{text-align:left; font:inherit; color:inherit; cursor:pointer; width:100%;} .item.grp .mch{color:var(--muted); display:grid;} .item.grp .mch svg{width:20px; height:20px;}
+.item.grp span span,.item.gc span span,.item.gm span span,.item.gm .hint{display:inline;} /* popis v jednom řádku (.item span je jinak blok) */
+.sheet .sh-acts{justify-content:flex-start;}
+.item.gc{grid-template-columns:auto minmax(80px,1fr);} .item.gc .gc-m{display:block; width:72px; height:46px; border-radius:10px; overflow:hidden; background:var(--field);} .item.gc .gc-m svg{width:100%; height:100%; display:block;}
+.item.gc .acts{grid-column:1/-1; justify-content:flex-start;}
+.fld-in{flex:1; min-width:0; padding:10px 11px; border:1px solid var(--border); border-radius:10px; background:var(--bg); font-size:15px; color:var(--text);}
+.pushtop{margin:2px 0;} .push-sw{font-size:15px; font-weight:600;} .push-sw input{accent-color:var(--accent); width:20px; height:20px;}
+.sh-acts{justify-content:flex-start;}
 .cp-home{margin:0 16px; display:flex; flex-direction:column; gap:8px;}
 .cp-row{display:flex; gap:12px; align-items:flex-start; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:10px 12px;}
 .cp-row.mine{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset;}
@@ -1365,7 +1394,7 @@ body.fullfield .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));}
        popis katalogu a Zkontrolovat nové parkury jsou až pod seznamem (první karta je na 390 px kolem 300 px místo 473 px) -->
   <section class="view" id="v-lib" hidden>
     <div class="seg wide" id="libTabs" role="group" aria-label="Sbírka">
-      <button data-c="A1" class="on">A1</button><button data-c="A2">A2</button><button data-c="A3">A3</button><button data-c="tr">Trenéři</button><button data-c="my">Moje</button>
+      <button data-c="A1" class="on">A1</button><button data-c="A2">A2</button><button data-c="A3">A3</button><button data-c="tr">Trenéři</button><button data-c="my">Moje</button><button data-c="gal">Galerie</button>
     </div>
     <div class="filters" id="libFilters">
       <button class="chip on" data-f="all">Vše</button>
@@ -1432,6 +1461,7 @@ body.fullfield .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));}
       <div class="mgrp">Můj tým</div>
       <button class="mrow" data-m="acct"><span class="mic" data-ic="user"></span><span class="ml">Účet</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="dogs"><span class="mic" data-ic="paw"></span><span class="ml">Psi</span><span class="mch" data-ic="chev"></span></button>
+      <button class="mrow" data-m="groups"><span class="mic" data-ic="people"></span><span class="ml">Skupiny a trenér</span><span class="mch" data-ic="chev"></span></button>
       <button class="mrow" data-m="diary"><span class="mic" data-ic="log"></span><span class="ml">Deník a statistiky</span><span class="mch" data-ic="chev"></span></button>
       <div class="mgrp">Učení</div>
       <button class="mrow" data-m="video"><span class="mic" data-ic="play"></span><span class="ml">Videa a technika</span><span class="mch" data-ic="chev"></span></button>
@@ -2788,8 +2818,85 @@ var I18N_PES={exact:{
 ["^Zapiš první trénink a uvidíš, jak se (.+) zlepšuje\\.$","Log your first training and see how $1 improves."],
 ["^(\\d+) z (\\d+) do (.+)$","$1 of $2 to $3"]
 ]};
+/* Pawkur 3.0: Dnes, plán na týden, galerie parkurů, skupiny a trenér, upozornění */
+var I18N_TRI={exact:{
+"Dnes": "Today", "neděle": "Sunday", "pondělí": "Monday", "úterý": "Tuesday", "středa": "Wednesday", "čtvrtek": "Thursday", "pátek": "Friday", "sobota": "Saturday",
+"dnes": "today", "zítra": "tomorrow", "včera": "yesterday", "poslal/a": "posted by", "stavěl/a": "built by", "rozhodčí": "judge", "od": "since", "(ty)": "(you)",
+"Plán na tento týden": "Plan for this week", "Hotovo": "Done", "cvičení · ještě nezkoušeno": "drill · not tried yet", "Zaběhnout znovu": "Run again", "Otevřít": "Open", "Žebříček": "Leaderboard", "Znovu": "Again",
+"Zapni si upozornění": "Turn on notifications", "Parkur od trenéra, připomínka den před závodem a nový parkur týdne.": "A course from your trainer, a reminder the day before a competition and the new course of the week.", "Zapnout": "Turn on",
+"Upozornění": "Notifications", "Posílat upozornění na tohle zařízení": "Send notifications to this device", "Parkur od skupiny": "Course from a group", "Zítra závodíš": "Competition tomorrow", "Nový parkur týdne": "New course of the week", "Vyzkoušet": "Try it",
+"Parkur od trenéra, připomínka den před závodem a nový parkur týdne. Nic jiného, žádná reklama.": "A course from your trainer, a reminder the day before a competition and the new course of the week. Nothing else, no ads.",
+"Na iPhonu fungují upozornění v aplikaci přidané na plochu: Sdílet → Přidat na plochu.": "On iPhone notifications work in the app added to the Home Screen: Share → Add to Home Screen.",
+"Tenhle prohlížeč upozornění neumí.": "This browser can't show notifications.", "Upozornění fungují v aplikaci nainstalované z pawkur.cz.": "Notifications work in the app installed from pawkur.cz.",
+"Upozornění jsou zapnutá.": "Notifications are on.", "Upozornění jsou vypnutá.": "Notifications are off.", "Zkušební zpráva odešla. Měla by přijít během chvilky.": "The test message was sent. It should arrive in a moment.",
+"Na iPhonu nejdřív přidej Pawkur na plochu (Sdílet → Přidat na plochu) a upozornění zapni v něm.": "On iPhone first add Pawkur to the Home Screen (Share → Add to Home Screen) and turn notifications on there.",
+"Upozornění jsou pro Pawkur zakázaná. Povol je v nastavení prohlížeče.": "Notifications are blocked for Pawkur. Allow them in the browser settings.", "server pro upozornění ještě není připravený": "the notification server isn't ready yet", "Nepovedlo se": "It didn't work",
+"Galerie": "Gallery", "Nejlépe hodnocené": "Top rated", "Nejvíc otevírané": "Most opened", "Název, autor nebo rozhodčí": "Name, author or judge", "Hledat": "Search",
+"Galerie: parkury, které zveřejnili ostatní. Vlastní parkur zveřejníš v Plánu přes Sdílet → Zveřejnit v galerii.": "Gallery: courses published by others. Publish your own in Plan via Share → Publish to the gallery.",
+"Načítám galerii…": "Loading the gallery…", "Zkusit znovu": "Try again", "Zatím jsi nic nezveřejnil/a. V Plánu otevři Sdílet → Zveřejnit v galerii.": "You haven't published anything yet. In Plan open Share → Publish to the gallery.",
+"Moje zveřejněné parkury uvidíš po přihlášení (Více → Účet).": "You'll see your published courses after signing in (More → Account).", "Nic takového v galerii není. Zkus jiný filtr.": "Nothing like that in the gallery. Try another filter.",
+"V galerii zatím nic není. Buď první: Plán → Sdílet → Zveřejnit v galerii.": "The gallery is empty so far. Be the first: Plan → Share → Publish to the gallery.", "bez hodnocení": "no ratings", "Skryté po nahlášení": "Hidden after reports",
+"Zatím bez hodnocení": "No ratings yet", "Hodnotit můžeš po přihlášení.": "You can rate after signing in.", "Tvoje hodnocení": "Your rating", "Stáhnout z galerie": "Remove from the gallery", "Nahlásit": "Report", "Otevřít v Plánu": "Open in Plan", "Díky za hodnocení!": "Thanks for rating!",
+"Nahlásit parkur?": "Report this course?", "Nahlas parkur, který do galerie nepatří (není to parkur, urážky, cizí dílo). Po třech nahlášeních se schová.": "Report a course that doesn't belong in the gallery (not a course, offensive, someone else's work). After three reports it is hidden.",
+"Díky, podíváme se na to.": "Thanks, we'll look into it.", "Stáhnout parkur z galerie?": "Remove the course from the gallery?", "Ostatní ho v galerii přestanou vidět. Kód pro sdílení funguje dál.": "Others will no longer see it in the gallery. The sharing code keeps working.", "Stáhnout": "Remove",
+"Parkur už v galerii není.": "The course is no longer in the gallery.", "Parkur už máš v Moje.": "You already have this course in Mine.", "parkur už na serveru není": "the course is no longer on the server", "parkur je poškozený": "the course is corrupted", "nepodařilo se uložit": "it couldn't be saved",
+"Zveřejnit může jen přihlášený (Více → Účet).": "Only signed-in users can publish (More → Account).", "Zveřejnit v galerii": "Publish to the gallery", "Poslat skupině": "Send to a group",
+"Parkur uvidí všichni v Parkurech → Galerie, můžou ho otevřít a ohodnotit. Kdykoli ho stáhneš zpět.": "Everyone will see the course in Courses → Gallery, they can open and rate it. You can take it down any time.",
+"Rozhodčí nebo stavitel": "Judge or builder", "Země": "Country", "Česko": "Czechia", "Slovensko": "Slovakia", "Rakousko": "Austria", "Německo": "Germany", "Polsko": "Poland", "Británie": "Britain", "Jiná": "Other", "Zveřejnit": "Publish", "Zveřejňuji…": "Publishing…", "server vrátil neplatný kód": "the server returned an invalid code",
+"Skupiny a trenér": "Groups and trainer", "Skupiny jsou pro přihlášené": "Groups are for signed-in users",
+"Trenér založí skupinu a pošle kód. Parkur od trenéra se ti ukáže na Domů v Dnes, přijde upozornění a běhy celé skupiny se sejdou v jednom žebříčku.": "The trainer creates a group and sends the code. A course from the trainer shows on Home under Today, a notification arrives and the runs of the whole group meet in one leaderboard.",
+"Založit skupinu": "Create a group", "Přidat se kódem": "Join with a code", "Trénujete spolu?": "Training together?",
+"Založ skupinu pro klub nebo tréninkovou partu, nebo se přidej kódem od trenéra. Parkury od trenéra uvidíš na Domů a běhy celé skupiny v jednom žebříčku.": "Create a group for your club or training crew, or join with a code from your trainer. You'll see the trainer's courses on Home and the whole group's runs in one leaderboard.",
+"trenér": "trainer", "člen": "member", "poslední parkur": "last course", "Kód skupiny dostanou členové od trenéra (zakladatele). Jméno ve skupině je z účtu Google, změníš ho v nastavení skupiny.": "Members get the group code from the trainer (founder). Your name in the group comes from your Google account; change it in the group settings.",
+"Skupiny": "Groups", "Jsi trenér": "You're a trainer", "Jsi člen": "You're a member", "Kód skupiny": "Group code", "Kopírovat kód": "Copy code", "Poslat odkaz": "Send link", "Skupina": "Group", "Členové": "Members", "Poslat parkur z Plánu": "Send the course from Plan",
+"Nejdřív si v Plánu otevři nebo postav parkur s trasou.": "First open or build a course with a route in Plan.", "Zatím tu žádný parkur není. Pošli ten z Plánu: členům se ukáže na Domů a přijde jim upozornění.": "No course here yet. Send the one from Plan: members will see it on Home and get a notification.",
+"Už není trenér": "No longer a trainer", "Udělat trenérem": "Make a trainer", "Vyhodit": "Remove", "Trenér může posílat parkury a mazat je. Zakladatel navíc povyšuje a odebírá členy.": "A trainer can send courses and delete them. The founder can also promote and remove members.",
+"Moje jméno ve skupinách": "My name in groups", "Jméno vidí ostatní v žebříčku a u parkurů.": "Others see the name in the leaderboard and next to courses.", "Název skupiny": "Group name", "Přejmenovat": "Rename", "Smazat skupinu": "Delete group",
+"Smaže skupinu i s parkury a žebříčky pro všechny členy.": "Deletes the group with its courses and leaderboards for all members.", "Odejít ze skupiny": "Leave the group", "Přestaneš vidět její parkury; tvoje běhy v žebříčcích zůstanou.": "You'll stop seeing its courses; your runs stay in the leaderboards.", "Odejít": "Leave",
+"Smazat parkur ze skupiny?": "Delete the course from the group?", "Zmizí členům z Domů i se žebříčkem.": "It disappears from members' Home together with its leaderboard.", "Vyhodit ze skupiny?": "Remove from the group?", "Člen přestane vidět parkury skupiny.": "The member will stop seeing the group's courses.",
+"Přidej se do skupiny": "Join the group", "v aplikaci Pawkur": "in the Pawkur app", "kód": "code", "Jméno uloženo": "Name saved", "Název má mít aspoň 2 znaky.": "The name needs at least 2 characters.", "Přejmenováno": "Renamed",
+"Smazat skupinu?": "Delete the group?", "Smaže se skupina, její parkury i žebříčky, pro všechny členy. Nejde to vrátit.": "The group, its courses and leaderboards will be deleted for all members. This can't be undone.", "Skupina smazána": "Group deleted",
+"Odejít ze skupiny?": "Leave the group?", "Přestaneš vidět její parkury. Vrátit se můžeš kódem.": "You'll stop seeing its courses. You can come back with the code.",
+"Pro klub, tréninkovou partu nebo kurz. Dostaneš kód, kterým se ostatní přidají.": "For a club, a training crew or a class. You get a code the others join with.", "např. Agility Brno – středa": "e.g. Agility Brno – Wednesday", "Založit": "Create",
+"Přidat se do skupiny": "Join a group", "Zadej šestimístný kód od trenéra.": "Enter the six-character code from your trainer.", "Přidat se": "Join", "Kód má 6 znaků.": "The code has 6 characters.", "Někdo ti poslal odkaz na skupinu v Pawkuru.": "Someone sent you a link to a group in Pawkur.",
+"Skupiny jsou pro přihlášené. Přihlas se a pak se přidáš.": "Groups are for signed-in users. Sign in and then join.", "Teď ne": "Not now", "parkur už ve skupině není": "the course is no longer in the group", "Načítám parkur…": "Loading the course…",
+"Běh je v žebříčku skupiny": "The run is in the group leaderboard", "Žebříček skupiny": "Group leaderboard", "Pořadí podle trestných bodů, pak času. Každý pes jednou, poslední zapsaný běh.": "Order by faults, then time. Each dog once, the last recorded run.",
+"Načítám žebříček…": "Loading the leaderboard…", "Zatím nikdo nezaběhl. Buď první!": "Nobody has run it yet. Be the first!", "Skupiny jsou pro přihlášené (Více → Účet).": "Groups are for signed-in users (More → Account).", "Načítám skupiny…": "Loading groups…",
+"Nejdřív založ skupinu nebo se do nějaké přidej (Více → Skupiny a trenér).": "First create a group or join one (More → Groups and trainer).", "Poslat parkur skupině": "Send the course to a group", "Na den": "For the day", "Poznámka": "Note", "např. trénink v 18:00": "e.g. training at 18:00",
+"Členům se parkur ukáže na Domů v Dnes a přijde jim upozornění. Jejich běhy se sejdou v žebříčku parkuru.": "Members will see the course on Home under Today and get a notification. Their runs meet in the course leaderboard.", "Poslat": "Send", "Vyber skupinu.": "Choose a group.", "Posílám…": "Sending…",
+"Parkur je u skupiny. Členům se ukáže na Domů.": "The course is with the group. Members will see it on Home.", "Sdílení se nepovedlo": "Sharing didn't work",
+"Novinky v Pawkuru 3.0": "What's new in Pawkur 3.0", "Novinky ve verzi 3.0": "What's new in 3.0",
+"Dnes na Domů: parkur od trenéra, den závodů a plán na týden se zaškrtáváním": "Today on Home: a course from your trainer, competition day and a weekly plan with checkboxes",
+"Galerie parkurů: zveřejni parkur přes Sdílet, otevírej a hodnoť parkury ostatních": "Course gallery: publish a course via Share, open and rate courses by others",
+"Skupiny a trenér: skupina na kód, parkur poslaný skupině se ukáže členům na Domů a jejich běhy se sejdou v žebříčku": "Groups and trainer: a group joined by code, a course sent to the group shows on members' Home and their runs meet in a leaderboard",
+"Upozornění na telefonu: parkur od skupiny, zítra závodíš a nový parkur týdne (Více → Nastavení)": "Notifications on your phone: a course from a group, competition tomorrow and the new course of the week (More → Settings)"
+},num:{
+"cvičení · # běh": "drill · # run", "cvičení · # běhy": "drill · # runs", "cvičení · # běhů": "drill · # runs", "# z # hotovo": "# of # done",
+"# běh ve skupině": "# run in the group", "# běhy ve skupině": "# runs in the group", "# běhů ve skupině": "# runs in the group",
+"# člen": "# member", "# členové": "# members", "# členů": "# members", "#× otevřeno": "opened #×", "Další (#)": "More (#)", "★ # (#)": "★ # (#)", "★ # · # hodnocení": "★ # · # ratings",
+"Zkoušek bylo dost, zkus to za hodinu.": "That's enough tests, try again in an hour."
+},re:[
+["^Parkur týdne (A[123])$","Course of the week $1"],
+["^Galerie teď nejde načíst \\((.+)\\)\\.$","The gallery can't be loaded right now (@1)."],
+["^Hodnocení se neuložilo: (.+)$","The rating wasn't saved: @1"],
+["^Parkur (.+) je uložený v Moje$","Course $1 is saved in Mine"],
+["^Parkur je v galerii\\. Kód (.+) funguje dál\\.$","The course is in the gallery. Code $1 keeps working."],
+["^Zveřejnění se nepovedlo: (.+)$","Publishing failed: @1"],
+["^Skupiny se nepodařilo načíst \\((.+)\\)\\.$","Groups couldn't be loaded (@1)."],
+["^Skupinu se nepodařilo načíst \\((.+)\\)\\.$","The group couldn't be loaded (@1)."],
+["^Skupina založena\\. Pošli kód (.+) ostatním\\.$","Group created. Send the code $1 to the others."],
+["^Jsi ve skupině (.+)$","You're in the group $1"],
+["^Přidat se nepovedlo: (.+)$","Joining failed: @1"],
+["^Běh je v žebříčku skupiny (.+)$","The run is in the leaderboard of the group $1"],
+["^Do žebříčku skupiny se běh neposlal: (.+)$","The run wasn't sent to the group leaderboard: @1"],
+["^Žebříček teď nejde načíst \\((.+)\\)\\.$","The leaderboard can't be loaded right now (@1)."],
+["^Odeslání se nepovedlo: (.+)$","Sending failed: @1"],
+["^Nepovedlo se: (.+)$","It didn't work: @1"],
+["^Zkouška nevyšla: (.+)$","The test failed: @1"],
+["^Načtení se nepovedlo: (.+)$","Loading failed: @1"]
+]};
 function i18nStart(){
-  i18nAdd(I18N_EXTRA); i18nAdd(I18N_POSTUP); i18nAdd(I18N_PES);
+  i18nAdd(I18N_EXTRA); i18nAdd(I18N_POSTUP); i18nAdd(I18N_PES); i18nAdd(I18N_TRI);
   document.documentElement.lang=LANG==='en'?'en':'cs';
   if(LANG!=='en'||!window.MutationObserver) return;
   trTree(document.body);
@@ -6523,7 +6630,7 @@ function getC(c){
 }
 function listFor(tab){
   if(tab==='hoop') return listFor('H1').concat(listFor('H2'),listFor('H3'));
-  if(tab==='my') return myDB().filter(function(c){ return isHoopC(c.cls)===isHoopS(); }).map(function(c){return {id:c.id,name:c.name,cls:c.cls,author:c.author,gen:false,W:c.W,H:c.H,obs:c.obs,route:c.route,sides:c.sides,hp:c.hp,marks:c.marks,turns:c.turns,src:c.src};});
+  if(tab==='my') return myDB().filter(function(c){ return isHoopC(c.cls)===isHoopS(); }).map(function(c){return {id:c.id,name:c.name,cls:c.cls,author:c.author,gen:false,W:c.W,H:c.H,obs:c.obs,route:c.route,sides:c.sides,hp:c.hp,marks:c.marks,turns:c.turns,src:c.src,gcid:c.gcid,gname:c.gname};});
   if(tab==='tr') return (catGroup('tr')||TRC).map(function(c){return {id:c.id,name:c.name,cls:c.cls,author:c.author,gen:false,W:c.W||40,H:c.H||20,obs:c.obs,route:c.route,turns:c.turns,src:c.src};});
   return getC(tab).map(function(c){return {id:c.id||c.name,name:c.name,cls:tab,author:c.author||'',gen:!c.author,W:c.W||40,H:c.H||20,obs:c.obs,route:c.route,turns:c.turns,len:c.len,src:c.src};});
 }
@@ -6545,6 +6652,9 @@ function best(runs){
 }
 function libRender(){
   libTabsRender();
+  /* Galerie (3.0): parkury ze serveru místo místní sbírky; filtry, postup, Náhodný a Generátor se schovají (CSS .gal-on) */
+  $('v-lib').classList.toggle('gal-on',libTab==='gal');
+  if(libTab==='gal'){ galRender(); return; }
   var L=listFor(libTab);
   Array.prototype.forEach.call(document.querySelectorAll('#libTabs button'),function(b){b.className=b.getAttribute('data-c')===libTab?'on':'';});
   Array.prototype.forEach.call(document.querySelectorAll('#libFilters .chip'),function(b){b.classList.toggle('on',b.getAttribute('data-f')===libF);});
@@ -6604,6 +6714,7 @@ function loadCourse(c,quiet){
     S.obs=c.obs.map(function(o){var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.type==='tunnel'&&o.bend) n.bend=o.bend; if(o.type==='tunnel'&&o.len) n.len=o.len; if(o.type==='jump'&&JV[o.v]) n.v=o.v; return n;}); S.route=c.route.slice(); sel=null;
     S.sides=(c.sides||[]).slice(); S.turns=(c.turns||[]).slice(); S.hp=(c.hp||[]).map(function(p){return p.slice();}); S.marks=(c.marks||[]).map(function(m){return {t:m.t,x:m.x,y:m.y};}); if(panel==='quiz'){quizStop(); panel=null;}
     S.meta={id:c.id,name:c.name,cls:c.cls,author:c.author||'',gen:!!c.gen,dirty:false}; S.chk=null;
+    if(c.gcid){ S.meta.gcid=+c.gcid; S.meta.gname=String(c.gname||''); } /* parkur skupiny: uložený běh jde do žebříčku skupiny */
     if(isHoopC(c.cls)!==isHoopS()) setSport(isHoopC(c.cls)?'hoopers':'agility',true);
     newSeen(c.id);
     save(); drawGrid(); render(); ui(); topbar(); resetRun(); undoReset();
@@ -6633,7 +6744,7 @@ $('cards').onclick=function(e){
     },true);
     return;
   }
-  if(p){var c2=findCourse(p.getAttribute('data-id')); if(c2) loadCourse(c2);}
+  if(p&&p.hasAttribute('data-id')){var c2=findCourse(p.getAttribute('data-id')); if(c2) loadCourse(c2);} /* karty galerie (3.0) mají vlastní obsluhu */
 };
 $('randBtn').onclick=function(){
   var L=listFor(libTab).filter(function(c){return !getMark(c.id).done;});
@@ -7033,7 +7144,7 @@ function homeRender(){
       ?'<p class="hm-mini"><b>'+doneN+'</b> '+T('zaběhnuto')+' · <b>'+(avg?fmt(avg):'–')+'</b> '+T('m/s')+' · <b>'+(runs.length?T(clean+' %'):'–')+'</b> '+T('čisté')+(st?' · '+T('série '+st+(st===1?' den':st<5?' dny':' dní'))+' 🔥':'')+'</p>'
       :'<p class="hm-mini">'+(d?esc(d.name)+' čeká na první měřený běh. Stopky ukážou rychlost i čisté běhy.':'Změř první běh ve stopkách a tady uvidíš rychlost a čisté běhy.')+'</p>')+
     (donateOn()?'<button class="hm-sup" data-h="sup" aria-label="Podpořit aplikaci">'+IC.heartF+'<span>Podpořit</span></button>':'')+'</div></div>';
-  h+='<div id="hmInst"></div><div id="hmDay">'+(KACR_OK?compDayHTML():'')+'</div>';
+  h+='<div id="hmInst"></div>'+todayHTML(); /* Dnes: parkur od skupiny, den závodů (#hmDay), plán na týden, nabídka upozornění */
   h+=promoHomeHTML(); /* postup se hlídá sám: kolik zbývá do vyšší třídy */
   h+=askHomeHTML(); /* od druhé návštěvy jednou otázka Co ti v Pawkuru chybí? */
   /* parkury pro tebe: nové a nezaběhnuté ze třídy psa */
@@ -7073,7 +7184,7 @@ function homeRender(){
   if(!isHoopS()) h+='<details class="hm-more" id="hmMore"'+(lsGet(HMMORE,0)?' open':'')+'>'+moSum+mo+'</details>'; /* týdenní výzvy a liga jsou agility */
   $('v-home').innerHTML=h;
   if($('hmMore')) $('hmMore').ontoggle=function(){ lsSet(HMMORE,this.open?1:0); };
-  wkRefresh(cls); wkRefresh('Z'); lgRefresh(); compHomeRefresh(); if(window.pwaInstUI) pwaInstUI();
+  wkRefresh(cls); wkRefresh('Z'); lgRefresh(); compHomeRefresh(); groupTodayLoad(false); if(window.pwaInstUI) pwaInstUI();
 }
 $('v-home').onclick=function(e){
   var sb=e.target.closest('[data-sp]'); if(sb){ setSport(sb.getAttribute('data-sp')); return; }
@@ -7563,12 +7674,12 @@ function catCheck(){ /* tlačítko Zkontrolovat nové parkury */
    dostane štítek Nový, dokud parkur neotevřeš, nejdéle 30 dní. */
 var SEENK='agility-cat-seen-v1', NEWK='agility-cat-new-v1', NEWC=lsGet(NEWK,{})||{}, NEW_DAYS=30;
 var CAT_NEW0=['tr-pupik-sx18-a1']; /* přibylo po verzi 1.6: při prvním spuštění 1.7 se ukáže jako nové */
-var LIBT={A1:'A1',A2:'A2',A3:'A3',H1:'H1',H2:'H2',H3:'H3',hoop:'Hoopers',tr:'Trenéři',my:'Moje'};
+var LIBT={A1:'A1',A2:'A2',A3:'A3',H1:'H1',H2:'H2',H3:'H3',hoop:'Hoopers',tr:'Trenéři',my:'Moje',gal:'Galerie'};
 /* ---------- disciplína: Agility, nebo Hoopers (přepínač v horní liště); Parkury, Nový parkur a Domů se podle ní přepnou ---------- */
 var SPORTK='agility-sport-v1', SPORT=lsGet(SPORTK,'agility')==='hoopers'?'hoopers':'agility';
 function isHoopS(){ return SPORT==='hoopers'; }
 function libTabsRender(){
-  var tabs=isHoopS()?['H1','H2','H3','my']:['A1','A2','A3','tr','my'];
+  var tabs=isHoopS()?['H1','H2','H3','my','gal']:['A1','A2','A3','tr','my','gal'];
   if(tabs.indexOf(libTab)<0) libTab=isHoopS()?'H1':homeCls();
   $('libTabs').innerHTML=tabs.map(function(t){ return '<button data-c="'+t+'" class="'+(t===libTab?'on':'')+'">'+esc(LIBT[t])+'</button>'; }).join('');
 }
@@ -7817,7 +7928,8 @@ function shareSheet(){
   openSheet('<h3>Sdílet parkur</h3>'+
     (IS_SRV
       ? '<p>Vytvoř kód, pošli ho kamarádovi a on si parkur načte ve své aplikaci.</p><div id="shOut"></div>'+
-        '<div class="acts"><button class="btn primary" data-a="mk"'+(canShare?'':' disabled')+'>Vytvořit kód parkuru</button></div>'+
+        '<div class="acts sh-acts"><button class="btn primary" data-a="mk"'+(canShare?'':' disabled')+'>Vytvořit kód parkuru</button>'+
+        '<button class="btn" data-a="pub"'+(canShare?'':' disabled')+'>Zveřejnit v galerii</button><button class="btn" data-a="grp"'+(canShare?'':' disabled')+'>Poslat skupině</button></div>'+
         '<label for="shIn">Načíst parkur z kódu<input id="shIn" type="text" maxlength="6" autocomplete="off" placeholder="např. K7P2QX" style="text-transform:uppercase"></label>'+
         '<div class="acts"><button class="btn" data-a="x">Zavřít</button><button class="btn" data-a="get">Načíst</button></div>'
       : '<p>Sdílení kódem funguje v aplikaci pro Android. Tady můžeš parkur uložit jako obrázek nebo PDF v Exportu a poslat ho dál.</p><div class="acts"><button class="btn" data-a="x">Zavřít</button><button class="btn primary" data-a="exp">Otevřít Export</button></div>'),
@@ -7825,6 +7937,8 @@ function shareSheet(){
       var b=e.target.closest('[data-a]'); if(!b) return; var a=b.getAttribute('data-a');
       if(a==='x'){closeSheet(); return;}
       if(a==='exp'){closeSheet(); exportSheet(); return;}
+      if(a==='pub'){ var so=$('shOut'); galPubSheet((so&&so.getAttribute('data-code'))||''); return; } /* galerie (3.0): už vytvořený kód se použije */
+      if(a==='grp'){ groupPostSheet(0); return; }
       if(a==='mk'){
         b.disabled=true;
         var data={W:S.W,H:S.H,obs:S.obs,route:S.route,sides:S.sides||[],turns:S.turns||[],hp:(S.hp||[]).slice(0,400),marks:(S.marks||[]).slice(0,40)};
@@ -7837,7 +7951,7 @@ function shareSheet(){
             '<a class="btn" href="sms:?body='+encodeURIComponent(msg)+'">SMS</a>'+
             '<a class="btn" href="mailto:?subject='+encodeURIComponent('Agility parkur '+S.meta.name)+'&body='+encodeURIComponent(msg)+'">E-mail</a>'+
             (NATIVE&&NATIVE.shareText?'<button class="btn" data-a="nat">Sdílet jinam</button>':'')+'<button class="btn" data-a="cp">Kopírovat</button></div>';
-          out.setAttribute('data-msg',msg);
+          out.setAttribute('data-msg',msg); out.setAttribute('data-code',code);
         },function(err){toast('Kód se nepodařilo vytvořit: '+err.message); b.disabled=false;});
       }
       if(a==='cp') copyText($('shOut').getAttribute('data-msg'));
@@ -10051,7 +10165,7 @@ function appShare(){
   dnCopy(APP_URL);
 }
 /* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
-var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='2.9';
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.0';
 var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
 function fbSave(){ lsSet(FBK,FB); }
 var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];
@@ -10156,6 +10270,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   else if(moreTab==='coach'){ h='<p class="hint">Plánky od rozhodčích a trenérů. Parkur podle plánku přeneseš v Plánu přes Plánek z obrázku (překážky se rozpoznají samy) a při ukládání vyplníš, kdo ho stavěl.</p>'+coachHTML()+booksHTML(); }
   else if(moreTab==='backup'){ h=backupHTML(); }
   else if(moreTab==='acct'){ h=acctHTML(); }
+  else if(moreTab==='groups'){ h=groupsHTML(); groupsLoad(false); }
   else if(moreTab==='start'){ h=startHTML(); }
   else if(moreTab==='fb'){ h=fbHTML(); }
   else if(moreTab==='donate'){ h=donateOn()?donateHTML():'<p class="hint">Podpora zatím není nastavená.</p>'; }
@@ -10164,6 +10279,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
     h='<div class="morego"><button class="btn" data-mgo="fb">'+IC.mail+'<span>Napsat autorovi</span></button>'+(donateOn()?'<button class="btn primary" data-mgo="donate">'+IC.heartF+'<span>Podpořit aplikaci</span></button>':'')+'</div>'+
       '<div id="statsBox"></div><div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>Pawkur '+APPV+'</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
       '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
+      '<h4>Novinky ve verzi 3.0</h4><ul class="news"><li>Dnes na Domů: parkur od trenéra, den závodů a plán na týden se zaškrtáváním</li><li>Galerie parkurů: zveřejni parkur přes Sdílet, otevírej a hodnoť parkury ostatních</li><li>Skupiny a trenér: skupina na kód, parkur poslaný skupině se ukáže členům na Domů a jejich běhy se sejdou v žebříčku</li><li>Upozornění na telefonu: parkur od skupiny, zítra závodíš a nový parkur týdne (Více → Nastavení)</li></ul>'+
       '<h4>Novinky ve verzi 2.3</h4><ul class="news"><li>Účet: přihlášení přes Google a automatická synchronizace dat mezi telefonem a počítačem</li><li>AR na place: parkur kamerou na skutečném trávníku (Chrome na Androidu)</li><li>Náhled odkazu pro Facebook</li></ul>'+
       '<h4>Novinky ve verzi 2.2</h4><ul class="news"><li>3D parkur a přepínač 2D / 3D v Plánu</li><li>Pes ve 3D kličkuje slalomem podle pravidel FCI</li><li>Délka tunelu 2–6 m (nový tunel 5 m)</li><li>Google Pay, Apple Pay a uložení QR platby do galerie</li><li>Zásady ochrany osobních údajů</li></ul>'+
       '<h4>Novinky ve verzi 2.1</h4><ul class="news"><li>Nový název Pawkur</li><li>Napsat autorovi a hodnocení hvězdičkami</li><li>Podpořit aplikaci (QR platba)</li><li>Instalace z Domů a QR kód s odkazem pro kamarády</li></ul>'+
@@ -11973,6 +12089,464 @@ function ringImpSave(){
   ringsPut(L); RG.imp=null; toast(n===1?'Uloženo 1 kolbiště':'Uložená kolbiště: '+n); ringList();
 }
 
+/* ---------- Pawkur 3.0: Dnes na Domů, galerie parkurů, skupiny s trenérem a upozornění (web push) ----------
+   Server: SQL 20261009090000_trojka.sql (galerie s náhledem, push_subs/push_queue, skupiny) a serverová funkce push (klíče VAPID, odesílání).
+   Všechno jde přes sbCall; bez serveru nebo bez připojení aplikace funguje dál a jen to řekne. */
+/* malý náhled parkuru pro galerii a skupiny: typy, souřadnice, natočení, trasa a otočky (pod 4 kB), bez dráhy psovoda a značek */
+function thumbPack(c){
+  var o=[], idx={}; (c.obs||[]).forEach(function(x,i){ idx[x.id]=i+1; o.push(x.type,r1(x.x),r1(x.y),Math.round(x.rot||0)); });
+  var route=(c.route||[]).map(function(id){ return idx[id]||0; }).filter(Boolean);
+  var tr={wL:'l',wR:'r',bL:'L',bR:'R',f:'f'}, t=(c.turns||[]).map(function(v){ return tr[v]||'.'; }).join('').replace(/\.+$/,'');
+  var b={}; (c.obs||[]).forEach(function(x,i){ if(x.type==='tunnel'&&x.bend) b[i+1]=x.bend; });
+  var p={W:c.W,H:c.H,o:o,r:route}; if(t) p.t=t; if(Object.keys(b).length) p.b=b;
+  return p;
+}
+/* náhled ze serveru zpátky na parkur jen pro kreslení; poškozená data = null */
+function thumbUnpack(p){
+  if(!p||typeof p!=='object'||!Array.isArray(p.o)||!Array.isArray(p.r)||p.o.length%4||p.o.length>240) return null;
+  var W=+p.W||40, H=+p.H||20, obs=[], f=p.o, i;
+  for(i=0;i<f.length;i+=4){ var ty=String(f[i]), x=+f[i+1], y=+f[i+2], ro=+f[i+3];
+    if(!Object.prototype.hasOwnProperty.call(DEF,ty)||!isFinite(x)||!isFinite(y)) return null;
+    obs.push({id:i/4+1,type:ty,x:x,y:y,rot:isFinite(ro)?ro:0}); }
+  if(p.b&&typeof p.b==='object') Object.keys(p.b).forEach(function(k){ var o=obs[(+k)-1], v=Math.round(+p.b[k]); if(o&&o.type==='tunnel'&&v&&Math.abs(v)<=180) o.bend=v; });
+  var route=p.r.map(Number).filter(function(v){ return v>=1&&v<=obs.length&&v%1===0; });
+  var ts=String(p.t||''), turns=route.map(function(v,k){ return tuValid(TCH[ts.charAt(k)]||null,obs[v-1].type); });
+  return {W:W,H:H,obs:obs,route:route,turns:turns};
+}
+function thumbSafe(p){ var t=thumbUnpack(p), e='<svg viewBox="0 0 40 20" aria-hidden="true"></svg>'; if(!t) return e; try{ return thumb(t); }catch(x){ return e; } }
+function dateTxt(s){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(s||'')); return m?(+m[3])+'. '+(+m[2])+'.':''; }
+function shareData(){ return {W:S.W,H:S.H,obs:S.obs,route:S.route,sides:S.sides||[],turns:S.turns||[],hp:(S.hp||[]).slice(0,400),marks:(S.marks||[]).slice(0,40)}; }
+/* text ke sdílení: systémové okno Sdílet (telefon), jinak do schránky */
+function shareTxt(msg){
+  if(NATIVE&&NATIVE.shareText){ if(String(NATIVE.shareText(msg))!=='ok') toast('Sdílení se nepovedlo'); return; }
+  if(navigator.share&&!navigator.webdriver){ navigator.share({text:msg}).then(null,function(){}); return; }
+  copyText(msg);
+}
+
+/* --- upozornění (web push): odběr zařízení je na serveru (push_subs), zprávy posílá serverová funkce push. Jen nainstalovaná aplikace
+   z pawkur.cz; na iPhonu až po přidání na plochu (iOS 16.4+). Témata: parkur od skupiny, zítra závodíš, nový parkur týdne. --- */
+var PUSHK='agility-push-v1', PUSH=lsGet(PUSHK,null);
+if(!PUSH||typeof PUSH!=='object') PUSH={on:false,ep:'',topics:{group:true,comp:true,week:true},x:0,at:0,uid:'',key:'',comp:''};
+SYNC_OWN[PUSHK]=1; /* odběr patří zařízení */
+var PUSH_TOPICS=[['group','Parkur od skupiny'],['comp','Zítra závodíš'],['week','Nový parkur týdne']];
+function pushCan(){ return !!(window.PUSH_TEST||(IS_PWA&&'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window)); }
+function pushIOSTab(){ var ios=/iP(hone|ad|od)/.test(navigator.userAgent||'')||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); return ios&&!('PushManager' in window); }
+function pushSave(){ lsSet(PUSHK,PUSH); }
+function pushReg(){ return window.PUSH_TEST?Promise.resolve(window.PUSH_TEST):navigator.serviceWorker.ready; }
+function pushPerm(){ return window.PUSH_TEST?'granted':(window.Notification?Notification.permission:'denied'); }
+function b64uBytes(s){ s=String(s).replace(/-/g,'+').replace(/_/g,'/'); while(s.length%4) s+='='; var b=atob(s), a=new Uint8Array(b.length); for(var i=0;i<b.length;i++) a[i]=b.charCodeAt(i); return a; }
+function bytesB64u(buf){ var a=new Uint8Array(buf), s=''; for(var i=0;i<a.length;i++) s+=String.fromCharCode(a[i]); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+/* veřejný klíč serveru (VAPID); pamatuje se */
+function pushKey(){
+  if(PUSH.key) return Promise.resolve(PUSH.key);
+  return sbCall('push_pubkey',{}).then(function(k){ k=String(k||''); if(!/^[A-Za-z0-9_-]{80,100}$/.test(k)) throw new Error('server pro upozornění ještě není připravený'); PUSH.key=k; pushSave(); return k; });
+}
+function pushSubSend(sub){
+  var j=sub.toJSON?sub.toJSON():sub, keys=j.keys||{};
+  var args={p_device:devId(),p_endpoint:String(j.endpoint||''),p_p256dh:String(keys.p256dh||''),p_auth:String(keys.auth||''),p_topics:PUSH.topics||{},p_lang:LANG,p_tz:TZ};
+  var p=AUTH?authTok().then(function(t){ return sbCall('push_sub_set',args,t); },function(){ return sbCall('push_sub_set',args); }):sbCall('push_sub_set',args);
+  return p.then(function(){ PUSH.on=true; PUSH.ep=args.p_endpoint; PUSH.at=Date.now(); PUSH.uid=AUTH?AUTH.uid:''; pushSave(); pushCompSync(true); });
+}
+/* odběr v prohlížeči: stávající, když je na stejný klíč serveru; jinak nový */
+function pushSubscribe(reg,k){
+  return reg.pushManager.getSubscription().then(function(s){
+    if(!s) return null;
+    var have=s.options&&s.options.applicationServerKey; if(!have||bytesB64u(have)===k) return s;
+    return s.unsubscribe().then(function(){ return null; },function(){ return null; });
+  }).then(function(s){ return s||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64uBytes(k)}); });
+}
+function pushOn(){
+  if(!pushCan()) return Promise.reject(new Error(pushIOSTab()?'Na iPhonu nejdřív přidej Pawkur na plochu (Sdílet → Přidat na plochu) a upozornění zapni v něm.':'Tenhle prohlížeč upozornění neumí.'));
+  var ask=window.PUSH_TEST?Promise.resolve('granted'):Promise.resolve(Notification.requestPermission());
+  return ask.then(function(p){ if(p!=='granted') throw new Error('Upozornění jsou pro Pawkur zakázaná. Povol je v nastavení prohlížeče.'); return pushKey(); })
+    .then(function(k){ return pushReg().then(function(reg){ return pushSubscribe(reg,k); }); }).then(pushSubSend);
+}
+function pushOff(){
+  var done=function(){ PUSH.on=false; PUSH.ep=''; pushSave(); };
+  if(!pushCan()){ done(); return Promise.resolve(); }
+  return pushReg().then(function(reg){ return reg.pushManager.getSubscription(); }).then(function(s){
+    var ep=(s&&s.endpoint)||PUSH.ep, p=s?s.unsubscribe():Promise.resolve(true);
+    return p.then(function(){ done(); if(ep) return sbCall('push_sub_del',{p_endpoint:ep}).then(null,function(){}); });
+  },function(){ done(); });
+}
+/* při otevření aplikace: odběr obnovit, když ho prohlížeč zrušil; po přihlášení nebo jednou za týden znovu poslat na server */
+function pushSync(){
+  if(!PUSH.on||!pushCan()) return;
+  if(pushPerm()!=='granted'){ PUSH.on=false; pushSave(); return; }
+  pushReg().then(function(reg){ return reg.pushManager.getSubscription().then(function(s){
+    if(!s) return pushKey().then(function(k){ return pushSubscribe(reg,k); }).then(pushSubSend);
+    var uid=AUTH?AUTH.uid:'';
+    if(s.endpoint!==PUSH.ep||uid!==PUSH.uid||Date.now()-(+PUSH.at||0)>7*864e5) return pushSubSend(s);
+    pushCompSync(false);
+  }); }).then(null,function(){});
+}
+/* nejbližší závod s mými psy (kacr.info): server podle něj pošle den předem „zítra závodíš“ */
+function pushCompSync(force){
+  if(!PUSH.on||!KACR_OK) return;
+  var L=compUpcoming().filter(function(c){ return compMine(c).length; }), c=L[0], k=(c?c.from:'')+'|'+(c?c.name:'');
+  if(!force&&PUSH.comp===k) return;
+  sbCall('push_comp_set',{p_device:devId(),p_day:c?c.from:null,p_name:c?String(c.name).slice(0,80):''}).then(function(){ PUSH.comp=k; pushSave(); },function(){});
+}
+function pushTest(){
+  return fetch(SB_URL+'/functions/v1/push',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({job:'test',device:devId(),lang:LANG})})
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if(!r.ok||!j||!j.ok) throw new Error((j&&j.error)||('server '+r.status)); return j; }); });
+}
+/* Více → Nastavení: zapnutí, témata, zkouška */
+function pushSetHTML(){
+  var can=pushCan(), t=PUSH.topics||{};
+  return '<div class="panel set" id="pushSet"><b>Upozornění</b>'+(can
+    ?'<label class="check push-sw"><input type="checkbox" id="pushOn"'+(PUSH.on?' checked':'')+'> Posílat upozornění na tohle zařízení</label>'+
+      '<div class="cklist pushtop"'+(PUSH.on?'':' hidden')+'>'+PUSH_TOPICS.map(function(x){ return '<label class="ck"><input type="checkbox" data-pushtop="'+x[0]+'"'+(t[x[0]]!==false?' checked':'')+'> '+x[1]+'</label>'; }).join('')+'</div>'+
+      (PUSH.on?'<div class="row"><button class="btn" data-pusht="1">Vyzkoušet</button></div>':'')+
+      '<p class="hint">Parkur od trenéra, připomínka den před závodem a nový parkur týdne. Nic jiného, žádná reklama.</p>'
+    :'<p class="hint">'+(pushIOSTab()?'Na iPhonu fungují upozornění v aplikaci přidané na plochu: Sdílet → Přidat na plochu.':IS_PWA?'Tenhle prohlížeč upozornění neumí.':'Upozornění fungují v aplikaci nainstalované z pawkur.cz.')+'</p>')+'</div>';
+}
+function pushSetRefresh(){ var el=$('pushSet'); if(el) el.outerHTML=pushSetHTML(); }
+document.addEventListener('change',function(e){
+  var t=e.target; if(!t||!t.getAttribute) return;
+  if(t.id==='pushOn'){ t.disabled=true;
+    (t.checked?pushOn():pushOff()).then(function(){ pushSetRefresh(); toast(PUSH.on?'Upozornění jsou zapnutá.':'Upozornění jsou vypnutá.'); },
+      function(err){ PUSH.on=false; pushSave(); pushSetRefresh(); toast((err&&err.message)||'Nepovedlo se',5000); });
+    return; }
+  if(t.hasAttribute('data-pushtop')){ PUSH.topics=PUSH.topics||{}; PUSH.topics[t.getAttribute('data-pushtop')]=!!t.checked; pushSave();
+    if(PUSH.on&&pushCan()) pushReg().then(function(reg){ return reg.pushManager.getSubscription(); }).then(function(s){ if(s) return pushSubSend(s); }).then(null,function(){}); }
+});
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-pusht]'); if(!b||b.disabled) return; b.disabled=true;
+  pushTest().then(function(){ b.disabled=false; toast('Zkušební zpráva odešla. Měla by přijít během chvilky.',4000); },function(err){ b.disabled=false; toast('Zkouška nevyšla: '+err.message,5000); });
+});
+/* karta na Domů (v Dnes): jednou nabídnout zapnutí, od druhé návštěvy; zavřená se nevrací */
+function pushHomeHTML(){
+  if(!pushCan()||PUSH.on||PUSH.x||!VISITS||VISITS.n<2||pushPerm()==='denied') return '';
+  return '<div class="hm-ch hm-push" id="hmPush"><div class="ic">🔔</div><div class="tx"><b>Zapni si upozornění</b><span>Parkur od trenéra, připomínka den před závodem a nový parkur týdne.</span><button class="hm-go" data-h="pushon">Zapnout</button></div><button class="hm-x" data-h="pushx" aria-label="Zavřít">'+IC.x+'</button></div>';
+}
+
+/* --- Dnes na Domů: parkur od skupiny (group_today), den závodů a plán na týden: tři nejméně trénovaná cvičení a parkur týdne třídy psa.
+   Položka se zaškrtne sama po uloženém běhu v tomhle týdnu, nebo ručně. --- */
+var PLANWK='agility-tyden-v1', GTK='agility-gtoday-v1', GTODAY=lsGet(GTK,null), GT_TRY=0; SYNC_OWN[GTK]=1;
+if(!GTODAY||typeof GTODAY!=='object'||!Array.isArray(GTODAY.rows)) GTODAY={at:0,rows:[]};
+function planWeek(){
+  var wk=weekKey(), p=lsGet(PLANWK,null);
+  if(!p||typeof p!=='object'||p.wk!==wk||!Array.isArray(p.items)){
+    var K=Object.keys(DRILLS).map(function(k,i){ return {k:k,n:drillRuns(k),i:i}; }).sort(function(a,b){ return a.n-b.n||a.i-b.i; }).slice(0,3);
+    p={wk:wk,items:K.map(function(x){ return {id:'drill:'+x.k,done:false}; }).concat([{id:'week',done:false}])}; lsSet(PLANWK,p);
+  }
+  return p;
+}
+function runsInWeek(test){ var w=weekKey(), n=0; Object.keys(MK).forEach(function(id){ if(!test(id)) return; (MK[id].runs||[]).forEach(function(x){ if(x.d&&weekKey(new Date(x.d))===w) n++; }); }); return n; }
+function planItem(it){
+  if(it.id==='week'){ var c=weekCourse(homeCls()); if(!c) return null; return {lbl:c.name,sub:'Parkur týdne '+homeCls(),on:!!it.done||runsInWeek(function(id){ return id===c.id; })>0,c:c}; }
+  var k=String(it.id).slice(6), d=DRILLS[k]; if(!d) return null; var n=drillRuns(k);
+  return {lbl:d.l,sub:'cvičení · '+(n?czN(n,'běh','běhy','běhů'):'ještě nezkoušeno'),on:!!it.done||runsInWeek(function(id){ return id.indexOf('drill~'+k+'~')===0; })>0,k:k};
+}
+function planWeekHTML(){
+  var p=planWeek(), rows=[], n=0;
+  p.items.forEach(function(it,i){ var x=planItem(it); if(!x) return; if(x.on) n++;
+    rows.push('<div class="pl-row'+(x.on?' on':'')+'"><label class="pl-ck"><input type="checkbox" data-plck="'+i+'" aria-label="Hotovo"'+(x.on?' checked':'')+'></label><button class="pl-go" data-plgo="'+i+'"><b translate="no">'+esc(x.lbl)+'</b><span>'+esc(x.sub)+'</span></button></div>'); });
+  if(!rows.length) return '';
+  return '<div class="hm-ch hm-plan" id="hmPlan"><div class="tx"><b>Plán na tento týden</b><span><span>'+n+' z '+rows.length+' hotovo</span> · <span>'+wkLeft()+'</span></span><div class="pl-list">'+rows.join('')+'</div></div></div>';
+}
+function planOpen(i){ var it=planWeek().items[i], x=it&&planItem(it); if(!x) return; if(x.c){ loadCourse(x.c); return; } GEN.tab='drill'; GEN.drill=x.k; genSheet(); genRun(); }
+function planToggle(i,on){ var p=planWeek(); if(!p.items[i]) return; p.items[i].done=!!on; lsSet(PLANWK,p); var el=$('hmPlan'); if(el) el.outerHTML=planWeekHTML(); }
+function gcClean(c){ return !!(c&&typeof c==='object'&&+c.id>0&&typeof c.name==='string'&&/^\d{4}-\d{2}-\d{2}/.test(String(c.day||''))); }
+function groupTodayHTML(){
+  if(!AUTH||!GTODAY.rows.length) return '';
+  var today=localDate(), tom=dayAdd(today,1), yest=dayAdd(today,-1), L=GTODAY.rows.filter(gcClean).slice();
+  L.sort(function(a,b){ var x=a.day<today?2:a.day===today?0:1, y=b.day<today?2:b.day===today?0:1; return x-y||(a.day<b.day?-1:a.day>b.day?1:0); });
+  return L.slice(0,4).map(function(c){
+    var when=c.day===today?'dnes':c.day===tom?'zítra':c.day===yest?'včera':dateTxt(c.day);
+    var meta=['<span translate="no">'+esc(c.cls||'')+'</span>',c.by?'<span>poslal/a</span> <span translate="no">'+esc(c.by)+'</span>':'',c.runs?'<span>'+czN(+c.runs,'běh','běhy','běhů')+' ve skupině</span>':'',c.note?'<span translate="no">'+esc(c.note)+'</span>':''].filter(Boolean);
+    return '<div class="hm-ch hm-gc"><span class="gc-m" aria-hidden="true">'+thumbSafe(c.thumb)+'</span><div class="tx"><small class="cd-when"><span translate="no">'+esc(c.gname||'')+'</span> · <span>'+when+'</span></small><b translate="no">'+esc(c.name)+'</b><span>'+meta.join(' · ')+'</span></div>'+
+      '<div class="cd-acts"><button class="hm-go" data-gcopen="'+(+c.id)+'" data-gname="'+esc(c.gname||'')+'">'+(c.ran?'Zaběhnout znovu':'Otevřít')+'</button>'+(c.runs?'<button class="hm-go sec" data-gcboard="'+(+c.id)+'" data-gcname="'+esc(c.name)+'">Žebříček</button>':'')+'</div></div>'; }).join('');
+}
+/* parkury mých skupin na pozadí, nejvýš jednou za 10 minut; uložené, ať Domů naskočí hned */
+function groupTodayLoad(force){
+  if(!AUTH) return; var now=Date.now(); if(!force&&now-GT_TRY<6e5) return; GT_TRY=now;
+  authTok().then(function(t){ return sbCall('group_today',{},t); }).then(function(rows){
+    GTODAY={at:Date.now(),rows:(Array.isArray(rows)?rows:[]).filter(gcClean).slice(0,30)}; lsSet(GTK,GTODAY);
+    var el=$('hmGroupToday'); if(el&&view==='home') el.innerHTML=groupTodayHTML();
+  },function(){});
+}
+function todayHTML(){
+  var now=new Date(), dn=['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota'][now.getDay()];
+  var parts=[ '<div id="hmGroupToday">'+groupTodayHTML()+'</div>', '<div id="hmDay">'+(KACR_OK?compDayHTML():'')+'</div>', isHoopS()?'':planWeekHTML(), pushHomeHTML() ];
+  if(!parts.join('').replace(/<div id="[a-zA-Z]+"><\/div>/g,'')) return '';
+  return '<div class="hm-sec hm-tdh"><h3>Dnes</h3><small><span>'+dn+'</span> '+now.getDate()+'. '+(now.getMonth()+1)+'.</small></div><div class="hm-today">'+parts.join('')+'</div>';
+}
+$('v-home').addEventListener('click',function(e){
+  var b=e.target.closest('[data-plgo],[data-gcopen],[data-gcboard],[data-h="pushon"],[data-h="pushx"]'); if(!b) return;
+  if(b.hasAttribute('data-plgo')) planOpen(+b.getAttribute('data-plgo'));
+  else if(b.hasAttribute('data-gcopen')) groupCourseOpen(+b.getAttribute('data-gcopen'),b.getAttribute('data-gname')||'');
+  else if(b.hasAttribute('data-gcboard')) groupBoard(+b.getAttribute('data-gcboard'),b.getAttribute('data-gcname')||'');
+  else if(b.getAttribute('data-h')==='pushx'){ PUSH.x=Date.now(); pushSave(); var c=$('hmPush'); if(c) c.parentNode.removeChild(c); }
+  else { if(b.disabled) return; b.disabled=true; pushOn().then(function(){ var c=$('hmPush'); if(c) c.parentNode.removeChild(c); toast('Upozornění jsou zapnutá.'); },function(err){ b.disabled=false; toast((err&&err.message)||'Nepovedlo se',5000); }); }
+});
+$('v-home').addEventListener('change',function(e){ var t=e.target; if(t&&t.getAttribute&&t.hasAttribute('data-plck')) planToggle(+t.getAttribute('data-plck'),t.checked); });
+
+/* --- Galerie parkurů (záložka v Parkurech): zveřejněné parkury ostatních s náhledem, hodnocením a počtem otevření. Zveřejnit jde
+   z Plán → Sdílet (přihlášený), kdykoli stáhnout zpět. Otevření parkur uloží do Moje. Nahlášený třikrát se schová (autor ho vidí v Moje). --- */
+var GAL={cls:'',sort:'new',q:'',page:0,rows:[],total:0,at:0,key:'',st:'',err:''};
+var GAL_SORTS=[['new','Nové'],['top','Nejlépe hodnocené'],['popular','Nejvíc otevírané'],['mine','Moje']];
+var GAL_CC=[['CZ','Česko'],['SK','Slovensko'],['AT','Rakousko'],['DE','Německo'],['PL','Polsko'],['GB','Británie'],['','Jiná']];
+function galClean(r){ return !!(r&&typeof r==='object'&&/^[A-Z0-9]{6}$/.test(String(r.code||''))&&typeof r.name==='string'); }
+function galSport(){ return isHoopS()?'hoopers':'agility'; }
+function galRender(){
+  galLoad(false);
+  var C=isHoopS()?['H1','H2','H3']:['A1','A2','A3'];
+  $('cards').innerHTML='<div class="galbar"><div class="filters">'+[['','Vše']].concat(C.map(function(c){ return [c,c]; })).map(function(x){ return '<button class="chip'+(GAL.cls===x[0]?' on':'')+'" data-gcls="'+x[0]+'">'+x[1]+'</button>'; }).join('')+'</div>'+
+    '<div class="filters">'+GAL_SORTS.map(function(x){ return '<button class="chip'+(GAL.sort===x[0]?' on':'')+'" data-gsort="'+x[0]+'">'+x[1]+'</button>'; }).join('')+'</div>'+
+    '<form class="row galq" data-gq="1"><label for="galQ" class="sr">Hledat</label><input id="galQ" type="search" maxlength="40" placeholder="Název, autor nebo rozhodčí" value="'+esc(GAL.q)+'"><button class="btn" type="submit">Hledat</button></form></div>'+
+    '<div class="galcards" id="galCards">'+galCardsHTML()+'</div>';
+  $('libNote').textContent='Galerie: parkury, které zveřejnili ostatní. Vlastní parkur zveřejníš v Plánu přes Sdílet → Zveřejnit v galerii.';
+}
+function galCardsHTML(){
+  if(GAL.st==='busy'&&!GAL.rows.length) return '<p class="empty-state">Načítám galerii…</p>';
+  if(GAL.st==='err'&&!GAL.rows.length) return '<div class="empty-state">Galerie teď nejde načíst ('+esc(GAL.err)+').<div class="es-acts"><button class="btn" data-gretry="1">Zkusit znovu</button></div></div>';
+  if(!GAL.rows.length) return '<div class="empty-state">'+(GAL.sort==='mine'?(AUTH?'Zatím jsi nic nezveřejnil/a. V Plánu otevři Sdílet → Zveřejnit v galerii.':'Moje zveřejněné parkury uvidíš po přihlášení (Více → Účet).'):(GAL.q||GAL.cls)?'Nic takového v galerii není. Zkus jiný filtr.':'V galerii zatím nic není. Buď první: Plán → Sdílet → Zveřejnit v galerii.')+'</div>';
+  return GAL.rows.map(function(r,i){
+    return '<div class="card gal'+(r.hidden?' hid':'')+'"><button class="pick" data-gopen="'+i+'">'+thumbSafe(r.thumb)+'<div class="meta"><b translate="no">'+esc(r.name)+'</b><span class="ln"><span translate="no">'+esc(r.cls||'')+'</span>'+(r.len?' · '+fmt(+r.len)+' m':'')+(r.n?' · '+nPrek(+r.n):'')+'</span>'+
+      '<span class="ln l2"><span>'+(r.rating?'★ '+fmt(+r.rating)+' ('+(+r.rating_n||0)+')':'bez hodnocení')+'</span><span>'+(+r.downloads||0)+'× otevřeno</span></span></div></button>'+
+      (r.mine||r.hidden?'<div class="tags">'+(r.mine?'<span class="done-tag">Moje</span>':'')+(r.hidden?'<span class="new-tag">Skryté po nahlášení</span>':'')+'</div>':'')+'</div>'; }).join('')+
+    (GAL.total>GAL.rows.length?'<button class="btn galmore" data-gmore="1"'+(GAL.st==='busy'?' disabled':'')+'>Další ('+(GAL.total-GAL.rows.length)+')</button>':'');
+}
+function galPaint(){ var el=$('galCards'); if(el&&view==='lib'&&libTab==='gal') el.innerHTML=galCardsHTML(); }
+function galCall(args){
+  if(AUTH) return authTok().then(function(t){ return sbCall('gallery_list',args,t); },function(e){ if(GAL.sort==='mine') throw e; return sbCall('gallery_list',args); });
+  return GAL.sort==='mine'?Promise.reject(new Error('nepřihlášeno')):sbCall('gallery_list',args);
+}
+function galLoad(more){
+  var key=[GAL.cls,GAL.sort,GAL.q,galSport()].join('|');
+  if(!more&&GAL.key===key&&GAL.st==='ok'&&Date.now()-GAL.at<3e5) return;
+  var page=more?GAL.page+1:0; if(!more){ GAL.rows=[]; GAL.total=0; } GAL.key=key; GAL.st='busy'; galPaint();
+  galCall({p_cls:GAL.cls||null,p_country:null,p_sport:galSport(),p_q:GAL.q||null,p_sort:GAL.sort,p_page:page}).then(function(r){
+    if(GAL.key!==key) return; var rows=(r&&Array.isArray(r.rows))?r.rows.filter(galClean):[];
+    GAL.rows=more?GAL.rows.concat(rows):rows; GAL.total=Math.max(+(r&&r.total)||0,GAL.rows.length); GAL.page=page; GAL.st='ok'; GAL.at=Date.now(); galPaint();
+  },function(e){ if(GAL.key!==key) return; GAL.st='err'; GAL.err=(e&&e.message)||'chyba'; galPaint(); });
+}
+$('cards').addEventListener('click',function(e){
+  if(libTab!=='gal') return;
+  var b=e.target.closest('[data-gcls],[data-gsort],[data-gopen],[data-gmore],[data-gretry]'); if(!b) return;
+  if(b.hasAttribute('data-gcls')){ GAL.cls=b.getAttribute('data-gcls'); galRender(); }
+  else if(b.hasAttribute('data-gsort')){ GAL.sort=b.getAttribute('data-gsort'); galRender(); }
+  else if(b.hasAttribute('data-gopen')) galOpen(+b.getAttribute('data-gopen'));
+  else if(b.hasAttribute('data-gmore')) galLoad(true);
+  else { GAL.key=''; galLoad(false); }
+});
+$('cards').addEventListener('submit',function(e){ var f=e.target.closest&&e.target.closest('[data-gq]'); if(!f) return; e.preventDefault(); GAL.q=$('galQ').value.trim().slice(0,40); galLoad(false); });
+function galStars(mine){ var s=''; for(var i=1;i<=5;i++) s+='<button class="fb-st'+(mine>=i?' on':'')+'" data-grate="'+i+'" role="radio" aria-checked="'+(mine===i)+'" aria-label="'+i+' z 5">'+(mine>=i?IC.starF:IC.star)+'</button>'; return s; }
+function galOpen(i){
+  var r=GAL.rows[i]; if(!r) return;
+  var meta=['<span translate="no">'+esc(r.cls||'')+'</span>', r.author?'<span>stavěl/a</span> <span translate="no">'+esc(r.author)+'</span>':'', r.judge&&r.judge!==r.author?'<span>rozhodčí</span> <span translate="no">'+esc(r.judge)+'</span>':'',
+    r.country?'<span translate="no">'+esc(r.country)+'</span>':'', r.len?'<span>'+fmt(+r.len)+' m</span>':'', r.n?'<span>'+nPrek(+r.n)+'</span>':'', r.at?'<span>'+dateTxt(r.at)+'</span>':''].filter(Boolean);
+  function body(){ return '<div class="galsheet"><h3 translate="no">'+esc(r.name)+'</h3><div class="gal-th" aria-hidden="true">'+thumbSafe(r.thumb)+'</div><p class="hint">'+meta.join(' · ')+'</p>'+
+    '<div class="gal-rate"><span>'+(r.rating?'★ '+fmt(+r.rating)+' · '+(+r.rating_n||0)+' hodnocení':'Zatím bez hodnocení')+' · '+(+r.downloads||0)+'× otevřeno</span>'+
+    (AUTH?'<div class="fb-stars" role="radiogroup" aria-label="Tvoje hodnocení">'+galStars(+r.my||0)+'</div>':'<span class="hint">Hodnotit můžeš po přihlášení.</span>')+'</div>'+
+    '<div class="acts">'+(r.mine?'<button class="btn" data-a="unpub">Stáhnout z galerie</button>':AUTH?'<button class="btn" data-a="rep">Nahlásit</button>':'')+'<button class="btn" data-a="x">Zavřít</button><button class="btn primary" data-a="open">Otevřít v Plánu</button></div></div>'; }
+  openSheet(body(),function(e){
+    var st=e.target.closest('[data-grate]');
+    if(st){ var n=+st.getAttribute('data-grate');
+      authTok().then(function(t){ return sbCall('gallery_rate',{p_code:r.code,p_stars:n},t); }).then(function(x){ r.my=n; if(x&&typeof x==='object'){ r.rating=x.rating; r.rating_n=x.rating_n; } if($('sheet').querySelector('.galsheet')) $('sheet').innerHTML=body(); galPaint(); toast('Díky za hodnocení!'); },function(err){ toast('Hodnocení se neuložilo: '+err.message,4000); });
+      return; }
+    var b=e.target.closest('[data-a]'); if(!b) return; var a=b.getAttribute('data-a');
+    if(a==='x') closeSheet();
+    else if(a==='open') galLoadCourse(r,b);
+    else if(a==='rep') ask('Nahlásit parkur?','Nahlas parkur, který do galerie nepatří (není to parkur, urážky, cizí dílo). Po třech nahlášeních se schová.','Nahlásit',function(){
+      authTok().then(function(t){ return sbCall('gallery_report',{p_code:r.code},t); }).then(function(){ toast('Díky, podíváme se na to.'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); },true);
+    else if(a==='unpub') ask('Stáhnout parkur z galerie?','Ostatní ho v galerii přestanou vidět. Kód pro sdílení funguje dál.','Stáhnout',function(){
+      authTok().then(function(t){ return sbCall('gallery_unpublish',{p_code:r.code},t); }).then(function(){ GAL.rows=GAL.rows.filter(function(x){ return x!==r; }); GAL.total=Math.max(0,GAL.total-1); galPaint(); toast('Parkur už v galerii není.'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); });
+  });
+}
+function galLoadCourse(r,b){
+  if(b.disabled) return;
+  var have=myDB().filter(function(x){ return x.src==='galerie '+r.code; })[0];
+  if(have){ closeSheet(); loadCourse(have,true); toast('Parkur už máš v Moje.'); return; }
+  b.disabled=true; b.textContent='Načítám…';
+  sbCall('get_course',{p_code:r.code}).then(function(rows){
+    var c=Array.isArray(rows)&&rows[0]; if(!c||typeof c!=='object') throw new Error('parkur už na serveru není');
+    var d=courseClean(c.data); if(d.route.length<2) throw new Error('parkur je poškozený');
+    var rec={id:'my-'+Date.now().toString(36),name:String(c.name||r.name).slice(0,60),cls:clsClean(c.cls),author:String(c.author||'').slice(0,60),W:d.W,H:d.H,obs:d.obs,route:d.route,sides:d.sides,turns:d.turns,hp:d.hp.slice(0,400),marks:d.marks,src:'galerie '+r.code};
+    var L=myDB(); L.push(rec); if(!mySave(L)) throw new Error('nepodařilo se uložit');
+    sbCall('gallery_opened',{p_code:r.code}).then(null,function(){}); r.downloads=(+r.downloads||0)+1;
+    closeSheet(); loadCourse(rec,true); toast('Parkur '+rec.name+' je uložený v Moje'); galPaint();
+  },function(err){ b.disabled=false; b.textContent='Otevřít v Plánu'; toast('Načtení se nepovedlo: '+err.message,4000); });
+}
+/* zveřejnění z Plán → Sdílet: kód parkuru (stávající, nebo nový) a zápis do galerie s náhledem */
+function galPubSheet(code){
+  if(!AUTH){ toast('Zveřejnit může jen přihlášený (Více → Účet).',4000); return; }
+  if(S.route.length<2){ toast('Nejdřív vyznač trasu v režimu Trasa.'); return; }
+  var m=curM(), cc=RCC==='UK'?'GB':RCC==='FCI'?'':RCC;
+  openSheet('<h3>Zveřejnit v galerii</h3><p>Parkur uvidí všichni v Parkurech → Galerie, můžou ho otevřít a ohodnotit. Kdykoli ho stáhneš zpět.</p>'+
+    '<p class="hint" translate="no">'+esc(S.meta.name)+' · '+esc(S.meta.cls)+' · '+fmt(m.len)+' m · '+nPrek(m.n)+'</p>'+
+    '<div class="grid2"><label for="gpJudge">Rozhodčí nebo stavitel<input id="gpJudge" type="text" maxlength="80" value="'+esc(S.meta.author||'')+'"></label>'+
+    '<label for="gpCc">Země<select id="gpCc">'+GAL_CC.map(function(x){ return '<option value="'+x[0]+'"'+(x[0]===cc?' selected':'')+'>'+x[1]+'</option>'; }).join('')+'</select></label></div>'+
+    '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="pub">Zveřejnit</button></div>',
+    function(e){ var b=e.target.closest('[data-a]'); if(!b) return; if(b.getAttribute('data-a')==='x'){ closeSheet(); return; }
+      if(b.disabled) return; b.disabled=true; b.textContent='Zveřejňuji…';
+      var judge=$('gpJudge').value.trim(), cc2=$('gpCc').value, th=thumbPack(S), len=Math.round(m.len*10)/10, n=m.n;
+      authTok().then(function(t){
+        var pc=code?Promise.resolve(code):sbCall('share_course',{p_name:S.meta.name,p_cls:S.meta.cls,p_author:S.meta.author||'',p_data:shareData()},t);
+        return pc.then(function(cd){ cd=String(cd==null?'':cd).trim().toUpperCase(); if(!/^[A-Z0-9]{6}$/.test(cd)) throw new Error('server vrátil neplatný kód');
+          return sbCall('gallery_publish',{p_code:cd,p_country:cc2,p_judge:judge,p_len:len,p_n:n,p_sport:galSport(),p_thumb:th},t).then(function(){ return cd; }); });
+      }).then(function(cd){ closeSheet(); GAL.key=''; toast('Parkur je v galerii. Kód '+cd+' funguje dál.',4000); },
+        function(err){ b.disabled=false; b.textContent='Zveřejnit'; toast('Zveřejnění se nepovedlo: '+err.message,4000); });
+    });
+}
+
+/* --- Skupiny a trenér (Více → Můj tým): skupina na kód, parkur poslaný skupině se členům ukáže na Domů v Dnes (a přijde upozornění),
+   běhy všech členů se sejdou v žebříčku parkuru. Jen přihlášení. GRP.id = otevřená skupina, GRP.tab = záložka v ní. --- */
+var GRP={id:0,list:null,at:0,detail:null,tab:'courses',err:''}, GJOINK='agility-gjoin-v1'; SYNC_OWN[GJOINK]=1;
+function gCall(fn,args){ return authTok().then(function(t){ return sbCall(fn,args,t); }); }
+function groupsHTML(){
+  if(!AUTH) return '<div class="panel acct"><b>Skupiny jsou pro přihlášené</b><p class="hint">Trenér založí skupinu a pošle kód. Parkur od trenéra se ti ukáže na Domů v Dnes, přijde upozornění a běhy celé skupiny se sejdou v jednom žebříčku.</p><button class="btn gbtn" data-acct="in">'+GLOGO+'<span>Přihlásit přes Google</span></button></div>';
+  if(GRP.id) return groupDetailHTML();
+  var L=GRP.list, h='<div class="row"><button class="btn primary" data-g="new">'+IC.plus+'<span>Založit skupinu</span></button><button class="btn" data-g="join">Přidat se kódem</button></div>';
+  if(L===null) h+='<p class="hint">'+(GRP.err?'Skupiny se nepodařilo načíst ('+esc(GRP.err)+'). <button class="linkbtn" data-g="reload">Zkusit znovu</button>':'Načítám…')+'</p>';
+  else if(!L.length) h+='<div class="empty-state es-ill">'+dogIll(curDog())+'<b>Trénujete spolu?</b><p>Založ skupinu pro klub nebo tréninkovou partu, nebo se přidej kódem od trenéra. Parkury od trenéra uvidíš na Domů a běhy celé skupiny v jednom žebříčku.</p></div>';
+  else h+='<div class="list">'+L.map(function(g){ return '<button class="item grp" data-gopen2="'+(+g.id)+'"><div><b translate="no">'+esc(g.name)+'</b><span><span>'+(g.role==='trainer'?'trenér':'člen')+'</span> · <span>'+czN(+g.members||0,'člen','členové','členů')+'</span>'+(g.last?' · <span>poslední parkur</span> '+dateTxt(g.last):'')+'</span></div><span class="mch" aria-hidden="true">'+IC.chev+'</span></button>'; }).join('')+'</div>';
+  return h+'<p class="hint">Kód skupiny dostanou členové od trenéra (zakladatele). Jméno ve skupině je z účtu Google, změníš ho v nastavení skupiny.</p>';
+}
+function groupsLoad(force){
+  if(!AUTH) return; if(!force&&GRP.list&&Date.now()-GRP.at<6e4) return;
+  GRP.err=''; gCall('group_list',{}).then(function(L){ GRP.list=(Array.isArray(L)?L:[]).filter(function(g){ return g&&+g.id>0; }); GRP.at=Date.now(); groupsPaint(); },function(e){ GRP.list=null; GRP.err=(e&&e.message)||'chyba'; groupsPaint(); });
+}
+function groupsPaint(){ if(view==='more'&&moreTab==='groups') $('moreBody').innerHTML=groupsHTML(); }
+function groupOpen(id,tab){
+  GRP.id=id; GRP.tab=tab||GRP.tab||'courses'; GRP.detail=null; GRP.err=''; groupsPaint();
+  gCall('group_detail',{p_id:id}).then(function(d){ if(GRP.id!==id) return; GRP.detail=d&&typeof d==='object'?d:null; if(!GRP.detail) GRP.err='prázdná odpověď'; groupsPaint(); },function(e){ if(GRP.id!==id) return; GRP.err=(e&&e.message)||'chyba'; groupsPaint(); });
+}
+function groupDetailHTML(){
+  var g=GRP.detail, head='<div class="row"><button class="btn ghost" data-g="back">'+IC.back+'<span>Skupiny</span></button></div>';
+  if(!g||+g.id!==GRP.id) return head+'<p class="hint">'+(GRP.err?'Skupinu se nepodařilo načíst ('+esc(GRP.err)+'). <button class="linkbtn" data-g="reopen">Zkusit znovu</button>':'Načítám…')+'</p>';
+  var tr=g.role==='trainer', M=Array.isArray(g.members)?g.members:[], C=Array.isArray(g.courses)?g.courses:[], me=M.filter(function(m){ return m.me; })[0]||{};
+  var h=head+'<div class="panel grp-h"><b translate="no">'+esc(g.name)+'</b><span><span>'+(tr?'Jsi trenér':'Jsi člen')+'</span> · <span>'+czN(M.length,'člen','členové','členů')+'</span></span>'+
+    '<div class="grp-code"><span>Kód skupiny</span><b class="code" translate="no">'+esc(g.code)+'</b><div class="row"><button class="btn" data-g="copy">Kopírovat kód</button><button class="btn" data-g="share">Poslat odkaz</button></div></div></div>'+
+    '<div class="seg wide grp-tabs" role="group" aria-label="Skupina">'+[['courses','Parkury'],['members','Členové'],['set','Nastavení']].map(function(x){ return '<button data-gtab="'+x[0]+'" class="'+(GRP.tab===x[0]?'on':'')+'">'+x[1]+'</button>'; }).join('')+'</div>';
+  if(GRP.tab==='members'){
+    h+='<div class="list">'+M.map(function(m){ return '<div class="item gm"><div><b translate="no">'+esc(m.name||'člen')+'</b>'+(m.me?' <span class="hint">(ty)</span>':'')+'<span><span>'+(m.role==='trainer'?'trenér':'člen')+'</span>'+(m.since?' · <span>od</span> '+dateTxt(m.since):'')+'</span></div>'+
+      (g.owner&&!m.me?'<div class="acts"><button class="btn" data-gm="'+esc(m.uid)+'" data-gr="'+(m.role==='trainer'?'member':'trainer')+'">'+(m.role==='trainer'?'Už není trenér':'Udělat trenérem')+'</button><button class="btn danger" data-gm="'+esc(m.uid)+'" data-gr="out" aria-label="Vyhodit">×</button></div>':'')+'</div>'; }).join('')+'</div>'+
+      '<p class="hint">Trenér může posílat parkury a mazat je. Zakladatel navíc povyšuje a odebírá členy.</p>';
+  } else if(GRP.tab==='set'){
+    h+='<div class="panel set"><b>Moje jméno ve skupinách</b><div class="row"><input id="gMyName" class="grow fld-in" type="text" maxlength="40" value="'+esc(me.name||'')+'"><button class="btn" data-g="myname">Uložit</button></div><p class="hint">Jméno vidí ostatní v žebříčku a u parkurů.</p></div>'+
+      (g.owner?'<div class="panel set"><b>Název skupiny</b><div class="row"><input id="gName" class="grow fld-in" type="text" maxlength="40" value="'+esc(g.name)+'"><button class="btn" data-g="rename">Přejmenovat</button></div></div>'+
+        '<div class="panel set"><b>Smazat skupinu</b><p class="hint">Smaže skupinu i s parkury a žebříčky pro všechny členy.</p><div class="row"><button class="btn danger" data-g="del">Smazat skupinu</button></div></div>'
+      :'<div class="panel set"><b>Odejít ze skupiny</b><p class="hint">Přestaneš vidět její parkury; tvoje běhy v žebříčcích zůstanou.</p><div class="row"><button class="btn danger" data-g="leave">Odejít</button></div></div>');
+  } else {
+    h+='<div class="row"><button class="btn primary" data-g="post"'+(S.route.length>=2?'':' disabled')+'>'+IC.share+'<span>Poslat parkur z Plánu</span></button></div>'+(S.route.length>=2?'':'<p class="hint">Nejdřív si v Plánu otevři nebo postav parkur s trasou.</p>');
+    h+=C.length?'<div class="list">'+C.map(function(c){
+        var meta=['<span translate="no">'+dateTxt(c.day)+'</span>','<span translate="no">'+esc(c.cls||'')+'</span>',c.by?'<span>poslal/a</span> <span translate="no">'+esc(c.by)+'</span>':'',c.runs?'<span>'+czN(+c.runs,'běh','běhy','běhů')+'</span>':'',c.note?'<span translate="no">'+esc(c.note)+'</span>':''].filter(Boolean);
+        return '<div class="item gc"><span class="gc-m" aria-hidden="true">'+thumbSafe(c.thumb)+'</span><div><b translate="no">'+esc(c.name)+'</b><span>'+meta.join(' · ')+'</span></div>'+
+          '<div class="acts"><button class="btn" data-gco="'+(+c.id)+'">'+(c.ran?'Znovu':'Otevřít')+'</button>'+(c.runs?'<button class="btn" data-gcb="'+(+c.id)+'" data-gcname="'+esc(c.name)+'">Žebříček</button>':'')+(tr||c.mine||g.owner?'<button class="btn danger" data-gcd="'+(+c.id)+'" aria-label="Smazat parkur">×</button>':'')+'</div></div>'; }).join('')+'</div>'
+      :'<p class="hint">Zatím tu žádný parkur není. Pošli ten z Plánu: členům se ukáže na Domů a přijde jim upozornění.</p>';
+  }
+  return h;
+}
+document.addEventListener('click',function(e){
+  if(!(view==='more'&&moreTab==='groups')||!e.target.closest) return;
+  var t=e.target.closest('[data-gtab]'); if(t){ GRP.tab=t.getAttribute('data-gtab'); groupsPaint(); return; }
+  var o=e.target.closest('[data-gopen2]'); if(o){ groupOpen(+o.getAttribute('data-gopen2'),'courses'); return; }
+  var co=e.target.closest('[data-gco]'); if(co){ groupCourseOpen(+co.getAttribute('data-gco'),GRP.detail?GRP.detail.name:''); return; }
+  var cb=e.target.closest('[data-gcb]'); if(cb){ groupBoard(+cb.getAttribute('data-gcb'),cb.getAttribute('data-gcname')||''); return; }
+  var cd=e.target.closest('[data-gcd]'); if(cd){ var cid=+cd.getAttribute('data-gcd');
+    ask('Smazat parkur ze skupiny?','Zmizí členům z Domů i se žebříčkem.','Smazat',function(){ gCall('group_course_delete',{p_cid:cid}).then(function(){ GTODAY.rows=GTODAY.rows.filter(function(x){ return +x.id!==cid; }); lsSet(GTK,GTODAY); groupOpen(GRP.id,'courses'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); },true); return; }
+  var gm=e.target.closest('[data-gm]'); if(gm){ var uid=gm.getAttribute('data-gm'), role=gm.getAttribute('data-gr');
+    var go=function(){ gCall('group_member_set',{p_id:GRP.id,p_user:uid,p_role:role}).then(function(){ groupOpen(GRP.id,'members'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); };
+    if(role==='out') ask('Vyhodit ze skupiny?','Člen přestane vidět parkury skupiny.','Vyhodit',go,true); else go(); return; }
+  var b=e.target.closest('[data-g]'); if(!b) return; var a=b.getAttribute('data-g'), g=GRP.detail;
+  if(a==='back'){ GRP.id=0; GRP.detail=null; groupsPaint(); groupsLoad(true); }
+  else if(a==='reload') groupsLoad(true);
+  else if(a==='reopen') groupOpen(GRP.id,GRP.tab);
+  else if(a==='new') groupNewSheet();
+  else if(a==='join') groupJoinSheet('');
+  else if(a==='copy'){ if(g) copyText(g.code); }
+  else if(a==='share'){ if(g) shareTxt(T('Přidej se do skupiny')+' „'+g.name+'“ '+T('v aplikaci Pawkur')+': '+APP_URL+'?skupina='+g.code+' ('+T('kód')+' '+g.code+')'); }
+  else if(a==='post') groupPostSheet(GRP.id);
+  else if(a==='myname'){ var nm=$('gMyName').value.trim(); gCall('group_my_name_set',{p_name:nm}).then(function(){ toast('Jméno uloženo'); groupOpen(GRP.id,'set'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); }
+  else if(a==='rename'){ var nn=$('gName').value.trim(); if(nn.length<2){ toast('Název má mít aspoň 2 znaky.'); return; } gCall('group_rename',{p_id:GRP.id,p_name:nn}).then(function(){ toast('Přejmenováno'); GRP.list=null; groupOpen(GRP.id,'set'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); }
+  else if(a==='del') ask('Smazat skupinu?','Smaže se skupina, její parkury i žebříčky, pro všechny členy. Nejde to vrátit.','Smazat',function(){
+    gCall('group_delete',{p_id:GRP.id}).then(function(){ GRP.id=0; GRP.detail=null; GRP.list=null; groupsPaint(); groupsLoad(true); groupTodayLoad(true); toast('Skupina smazána'); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); },true);
+  else if(a==='leave') ask('Odejít ze skupiny?','Přestaneš vidět její parkury. Vrátit se můžeš kódem.','Odejít',function(){
+    gCall('group_leave',{p_id:GRP.id}).then(function(){ GRP.id=0; GRP.detail=null; GRP.list=null; groupsPaint(); groupsLoad(true); groupTodayLoad(true); },function(err){ toast('Nepovedlo se: '+err.message,4000); }); },true);
+});
+function groupNewSheet(){
+  openSheet('<h3>Založit skupinu</h3><p>Pro klub, tréninkovou partu nebo kurz. Dostaneš kód, kterým se ostatní přidají.</p><label for="gNew">Název skupiny<input id="gNew" type="text" maxlength="40" placeholder="např. Agility Brno – středa"></label>'+
+    '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="ok">Založit</button></div>',
+    function(e){ var b=e.target.closest('[data-a]'); if(!b) return; if(b.getAttribute('data-a')==='x'){ closeSheet(); return; }
+      var nm=$('gNew').value.trim(); if(nm.length<2){ toast('Název má mít aspoň 2 znaky.'); $('gNew').focus(); return; } if(b.disabled) return; b.disabled=true;
+      gCall('group_create',{p_name:nm}).then(function(g){ closeSheet(); GRP.list=null; toast('Skupina založena. Pošli kód '+g.code+' ostatním.',4000); groupOpen(+g.id,'courses'); },function(err){ b.disabled=false; toast('Nepovedlo se: '+err.message,4000); }); });
+}
+function groupJoinSheet(code){
+  openSheet('<h3>Přidat se do skupiny</h3><p>Zadej šestimístný kód od trenéra.</p><label for="gCode">Kód skupiny<input id="gCode" type="text" maxlength="6" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase" value="'+esc(code||'')+'" placeholder="např. K7P2QX"></label>'+
+    '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="ok">Přidat se</button></div>',
+    function(e){ var b=e.target.closest('[data-a]'); if(!b) return; if(b.getAttribute('data-a')==='x'){ closeSheet(); return; }
+      var c=$('gCode').value.trim().toUpperCase(); if(!/^[A-Z0-9]{6}$/.test(c)){ toast('Kód má 6 znaků.'); $('gCode').focus(); return; } if(b.disabled) return; b.disabled=true;
+      groupJoin(c).then(function(){ closeSheet(); },function(){ b.disabled=false; }); });
+}
+function groupJoin(code){
+  return gCall('group_join',{p_code:code}).then(function(g){ try{ localStorage.removeItem(GJOINK); }catch(e){} GRP.list=null; toast('Jsi ve skupině '+g.name,3000); groupTodayLoad(true); moreOpen('groups'); groupOpen(+g.id,'courses'); return g; },
+    function(err){ toast('Přidat se nepovedlo: '+err.message,4000); throw err; });
+}
+/* odkaz ?skupina=KÓD (od trenéra): kód se pamatuje i přes přihlášení Googlem a pak se nabídne přidání */
+(function(){ var m=location.search.match(/[?&]skupina=([A-Za-z0-9]{6})\b/); if(!m) return; try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){} lsSet(GJOINK,m[1].toUpperCase()); })();
+function groupPendAsk(){
+  var code=String(lsGet(GJOINK,'')||''); if(!/^[A-Z0-9]{6}$/.test(code)) return true; /* nic ke zpracování */
+  if(!$('scrim').hidden||$('onb')) return false; /* jiné okno (novinky, průvodce) má přednost, zkusí se znovu */
+  openSheet('<h3>Přidat se do skupiny</h3><p>Někdo ti poslal odkaz na skupinu v Pawkuru.</p><p translate="no"><b class="code">'+esc(code)+'</b></p>'+(AUTH?'':'<p class="hint">Skupiny jsou pro přihlášené. Přihlas se a pak se přidáš.</p>')+
+    '<div class="acts"><button class="btn" data-a="x">Teď ne</button>'+(AUTH?'<button class="btn primary" data-a="join">Přidat se</button>':'<button class="btn gbtn" data-acct="in">'+GLOGO+'<span>Přihlásit přes Google</span></button>')+'</div>',
+    function(e){ var b=e.target.closest('[data-a]'); if(!b) return; if(b.getAttribute('data-a')==='x'){ try{ localStorage.removeItem(GJOINK); }catch(x){} closeSheet(); return; } if(b.disabled) return; b.disabled=true; groupJoin(code).then(function(){ closeSheet(); },function(){ b.disabled=false; }); });
+  return true;
+}
+function groupCourseOpen(cid,gname){
+  var have=myDB().filter(function(x){ return +x.gcid===cid; })[0];
+  if(have){ loadCourse(have); return; }
+  toast('Načítám parkur…');
+  gCall('group_course_get',{p_cid:cid}).then(function(c){
+    if(!c||typeof c!=='object') throw new Error('parkur už ve skupině není');
+    var d=courseClean(c.data); if(d.route.length<2) throw new Error('parkur je poškozený');
+    var rec={id:'my-'+Date.now().toString(36),name:String(c.name||'Parkur').slice(0,60),cls:clsClean(c.cls),author:String(c.author||'').slice(0,60),W:d.W,H:d.H,obs:d.obs,route:d.route,sides:d.sides,turns:d.turns,hp:d.hp.slice(0,400),marks:d.marks,src:'skupina',gcid:cid,gname:String(gname||'').slice(0,40)};
+    var L=myDB(); L.push(rec); if(!mySave(L)) throw new Error('nepodařilo se uložit');
+    loadCourse(rec);
+  },function(err){ toast('Načtení se nepovedlo: '+err.message,4000); });
+}
+/* uložený běh na parkuru skupiny (neupraveném) jde do žebříčku skupiny; jeden výsledek na psa, další ho přepíše */
+HM.on('runSaved',function(d){
+  var gc=+S.meta.gcid; if(!gc||!AUTH||S.meta.dirty||!d||!d.run) return;
+  var r=d.run, dg=curDog();
+  gCall('group_run_put',{p_cid:gc,p_dog:dg?dg.name:'',p_size:dg?dg.size:'',p_t:r.g==='DIS'?null:r.t,p_pen:r.g==='DIS'?0:r.tot,p_g:r.g,p_f:r.f,p_r:r.r})
+    .then(function(){ toast(S.meta.gname?'Běh je v žebříčku skupiny '+S.meta.gname:'Běh je v žebříčku skupiny',3500); GTODAY.rows.forEach(function(x){ if(+x.id===gc){ if(!x.ran) x.runs=(+x.runs||0)+1; x.ran=true; } }); lsSet(GTK,GTODAY); },
+      function(err){ toast('Do žebříčku skupiny se běh neposlal: '+err.message,4000); });
+});
+function groupBoard(cid,name){
+  openSheet('<div class="wkboard"><h3>Žebříček skupiny</h3>'+(name?'<p class="hint" translate="no">'+esc(name)+'</p>':'')+'<p class="hint">Pořadí podle trestných bodů, pak času. Každý pes jednou, poslední zapsaný běh.</p><div class="wk-list" id="gbList"><p class="wk-st">Načítám žebříček…</p></div><div class="acts"><button class="btn primary" data-a="x">Zavřít</button></div></div>',
+    function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
+  gCall('group_board',{p_cid:cid}).then(function(rows){ var el=$('gbList'); if(!el) return; rows=Array.isArray(rows)?rows:[];
+    el.innerHTML=rows.length?rows.map(function(r,i){ return '<div class="wkrow'+(r.me?' mine':'')+'"><span class="rk">'+(i+1)+'.</span><span class="who"><b translate="no">'+esc(r.dog||'–')+'</b><small translate="no">'+esc(r.name||'')+'</small></span><span class="sz" translate="no">'+esc(r.size||'')+'</span><span class="tm">'+(r.g==='DIS'?'<b>DIS</b>':'<b>'+fmt2(+r.t||0)+' s</b><small>'+wkPen(r.pen)+'</small>')+'</span></div>'; }).join('')
+      :'<p class="wk-st">Zatím nikdo nezaběhl. Buď první!</p>'; },
+    function(err){ var el=$('gbList'); if(el) el.innerHTML='<p class="wk-st">Žebříček teď nejde načíst ('+esc(err.message)+').</p>'; });
+}
+function groupPostSheet(gid){
+  if(!AUTH){ toast('Skupiny jsou pro přihlášené (Více → Účet).',4000); return; }
+  if(S.route.length<2){ toast('Nejdřív vyznač trasu v režimu Trasa.'); return; }
+  var L=GRP.list||[];
+  if(!gid&&!L.length){ if(GRP.list===null){ toast('Načítám skupiny…'); groupsLoad(true); } else toast('Nejdřív založ skupinu nebo se do nějaké přidej (Více → Skupiny a trenér).',4000); return; }
+  var m=curM();
+  openSheet('<h3>Poslat parkur skupině</h3><p class="hint" translate="no">'+esc(S.meta.name)+' · '+esc(S.meta.cls)+' · '+fmt(m.len)+' m · '+nPrek(m.n)+'</p>'+
+    (gid?'':'<label for="gpGrp">Skupina<select id="gpGrp">'+L.map(function(g){ return '<option value="'+(+g.id)+'">'+esc(g.name)+'</option>'; }).join('')+'</select></label>')+
+    '<div class="grid2"><label for="gpDay">Na den<input id="gpDay" type="date" value="'+localDate()+'"></label><label for="gpNote">Poznámka<input id="gpNote" type="text" maxlength="200" placeholder="např. trénink v 18:00"></label></div>'+
+    '<p class="hint">Členům se parkur ukáže na Domů v Dnes a přijde jim upozornění. Jejich běhy se sejdou v žebříčku parkuru.</p>'+
+    '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn primary" data-a="send">Poslat</button></div>',
+    function(e){ var b=e.target.closest('[data-a]'); if(!b) return; if(b.getAttribute('data-a')==='x'){ closeSheet(); return; } if(b.disabled) return;
+      var id=gid||+(($('gpGrp')||{}).value||0), day=$('gpDay').value, note=$('gpNote').value.trim(); if(!id){ toast('Vyber skupinu.'); return; }
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(day)) day=localDate();
+      var gname=(GRP.detail&&+GRP.detail.id===id)?GRP.detail.name:((L.filter(function(g){ return +g.id===id; })[0]||{}).name||'');
+      b.disabled=true; b.textContent='Posílám…';
+      gCall('group_post',{p_id:id,p_name:S.meta.name,p_cls:S.meta.cls,p_author:S.meta.author||'',p_data:shareData(),p_day:day,p_note:note,p_thumb:thumbPack(S)})
+        .then(function(nid){ closeSheet(); if(+nid>0&&!S.meta.dirty){ S.meta.gcid=+nid; S.meta.gname=String(gname||'').slice(0,40); save(); } toast('Parkur je u skupiny. Členům se ukáže na Domů.',3500); if(GRP.id===id) groupOpen(id,'courses'); groupTodayLoad(true); },
+          function(err){ b.disabled=false; b.textContent='Poslat'; toast('Odeslání se nepovedlo: '+err.message,4000); }); });
+}
+/* start: odběr upozornění, parkury skupin a případný odkaz na skupinu (až po novinkách nebo průvodci) */
+setTimeout(function(){ pushSync(); groupTodayLoad(false); },2500);
+setTimeout(function(){ if(groupPendAsk()) return; var n=0, t=setInterval(function(){ if(groupPendAsk()||++n>10) clearInterval(t); },3000); },1500);
+
 /* ---------- HandlerMap 2.0: nastavení (jazyk, vzhled), průvodce prvním spuštěním, novinky ---------- */
 (function(){ var bm=$('brandMark'); if(bm) bm.innerHTML=IC.brand; })();
 /* podstránka ve Více: vlastní záložka nebo obrazovka modulu ('mod:<id>') */
@@ -11986,6 +12560,7 @@ function settingsHTML(){
       '<p class="hint">Třídy, postup do vyšší třídy, maximální čas a závody se řídí pravidly vybrané země. Parkury a kontrola FCI jsou společné.</p></div>'+
     '<div class="panel set"><b>Vzhled</b>'+seg('theme',THEME,[['system','Podle systému'],['light','Světlý'],['dark','Tmavý']],'Vzhled')+'<p class="hint">Tmavý vzhled je šetrnější k očím večer a k baterii telefonu.</p></div>'+
     '<div class="panel set"><b>Jednotky</b>'+seg('unit',UFT()?'ft':'m',[['m','Metry'],['ft','Stopy (ft, yd/s)']],'Jednotky')+'<p class="hint">Délky trati a vzdálenosti na plánku v metrech, nebo ve stopách a rychlost v yardech za sekundu (jako AKC a UKI). Parkury se dál ukládají v metrech.</p></div>'+
+    pushSetHTML()+
     '<div class="panel set"><b>Průvodce</b><p class="hint">Krátké představení aplikace a nastavení psa.</p><div class="row"><button class="btn" data-onb="1">Spustit průvodce</button></div></div>';
 }
 
@@ -12068,11 +12643,11 @@ function onbStart(){
   onbOpen(1);
 }
 function newsCheck(){
-  var seen=lsGet('agility-news-v1',null); if(seen==='2.9') return false; lsSet('agility-news-v1','2.9');
-  /* kdo neviděl novinky 2.8, dozví se i o nich; kdo neviděl ani 2.7, i o novém názvu */
-  var o8=seen!=='2.8', old=o8&&seen!=='2.7';
-  openSheet('<h3>Novinky v Pawkuru 2.9</h3>'+(old?'<p>Aplikace se teď jmenuje Pawkur, dřív AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>':'')+
-    '<ul class="news"><li>Pes jako hlavní postava: na Domů pozdrav se jménem a obrázkem psa, v Psech profil s kroužkem, kolik zbývá do vyšší třídy</li><li>Obrázek psa: šest kreslených psů, nebo vlastní fotka, která zůstane jen v tomhle telefonu</li><li>Teplejší barvy, barevná tlačítka na Domů a nadpisy normálním písmem</li><li>Prázdný Deník, Moje parkury a Psi mají obrázek a radu, čím začít</li><li>Průvodce prvním spuštěním začíná jménem psa</li>'+(o8?'<li>Telefon na šířku: v Plánu je plocha přes celou výšku a ovládání vedle, v Běhu stopky a START vlevo</li><li>Plocha přes celou obrazovku: tlačítko pod plochou schová lišty a souhrn</li><li>Nový parkur se zeptá na plochu a třídu a otevře se celý; v paletě jsou všechny překážky bez posouvání</li><li>Kontrola FCI rovnou na ploše i bez trasy: překážky přes sebe, mimo plochu nebo blíž než 1 m se obtáhnou červeně; nové kontroly nájezdu, zdi, dvojitého skoku a tunelů</li><li>Znovu vedle Zpět, úprava trasy uprostřed (⋯ u kroku) a uložení parkuru i bez trasy</li><li>Parkury začínají výš, prázdné Moje nabídne Nový parkur a Plánek z fotky</li><li>Jedna barva výběru, stejná tlapka všude, větší tlačítka pro prst a tlačítka dlouhých oken vždy vidět</li>'+(old?'<li>Stavba: panel výběru dole nad lištou, plocha už neposkakuje; přiblížení a 3D vedle plochy; přetažení prstem funguje</li><li>Domů: nahoře rozpracovaný parkur s mapou a tlačítka Nový parkur, Plánek z fotky a Knihovna; úvodní fotka je pryč</li><li>Postup se hlídá sám: na Domů vidíš, kolik ti zbývá do vyšší třídy podle pravidel tvé země</li><li>Kalkulačka SČP a MČP (Více → Nástroje): časy podle délky trati bez kreslení parkuru</li><li>Křížení na dráze psovoda: do plánku si označíš přední, zadní a slepé křížení a místa, kde si dát pozor</li><li>Výsledková listina pro pořadatele (Více → Nástroje a v Běhu): pořadí podle FCI, tisk, PDF a kopírování do Excelu</li>'+(seen==='2.6'?'':'<li>Hoopers: přepínač Agility | Hoopers nahoře na Domů a v Parkurech. Parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb</li>')+(seen==='2.5'||seen==='2.6'?'':'<li>Deník: Kde ztrácíš body. Z výsledků na kacr.info aplikace spočítá diskvalifikace, chyby, odmítnutí a čas a doporučí sekvenci na trénink</li><li>Úspěšnost podle rozhodčího a povrchu; rozhodčí z kacr.info se počítají do postupu</li><li>Den závodů na Domů: den předem a během závodu navigace, rozhodčí, počet týmů v kategorii, seznam věcí s sebou a zápis výsledku</li><li>U závodu v deníku jde zaškrtnout, co se stalo (tyčka, zóna, slalom…)</li>'):''):'')+'</ul>'+
+  var seen=lsGet('agility-news-v1',null); if(seen==='3.0') return false; lsSet('agility-news-v1','3.0');
+  /* kdo neviděl novinky 2.9, dozví se i o nich, pak 2.8; kdo neviděl ani 2.7, i o novém názvu */
+  var o9=seen!=='2.9', o8=o9&&seen!=='2.8', old=o8&&seen!=='2.7';
+  openSheet('<h3>Novinky v Pawkuru 3.0</h3>'+(old?'<p>Aplikace se teď jmenuje Pawkur, dřív AgiPlan. Tvoje parkury, psi i běhy zůstaly, jak byly.</p>':'')+
+    '<ul class="news"><li>Dnes na Domů: parkur od trenéra, den závodů a plán na týden se zaškrtáváním</li><li>Galerie parkurů: zveřejni parkur přes Sdílet, otevírej a hodnoť parkury ostatních</li><li>Skupiny a trenér: skupina na kód, parkur poslaný skupině se ukáže členům na Domů a jejich běhy se sejdou v žebříčku</li><li>Upozornění na telefonu: parkur od skupiny, zítra závodíš a nový parkur týdne (Více → Nastavení)</li>'+(o9?'<li>Pes jako hlavní postava: na Domů pozdrav se jménem a obrázkem psa, v Psech profil s kroužkem, kolik zbývá do vyšší třídy</li><li>Obrázek psa: šest kreslených psů, nebo vlastní fotka, která zůstane jen v tomhle telefonu</li><li>Teplejší barvy, barevná tlačítka na Domů a nadpisy normálním písmem</li><li>Prázdný Deník, Moje parkury a Psi mají obrázek a radu, čím začít</li><li>Průvodce prvním spuštěním začíná jménem psa</li>':'')+(o8?'<li>Telefon na šířku: v Plánu je plocha přes celou výšku a ovládání vedle, v Běhu stopky a START vlevo</li><li>Plocha přes celou obrazovku: tlačítko pod plochou schová lišty a souhrn</li><li>Nový parkur se zeptá na plochu a třídu a otevře se celý; v paletě jsou všechny překážky bez posouvání</li><li>Kontrola FCI rovnou na ploše i bez trasy: překážky přes sebe, mimo plochu nebo blíž než 1 m se obtáhnou červeně; nové kontroly nájezdu, zdi, dvojitého skoku a tunelů</li><li>Znovu vedle Zpět, úprava trasy uprostřed (⋯ u kroku) a uložení parkuru i bez trasy</li><li>Parkury začínají výš, prázdné Moje nabídne Nový parkur a Plánek z fotky</li><li>Jedna barva výběru, stejná tlapka všude, větší tlačítka pro prst a tlačítka dlouhých oken vždy vidět</li>'+(old?'<li>Stavba: panel výběru dole nad lištou, plocha už neposkakuje; přiblížení a 3D vedle plochy; přetažení prstem funguje</li><li>Domů: nahoře rozpracovaný parkur s mapou a tlačítka Nový parkur, Plánek z fotky a Knihovna; úvodní fotka je pryč</li><li>Postup se hlídá sám: na Domů vidíš, kolik ti zbývá do vyšší třídy podle pravidel tvé země</li><li>Kalkulačka SČP a MČP (Více → Nástroje): časy podle délky trati bez kreslení parkuru</li><li>Křížení na dráze psovoda: do plánku si označíš přední, zadní a slepé křížení a místa, kde si dát pozor</li><li>Výsledková listina pro pořadatele (Více → Nástroje a v Běhu): pořadí podle FCI, tisk, PDF a kopírování do Excelu</li>'+(seen==='2.6'?'':'<li>Hoopers: přepínač Agility | Hoopers nahoře na Domů a v Parkurech. Parkury H1–H3 podle pravidel FCI, vlastní stavba s oblouky, sudy, plůtky, krátkým tunelem a prostorem psovoda, kontrola pravidel a hodnocení běhu podle chyb</li>')+(seen==='2.5'||seen==='2.6'?'':'<li>Deník: Kde ztrácíš body. Z výsledků na kacr.info aplikace spočítá diskvalifikace, chyby, odmítnutí a čas a doporučí sekvenci na trénink</li><li>Úspěšnost podle rozhodčího a povrchu; rozhodčí z kacr.info se počítají do postupu</li><li>Den závodů na Domů: den předem a během závodu navigace, rozhodčí, počet týmů v kategorii, seznam věcí s sebou a zápis výsledku</li><li>U závodu v deníku jde zaškrtnout, co se stalo (tyčka, zóna, slalom…)</li>'):''):'')+'</ul>'+
     '<div class="acts"><button class="btn primary" data-a="x">Pokračovat</button></div>',function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
   return true;
 }

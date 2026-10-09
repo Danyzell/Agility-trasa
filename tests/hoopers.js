@@ -20,10 +20,10 @@ module.exports = async function ({ browser, base }) {
 
   await step('přepínač Agility | Hoopers v horní liště', async () => {
     const t0 = await ev(() => ({ seg: getComputedStyle($('sportSeg')).display, tabs: [...document.querySelectorAll('#libTabs button')].map(b => b.getAttribute('data-c')).join(), sp: SPORT, gen: $('genBtn').hidden }));
-    ok(t0.seg !== 'none' && t0.tabs === 'A1,A2,A3,tr,my' && t0.sp === 'agility' && !t0.gen, 'výchozí stav Agility: ' + JSON.stringify(t0));
+    ok(t0.seg !== 'none' && t0.tabs === 'A1,A2,A3,tr,my,gal' && t0.sp === 'agility' && !t0.gen, 'výchozí stav Agility: ' + JSON.stringify(t0));
     await page.click('#sportSeg [data-sp="hoopers"]'); await page.waitForTimeout(250); await ev(() => { $('toast').hidden = true; });
     const t1 = await ev(() => ({ tabs: [...document.querySelectorAll('#libTabs button')].map(b => b.getAttribute('data-c')).join(), on: $('sportSeg').querySelector('.on').getAttribute('data-sp'), sp: SPORT, saved: lsGet('agility-sport-v1', ''), gen: $('genBtn').hidden, info: $('catInfo').textContent, n: document.querySelectorAll('#cards .card').length }));
-    ok(t1.tabs === 'H1,H2,H3,my' && t1.on === 'hoopers' && t1.sp === 'hoopers' && t1.saved === 'hoopers' && t1.gen && /24 parkurů/.test(t1.info) && t1.n === 8, 'po přepnutí na Hoopers: ' + JSON.stringify(t1));
+    ok(t1.tabs === 'H1,H2,H3,my,gal' && t1.on === 'hoopers' && t1.sp === 'hoopers' && t1.saved === 'hoopers' && t1.gen && /24 parkurů/.test(t1.info) && t1.n === 8, 'po přepnutí na Hoopers: ' + JSON.stringify(t1));
     /* Moje ukazuje jen parkury dané disciplíny */
     await ev(() => { mySave([{ id: 'my-a', name: 'moje A', cls: 'A2', W: 30, H: 20, obs: [], route: [], turns: {}, sides: {} }, { id: 'my-h', name: 'moje H', cls: 'H1', W: 30, H: 30, obs: [], route: [], turns: {}, sides: {} }]); });
     const my = await ev(() => { const a = listFor('my').map(c => c.id).join(); setSport('agility', true); const b = listFor('my').map(c => c.id).join(); setSport('hoopers', true); return a + ' / ' + b; });
