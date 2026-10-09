@@ -157,6 +157,25 @@ module.exports = async function ({ browser, base }) {
     await page.setViewportSize({ width: 390, height: 844 });
   });
 
+  await step('Sdílet pod plochou', async () => {
+    /* v Nástrojích (⋯) Sdílet lidé nenašli: tlačítko je v liště pod plochou vedle 3D, na telefonu v jednom řádku s přiblížením */
+    await ev(() => { mode = 'view'; sel = null; ui(); render(); });
+    for (const w of [390, 360]) {
+      await page.setViewportSize({ width: w, height: w === 360 ? 740 : 844 }); await page.waitForTimeout(100);
+      const r = await ev(() => { const t = el => Math.round(el.getBoundingClientRect().top), z = document.querySelector('.fieldbox .zoom'), s = $('shareBtn'), d = $('dimBtn');
+        /* s písmem aplikace (Barlow) jeden řádek s přiblížením; tady bez stažených písem se smí Sdílet a 3D spolu zalomit doprava */
+        const sr = s.getBoundingClientRect(), dr = d.getBoundingClientRect(), br = document.querySelector('.fieldbox .fieldbar').getBoundingClientRect();
+        return { vis: !s.hidden && !!s.offsetParent, pair: t(s) === t(d) && sr.right <= dr.left, right: br.right - dr.right < 2, over: document.documentElement.scrollWidth > document.documentElement.clientWidth }; });
+      ok(r.vis && r.pair && r.right && !r.over, `Sdílet na ${w} px není vidět, není u 3D, nebo lišta přetéká: ` + JSON.stringify(r));
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.click('#shareBtn'); await page.waitForTimeout(150);
+    ok(/Sdílet parkur/.test(await page.textContent('#sheet')) && await page.isVisible('#shIn'), 'Sdílet pod plochou neotevřelo sdílení s Načíst z kódu');
+    await ev(() => closeSheet());
+    await page.click('#mBuild'); ok(await ev(() => $('shareBtn').hidden), 've Stavbě má Sdílet pod plochou zmizet jako 3D');
+    await ev(() => { mode = 'view'; ui(); });
+  });
+
   await step('angličtina: rozestupy a okno otočky', async () => {
     await fresh();
     const r = await ev(() => {
