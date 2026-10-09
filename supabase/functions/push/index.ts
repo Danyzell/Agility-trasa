@@ -4,10 +4,16 @@
      {job:'setup'}                  vyrobí klíče, když chybí, a vrátí veřejný klíč
      {job:'flush'}                  odešle neodeslané zprávy z push_queue (volá cron každých 5 minut); 404/410 od služby = odběr smazat
      {job:'test', device, lang}     zařadí zkušební zprávu pro zařízení (nejvýš 5 za hodinu) a hned ji pošle
-   Volá se s anonymním klíčem (verify_jwt): nic z toho neprozradí cizí data, zprávy jdou jen na odběry v tabulce. */
+   Volá se s anonymním klíčem (verify_jwt): nic z toho neprozradí cizí data, zprávy jdou jen na odběry v tabulce.
+   Úlohu test volá aplikace z prohlížeče (pawkur.cz → supabase.co), proto CORS a odpověď na OPTIONS jako u funkcí feedback a kacr. */
 const SBU = Deno.env.get('SUPABASE_URL') || '', SRK = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 const H = { apikey: SRK, Authorization: `Bearer ${SRK}`, 'Content-Type': 'application/json' };
-const json = (o: unknown, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'Content-Type': 'application/json; charset=utf-8' } });
+const CORS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+};
+const json = (o: unknown, status = 200) => new Response(JSON.stringify(o), { status, headers: { ...CORS, 'Content-Type': 'application/json; charset=utf-8' } });
 const enc = new TextEncoder();
 const CONTACT = 'https://pawkur.cz';
 
@@ -78,10 +84,10 @@ async function flush(limit = 200) {
   const r = await fetch(`${SBU}/rest/v1/push_queue?sent_at=is.null&select=id,title,body,url,tag,sub:push_subs(id,endpoint,p256dh,auth,fails)&order=id&limit=${limit}`, { headers: H });
   if (!r.ok) throw new Error('queue ' + r.status);
   const rows: Row[] = await r.json(); if (!rows.length) return { sent: 0, failed: 0 };
+  const v = await vapid(); /* klíče nejdřív: když se nenačtou, řádky zůstanou ve frontě na příští pokus */
   /* řádky si vzít najednou (sent_at), ať je neposílá i druhé souběžné volání */
   const c = await fetch(`${SBU}/rest/v1/push_queue?id=in.(${rows.map((x) => x.id).join(',')})&sent_at=is.null`, { method: 'PATCH', headers: { ...H, Prefer: 'return=representation' }, body: JSON.stringify({ sent_at: new Date().toISOString() }) });
   const claimed = new Set<number>((c.ok ? await c.json() : []).map((x: { id: number }) => x.id));
-  const v = await vapid();
   let sent = 0, failed = 0; const dead = new Set<number>(), bump = new Map<number, number>(), errs: { id: number; err: string }[] = [];
   const todo = rows.filter((q) => claimed.has(q.id) && q.sub);
   for (let i = 0; i < todo.length; i += 8) {
@@ -113,6 +119,7 @@ async function test(device: string, lang: string) {
 }
 
 Deno.serve(async (req: Request) => {
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (req.method !== 'POST') return json({ error: 'Jen POST.' }, 405);
   if (!SBU || !SRK) return json({ error: 'Server není nastavený.' }, 500);
   let b: Record<string, unknown> = {}; try { b = await req.json(); } catch (_e) { b = {}; }
