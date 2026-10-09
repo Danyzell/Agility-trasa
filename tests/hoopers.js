@@ -1,6 +1,7 @@
 /* Hoopers: parkury H1–H3 z generátoru podle FCI Hoopers Regulations, vlastní stavba (paleta, prostor psovoda mimo trasu),
-   kontrola pravidel, hodnocení běhu podle chyb a skryté 3D. */
+   kontrola pravidel, hodnocení běhu podle chyb a 3D průlet (podrobně v sadě v3d). */
 const { phone, offline } = require('./helpers');
+const fmtCz = v => v.toFixed(1).replace('.', ',');   /* délka jako v aplikaci (fmt) */
 
 module.exports = async function ({ browser, base }) {
   const T = await phone(browser); const { page, ok, ev } = T;
@@ -48,13 +49,25 @@ module.exports = async function ({ browser, base }) {
       dim: { hidden: $('dimBtn').hidden, soon: $('dimBtn').classList.contains('soon'), txt: $('dimBtn').innerText.replace(/\s+/g, ' ').trim(), lbl: $('dimBtn').getAttribute('aria-label') },
       tools: [...document.querySelectorAll('#planTools .tool')].filter(b => b.hidden).map(b => b.getAttribute('data-t')).join() }));
     ok(r.cls === 'H1' && /^Hoopers H1/.test(r.sub) && /Max\. čas\s*3 min/.test(r.spec) && /ok/.test(r.fci), 'plán Hoopers: ' + JSON.stringify(r));
-    ok(r.tools === 'ana,traps,3d,fld', 'rozbor, pasti, 3D a stavba v terénu mají být v Nástrojích skryté: ' + JSON.stringify(r));
-    /* tlačítko 3D pod plochou: vidět šedé s popiskem „jen agility“ (schované ho uživatel hledal), klepnutí vysvětlí proč a 3D neotevře */
-    ok(!r.dim.hidden && r.dim.soon && r.dim.txt === '3D jen agility' && r.dim.lbl === '3D zatím jen pro agility', 'tlačítko 3D u Hoopers: ' + JSON.stringify(r.dim));
-    await ev(() => { $('toast').hidden = true; $('dimBtn').scrollIntoView({ block: 'center' }); }); await page.click('#dimBtn'); await page.waitForTimeout(150);
-    const t = await ev(() => ({ ov: $('ov3d').hidden, toast: $('toast').textContent, sheet: $('scrim').hidden }));
-    ok(t.ov && t.sheet && /^3D zatím umí jen parkury agility\. Oblouk, sud a plůtek ve 3D teprve chystáme\.$/.test(t.toast), 'klepnutí na šedé 3D u Hoopers: ' + JSON.stringify(t));
-    ok(await ev(() => trLookup('jen agility') === 'agility only' && trLookup('3D zatím jen pro agility') != null && trLookup('3D zatím umí jen parkury agility. Oblouk, sud a plůtek ve 3D teprve chystáme.') != null), 'chybí anglický překlad tlačítka 3D u Hoopers');
+    ok(r.tools === 'ana,traps,fld', 'rozbor, pasti a stavba v terénu mají být v Nástrojích skryté (3D průlet ne): ' + JSON.stringify(r));
+    /* tlačítko 3D pod plochou: u Hoopers stejné jako u agility (dřív šedé „jen agility“) a otevře 3D s oblouky, sudy, plůtky a psovodem */
+    ok(!r.dim.hidden && !r.dim.soon && r.dim.txt === '3D' && r.dim.lbl === 'Zobrazit parkur ve 3D', 'tlačítko 3D u Hoopers: ' + JSON.stringify(r.dim));
+    const e0 = T.errs.length;
+    await ev(() => { $('toast').hidden = true; $('dimBtn').scrollIntoView({ block: 'center' }); }); await page.click('#dimBtn');
+    await page.waitForFunction(() => !$('ov3d').hidden, null, { timeout: 20000 });
+    await page.waitForFunction(() => C3.api, null, { timeout: 20000 }).catch(() => {});   /* bez WebGL zůstane jednoduchý průlet */
+    await page.waitForTimeout(200);
+    const t = await ev(() => ({ ov: !$('ov3d').hidden, sheet: $('scrim').hidden, toast: $('toast').hidden ? '' : $('toast').textContent, info: $('p3info').textContent, len: V3.path.len, n: S.route.length, ar: $('p3ar').hidden, gl: !!C3.api }));
+    ok(t.ov && t.sheet && !t.toast && t.info === 'Překážka 1 z ' + t.n + ' · 0,0 m z ' + fmtCz(t.len) + ' m' && t.len > 50 && t.ar, '3D u Hoopers: ' + JSON.stringify(t));
+    /* kus průletu ve všech pohledech bez chyb; AR na place u Hoopers zatím není */
+    await page.click('#p3play'); await page.waitForTimeout(500); await page.click('#p3play');
+    for (const v of ['dog', 'chase', 'top', 'orbit']) if (await page.isVisible(`#p3view [data-v="${v}"]`)) { await page.click(`#p3view [data-v="${v}"]`); await page.waitForTimeout(80); }
+    ok(await ev(() => V3.d > 0 && /^Překážka \d+ z /.test($('p3info').textContent)), 'průlet Hoopers se nepohnul: ' + await ev(() => V3.d + ' ' + $('p3info').textContent));
+    ok(T.errs.length === e0, '3D u Hoopers hlásí chyby');
+    await page.click('#p3dim [data-d="2"]'); await page.waitForTimeout(150);
+    ok(await ev(() => $('ov3d').hidden && !C3.api), '2D nezavřelo 3D u Hoopers');
+    /* hláška „3D zatím umí jen parkury agility“ a popisek „jen agility“ jsou pryč i z překladů */
+    ok(await ev(() => trLookup('jen agility') == null && trLookup('3D zatím umí jen parkury agility. Oblouk, sud a plůtek ve 3D teprve chystáme.') == null), 'zbyl překlad hlášky, že 3D umí jen agility');
   });
 
   await step('vlastní stavba', async () => {
