@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smazání účtu – Pawkur</title>
+<meta name="description" content="Jak smazat účet v aplikaci Pawkur a data u něj. How to delete your Pawkur account and its data.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+:root{--bg:#f2f4ee; --surface:#fff; --text:#17201a; --muted:#55625a; --accent:#1f6b45; --border:#dde3d6; --bad:#b3261e; color-scheme:light dark;}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1411; --surface:#182019; --text:#e5ebe2; --muted:#a6b3a6; --accent:#5fb487; --border:#2c3a2e; --bad:#f2b8b5;}}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--bg); color:var(--text); font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
+main{max-width:720px; margin:0 auto; padding:20px 16px 48px;}
+header{display:flex; align-items:center; gap:12px; margin-bottom:8px;}
+header img{width:48px; height:48px; border-radius:12px;}
+h1{font-size:26px; line-height:1.2; margin:0;} h2{font-size:20px; margin:28px 0 8px;}
+a{color:var(--accent);} .muted{color:var(--muted);}
+.box{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:14px 16px; margin:14px 0;}
+nav.lang{display:flex; gap:8px; margin:6px 0 4px;} nav.lang a{display:inline-block; padding:6px 14px; border:1px solid var(--border); border-radius:999px; text-decoration:none; background:var(--surface);}
+label{display:block; font-weight:600; margin:10px 0 4px;} input,textarea{width:100%; font:inherit; padding:10px 12px; border:1px solid var(--border); border-radius:12px; background:var(--bg); color:var(--text);}
+button{font:inherit; font-weight:700; margin-top:12px; padding:11px 18px; border:0; border-radius:12px; background:var(--accent); color:#fff; cursor:pointer;} button:disabled{opacity:.6;}
+.ok{color:var(--accent); font-weight:600;} .err{color:var(--bad); font-weight:600;}
+hr{border:0; border-top:1px solid var(--border); margin:40px 0;}
+</style>
+</head>
+<body>
+<main>
+<header><img src="icon-192.png" alt=""><h1>Smazání účtu Pawkur</h1></header>
+<nav class="lang"><a href="#cs">Česky</a><a href="#en">English</a></nav>
+
+<section id="cs" lang="cs">
+<div class="box">
+<h2>Smazání v aplikaci</h2>
+<p>V aplikaci Pawkur, v telefonu i v prohlížeči na <a href="https://pawkur.cz/">pawkur.cz</a>, se přihlas a otevři <b>Více → Účet → Smazat účet</b>. Smazání se provede hned.</p>
+</div>
+<h2>Co se smaže</h2>
+<p>Účet (přihlášení přes Google) a všechno, co je u něj na serveru: synchronizované parkury, psi, běhy, deník a nastavení, profil, skupiny, které vlastníš, tvoje parkury, běhy a tréninky ve skupinách, parkury sdílené kódem i v galerii, hodnocení v galerii a odběr upozornění. Data uložená jen v tvém zařízení smažeš odinstalováním aplikace nebo vymazáním dat prohlížeče.</p>
+<p class="muted">Nic z účtu nezůstává. Anonymní statistiky otevření aplikace s účtem spojené nejsou (jen náhodné číslo instalace). Zprávy autorovi smažeme na požádání.</p>
+<div class="box">
+<h2>Žádost bez přístupu do aplikace</h2>
+<p>Když se do aplikace nemůžeš přihlásit, pošli žádost. Účet smažeme do 30 dní a potvrdíme ti to e-mailem.</p>
+<form data-lang="cs">
+<label for="mail-cs">E-mail účtu Google, kterým se přihlašuješ</label><input id="mail-cs" type="email" required autocomplete="email">
+<label for="note-cs">Poznámka (nepovinné)</label><textarea id="note-cs" rows="3"></textarea>
+<button type="submit">Poslat žádost o smazání</button>
+<p class="st" role="status"></p>
+</form>
+</div>
+<p class="muted"><a href="privacy.html">Zásady ochrany osobních údajů</a></p>
+</section>
+
+<hr>
+
+<section id="en" lang="en">
+<h1>Deleting your Pawkur account</h1>
+<div class="box">
+<h2>Delete in the app</h2>
+<p>In the Pawkur app, on your phone or in a browser at <a href="https://pawkur.cz/">pawkur.cz</a>, sign in and open <b>More → Account → Delete account</b>. Your account is deleted right away.</p>
+</div>
+<h2>What gets deleted</h2>
+<p>Your account (Google sign-in) and everything stored with it on the server: synced courses, dogs, runs, training log and settings, your profile, groups you own, your courses, runs and training sessions in groups, courses shared by code or in the gallery, your gallery ratings and notification subscriptions. Data kept only on your device is removed by uninstalling the app or clearing the browser data.</p>
+<p class="muted">Nothing linked to the account is kept. Anonymous app-open statistics are not linked to any account (only a random installation ID). Messages to the author are deleted on request.</p>
+<div class="box">
+<h2>Request without access to the app</h2>
+<p>If you can't sign in to the app, send a request. We delete the account within 30 days and confirm by e-mail.</p>
+<form data-lang="en">
+<label for="mail-en">E-mail of the Google account you sign in with</label><input id="mail-en" type="email" required autocomplete="email">
+<label for="note-en">Note (optional)</label><textarea id="note-en" rows="3"></textarea>
+<button type="submit">Send deletion request</button>
+<p class="st" role="status"></p>
+</form>
+</div>
+<p class="muted"><a href="privacy.html#en">Privacy policy</a></p>
+</section>
+</main>
+<script>
+(function(){
+  var SB_URL='https://wtjyjknaibsamgczvaxy.supabase.co', SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0anlqa25haWJzYW1nY3p2YXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MDA1NjAsImV4cCI6MjEwNjE3NjU2MH0.kV8UN9xQFKqTNcnY9B81-wWrnM5nWXUPnzcCTHVIMZc';
+  function dev(){ try{ var d=localStorage.getItem('pawkur-del-dev'); if(!d){ d='del-'+Math.random().toString(36).slice(2,12)+Date.now().toString(36); localStorage.setItem('pawkur-del-dev',d); } return d; }catch(e){ return 'del-'+Math.random().toString(36).slice(2,12); } }
+  Array.prototype.forEach.call(document.querySelectorAll('form[data-lang]'),function(f){
+    var cs=f.getAttribute('data-lang')==='cs', st=f.querySelector('.st'), btn=f.querySelector('button');
+    f.addEventListener('submit',function(e){
+      e.preventDefault(); var mail=f.querySelector('input').value.trim(), note=f.querySelector('textarea').value.trim();
+      if(!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(mail)){ st.className='st err'; st.textContent=cs?'E-mail nevypadá správně.':'That e-mail does not look right.'; return; }
+      btn.disabled=true; st.className='st'; st.textContent=cs?'Odesílám…':'Sending…';
+      fetch(SB_URL+'/functions/v1/feedback',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
+        body:JSON.stringify({kind:'other',msg:'ŽÁDOST O SMAZÁNÍ ÚČTU (web smazani-uctu.html)\nE-mail účtu: '+mail+(note?'\nPoznámka: '+note:''),contact:mail,lang:cs?'cs':'en',ver:'smazani-uctu',device:dev()})})
+        .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if(!r.ok||!j||!j.ok) throw new Error(j&&j.error||('HTTP '+r.status)); }); })
+        .then(function(){ st.className='st ok'; st.textContent=cs?'Žádost odešla. Účet smažeme do 30 dní a potvrdíme e-mailem.':'Request sent. We will delete the account within 30 days and confirm by e-mail.'; },
+          function(err){ btn.disabled=false; st.className='st err'; st.textContent=(cs?'Nepovedlo se odeslat: ':'Could not send: ')+err.message; });
+    });
+  });
+})();
+</script>
+</body>
+</html>
