@@ -261,6 +261,11 @@ select.btn{padding-right:8px;}
 .fieldbox .dimbtn[hidden]{display:none;}
 .fieldbox .arbtn{background:var(--accent); color:var(--on-accent); border-color:var(--accent);} .fieldbox .arbtn svg{color:currentColor;}
 .fieldbox .dimbtn svg{width:20px; height:20px; color:var(--accent);}
+/* Hoopers: 3D zatím jen pro agility; tlačítko je vidět šedé s popiskem (schované ho lidé hledali), klepnutí vysvětlí proč */
+.fieldbox .dimbtn .dsoon{display:none;}
+.fieldbox .dimbtn.soon{color:var(--muted); border-style:dashed; box-shadow:none;} .fieldbox .dimbtn.soon svg{color:var(--muted);}
+.fieldbox .dimbtn.soon .dlbl{display:flex; flex-direction:column; align-items:flex-start; line-height:1.05;}
+.fieldbox .dimbtn.soon .dsoon{display:block; font-size:10.5px; font-weight:600; white-space:nowrap;}
 .ov3d-hint{position:absolute; left:50%; top:calc(12px + env(safe-area-inset-top,0px)); transform:translateX(-50%); background:rgba(13,20,16,.72); color:#e5ebe2; padding:7px 14px; border-radius:999px; font-size:13px; pointer-events:none;}
 .ov3d-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)); background:#18201a; color:#e5ebe2; font-size:13px;}
 .ov3d-bar .btn{background:#233026; color:#e5ebe2; border-color:#35443a;}
@@ -1429,7 +1434,7 @@ body.fullfield .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));}
       <div class="zoom"><button class="btn" id="zOut" aria-label="Oddálit">−</button><span id="zLbl" class="num"></span><button class="btn" id="zIn" aria-label="Přiblížit">+</button></div>
       <span class="grow"></span>
       <button class="dimbtn" id="fullBtn" aria-pressed="false" title="Plocha přes celou obrazovku" aria-label="Plocha přes celou obrazovku"><span class="ff-in" data-ic="full"></span><span class="ff-out" data-ic="fullX"></span></button>
-      <button class="dimbtn" id="dimBtn" title="Zobrazit parkur ve 3D" aria-label="Zobrazit parkur ve 3D"><span data-ic="cube"></span>3D</button>
+      <button class="dimbtn" id="dimBtn" title="Zobrazit parkur ve 3D" aria-label="Zobrazit parkur ve 3D"><span data-ic="cube"></span><span class="dlbl">3D<small class="dsoon">jen agility</small></span></button>
       <button class="dimbtn arbtn" id="arBtn" hidden title="Postavit parkur kamerou na skutečném place" aria-label="AR na place">📷 AR na place</button>
     </div>
     </div>
@@ -2957,7 +2962,8 @@ var I18N_TRI={exact:{
 "Pro závodníka: čísla, trasa a šipky, start a cíl. Bez délek a souřadnic.": "For the competitor: numbers, route and arrows, start and finish. No lengths or coordinates.",
 "Jako od rozhodčího: čísla v kroužcích na straně nájezdu, tenká trasa, START zeleně a CÍL červeně. PDF má řádky na poznámky.": "Like a judge's: numbers in circles on the approach side, a thin route, START in green and FINISH in red. The PDF has lines for notes.",
 "Pro stavitele: délky úseků, souřadnice pod překážkami, měřítko po okrajích a v PDF tabulka s metry od okraje plochy a směrem běhu.": "For the builder: leg lengths, coordinates under obstacles, a scale along the edges and in the PDF a table with metres from the field edge and running direction.",
-"Obrázek do příběhu": "Story image", "Postav si ho v aplikaci Pawkur": "Build it in the Pawkur app", "x, y = metry od levého a horního okraje": "x, y = metres from the left and top edge", "Datum a místo": "Date and venue", "SČP / MČP": "SCT / MCT", "Poznámky": "Notes", "délka": "length",
+"Obrázek do příběhu": "Story image", "Postav si ho v aplikaci Pawkur": "Build it in the Pawkur app",
+"jen agility": "agility only", "3D zatím jen pro agility": "3D is for agility only so far", "3D zatím umí jen parkury agility. Oblouk, sud a plůtek ve 3D teprve chystáme.": "3D only supports agility courses so far. Hoops, barrels and gates in 3D are on the way.", "x, y = metry od levého a horního okraje": "x, y = metres from the left and top edge", "Datum a místo": "Date and venue", "SČP / MČP": "SCT / MCT", "Poznámky": "Notes", "délka": "length",
 "Nebo otevři odkaz": "Or open the link", "Kopírovat odkaz": "Copy the link", "Načítám parkur z odkazu…": "Loading the course from the link…"
 },num:{
 "Vybráno: # překážka": "Selected: # obstacle", "Vybráno: # překážky": "Selected: # obstacles", "Vybráno: # překážek": "Selected: # obstacles", "Otočit výběr o #° doleva": "Rotate the selection #° left", "Otočit výběr o #° doprava": "Rotate the selection #° right",
@@ -6003,7 +6009,10 @@ function ui(){
   var special=panel==='side'||panel==='quiz';
   if(mode==='view'&&!S.obs.length) mode='build'; /* prázdná plocha: rovnou stavět */
   var hoop=isHoop(); setSizeSel();
-  $('dimBtn').hidden=mode!=='view'||special||hoop; /* při tréninku paměti by 3D prozradilo čísla překážek; 3D zatím jen agility */
+  /* při tréninku paměti by 3D prozradilo čísla překážek. 3D zatím jen agility: u Hoopers je tlačítko šedé s popiskem „jen agility“
+     a klepnutí vysvětlí proč (dřív bylo schované a uživatel 9. 10. nevěděl, proč u druhého parkuru chybí) */
+  var db=$('dimBtn'); db.hidden=mode!=='view'||special;
+  if(db.__h!==hoop){ db.__h=hoop; db.classList.toggle('soon',hoop); var dl=hoop?'3D zatím jen pro agility':'Zobrazit parkur ve 3D'; db.title=dl; db.setAttribute('aria-label',dl); } /* ne aria-disabled: klepnutí něco dělá (vysvětlí proč) */
   $('arBtn').hidden=!(typeof AR!=='undefined'&&AR.ok)||mode!=='view'||special||S.route.length<2||hoop;
   Array.prototype.forEach.call(document.querySelectorAll('#planTools .tool'),function(b){ if(/^(ana|traps|3d|fld)$/.test(b.getAttribute('data-t'))) b.hidden=hoop; });
   $('mView').className=mode==='view'?'on':''; $('mBuild').className=mode==='build'?'on':''; $('mRoute').className=mode==='route'?'on':'';
@@ -8718,8 +8727,9 @@ function open3dGL(){
 }
 function close3dGL(){ if(C3.api){ try{ C3.api.dispose(); }catch(e){} C3.api=null; } var cv=$('c3dgl'); if(cv){ var n=cv.cloneNode(false); n.hidden=true; cv.parentNode.replaceChild(n,cv); } $('c3d').hidden=false; }
 function open3d(play){ if(play==null) play=true;
+  /* Hoopers dřív než nabídka Plus: 3D by u Hoopers nepomohlo ani s Plus */
+  if(isHoop()){ toast('3D zatím umí jen parkury agility. Oblouk, sud a plůtek ve 3D teprve chystáme.',4000); return; }
   if(!plusGate('3D průlet')) return;
-  if(isHoop()){ toast('3D zatím umí jen parkury agility.'); return; }
   if(S.route.length<2&&(play||!v3dOK()||!S.obs.length)){toast(S.obs.length&&!play?'Pro 3D potřebuješ trasu aspoň se 2 překážkami.':'Pro 3D průlet potřebuješ trasu aspoň se 2 překážkami.'); return;}
   var go=function(){ V3.d=0; V3.on=!!play; V3.last=0; $('ov3d').hidden=false; $('p3play').textContent=play?'Pauza':'Přehrát'; p3setView(C3.api?'orbit':'dog'); if(!play) render3d(); cancelAnimationFrame(V3.raf); V3.raf=requestAnimationFrame(loop3d); };
   build3d();

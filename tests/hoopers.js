@@ -44,10 +44,17 @@ module.exports = async function ({ browser, base }) {
     await page.click('.nav [data-v="lib"]'); await page.click('#sportSeg [data-sp="hoopers"]'); await page.waitForTimeout(250); await ev(() => { $('toast').hidden = true; });
     ok(await page.locator('#cards .card').count() === 8 && /Hoopers H1/.test(await page.textContent('#cards .card')), 'záložka H1');
     await page.click('#cards .pick'); await page.waitForTimeout(300);
-    const r = await ev(() => ({ cls: S.meta.cls, sub: $('cSub').textContent, spec: $('specs').textContent, fci: $('fciBar').className, dim: $('dimBtn').hidden,
+    const r = await ev(() => ({ cls: S.meta.cls, sub: $('cSub').textContent, spec: $('specs').textContent, fci: $('fciBar').className,
+      dim: { hidden: $('dimBtn').hidden, soon: $('dimBtn').classList.contains('soon'), txt: $('dimBtn').innerText.replace(/\s+/g, ' ').trim(), lbl: $('dimBtn').getAttribute('aria-label') },
       tools: [...document.querySelectorAll('#planTools .tool')].filter(b => b.hidden).map(b => b.getAttribute('data-t')).join() }));
     ok(r.cls === 'H1' && /^Hoopers H1/.test(r.sub) && /Max\. čas\s*3 min/.test(r.spec) && /ok/.test(r.fci), 'plán Hoopers: ' + JSON.stringify(r));
-    ok(r.dim && r.tools === 'ana,traps,3d,fld', '3D, rozbor, pasti a stavba v terénu mají být skryté: ' + JSON.stringify(r));
+    ok(r.tools === 'ana,traps,3d,fld', 'rozbor, pasti, 3D a stavba v terénu mají být v Nástrojích skryté: ' + JSON.stringify(r));
+    /* tlačítko 3D pod plochou: vidět šedé s popiskem „jen agility“ (schované ho uživatel hledal), klepnutí vysvětlí proč a 3D neotevře */
+    ok(!r.dim.hidden && r.dim.soon && r.dim.txt === '3D jen agility' && r.dim.lbl === '3D zatím jen pro agility', 'tlačítko 3D u Hoopers: ' + JSON.stringify(r.dim));
+    await ev(() => { $('toast').hidden = true; $('dimBtn').scrollIntoView({ block: 'center' }); }); await page.click('#dimBtn'); await page.waitForTimeout(150);
+    const t = await ev(() => ({ ov: $('ov3d').hidden, toast: $('toast').textContent, sheet: $('scrim').hidden }));
+    ok(t.ov && t.sheet && /^3D zatím umí jen parkury agility\. Oblouk, sud a plůtek ve 3D teprve chystáme\.$/.test(t.toast), 'klepnutí na šedé 3D u Hoopers: ' + JSON.stringify(t));
+    ok(await ev(() => trLookup('jen agility') === 'agility only' && trLookup('3D zatím jen pro agility') != null && trLookup('3D zatím umí jen parkury agility. Oblouk, sud a plůtek ve 3D teprve chystáme.') != null), 'chybí anglický překlad tlačítka 3D u Hoopers');
   });
 
   await step('vlastní stavba', async () => {
@@ -63,6 +70,7 @@ module.exports = async function ({ browser, base }) {
     /* zpět na agility: paleta agility */
     await ev(() => loadCourse(listFor('A1')[0], true)); if (await page.isVisible('#scrim')) await T.sheet('ok');
     ok(/^jump,/.test(await ev(() => [...document.querySelectorAll('#palette .ob-btn')].map(b => b.getAttribute('data-type')).join())), 'paleta agility se nevrátila');
+    ok(await ev(() => !$('dimBtn').classList.contains('soon') && $('dimBtn').getAttribute('aria-label') === 'Zobrazit parkur ve 3D' && $('dimBtn').innerText.trim() === '3D'), 'tlačítko 3D u agility zůstalo šedé: ' + await ev(() => $('dimBtn').className + ' ' + $('dimBtn').innerText));
   });
 
   await step('běh podle chyb', async () => {
