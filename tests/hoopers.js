@@ -57,8 +57,9 @@ module.exports = async function ({ browser, base }) {
     await page.waitForFunction(() => !$('ov3d').hidden, null, { timeout: 20000 });
     await page.waitForFunction(() => C3.api, null, { timeout: 20000 }).catch(() => {});   /* bez WebGL zůstane jednoduchý průlet */
     await page.waitForTimeout(200);
-    const t = await ev(() => ({ ov: !$('ov3d').hidden, sheet: $('scrim').hidden, toast: $('toast').hidden ? '' : $('toast').textContent, info: $('p3info').textContent, len: V3.path.len, n: S.route.length, ar: $('p3ar').hidden, gl: !!C3.api }));
-    ok(t.ov && t.sheet && !t.toast && t.info === 'Překážka 1 z ' + t.n + ' · 0,0 m z ' + fmtCz(t.len) + ' m' && t.len > 50 && t.ar, '3D u Hoopers: ' + JSON.stringify(t));
+    const t = await ev(() => ({ ov: !$('ov3d').hidden, sheet: $('scrim').hidden, toast: $('toast').hidden ? '' : $('toast').textContent, info: $('p3info').textContent, len: V3.path.len, cl: curM().len, n: S.route.length, ar: $('p3ar').hidden, gl: !!C3.api }));
+    /* 3.2: ve 3D se ukazuje délka trati jako v Plánu (dráha psa kolem sudu je delší) */
+    ok(t.ov && t.sheet && !t.toast && t.info === 'Překážka 1 z ' + t.n + ' · 0,0 m z ' + fmtCz(t.cl) + ' m' && t.len > 50 && t.ar, '3D u Hoopers: ' + JSON.stringify(t));
     /* kus průletu ve všech pohledech bez chyb; AR na place u Hoopers zatím není */
     await page.click('#p3play'); await page.waitForTimeout(500); await page.click('#p3play');
     for (const v of ['dog', 'chase', 'top', 'orbit']) if (await page.isVisible(`#p3view [data-v="${v}"]`)) { await page.click(`#p3view [data-v="${v}"]`); await page.waitForTimeout(80); }
