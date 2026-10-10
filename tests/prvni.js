@@ -9,7 +9,7 @@ module.exports = async function ({ browser, base }) {
   await offline(T.ctx, { get_catalog: { version: 0 }, app_act: (a) => { acts.push(a); return null; } });
   /* bez průvodce, kromě kroků, které si ho vyžádají přes ?onb */
   await T.ctx.addInitScript(() => { try {
-    if (!/onb/.test(location.search) && localStorage.getItem('agility-onb-v1') == null) localStorage.setItem('agility-onb-v1', JSON.stringify({ done: 1, v: 2 }));
+    if (!/onb|wel/.test(location.search) && localStorage.getItem('agility-onb-v1') == null) localStorage.setItem('agility-onb-v1', JSON.stringify({ done: 1, v: 2 }));
     if (localStorage.getItem('agility-news-v1') == null) localStorage.setItem('agility-news-v1', JSON.stringify('3.0'));
     localStorage.setItem('agility-instx-v1', JSON.stringify(Date.now())); localStorage.setItem('agility-ask-v1', JSON.stringify({ x: 1 }));
   } catch (e) {} });
@@ -191,6 +191,57 @@ module.exports = async function ({ browser, base }) {
     const r = await ev(() => ({ onb: !!$('onb'), big: !!document.querySelector('#onb .gbtn'), link: !!document.querySelector('#onb .onb-acct .linkbtn[data-acct="in"]'), txt: ((document.querySelector('#onb .onb-acct') || {}).textContent || '').replace(/\s+/g, ' ') }));
     ok(r.onb && !r.big && r.link && /^Už máš Pawkur na jiném telefonu\? Přihlásit se přes Google a data se přenesou\.$/.test(r.txt.trim()), 'krok 1 průvodce bez velkého tlačítka Google: ' + JSON.stringify(r));
     await ev(() => onbClose(true));
+  });
+
+  await step('uvítání (3.5): 3D průlet parkuru týdne, Vyzkoušet, pes až při prvním běhu', async () => {
+    /* tlačítka uvítání se mačkají přes DOM: 3D v SwiftShaderu kreslí jen pár snímků za sekundu a Playwright by čekal na „stabilní“ prvek */
+    const welFresh = async (q) => { q = q || '?wel#home'; await page.goto('about:blank'); await page.goto(base + '/' + q); await ev(() => localStorage.clear()); await page.goto('about:blank'); await page.goto(base + '/' + q); await w(700); };
+    await welFresh();
+    let r = await ev(() => ({ wel: !!$('wel'), h1: (document.querySelector('#wel h1') || {}).textContent, go: (document.querySelector('#wel [data-w="go"]') || {}).textContent, lang: document.querySelectorAll('#wel [data-w="lang"]').length,
+      view, id: S.meta.id, wk: weekCourse(homeCls()).id, onb: !!$('onb'), where: actWhere(), a: ACT.a, st: lsGet('agility-onb-v1', null) }));
+    ok(r.wel && r.h1 === 'Vítej v Pawkuru' && r.go === 'Vyzkoušet Pawkur' && r.lang === 4 && r.view === 'plan' && r.id === r.wk && !r.onb && r.where === 'wel' && r.a.wel === 1 && !r.a.v3d && r.st === null, 'uvítání: ' + JSON.stringify(r));
+    /* 3D (bez WebGL 2D průlet) běží pod kartou za psem, ovládání 3D je schované */
+    await page.waitForFunction(() => !$('ov3d').hidden && $('wel') && $('wel').classList.contains('ready'), null, { timeout: 15000 });
+    r = await ev(() => ({ bar: getComputedStyle(document.querySelector('.ov3d-bar')).display, view: V3.view, on: V3.on }));
+    ok(r.bar === 'none' && r.view === 'chase' && r.on, '3D pod uvítáním: ' + JSON.stringify(r));
+    await ev(() => document.querySelector('#wel [data-w="go"]').click()); await w(400);
+    r = await ev(() => ({ wel: !!$('wel'), ov: $('ov3d').hidden, view, st: lsGet('agility-onb-v1', null), news: lsGet('agility-news-v1', null), a: ACT.a, toast: $('toast').textContent }));
+    ok(!r.wel && r.ov && r.view === 'plan' && r.st && r.st.v === 3 && r.st.done && r.news === '3.0' && r.a.wel_go === 1 && /^Tohle je parkur týdne\./.test(r.toast), 'po Vyzkoušet: ' + JSON.stringify(r));
+    /* první běh bez psa: kdo poběží (dva kroky), pak zpátky do Běhu */
+    await page.click('.nav [data-v="run"]'); await w(300);
+    r = await ev(() => ({ onb: !!$('onb'), h1: $('onb') && document.querySelector('#onb h1').textContent, lang: document.querySelectorAll('#onb [data-o="lang"]').length, skip: $('onb') && document.querySelector('#onb [data-o="skip"]').textContent, dots: document.querySelectorAll('#onb .dots i').length, acct: !!document.querySelector('#onb .onb-acct') }));
+    ok(r.onb && r.h1 === 'Kdo poběží?' && r.lang === 0 && r.skip === 'Teď ne' && r.dots === 2 && !r.acct, 'pes při prvním běhu: ' + JSON.stringify(r));
+    await page.fill('#oName', 'Rex'); await page.click('#onb [data-o="next"]'); await w(150);
+    ok(await ev(() => document.querySelector('#onb [data-o="dog"]').textContent === 'Hotovo'), 'druhý krok má končit Hotovo');
+    await page.selectOption('#oCls', 'A2'); await page.click('#onb [data-o="dog"]'); await w(300);
+    r = await ev(() => ({ onb: !!$('onb'), view, dogs: DOGS.map(d => d.name + ':' + d.cls).join(), st: lsGet('agility-onb-v1', null), a: ACT.a, ask: lsGet('agility-dogask-v1', 0) }));
+    ok(!r.onb && r.view === 'run' && r.dogs === 'Rex:A2' && r.st.v === 3 && r.a.dogask === 1 && r.a.dog === 1 && r.ask === 1, 'po psovi zpátky v Běhu: ' + JSON.stringify(r));
+    /* podruhé už nic: ani uvítání, ani otázka na psa */
+    await page.goto('about:blank'); await page.goto(base + '/?wel#home'); await w(600);
+    ok(await ev(() => !$('wel')), 'uvítání se ukázalo podruhé');
+    await ev(() => closeSheet()); /* vracejícímu se člověku může aplikace nabídnout účet */
+    await page.click('.nav [data-v="run"]'); await w(300);
+    ok(await ev(() => !$('wel') && !$('onb')), 'otázka na psa se ukázala podruhé');
+    /* Teď ne: bez psa a už se neptá */
+    await welFresh(); await ev(() => document.querySelector('#wel [data-w="go"]').click()); await w(300);
+    await page.click('.nav [data-v="run"]'); await w(300); await page.click('#onb [data-o="skip"]'); await w(200);
+    await page.click('.nav [data-v="plan"]'); await page.click('.nav [data-v="run"]'); await w(300);
+    r = await ev(() => ({ onb: !!$('onb'), dogs: DOGS.length, a: ACT.a }));
+    ok(!r.onb && !r.dogs && r.a.dogask_skip === 1, 'Teď ne: ' + JSON.stringify(r));
+    /* přišel odkazem s parkurem: uvítání nepřekáží, na psa se zeptá až při běhu */
+    await welFresh('?wel&kod=ABCDEF#home');
+    r = await ev(() => ({ wel: !!$('wel'), st: lsGet('agility-onb-v1', null) }));
+    ok(!r.wel && r.st && r.st.v === 3, 'odkaz s parkurem bez uvítání: ' + JSON.stringify(r));
+    const miss = await missEn(['Takhle poběží tvůj pes parkur týdne. Parkury agility ve 3D, stopky a deník tréninku.', 'Vyzkoušet Pawkur', 'Tohle je parkur týdne. Klepni na Zaběhnout a změř si čas, nebo si v Parkurech vyber jiný.', 'Kdo poběží?',
+      'Podle psa aplikace nastaví výšky překážek a čas SČP a povede mu deník. Jak se jmenuje?', 'Novinky ve verzi 3.5', 'Nový začátek: hned 3D průlet parkuru týdne, na psa se aplikace zeptá až při prvním běhu', 'USA: plocha ve stopách a bez kontroly podle FCI u pravidel AKC', 'Upozornění i polsky a německy']);
+    ok(!miss.length, 'chybí angličtina: ' + miss.join(' | '));
+    /* jazyk na uvítání: stránka se načte znovu v novém jazyce, uvítání zůstane */
+    await welFresh();
+    try {
+      await Promise.all([page.waitForNavigation({ timeout: 10000 }), ev(() => document.querySelector('#wel [data-w="lang"][data-v="en"]').click())]); await w(900);
+      r = await ev(() => ({ lang: LANG, h1: (document.querySelector('#wel h1') || {}).textContent, go: (document.querySelector('#wel [data-w="go"]') || {}).textContent }));
+      ok(r.lang === 'en' && r.h1 === 'Welcome to Pawkur' && r.go === 'Try Pawkur', 'uvítání anglicky: ' + JSON.stringify(r));
+    } finally { await ev(() => { localStorage.clear(); }).catch(() => {}); await page.goto('about:blank'); }
   });
 
   await step('iPhone ve Facebooku: karta na Domů a přenos dat do Safari', async () => {

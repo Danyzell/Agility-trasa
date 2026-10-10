@@ -2,7 +2,7 @@
 <title>Pawkur</title>
 <script>try{var t0=JSON.parse(localStorage.getItem('agility-theme-v1'));if(t0==='light'||t0==='dark')document.documentElement.setAttribute('data-theme',t0);}catch(e){}
 /* polština a němčina (3.4): slovník je v samostatném souboru (i18n/pl.js, i18n/de.js) a načte se jen pro zvolený jazyk, dřív než hlavní skript (stejné pravidlo jako LANG níž) */
-try{(function(){var q=location.search.match(/[?&]lang=(cs|en|pl|de)\b/),l=q?q[1]:JSON.parse(localStorage.getItem('agility-lang-v1')||'null');if(!l&&!navigator.webdriver){var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();if(/^(pl|de)/.test(n))l=n.slice(0,2);}if(l==='pl'||l==='de')document.write('<script src="i18n/'+l+'.js?v=3.4"><\/script>');})();}catch(e){}</script>
+try{(function(){var q=location.search.match(/[?&]lang=(cs|en|pl|de)\b/),l=q?q[1]:JSON.parse(localStorage.getItem('agility-lang-v1')||'null');if(!l&&!navigator.webdriver){var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();if(/^(pl|de)/.test(n))l=n.slice(0,2);}if(l==='pl'||l==='de')document.write('<script src="i18n/'+l+'.js?v=3.5"><\/script>');})();}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -290,6 +290,20 @@ select.btn{padding-right:8px;}
 .ov3d-bar .seg{background:#233026; border-color:#35443a;}
 .ov3d-bar .seg button{color:#c6d3c4;}
 .ov3d-bar .seg button.on{background:#5fb487; color:#0b1a11;}
+/* 3.5: uvítání nového člověka: 3D průlet parkuru týdne pod kartou s jedním tlačítkem (ovládání 3D je schované) */
+.wel{position:fixed; inset:0; z-index:75; display:flex; flex-direction:column; justify-content:flex-end; pointer-events:none; background:#0d1410; transition:background .6s; color:#f2f5ef; font-family:var(--body);}
+.wel.ready{background:linear-gradient(to top,rgba(9,16,11,.92) 0,rgba(9,16,11,.55) 34%,rgba(9,16,11,0) 58%);}
+.wel-bg{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:.45; transition:opacity .6s;} .wel.ready .wel-bg{opacity:0;}
+.wel-bg svg{width:86%; max-width:520px; height:auto;}
+.wel-top{position:absolute; top:calc(12px + env(safe-area-inset-top,0px)); right:12px; pointer-events:auto;}
+.wel .seg{background:rgba(24,32,26,.8); border-color:#35443a;} .wel .seg button{color:#c6d3c4;} .wel .seg button.on{background:#5fb487; color:#0b1a11;}
+.wel-card{position:relative; pointer-events:auto; width:100%; max-width:520px; margin:0 auto; box-sizing:border-box; padding:18px 20px calc(20px + env(safe-area-inset-bottom,0px)); text-align:center;}
+.wel-card h1{font-family:var(--display); font-size:32px; font-weight:700; line-height:1.05; margin:0 0 8px; color:#fff; text-wrap:balance;}
+.wel-card p{margin:0 0 16px; font-size:16px; line-height:1.4; color:#dfe7da; text-wrap:pretty;}
+.wel-go{width:100%; min-height:56px; font-size:19px; justify-content:center;}
+.wel .linkbtn{color:#cfe3c6;} .wel-acct{margin:12px 0 0; font-size:14px; color:#b9c7b4;}
+.wel-open .ov3d-bar,.wel-open .ov3d-hint{display:none;}
+
 /* AR na place: ovládání přes obraz kamery */
 .arui{position:fixed; inset:0; z-index:90; display:flex; flex-direction:column; justify-content:space-between; pointer-events:none; color:#fff; font-family:var(--body);}
 .arui[hidden]{display:none;}
@@ -1402,6 +1416,9 @@ body.fullfield .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));}
   border:0; border-radius:999px; padding:12px 22px 12px 18px; min-height:52px; background:var(--accent); color:var(--on-accent); font-size:17px; font-weight:700; box-shadow:0 8px 22px rgba(0,0,0,.28);}
 .runfab svg{width:22px; height:22px;}
 .runfab:active{transform:translateY(1px);}
+/* 3.5: po uvítání ukáže, kde je Zaběhnout */
+.runfab.pulse{animation:fabPulse 1.1s ease-in-out 3;}
+@keyframes fabPulse{0%,100%{outline:0 solid color-mix(in srgb,var(--accent) 60%,transparent); outline-offset:0;}50%{outline:6px solid color-mix(in srgb,var(--accent) 35%,transparent); outline-offset:4px;}}
 .runfab{transition:opacity .15s,visibility .15s;} .runfab.dodge{opacity:0; visibility:hidden; pointer-events:none;} /* B10: neschovává se za tlačítka, uhne */
 body.fullfield .runfab{display:none;}
 @media (orientation:landscape) and (max-height:540px){ .runfab{right:calc(16px + env(safe-area-inset-right,0px)); bottom:calc(12px + env(safe-area-inset-bottom,0px));} }
@@ -1756,6 +1773,8 @@ var LANG=(function(){ var q=location.search.match(/[?&]lang=(cs|en|pl|de)\b/); i
 /* časové pásmo telefonu (jen oblast, žádná poloha): Čech nebo Slovák s anglicky nastaveným telefonem dostane česká nebo slovenská pravidla */
 var TZ=(function(){ try{ return String(Intl.DateTimeFormat().resolvedOptions().timeZone||'').slice(0,40); }catch(e){ return ''; } })();
 /* formát data a čísel podle jazyka; němčina v Rakousku de-AT (Jänner), jinde de-DE; angličtina s pravidly USA en-US (nastaví se u pravidel) */
+/* příchod přes odkaz (parkur od kamaráda, skupina, obnova zálohy, platba): uvítání se 3D parkurem týdne by tu překáželo */
+var QS0=location.search, DEEPLINK=/[?&](kod|skupina|obnova|share|plus|dekuji|oldhost)\b/.test(QS0);
 var LOC=LANG==='en'?'en-GB':LANG==='pl'?'pl-PL':LANG==='de'?(TZ==='Europe/Vienna'?'de-AT':'de-DE'):'cs-CZ';
 var MON_PL=['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru']; /* polské zkratky měsíců (8–9 paź) */
 /* ---------- Pravidla podle země (Více → Nastavení → Pravidla). Třídy, postup do vyšší třídy, maximální čas.
@@ -1916,6 +1935,16 @@ i18nAdd({exact:{
 "Pro zvolenou výšku skoku a disciplínu podle tabulek AKC.": "For the chosen jump height and discipline, from the AKC tables.",
 "Výška skoku": "Jump height", "Délka trati (yd)": "Course length (yd)", "Rychlost (yd/s)": "Speed (yd/s)", "Podle AKC": "Per AKC", "Kruh (spodní okraj otvoru)": "Tyre (bottom of the opening)",
 "Yardy (AKC)": "Yards (AKC)",
+/* Novinky ve verzi 3.5 (O aplikaci) a uvítání */
+"Novinky ve verzi 3.5": "What's new in 3.5",
+"Nový začátek: hned 3D průlet parkuru týdne, na psa se aplikace zeptá až při prvním běhu": "A new start: a 3D fly-through of the course of the week right away; the app asks about your dog at your first run",
+"USA: plocha ve stopách a bez kontroly podle FCI u pravidel AKC": "USA: field in feet and no FCI check with AKC rules",
+"Upozornění i polsky a německy": "Notifications in Polish and German too",
+"Takhle poběží tvůj pes parkur týdne. Parkury agility ve 3D, stopky a deník tréninku.": "This is how your dog will run the course of the week. Agility courses in 3D, a stopwatch and a training diary.",
+"Vyzkoušet Pawkur": "Try Pawkur",
+"Tohle je parkur týdne. Klepni na Zaběhnout a změř si čas, nebo si v Parkurech vyber jiný.": "This is the course of the week. Tap Run it and time yourself, or pick another one in Courses.",
+"Kdo poběží?": "Who's running?",
+"Podle psa aplikace nastaví výšky překážek a čas SČP a povede mu deník. Jak se jmenuje?": "From your dog, the app sets obstacle heights and the SCT and keeps the dog's diary. What's the dog's name?",
 /* Novinky ve verzi 3.4 (O aplikaci) */
 "Novinky ve verzi 3.4": "What's new in 3.4", "Polština a němčina (Více → Nastavení → Jazyk)": "Polish and German (More → Settings → Language)",
 "Pravidla USA (AKC): třídy Novice až Master, Standard a JWW, čas podle tabulek AKC, délky v yardech": "US rules (AKC): Novice to Master, Standard and JWW, course times from the AKC tables, lengths in yards",
@@ -6247,7 +6276,7 @@ function sportSwitch(h){
   function fresh(k){ newCourse(cls,W,H,''); act(k); toast(h?'Nový parkur Hoopers '+cls+'. V nabídce jsou '+pal+'.':'Nový parkur agility '+cls+'.',4000); }
   if(!nObs){ fresh('sport'); return; }
   openSheet('<h3>Přepnout parkur na '+dn+'?</h3><p>Na ploše jsou překážky '+(h?'agility':'Hoopers')+'. Co s nimi?</p><div class="opts">'+
-    '<button class="opt" data-sw="new"><b>Nový prázdný parkur '+dn+'</b><span>Plocha '+W+' × '+H+' m'+(h?' a prostor psovoda uprostřed':'')+', třída '+cls+'.<span> '+(lose?'Neuložené změny tohoto parkuru se ztratí.':'Tenhle parkur zůstane, jak je uložený.')+'</span></span></button>'+
+    '<button class="opt" data-sw="new"><b>Nový prázdný parkur '+dn+'</b><span>Plocha '+fieldU(W,H)+(h?' a prostor psovoda uprostřed':'')+', třída '+cls+'.<span> '+(lose?'Neuložené změny tohoto parkuru se ztratí.':'Tenhle parkur zůstane, jak je uložený.')+'</span></span></button>'+
     '<button class="opt" data-sw="conv"><b>Tenhle parkur jako '+dn+' '+cls+'</b><span>Překážky zůstanou na místě a v nabídce budou '+pal+'.'+(h?' Hodí se pro plánek z fotky.':'')+'</span></button>'+
     '</div><div class="acts"><button class="btn" data-a="x">Zrušit</button></div>',
     function(e){
@@ -6761,17 +6790,21 @@ function routeStepSheet(i){
 }
 /* velikosti plochy: agility a zahrada; v Hoopers navíc plochy podle třídy (H1 30 × 30, H2 36 × 30, H3 40 × 32 m) */
 var SIZEL=[[40,20,'Plocha'],[40,24,'Plocha'],[30,20,'Plocha'],[25,15,'Zahrada'],[20,15,'Zahrada'],[15,10,'Zahrada']];
+/* USA (3.5): kruhy AKC ve stopách (pravidla chtějí aspoň 5 000 sq ft, obvyklé jsou 100 × 100 ft); uloženo v metrech */
+var SIZEL_US=[[30.48,30.48,'Plocha'],[36.58,30.48,'Plocha'],[30.48,24.38,'Plocha'],[24.38,15.24,'Zahrada'],[15.24,12.19,'Zahrada']];
+/* rozměr plochy v jednotkách aplikace: metry, jinak celé stopy */
+function fieldU(W,H){ return UNIT()!=='m'?Math.round(W*3.28084)+' × '+Math.round(H*3.28084)+' ft':W+' × '+H+' m'; }
 function sizeList(hoop){
   var L=hoop?['H1','H2','H3'].map(function(c){ var q=HCFG[c]; return [q.W,q.H,'Hoopers '+c]; }):[];
-  SIZEL.forEach(function(s){ if(!L.some(function(x){return x[0]===s[0]&&x[1]===s[1];})) L.push(s); });
+  (RU.us?SIZEL_US:SIZEL).forEach(function(s){ if(!L.some(function(x){return x[0]===s[0]&&x[1]===s[1];})) L.push(s); });
   return L;
 }
-function sizeOptsHTML(hoop){ return sizeList(hoop).map(function(s){ return '<option value="'+s[0]+'x'+s[1]+'">'+s[2]+' '+s[0]+' × '+s[1]+' m</option>'; }).join(''); }
+function sizeOptsHTML(hoop){ return sizeList(hoop).map(function(s){ return '<option value="'+s[0]+'x'+s[1]+'">'+s[2]+' '+fieldU(s[0],s[1])+'</option>'; }).join(''); }
 /* plocha jiné velikosti (třeba 40 × 30 m u parkuru trenéra) dostane v nabídce vlastní položku */
 function setSizeSel(){
-  var s=$('sizeSelect'), v=S.W+'x'+S.H, h=String(isHoop());
-  if(s.getAttribute('data-h')!==h){ s.innerHTML=sizeOptsHTML(h==='true'); s.setAttribute('data-h',h); }
-  if(!Array.prototype.some.call(s.options,function(o){return o.value===v;})){ var o=document.createElement('option'); o.value=v; o.textContent='Plocha '+S.W+' × '+S.H+' m'; s.appendChild(o); }
+  var s=$('sizeSelect'), v=S.W+'x'+S.H, h=String(isHoop())+UNIT()+!!RU.us;
+  if(s.getAttribute('data-h')!==h){ s.innerHTML=sizeOptsHTML(isHoop()); s.setAttribute('data-h',h); }
+  if(!Array.prototype.some.call(s.options,function(o){return o.value===v;})){ var o=document.createElement('option'); o.value=v; o.textContent='Plocha '+fieldU(S.W,S.H); s.appendChild(o); }
   if(s.value!==v) s.value=v;
 }
 /* změna plochy: když by překážky vyjely ven, zeptá se (Posunout dovnitř, Zmenšit poměrně, Zrušit); dřív se potichu přirazily ke kraji.
@@ -6803,7 +6836,7 @@ $('sizeSelect').onchange=function(){
   var out=sizeOut(W,H);
   if(!out.length){ sizeApply(W,H,null); return; }
   setSizeSel(); /* nabídka ukazuje původní plochu, dokud se nerozhodneš */
-  openSheet('<h3>Překážky by byly mimo plochu</h3><p>Na ploše '+W+' × '+H+' m by byly mimo: '+nPrek(out.length)+'.</p><div class="opts">'+
+  openSheet('<h3>Překážky by byly mimo plochu</h3><p>Na ploše '+fieldU(W,H)+' by byly mimo: '+nPrek(out.length)+'.</p><div class="opts">'+
     '<button class="opt" data-a="in"><b>Posunout dovnitř</b><span>Překážky mimo plochu se posunou ke kraji, ostatní zůstanou, kde jsou.</span></button>'+
     '<button class="opt" data-a="scale"><b>Zmenšit poměrně</b><span>Celý parkur se zmenší, aby se vešel. Rozestupy se úměrně zkrátí, překážky zůstanou stejně velké.</span></button>'+
     '</div><div class="acts"><button class="btn" data-a="x">Zrušit</button></div>',
@@ -7009,6 +7042,8 @@ function hoopClass(c){
 }
 function fciBar(geo){
   var el=$('fciBar'); if(!el) return;
+  /* AKC má vlastní pravidla stavby parkuru (počet překážek, délky, rozestupy); kontrola FCI by v USA hlásila chyby u správných parkurů */
+  if(RU.us){ el.hidden=true; fciMark([]); return; }
   var items=fciCheck(S.obs,S.route,S.turns,S.sides,S.meta.cls,geo), bad=items.filter(function(x){return x.ok===false;}).length;
   fciMark(items);
   if(S.route.length<2&&!bad){ /* místo zůstane, jinak by plocha při klepání trasy poskočila */
@@ -7297,7 +7332,7 @@ function ask(title,text,okLbl,cb,danger){
 }
 function toast(t,ms){var el=$('toast'); el.textContent=t; el.hidden=false; toastPos(); clearTimeout(toast.h); toast.h=setTimeout(function(){el.hidden=true;},ms||2400);}
 /* hláška nad plovoucím panelem (výběr překážky, výběr víc, lišta po STOP), ať nezakryje tlačítka, na která člověk právě sahá (3.2) */
-function toastPos(){ var el=$('toast'), p=null; if(!el) return; ['selRow','mselRow','runBar'].forEach(function(id){ var e=$(id); if(p||!e||e.hidden) return; var r=e.getBoundingClientRect(); if(r.height>0&&r.top<innerHeight) p=r; });
+function toastPos(){ var el=$('toast'), p=null; if(!el) return; ['selRow','mselRow','runBar','runFab'].forEach(function(id){ var e=$(id); if(p||!e||e.hidden) return; var r=e.getBoundingClientRect(); if(r.height>0&&r.top<innerHeight) p=r; });
   el.style.bottom=p?Math.round(Math.max(0,innerHeight-p.top+8))+'px':''; }
 /* B8 (3.2.1): panel výběru a lišta Vybrat víc plavou dole. Na malém telefonu (375 × 667, 360 × 640) zakryly celou viditelnou plochu
    i s vybranou překážkou. Když panel plochu zakrývá, stránka se posune, ať je plocha nad panelem (horní kraj plochy zůstane pod horní
@@ -9467,10 +9502,10 @@ function open3dGL(){
   });
 }
 function close3dGL(){ if(C3.api){ try{ C3.api.dispose(); }catch(e){} C3.api=null; } var cv=$('c3dgl'); if(cv){ var n=cv.cloneNode(false); n.hidden=true; cv.parentNode.replaceChild(n,cv); } $('c3d').hidden=false; }
-function open3d(play){ if(play==null) play=true;
+function open3d(play,o){ if(play==null) play=true; o=o||{}; /* o.view = počáteční pohled, o.quiet = nepočítat jako akci (uvítání) */
   if(!plusGate('3D průlet')) return;
   if(S.route.length<2&&(play||!v3dOK()||!S.obs.length)){toast(S.obs.length&&!play?'Pro 3D potřebuješ trasu aspoň se 2 překážkami.':'Pro 3D průlet potřebuješ trasu aspoň se 2 překážkami.'); return;}
-  var go=function(){ V3.d=0; V3.on=!!play; V3.last=0; $('ov3d').hidden=false; $('p3play').textContent=play?'Pauza':'Přehrát'; p3setView(C3.api?'orbit':'dog'); if(!play) render3d(); cancelAnimationFrame(V3.raf); V3.raf=requestAnimationFrame(loop3d); act('v3d'); };
+  var go=function(){ V3.d=0; V3.on=!!play; V3.last=0; $('ov3d').hidden=false; $('p3play').textContent=play?'Pauza':'Přehrát'; p3setView(o.view||(C3.api?'orbit':'dog')); if(!play) render3d(); cancelAnimationFrame(V3.raf); V3.raf=requestAnimationFrame(loop3d); if(!o.quiet) act('v3d'); };
   build3d();
   if(v3dOK()){ open3dGL().then(go,function(){ close3dGL(); go(); }); }
   else go();
@@ -11057,7 +11092,7 @@ function plusRefresh(force){
     if(view==='more'&&moreTab==='plus') moreRender(); return plusActive(); },function(){ return plusActive(); });
 }
 function trialSync(){
-  if(!IS_SRV||(navigator.webdriver&&!window.TRIAL_TEST)) return;
+  if(!IS_SRV||(navigator.webdriver&&!window.TRIAL_TEST)||isBot()) return;
   sbCall('trial_start',{p_dev:devId()}).then(function(d){ if(d&&/^\d{4}-\d{2}-\d{2}$/.test(String(d))){ var t=new Date(d+'T00:00').getTime(); if(t&&t<FIRST){ FIRST=t; lsSet(FIRSTK,t); } } },function(){});
 }
 /* true = pokračuj; jinak ukáže nabídku Plus a vrátí false */
@@ -11112,8 +11147,11 @@ function errNote(msg,src,line){
 window.addEventListener('error',function(e){ errNote(e.message,e.filename,e.lineno); });
 window.addEventListener('unhandledrejection',function(e){ var r=e.reason; errNote('Promise: '+(r&&r.message||r),'',0); });
 function instEv(k){ var o=lsGet(INSTEVK,{})||{}; if(!o[k]){ o[k]=1; lsSet(INSTEVK,o); } if(k==='ok') act('inst'); }
+/* roboti (vyhledávače, náhledy odkazů, měření rychlosti webu) do Návštěvnosti nepatří: Google prochází web jako Android
+   z Kalifornie a v přehledu vypadal jako lidé, kteří hned odešli. „Cubot“ (značka telefonů) robot není, proto \bbot\b. */
+function isBot(){ return /\bbot\b|bot\/|crawl|spider|slurp|google-|googleother|lighthouse|pagespeed|phantomjs|yandex|baidu|bytespider|facebookexternalhit|applebot|bingpreview|duckduck|petalbot|semrush|ahrefs|mj12|dotbot|gptbot|claudebot|perplexity|amazonbot/i.test(navigator.userAgent||''); }
 function appPing(){
-  if(navigator.webdriver&&!window.PING_TEST||!IS_SRV||navigator.onLine===false) return;
+  if(navigator.webdriver&&!window.PING_TEST||!IS_SRV||navigator.onLine===false||isBot()) return;
   var last=lsGet(PINGK,null), today=localDate(); if(last===today) return;
   var inst=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
   var ua=navigator.userAgent||'', plat=/iP(hone|ad|od)/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)?'ios':/Android/i.test(ua)?'android':'desktop';
@@ -11149,7 +11187,7 @@ function statsLoad(){
   },function(){});
 }
 /* souhrn první návštěvy za 14 dní: procenta z nových zařízení, která už počty akcí posílají */
-var ACT_L={geoimp:'parkur ze souboru GeoJSON/KML',gpeek:'parkur z náhledu skupiny bez přihlášení',gpeek_show:'náhled skupiny z odkazu',onb:'průvodce',course:'parkur',v3d:'3D',runsave:'uložený běh',run_bar:'uložení z lišty po STOP',push_nudge:'upozornění z nabídky po prvním běhu',home_3d:'3D z karty Parkur týdne',home_run:'Zaběhnout z karty Parkur týdne',imp_open:'plánek z fotky',gen:'generátor',edit:'úprava plánu',save:'uložení parkuru',v_lib:'Parkury',v_run:'Běh',v_plan:'Plán',v_video:'Videa',v_more:'Více',dog:'nový pes',share:'sdílení',wk:'žebříček týdne',push:'upozornění',grp:'skupina',fx_3d:'po průvodci 3D',fx_run:'po průvodci Běh',onb_skip:'průvodce přeskočen',sport:'disciplína v Plánu',sport_new:'disciplína: nový parkur',sport_conv:'disciplína: převod parkuru',run_fab:'Zaběhnout z Plánu',comp_star:'hvězdička u závodu',comp_cal:'závod do kalendáře',ev_new:'vypsaný trénink',ev_rsvp:'odpověď na trénink',ev_cal:'trénink do kalendáře'};
+var ACT_L={wel:'uvítání ve 3D',wel_go:'Vyzkoušet z uvítání',wel_acct:'přihlášení z uvítání',dogask:'pes při prvním běhu',dogask_skip:'pes při běhu přeskočen',geoimp:'parkur ze souboru GeoJSON/KML',gpeek:'parkur z náhledu skupiny bez přihlášení',gpeek_show:'náhled skupiny z odkazu',onb:'průvodce',course:'parkur',v3d:'3D',runsave:'uložený běh',run_bar:'uložení z lišty po STOP',push_nudge:'upozornění z nabídky po prvním běhu',home_3d:'3D z karty Parkur týdne',home_run:'Zaběhnout z karty Parkur týdne',imp_open:'plánek z fotky',gen:'generátor',edit:'úprava plánu',save:'uložení parkuru',v_lib:'Parkury',v_run:'Běh',v_plan:'Plán',v_video:'Videa',v_more:'Více',dog:'nový pes',share:'sdílení',wk:'žebříček týdne',push:'upozornění',grp:'skupina',fx_3d:'po průvodci 3D',fx_run:'po průvodci Běh',onb_skip:'průvodce přeskočen',sport:'disciplína v Plánu',sport_new:'disciplína: nový parkur',sport_conv:'disciplína: převod parkuru',run_fab:'Zaběhnout z Plánu',comp_star:'hvězdička u závodu',comp_cal:'závod do kalendáře',ev_new:'vypsaný trénink',ev_rsvp:'odpověď na trénink',ev_cal:'trénink do kalendáře'};
 function statsActHTML(a){
   if(!a||!(+a.n>0)) return '';
   var m=+a.m||0, k=a.k||{}, pc=function(v){ return m?Math.round(100*(+v||0)/m)+' %':'–'; };
@@ -11318,7 +11356,7 @@ function appShare(){
   dnCopy(APP_URL);
 }
 /* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
-var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.4';
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.5';
 var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
 function fbSave(){ lsSet(FBK,FB); }
 var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];
@@ -11440,6 +11478,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
     h='<div class="morego"><button class="btn" data-mgo="fb">'+IC.mail+'<span>Napsat autorovi</span></button>'+(donateOn()?'<button class="btn primary" data-mgo="donate">'+IC.heartF+'<span>Podpořit aplikaci</span></button>':'')+'</div>'+
       '<div id="statsBox"></div><div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>Pawkur '+APPV+'</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
       '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
+      '<h4>Novinky ve verzi 3.5</h4><ul class="news"><li>Nový začátek: hned 3D průlet parkuru týdne, na psa se aplikace zeptá až při prvním běhu</li><li>USA: plocha ve stopách a bez kontroly podle FCI u pravidel AKC</li><li>Upozornění i polsky a německy</li></ul>'+
       '<h4>Novinky ve verzi 3.4</h4><ul class="news"><li>Polština a němčina (Více → Nastavení → Jazyk)</li><li>Pravidla USA (AKC): třídy Novice až Master, Standard a JWW, čas podle tabulek AKC, délky v yardech</li><li>Sdílení kódem i s polohou kolbiště pro AR na place a stavbu v terénu</li><li>3D: pohled Za psem šikmo ze strany, pes v tunelu se schová</li><li>AR na place: položení přesně podle dvou rohů kolbiště, doladění o 1° a 25 cm, opravené Položit znovu</li><li>Kompas v AR, Stavbě v terénu a navigaci ke kolbišti počítá s rozdílem mezi magnetickým a zeměpisným severem</li></ul>'+
       '<h4>Novinky ve verzi 3.0</h4><ul class="news"><li>Dnes na Domů: parkur od trenéra, den závodů a plán na týden se zaškrtáváním</li><li>Galerie parkurů: zveřejni parkur přes Sdílet, otevírej a hodnoť parkury ostatních</li><li>Skupiny a trenér: skupina na kód, parkur poslaný skupině se ukáže členům na Domů a jejich běhy se sejdou v žebříčku</li><li>Upozornění na telefonu: parkur od skupiny, zítra závodíš a nový parkur týdne (Více → Nastavení)</li><li>Oslava čistého běhu s obrázkem na sdílení, cesta k postupu v Deníku, Tento týden s čísly a grafem, tlačítka se spodní hranou</li><li>Stavba: přesná poloha a zámek překážky, přichycení po 0,5 m se vzdálenostmi, zrcadlit, otočit a posunout celý parkur, výběr víc překážek, porovnání s jiným parkurem, plánek jako od rozhodčího, export pro závodníka, rozhodčího a stavitele, obrázek do příběhu, sdílení odkazem</li></ul>'+
       '<h4>Novinky ve verzi 2.3</h4><ul class="news"><li>Účet: přihlášení přes Google a automatická synchronizace dat mezi telefonem a počítačem</li><li>AR na place: parkur kamerou na skutečném trávníku (Chrome na Androidu)</li><li>Náhled odkazu pro Facebook</li></ul>'+
@@ -13666,11 +13705,13 @@ function pushKey(){
   if(PUSH.key) return Promise.resolve(PUSH.key);
   return sbCall('push_pubkey',{}).then(function(k){ k=String(k||''); if(!/^[A-Za-z0-9_-]{80,100}$/.test(k)) throw new Error('server pro upozornění ještě není připravený'); PUSH.key=k; pushSave(); return k; });
 }
+/* jazyk upozornění ze serveru (3.5: i polsky a německy) */
+function pushLang(){ return /^(cs|en|pl|de)$/.test(LANG)?LANG:'en'; }
 function pushSubSend(sub){
   var j=sub.toJSON?sub.toJSON():sub, keys=j.keys||{};
-  var args={p_device:devId(),p_endpoint:String(j.endpoint||''),p_p256dh:String(keys.p256dh||''),p_auth:String(keys.auth||''),p_topics:PUSH.topics||{},p_lang:LANG==='cs'?'cs':'en',p_tz:TZ}; /* server zatím píše česky nebo anglicky */
+  var args={p_device:devId(),p_endpoint:String(j.endpoint||''),p_p256dh:String(keys.p256dh||''),p_auth:String(keys.auth||''),p_topics:PUSH.topics||{},p_lang:pushLang(),p_tz:TZ};
   var p=AUTH?authTok().then(function(t){ return sbCall('push_sub_set',args,t); },function(){ return sbCall('push_sub_set',args); }):sbCall('push_sub_set',args);
-  return p.then(function(){ PUSH.on=true; PUSH.ep=args.p_endpoint; PUSH.at=Date.now(); PUSH.uid=AUTH?AUTH.uid:''; pushSave(); pushCompSync(true); pushWatchSync(true); });
+  return p.then(function(){ PUSH.on=true; PUSH.ep=args.p_endpoint; PUSH.at=Date.now(); PUSH.uid=AUTH?AUTH.uid:''; PUSH.lang=args.p_lang; pushSave(); pushCompSync(true); pushWatchSync(true); });
 }
 /* odběr v prohlížeči: stávající, když je na stejný klíč serveru; jinak nový */
 function pushSubscribe(reg,k){
@@ -13701,7 +13742,7 @@ function pushSync(){
   pushReg().then(function(reg){ return reg.pushManager.getSubscription().then(function(s){
     if(!s) return pushKey().then(function(k){ return pushSubscribe(reg,k); }).then(pushSubSend);
     var uid=AUTH?AUTH.uid:'';
-    if(s.endpoint!==PUSH.ep||uid!==PUSH.uid||Date.now()-(+PUSH.at||0)>7*864e5) return pushSubSend(s);
+    if(s.endpoint!==PUSH.ep||uid!==PUSH.uid||(PUSH.lang||'')!==pushLang()||Date.now()-(+PUSH.at||0)>7*864e5) return pushSubSend(s);
     pushCompSync(false); pushWatchSync(false);
   }); }).then(null,function(){});
 }
@@ -13713,7 +13754,7 @@ function pushCompSync(force){
   sbCall('push_comp_set',{p_device:devId(),p_day:c?c.from:null,p_name:c?String(c.name).slice(0,80):''}).then(function(){ PUSH.comp=k; pushSave(); },function(){});
 }
 function pushTest(){
-  return fetch(SB_URL+'/functions/v1/push',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({job:'test',device:devId(),lang:LANG==='cs'?'cs':'en'})})
+  return fetch(SB_URL+'/functions/v1/push',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({job:'test',device:devId(),lang:pushLang()})})
     .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if(!r.ok||!j||!j.ok) throw new Error((j&&j.error)||('server '+r.status)); return j; }); });
 }
 /* Více → Nastavení: zapnutí, témata, zkouška */
@@ -14364,7 +14405,7 @@ function wholeSheet(){
   openSheet('<h3>Celý parkur</h3><p>Všechny překážky najednou, i s trasou, otočkami, dráhou psovoda a značkami. Jde to vrátit tlačítkem Zpět.</p><div class="opts">'+
     '<button class="opt" data-w="mx"><b>↔ Zrcadlit zleva doprava</b><span>Co bylo vpravo, bude vlevo. Otočky a strany psovoda se přehodí.</span></button>'+
     '<button class="opt" data-w="my"><b>↕ Zrcadlit shora dolů</b><span>Co bylo nahoře, bude dole. Otočky a strany psovoda se přehodí.</span></button>'+
-    '<button class="opt" data-w="r90"'+(can90?'':' disabled')+'><b>↻ Otočit o 90°</b><span>'+(can90?'Plocha bude '+S.H+' × '+S.W+' m.':'Nejde: plocha '+S.H+' × '+S.W+' m by byla moc vysoká.')+'</span></button>'+
+    '<button class="opt" data-w="r90"'+(can90?'':' disabled')+'><b>↻ Otočit o 90°</b><span>'+(can90?'Plocha bude '+fieldU(S.H,S.W)+'.':'Nejde: plocha '+fieldU(S.H,S.W)+' by byla moc vysoká.')+'</span></button>'+
     '<button class="opt" data-w="r180"><b>↻ Otočit o 180°</b><span>Start a cíl si vymění konce plochy, otočky zůstanou.</span></button>'+
     '<button class="opt" data-w="center"><b>⌖ Vystředit na ploše</b><span>Parkur se posune doprostřed plochy, rozestupy zůstanou.</span></button>'+
     '<div class="opt wmove"><b>Posunout o metry</b><div class="row"><label>X<input type="text" id="wDx" value="0" inputmode="decimal" autocomplete="off" aria-label="Posun doprava v metrech"></label><label>Y<input type="text" id="wDy" value="0" inputmode="decimal" autocomplete="off" aria-label="Posun dolů v metrech"></label><button class="btn" data-w="move">Posunout</button></div><span>Kladné X doprava, záporné doleva; kladné Y dolů, záporné nahoru.</span></div>'+
@@ -14498,8 +14539,8 @@ setTimeout(function(){ ACT_BOOT=false; },2500); /* obrazovka a parkur otevřené
 function actRec(){ var d=localDate(); if(!ACT||typeof ACT!=='object'||ACT.day!==d||!ACT.a||typeof ACT.a!=='object') ACT={day:d,a:{}}; return ACT; }
 function actStore(){ try{ localStorage.setItem(ACTK,JSON.stringify(ACT)); }catch(e){} } /* bez lsSet: kvůli počítadlu se nemá hlásit plná paměť */
 function act(k,n){ try{ if(!/^[a-z0-9_]{1,16}$/.test(k)) return; var r=actRec(); r.a[k]=Math.min(100000,(+r.a[k]||0)+(n||1)); actStore(); actSoon(); }catch(e){} }
-function actWhere(){ if($('onb')) return 'onb'; if($('ovImp')) return 'imp'; var o3=$('ov3d'); if(o3&&!o3.hidden) return 'v3d'; return /^[a-z]{1,10}$/.test(view)?view:'other'; }
-function actCan(){ return IS_SRV&&!ACT_OFF&&!(navigator.webdriver&&!window.PING_TEST)&&navigator.onLine!==false; }
+function actWhere(){ if($('wel')) return 'wel'; if($('onb')) return 'onb'; if($('ovImp')) return 'imp'; var o3=$('ov3d'); if(o3&&!o3.hidden) return 'v3d'; return /^[a-z]{1,10}$/.test(view)?view:'other'; }
+function actCan(){ return IS_SRV&&!ACT_OFF&&!(navigator.webdriver&&!window.PING_TEST)&&navigator.onLine!==false&&!isBot(); }
 function actSoon(){ if(ACT_T||!actCan()) return; ACT_T=setTimeout(function(){ ACT_T=0; actSend(false); },Math.max(20000,60000-(Date.now()-ACT_LAST))); }
 function actSend(keep){
   if(!actCan()) return;
@@ -14625,11 +14666,15 @@ function iosGuideAuto(){
 function onbStart(){
   /* poděkování po platbě má přednost, průvodce a novinky počkají na příští spuštění */
   if(THX){ THX=false; thxOpen(); return; }
-  /* automatické testy (navigator.webdriver) průvodce ani novinky neukazují, pokud si ho test nevyžádá přes ?onb */
-  if(navigator.webdriver&&!/[?&]onb\b/.test(location.search)) return;
+  /* automatické testy (navigator.webdriver) průvodce ani novinky neukazují, pokud si ho test nevyžádá: ?onb = původní průvodce, ?wel = uvítání */
+  var wd=navigator.webdriver, qOnb=/[?&]onb\b/.test(QS0), qWel=/[?&]wel\b/.test(QS0); /* adresa z načtení: odkaz ?kod= se z ní hned maže */
+  if(wd&&!qOnb&&!qWel||isBot()) return;
+  var st=lsGet(ONBK,null);
+  /* 3.5: úplně nový člověk napřed vidí 3D průlet parkuru týdne a jedno tlačítko; průvodce se jménem psa odcházelo 3 ze 4 lidí.
+     Kdo přišel odkazem (parkur od kamaráda, skupina), uvítání přeskočí; na psa se aplikace zeptá při prvním běhu. */
+  if(!st&&!onbHasData()&&!(wd&&qOnb)){ if(DEEPLINK){ lsSet(ONBK,{done:1,v:3}); lsSet('agility-news-v1','3.0'); return; } welOpen(); return; }
   /* iPhone v Safari: data z Safari se do aplikace na ploše nepřenesou (iOS jí dá vlastní úložiště), proto napřed instalace */
   if(iosGuideAuto()){ IOSG_THEN=onbStart; return; }
-  var st=lsGet(ONBK,null);
   if(st&&st.step&&!st.done){ if(typeof st.name==='string') ONB.name=st.name.slice(0,40); onbOpen(st.step); return; }
   if(st) { if(!newsCheck()) acctAsk(); return; }
   if(onbHasData()){ lsSet(ONBK,{done:1,v:2}); if(!newsCheck()) acctAsk(); return; }
@@ -14644,7 +14689,55 @@ function newsCheck(){
     '<div class="acts"><button class="btn primary" data-a="x">Pokračovat</button></div>',function(e){ if(e.target.closest('[data-a]')) closeSheet(); });
   return true;
 }
-function onbClose(done){ var o=$('onb'); if(o) o.parentNode.removeChild(o); if(done) lsSet(ONBK,{done:1,v:2}); document.documentElement.classList.remove('onb-open'); }
+function onbClose(done){ var o=$('onb'); if(o) o.parentNode.removeChild(o); if(done){ lsSet(ONBK,{done:1,v:2}); lsSet('agility-news-v1','3.0'); } document.documentElement.classList.remove('onb-open'); ONB.mode=null; }
+/* ---------- 3.5: uvítání: 3D průlet parkuru týdne, přes něj karta s Vyzkoušet a jazykem ----------
+   Z Návštěvnosti (10. 10. 2026): 120 ze 172 nových zařízení odešlo do 15 s bez jediné akce, průvodcem prošlo 31.
+   Proto napřed ukázka a jedno tlačítko; jméno, velikost a třídu psa chce aplikace až při prvním běhu (dogAsk). */
+function welOpen(){
+  var wc=onbCourse()||listFor('A1').filter(function(c){ return c.route&&c.route.length>1; })[0];
+  if(!wc){ onbOpen(1); return; }
+  loadCourse(wc,true); show('plan');
+  var o=document.createElement('div'); o.id='wel'; o.className='wel'; o.setAttribute('role','dialog'); o.setAttribute('aria-modal','true'); o.setAttribute('aria-labelledby','welT');
+  o.innerHTML='<div class="wel-bg" aria-hidden="true">'+thumb(wc)+'</div>'+
+    '<div class="wel-top"><div class="seg wel-lang" role="group" aria-label="Jazyk / Language / Język / Sprache">'+[['cs','CZ'],['en','EN'],['pl','PL'],['de','DE']].map(function(x){ return '<button data-w="lang" data-v="'+x[0]+'" class="'+(LANG===x[0]?'on':'')+'" translate="no">'+x[1]+'</button>'; }).join('')+'</div></div>'+
+    '<div class="wel-card"><h1 id="welT">Vítej v Pawkuru</h1><p>Takhle poběží tvůj pes parkur týdne. Parkury agility ve 3D, stopky a deník tréninku.</p>'+
+    '<button class="btn primary wel-go" data-w="go">Vyzkoušet Pawkur</button>'+
+    (!AUTH&&IS_SRV&&!inAppUA()?'<p class="wel-acct">Už máš Pawkur na jiném telefonu? <button class="linkbtn" data-acct="in" data-w="acct">Přihlásit se přes Google</button></p>':'')+'</div>';
+  document.body.appendChild(o); document.documentElement.classList.add('wel-open');
+  o.onclick=function(e){ var b=e.target.closest('[data-w]'); if(!b) return; var a=b.getAttribute('data-w');
+    if(a==='lang'){ var v=b.getAttribute('data-v'); if(v!==LANG) setLang(v); }
+    else if(a==='go') welDone(true);
+    else if(a==='acct'){ act('wel_acct'); welDone(false,true); lsSet(ACCTASK,1); } }; /* přihlášení otevře Google */
+  act('wel');
+  /* 3D průlet za psem; dokola, dokud je uvítání otevřené. Bez 3D (Plus, chyba) zůstane náhled parkuru. */
+  if(plusOK()) open3d(true,{view:'chase',quiet:true});
+  var iv=setInterval(function(){
+    if(!$('wel')){ clearInterval(iv); return; }
+    if($('ov3d').hidden) return; o.classList.add('ready');
+    if(!V3.on){ V3.d=0; V3.on=true; V3.last=0; cancelAnimationFrame(V3.raf); V3.raf=requestAnimationFrame(loop3d); }
+  },400);
+  try{ o.querySelector('.wel-go').focus({preventScroll:true}); }catch(e){}
+}
+function welDone(go,quiet){
+  var o=$('wel'); if(!o) return; o.parentNode.removeChild(o); document.documentElement.classList.remove('wel-open');
+  lsSet(ONBK,{done:1,v:3}); lsSet('agility-news-v1','3.0');
+  if(go) act('wel_go');
+  if(!$('ov3d').hidden) close3d();
+  show('plan'); if(quiet) return;
+  var hint=function(){ toast('Tohle je parkur týdne. Klepni na Zaběhnout a změř si čas, nebo si v Parkurech vyber jiný.',6000);
+    var b=$('runFab'); if(b&&!b.hidden){ b.classList.add('pulse'); setTimeout(function(){ b.classList.remove('pulse'); },3600); } };
+  /* iPhone v Safari: instalace na plochu až teď, ale pořád dřív, než si člověk něco uloží (data ze Safari se do aplikace na ploše nepřenesou) */
+  if(iosGuideAuto()) IOSG_THEN=hint; else setTimeout(hint,300);
+}
+HM.on('3dClosed',function(){ if($('wel')) welDone(false); }); /* 3D zavřené jinak (Esc): uvítání končí taky */
+/* první běh bez psa (jen u lidí z uvítání): kdo poběží, velikost a třída; jednou, jde přeskočit */
+var DOGASKK='agility-dogask-v1';
+function dogAsk(){
+  if(DOGS.length||lsGet(DOGASKK,0)||$('onb')||$('wel')) return false;
+  var st=lsGet(ONBK,null); if(!st||st.v!==3) return false;
+  lsSet(DOGASKK,1); act('dogask'); ONB.mode='dog'; ONB.name=null; ONB.look=null; ONB.pic=undefined; onbOpen(1); return true;
+}
+HM.on('view',function(d){ if(d&&d.v==='run') setTimeout(dogAsk,0); });
 function onbOpen(step){
   ONB.step=step||1; var o=$('onb');
   if(!o){ o=document.createElement('div'); o.id='onb'; o.className='onb'; o.setAttribute('role','dialog'); o.setAttribute('aria-modal','true'); document.body.appendChild(o); o.onclick=onbClick; o.onchange=onbClick; }
@@ -14661,14 +14754,16 @@ function onbLooks(){
 /* průvodce začíná psem: obrázek a jméno psa, pak velikost, třída a obrázek, nakonec čím začít. Jazyk je malý přepínač nahoře,
    vzhled (světlý / tmavý) se řídí systémem a mění se ve Více → Nastavení. */
 function onbRender(){
-  var o=$('onb'), s=ONB.step, d=onbDog(), h='<div class="onb-top"><div class="dots" aria-hidden="true"><i'+(s===1?' class="on"':'')+'></i><i'+(s===2?' class="on"':'')+'></i><i'+(s===3?' class="on"':'')+'></i></div><div class="onb-r">'+
-    (s===1?'<div class="seg onb-lang" role="group" aria-label="Jazyk / Language / Język / Sprache">'+[['cs','CZ'],['en','EN'],['pl','PL'],['de','DE']].map(function(x){ return '<button data-o="lang" data-v="'+x[0]+'" class="'+(LANG===x[0]?'on':'')+'" translate="no">'+x[1]+'</button>'; }).join('')+'</div>':'')+
-    '<button class="btn ghost" data-o="skip">Přeskočit</button></div></div><div class="onb-body'+(s<3?' c':'')+'">';
+  var dm=ONB.mode==='dog'; /* 3.5: jen pes při prvním běhu (dva kroky, bez jazyka a bez Čím začneš) */
+  var o=$('onb'), s=ONB.step, d=onbDog(), h='<div class="onb-top"><div class="dots" aria-hidden="true"><i'+(s===1?' class="on"':'')+'></i><i'+(s===2?' class="on"':'')+'></i>'+(dm?'':'<i'+(s===3?' class="on"':'')+'></i>')+'</div><div class="onb-r">'+
+    (s===1&&!dm?'<div class="seg onb-lang" role="group" aria-label="Jazyk / Language / Język / Sprache">'+[['cs','CZ'],['en','EN'],['pl','PL'],['de','DE']].map(function(x){ return '<button data-o="lang" data-v="'+x[0]+'" class="'+(LANG===x[0]?'on':'')+'" translate="no">'+x[1]+'</button>'; }).join('')+'</div>':'')+
+    '<button class="btn ghost" data-o="skip">'+(dm?'Teď ne':'Přeskočit')+'</button></div></div><div class="onb-body'+(s<3?' c':'')+'">';
   if(s===1){
-    h+='<div class="onb-hero">'+dogAva({id:d.id,look:ONB.look==null?dogLook(d):ONB.look},ONB.pic!==undefined?ONB.pic:dogPic(d))+'</div><h1>Vítej v Pawkuru</h1><p class="lead">Parkury, stopky a deník pro tebe a tvého psa. Jak se jmenuje?</p>'+
+    h+='<div class="onb-hero">'+dogAva({id:d.id,look:ONB.look==null?dogLook(d):ONB.look},ONB.pic!==undefined?ONB.pic:dogPic(d))+'</div>'+
+      (dm?'<h1>Kdo poběží?</h1><p class="lead">Podle psa aplikace nastaví výšky překážek a čas SČP a povede mu deník. Jak se jmenuje?</p>':'<h1>Vítej v Pawkuru</h1><p class="lead">Parkury, stopky a deník pro tebe a tvého psa. Jak se jmenuje?</p>')+
       '<label for="oName">Jméno psa<input id="oName" type="text" maxlength="40" autocomplete="off" value="'+esc(ONB.name!=null?ONB.name:d.name)+'" placeholder="např. Fany"></label>';
     /* 3.1: přihlášení až po prvním běhu (karta na Domů); tady jen odkaz pro ty, kdo už Pawkur mají jinde. Ve vestavěném prohlížeči Google přihlášení blokuje. */
-    if(!AUTH&&IS_SRV&&!inAppUA()) h+='<p class="onb-acct hint">Už máš Pawkur na jiném telefonu? <button class="linkbtn" data-acct="in" data-o="acct">Přihlásit se přes Google</button> a data se přenesou.</p>';
+    if(!dm&&!AUTH&&IS_SRV&&!inAppUA()) h+='<p class="onb-acct hint">Už máš Pawkur na jiném telefonu? <button class="linkbtn" data-acct="in" data-o="acct">Přihlásit se přes Google</button> a data se přenesou.</p>';
     h+='</div><div class="onb-foot"><button class="btn primary" data-o="next">Pokračovat</button></div>';
   } else if(s===2){
     var nm=(ONB.name!=null?ONB.name:d.name).trim();
@@ -14676,7 +14771,7 @@ function onbRender(){
       '<div><div class="dlooks" id="oLooks" role="group" aria-label="Obrázek psa"></div><p class="hint">Fotka zůstane jen v tomhle telefonu.</p></div><input id="oPic" type="file" accept="image/*" hidden>'+
       '<div class="grid2"><label for="oSize">'+(RU.us?'Výška skoku':'Velikost')+'<select id="oSize">'+Object.keys(RU.us?RU.heights:SIZES).map(function(k){return '<option value="'+k+'"'+(k===d.size?' selected':'')+'>'+(RU.us?RU.heights:SIZES)[k].l+'</option>';}).join('')+'</select></label>'+
       '<label for="oCls">Třída<select id="oCls">'+clsOpts(d.cls)+'</select></label></div>';
-    h+='</div><div class="onb-foot"><button class="btn" data-o="back">Zpět</button><button class="btn primary" data-o="dog">Pokračovat</button></div>';
+    h+='</div><div class="onb-foot"><button class="btn" data-o="back">Zpět</button><button class="btn primary" data-o="dog">'+(dm?'Hotovo':'Pokračovat')+'</button></div>';
   } else {
     /* 3.1: první zážitek do minuty: parkur týdne pro třídu psa, rovnou proletět ve 3D nebo zaběhnout (volba se měří) */
     var wc=onbCourse(), nm3=((curDog()||{}).name||'').trim(), m3=wc?metrics(wc.obs,wc.route,wc.cls,wc.turns):null;
@@ -14697,18 +14792,20 @@ function onbRender(){
 function onbClick(e){
   if(e.type==='change') return;
   var b=e.target.closest('[data-o]'); if(!b) return; var a=b.getAttribute('data-o'), v=b.getAttribute('data-v');
-  if(a==='skip'){ onbClose(true); act('onb_skip'); show('home'); }
+  if(a==='skip'&&ONB.mode==='dog'){ onbClose(false); act('dogask_skip'); }
+  else if(a==='skip'){ onbClose(true); act('onb_skip'); show('home'); }
   else if(a==='acct'){ lsSet(ONBK,{done:1,v:2}); lsSet(ACCTASK,1); } /* přihlášení otevře Google; po návratu se ukáže účet */
   else if(a==='lang'){ if(v!==LANG){ lsSet(ONBK,{step:1,name:($('oName')||{}).value||''}); setLang(v); } }
   else if(a==='look'){ ONB.look=+v; ONB.pic=null; onbLooks(); }
   else if(a==='pic') $('oPic').click();
-  else if(a==='next'){ ONB.name=$('oName').value; ONB.step=2; lsSet(ONBK,{step:2,name:ONB.name}); onbRender(); }
+  else if(a==='next'){ ONB.name=$('oName').value; ONB.step=2; if(ONB.mode!=='dog') lsSet(ONBK,{step:2,name:ONB.name}); onbRender(); }
   else if(a==='back'){ ONB.step=Math.max(1,ONB.step-1); onbRender(); }
   else if(a==='dog'){
     var nm=(ONB.name!=null?ONB.name:'').trim(), d=curDog(), lk=ONB.look==null?dogLook(onbDog()):ONB.look;
     if(!nm&&d) nm=d.name;
     if(nm){ if(!d){ d={id:onbDog().id,name:nm,size:$('oSize').value,cls:$('oCls').value,u:Date.now()}; DOGS.push(d); } else { d.name=nm; d.size=$('oSize').value; d.cls=$('oCls').value; d.u=Date.now(); }
       d.look=lk; if(ONB.pic!==undefined&&ONB.pic!==dogPic(d)) dogPicSave(d.id,ONB.pic); DOGC=d.id; saveDogs(); }
+    if(ONB.mode==='dog'){ onbClose(false); act('dog'); show('run'); toast('Na place zmáčkni START, když pes vyběhne, a STOP v cíli. Čas jde zadat i ručně.',6000); return; }
     ONB.step=3; lsSet(ONBK,{step:3}); onbRender();
   }
   else if(a==='go'){

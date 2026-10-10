@@ -63,6 +63,20 @@ module.exports = async function ({ browser, base }) {
     /* server už nové sloupce zná: jen jeden dotaz */
     known = true; pings.length = 0; await ev(() => { localStorage.removeItem('agility-ping-v1'); appPing(); }); await w(400);
     ok(pings.length === 1 && Object.keys(pings[0]).length === 11, 'se znalým serverem jen rozšířený ping');
+    /* robot (Google prochází web jako Android z Kalifornie): žádný ping ani počty akcí; telefon značky Cubot robot není */
+    const GB = 'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
+    const bot = await ev(ua => {
+      const set = u => Object.defineProperty(navigator, 'userAgent', { configurable: true, get: () => u });
+      const r = { real: isBot(), act0: actCan() };
+      set('Mozilla/5.0 (Linux; Android 11; CUBOT X30) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Mobile Safari/537.36'); r.cubot = isBot();
+      set('Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)'); r.bing = isBot();
+      set(ua); r.g = isBot(); r.act = actCan(); localStorage.removeItem('agility-ping-v1'); return r;
+    }, GB);
+    pings.length = 0; await ev(() => appPing()); await w(400);
+    ok(!bot.real && bot.act0 && !bot.cubot && bot.bing && bot.g && !bot.act && pings.length === 0, 'robot se nemá počítat: ' + JSON.stringify(Object.assign({ pings: pings.length }, bot)));
+    await ev(() => { delete navigator.userAgent; });
+    pings.length = 0; await ev(() => appPing()); await w(400);
+    ok(pings.length === 1, 'po návratu běžného prohlížeče se ping neposlal');
   });
 
   await step('anglický telefon v Česku a na Slovensku: česká pravidla a kacr.info', async () => {

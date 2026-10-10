@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
       - name: Playwright a Chromium
@@ -29,7 +29,7 @@ jobs:
     env:
       TOK: ${{ secrets.PAWKUR_WEB_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Nasadit na pawkur.cz (repozitář Danyzell/pawkur-web)
         if: env.TOK != ''
         run: |

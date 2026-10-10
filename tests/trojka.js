@@ -174,6 +174,14 @@ module.exports = async function ({ browser, base }) {
     ok(s && s.p_endpoint === 'https://push.example/abc' && s.p_p256dh.length === 40 && s.p_auth.length === 22 && s.p_topics.group === true && s.p_lang === 'cs' && typeof s.p_device === 'string' && s.p_device.length >= 8 && s.p_tz === 'Europe/Prague', 'odběr poslaný na server: ' + JSON.stringify(s));
     ok(await ev(() => PUSH.on && PUSH.ep === 'https://push.example/abc' && PUSH.uid === 'u2' && $('pushOn').checked && !$('pushSet').querySelector('.pushtop').hidden && !!$('pushSet').querySelector('[data-pusht]')), 'po zapnutí témata a Vyzkoušet');
     ok(last('push_comp_set') && last('push_comp_set').p_day === null, 'nejbližší závod se po zapnutí pošle (žádný = null)');
+    /* 3.5: jazyk upozornění i polsky a německy; po změně jazyka se odběr pošle znovu */
+    const n0 = calls.filter(c => c[0] === 'push_sub_set').length;
+    await ev(() => { LANG = 'pl'; pushSync(); }); await w(400);
+    const pl = last('push_sub_set');
+    ok(calls.filter(c => c[0] === 'push_sub_set').length === n0 + 1 && pl.p_lang === 'pl' && await ev(() => PUSH.lang === 'pl'), 'po změně jazyka se odběr neposlal znovu polsky: ' + JSON.stringify(pl && pl.p_lang));
+    await ev(() => { pushSync(); }); await w(300);
+    ok(calls.filter(c => c[0] === 'push_sub_set').length === n0 + 1, 'beze změny jazyka se odběr posílá znovu');
+    await ev(() => { LANG = 'cs'; pushSync(); }); await w(300);
     await page.click('#pushSet [data-pushtop="week"]'); await w(300);
     ok(last('push_sub_set').p_topics.week === false && await ev(() => PUSH.topics.week === false), 'vypnuté téma jde na server');
     await page.click('#pushOn'); await w(400);

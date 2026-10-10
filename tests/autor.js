@@ -268,6 +268,14 @@ module.exports = async function ({ browser, base }) {
     await p.click('#hmInst [data-iosgo]'); ok(await p.isVisible('#iosg'), 'karta Nainstaluj na Domů návod neotevře');
     await p.keyboard.press('Escape'); ok(!(await p.isVisible('#iosg')), 'návod nejde zavřít Escapem');
     await ctx.close();
+    /* 3.5: nový člověk v Safari: napřed uvítání se 3D průletem, návod na instalaci až po Vyzkoušet */
+    ({ ctx, p } = await open(SAF, '?wel#home'));
+    ok(await p.isVisible('#wel') && !(await p.isVisible('#iosg')), 'v Safari má být napřed uvítání, ne návod');
+    await p.evaluate(() => document.querySelector('#wel [data-w="go"]').click()); await p.waitForTimeout(400);
+    ok(await p.isVisible('#iosg') && !(await p.isVisible('#wel')), 'po Vyzkoušet se neukázal návod na instalaci');
+    await p.click('#iosg .iosg-ok'); await p.waitForTimeout(600);
+    ok(/^Tohle je parkur týdne\./.test(await p.textContent('#toast')), 'po návodu chybí nápověda k parkuru týdne: ' + await p.textContent('#toast'));
+    await ctx.close();
     /* Safari 26: tři tečky vpravo dole, šipka doprava */
     ({ ctx, p } = await open(SAF26));
     ok(await p.locator('#iosg li').count() === 4 && /tři tečky/.test(await p.textContent('#iosg li')) && await p.getAttribute('#iosgArr', 'class') === 'iosg-arr r', 'návod pro Safari 26');
