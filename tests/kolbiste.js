@@ -5,7 +5,13 @@ const { phone, offline } = require('./helpers');
 module.exports = async function ({ browser, base }) {
   const T = await phone(browser, { geolocation: { latitude: 49.2, longitude: 16.6, accuracy: 4 }, permissions: ['geolocation'] });
   const { page, ok, ev } = T;
-  await offline(T.ctx, { get_catalog: { version: 0 } });
+  /* sdílení kódem (3.4): server je podstrčený, volání se zapisují do calls; kódy jdou po sobě */
+  const calls = [], codes = ['RNG111', 'FRE222', 'GRD333', 'NOR444', 'XYZ555']; let shared = null;
+  const last = (n) => { for (let i = calls.length - 1; i >= 0; i--) if (calls[i][0] === n) return calls[i][1]; return null; };
+  await offline(T.ctx, { get_catalog: { version: 0 },
+    share_course: (a) => { calls.push(['share_course', a]); return codes[calls.filter(c => c[0] === 'share_course').length - 1] || 'ZZZ999'; },
+    gallery_publish: (a) => { calls.push(['gallery_publish', a]); return true; },
+    get_course: (a) => { calls.push(['get_course', a]); return typeof shared === 'function' ? shared(a) : shared; } });
   const step = async (label, fn) => { T.step(label); try { await fn(); } catch (e) { T.errs.push(`[${label}] krok selhal: ${String(e && e.message || e).split('\n')[0]}`); } };
   const fresh = async () => { await page.goto('about:blank'); await page.goto(base + '/#plan'); await page.waitForTimeout(300); await ev(() => { $('toast').hidden = true; }); };
   /* poloha, která se během měření trochu chvěje kolem bodu (jako skutečné GPS) */
@@ -127,8 +133,9 @@ module.exports = async function ({ browser, base }) {
     /* Stavba v terénu: zaškrtnuté natočení z kolbiště nahradí otočení podle oka */
     await T.tool('fld'); await page.waitForSelector('#ovFld');
     ok(await page.isChecked('#fdAz') && /Natočení z kolbiště/.test(await page.textContent('#fdBody')), 've Stavbě v terénu chybí natočení z kolbiště');
-    const r = await ev(() => { FLD.h = 100; $('fdCal').click(); return { h0: FLD.h0, az: ringFor(S.meta.id).az, cal: FLD.cal, saved: SET.fldH0 }; });
-    ok(r.cal && r.h0 === r.az && r.saved !== r.az, 'výchozí natočení ze zaměření: ' + JSON.stringify(r));
+    /* natočení kolbiště je zeměpisné, kompas magnetický: výchozí kurz = natočení − deklinace (v Brně asi 5,5°) */
+    const r = await ev(() => { FLD.h = 100; $('fdCal').click(); const g = ringFor(S.meta.id); return { h0: FLD.h0, az: g.az, mag: ringAzMag(g), dc: ringDecl(g), cal: FLD.cal, saved: SET.fldH0 }; });
+    ok(r.cal && Math.abs(r.h0 - r.mag) < 1e-6 && Math.abs(((r.az - r.h0 + 360) % 360) - r.dc) < 1e-6 && r.dc > 4.5 && r.dc < 7 && r.saved !== r.h0, 'výchozí natočení ze zaměření: ' + JSON.stringify(r));
     await ev(() => fldClose());
     /* bez natočení se kurz bere z kompasu jako dřív */
     const r2 = await ev(() => { fldOpen(); $('fdAz').checked = false; FLD.h = 123; $('fdCal').click(); const o = { h0: FLD.h0 }; fldClose(); return o; });
@@ -139,10 +146,108 @@ module.exports = async function ({ browser, base }) {
     ok(Math.abs(c[1] - 270) < .5 && c[2] === null && c[3] === 42, 'kurz kamery: ' + JSON.stringify(c));
   });
 
+  await step('deklinace kompasu (WMM2025)', async () => {
+    await fresh();
+    /* testovací hodnoty NOAA k WMM2025: rok, výška (km), šířka, délka, deklinace */
+    const NOAA = [[2025, 28, 89, -121, -99.77], [2025, 65, 43, 93, 0.50], [2025.5, 69, 38, -144, 12.93], [2026, 46, -24, -122, 14.01], [2026.5, 12, -79, 115, -137.58], [2027.5, 0, -13, -59, -17.49], [2028.5, 11, 34, 0, 1.57], [2029.5, 77, -18, 138, 4.45]];
+    const r = await ev(N => N.map(v => +(magDecl(v[2], v[3], v[0], v[1]) - v[4]).toFixed(3)), NOAA);
+    ok(r.every(d => Math.abs(d) < .01), 'deklinace nesedí na NOAA: ' + JSON.stringify(r));
+    const w = await ev(() => [magDecl(50.08, 14.42, 2026.8), magDecl(40.7, -74, 2026.8), magDecl(47.6, -122.3, 2026.8), magDecl(NaN, 1, 2026)]);
+    ok(w[0] > 4.5 && w[0] < 6 && w[1] < -11 && w[1] > -14 && w[2] > 14 && w[2] < 16 && w[3] === 0, 'Praha, New York, Seattle: ' + JSON.stringify(w));
+    /* staré kolbiště změřené kompasem (magnetické, ± 15°, bez azT) se při čtení jednou převede na zeměpisné; z GPS zůstane */
+    const m = await ev(() => {
+      localStorage.setItem(RINGK, JSON.stringify([{ id: 'r1', name: 'K', lat: 50.08, lng: 14.42, acc: 3, az: 100, azErr: 15, W: 40, H: 20, cid: null, at: 1 }, { id: 'r2', name: 'G', lat: 50.08, lng: 14.42, acc: 3, az: 100, azErr: 3, W: 40, H: 20, cid: null, at: 1 }]));
+      const a = ringsGet(), b = ringsGet(), st = JSON.parse(localStorage.getItem(RINGK));
+      return { d: ringDecl(a[0]), a0: a[0].az, t: a[0].azT, b0: b[0].az, s0: st[0].az, g: a[1].az, gt: a[1].azT, mag: ringAzMag(a[0]) };
+    });
+    ok(Math.abs(m.a0 - (100 + m.d)) < .06 && m.t === 1 && m.b0 === m.a0 && m.s0 === m.a0 && m.g === 100 && !m.gt && Math.abs(m.mag - 100) < .06, 'převod starého natočení z kompasu: ' + JSON.stringify(m));
+    /* měření kompasem: na obrazovce i v uložení zeměpisné natočení (kompas + deklinace) */
+    await ev(() => ringsPut([{ id: 'r3', name: 'C', lat: 50.08, lng: 14.42, acc: 3, az: null, W: 40, H: 20, cid: null, at: 1 }]));
+    await T.tool('ring'); await page.waitForSelector('#ovRing');
+    await ev(() => ringAz(ringById('r3'))); await page.click('[data-rgz="cmp"]');
+    const ori = await ev(() => { const n = 'ondeviceorientationabsolute' in window ? 'deviceorientationabsolute' : 'deviceorientation'; window.dispatchEvent(new DeviceOrientationEvent(n, { alpha: 260, beta: 0, gamma: 0, absolute: true })); return { hd: $('rgHd').textContent, h: RG.h, d: ringDecl(ringById('r3')) }; });
+    ok(ori.h === 100 && ori.hd.indexOf(Math.round(100 + ori.d) + '°') === 0, 'kompas ukazuje zeměpisné natočení: ' + JSON.stringify(ori));
+    await page.click('#rgOk'); await page.waitForTimeout(150);
+    const g3 = await ev(() => ringById('r3'));
+    ok(Math.abs(g3.az - (100 + ori.d)) < .06 && g3.azErr === 15 && g3.azT === 1, 'uložené natočení z kompasu: ' + JSON.stringify(g3));
+    /* navigace: směr z GPS je zeměpisný, kompas magnetický; šipka = směr − kompas − deklinace */
+    await T.ctx.setGeolocation({ latitude: 50.07, longitude: 14.42, accuracy: 5 });
+    await ev(() => ringNav(ringById('r3'))); await page.waitForTimeout(500);
+    const nav = await ev(() => { RG.h = 10; const n = 'ondeviceorientationabsolute' in window ? 'deviceorientationabsolute' : 'deviceorientation'; window.dispatchEvent(new DeviceOrientationEvent(n, { alpha: 350, beta: 0, gamma: 0, absolute: true })); return { tr: $('rgRot').getAttribute('transform'), d: ringDecl(ringById('r3')) }; });
+    const rot = parseFloat(String(nav.tr).replace(/^rotate\(/, ''));
+    ok(Math.abs(rot - (0 - 10 - nav.d)) < .05 || Math.abs(rot - (360 - 10 - nav.d)) < .05, 'šipka navigace s deklinací: ' + JSON.stringify(nav));
+    await ev(() => { ringStop(); $('rgClose').click(); });
+  });
+
+  /* 3.4: kolbiště jde s parkurem v kódu (zaškrtávátko, výchozí zapnuté), jen střed, natočení, rozměr a názvy; galerie dostane vždy kód bez kolbiště */
+  await step('sdílení kódem i s polohou kolbiště', async () => {
+    await fresh();
+    await ev(() => { closeSheet(); loadCourse(listFor('A2')[0], true); $('toast').hidden = true;
+      lsSet('agility-rings-v1', [{ id: 'rT', name: 'Ring 1', venue: 'Kent', lat: 51.2, lng: 0.52, acc: 3.2, az: 123.4, azErr: 2, W: 40, H: 20, cid: S.meta.id, cname: S.meta.name, at: 1 }]);
+      AUTH = { at: 'tok', rt: 'ref', exp: Math.floor(Date.now() / 1000) + 7200, uid: 'u2', email: 'a@example.com', name: 'A' }; shareSheet(); });
+    await page.waitForTimeout(150);
+    ok(await page.isVisible('#shRing') && await page.isChecked('#shRing'), 'u parkuru s kolbištěm má být zaškrtnutá poloha kolbiště');
+    await page.click('#sheet [data-a="mk"]'); await page.waitForTimeout(300);
+    let s = last('share_course');
+    ok(s && JSON.stringify(s.p_data.ring) === JSON.stringify({ lat: 51.2, lng: 0.52, W: 40, H: 20, name: 'Ring 1', az: 123.4, venue: 'Kent' }) && s.p_data.route.length >= 2, 'kolbiště v kódu jen se středem, rozměrem, natočením a názvy: ' + JSON.stringify(s && s.p_data.ring));
+    ok(await page.isDisabled('#shRing') && await ev(() => $('shOut').getAttribute('data-code') === 'RNG111'), 'zaškrtávátko patří k vytvořenému kódu');
+    /* Zveřejnit v galerii: kód s kolbištěm se nepoužije, vznikne nový bez kolbiště */
+    await page.click('#sheet [data-a="pub"]'); await page.waitForTimeout(150);
+    await page.click('#sheet [data-a="pub"]'); await page.waitForTimeout(400);
+    const sc = calls.filter(c => c[0] === 'share_course'), gp = calls.filter(c => c[0] === 'gallery_publish');
+    ok(sc.length === 2 && !('ring' in sc[1][1].p_data) && gp.length === 1 && gp[0][1].p_code === 'FRE222', 'galerie dostala kód bez kolbiště: ' + JSON.stringify({ n: sc.length, ring: sc[1] && 'ring' in sc[1][1].p_data, pub: gp.map(c => c[1].p_code) }));
+    ok(await ev(() => !('ring' in shareData())), 'data pro galerii a skupinu (shareData) nesmí mít kolbiště');
+    /* pojistka: i kdyby se galerii předal kód s kolbištěm, zveřejní se nový kód bez kolbiště */
+    await ev(() => { closeSheet(); galPubSheet('RNG111'); }); await page.waitForTimeout(150); await page.click('#sheet [data-a="pub"]'); await page.waitForTimeout(400);
+    ok(calls.filter(c => c[0] === 'share_course').length === 3 && !('ring' in last('share_course').p_data) && last('gallery_publish').p_code === 'GRD333', 'kód s kolbištěm se nesmí zveřejnit: ' + JSON.stringify(last('gallery_publish')));
+    /* bez zaškrtnutí kód bez kolbiště; ten se pak v galerii použije */
+    await ev(() => { closeSheet(); shareSheet(); }); await page.waitForTimeout(150);
+    await page.uncheck('#shRing'); await page.click('#sheet [data-a="mk"]'); await page.waitForTimeout(300);
+    s = last('share_course');
+    ok(s && !('ring' in s.p_data) && await ev(() => $('shOut').getAttribute('data-ring') === ''), 'bez zaškrtnutí je kód bez kolbiště: ' + JSON.stringify(s && Object.keys(s.p_data)));
+    await page.click('#sheet [data-a="pub"]'); await page.waitForTimeout(150); await page.click('#sheet [data-a="pub"]'); await page.waitForTimeout(400);
+    ok(calls.filter(c => c[0] === 'share_course').length === 4 && last('gallery_publish').p_code === 'NOR444', 'kód bez kolbiště se do galerie použije bez nového kódu');
+    /* parkur bez kolbiště: zaškrtávátko vůbec není */
+    await ev(() => { closeSheet(); loadCourse(listFor('A2')[1], true); shareSheet(); }); await page.waitForTimeout(150);
+    ok(!(await page.isVisible('#shRing')), 'parkur bez kolbiště nemá mít zaškrtávátko');
+    await ev(() => { closeSheet(); AUTH = null; });
+  });
+
+  await step('kód s kolbištěm u příjemce: kontrola, k novému parkuru, bez zdvojení', async () => {
+    await fresh(); await ev(() => { closeSheet(); localStorage.removeItem('agility-rings-v1'); });
+    const course = () => ({ W: 40, H: 20, obs: [{ id: 1, type: 'jump', x: 5, y: 10, rot: 0 }, { id: 2, type: 'tunnel', x: 15, y: 10, rot: 0 }, { id: 3, type: 'jump', x: 25, y: 10, rot: 0 }], route: [1, 2, 3], sides: [], turns: [], hp: [], marks: [] });
+    const evil = { lat: 51.2, lng: 0.52, az: 400.4, W: 99, H: 3, name: '  Ring\u0007 1\n' + 'x'.repeat(80), venue: 'Kent\u0000 Show\u202eground', acc: 0.5, at: 5, id: 'evil', cid: 'my-evil', cname: '<b>', cids: ['A2-x'] };
+    shared = (a) => [{ code: a.p_code, name: a.p_code === 'JMP222' ? 'Kent Jumping' : 'Kent A2', cls: 'A2', author: 'J', data: Object.assign(course(), a.p_code === 'BAD333' ? { ring: { lat: 95, lng: 'x' } } : { ring: evil }) }];
+    const imp = async (code) => { await ev(() => { closeSheet(); shareSheet(); }); await page.fill('#shIn', code); await page.click('#sheet [data-a="get"]'); await page.waitForTimeout(400); };
+    await imp('RNG111');
+    let r = await ev(() => { const L = ringsGet(); return { n: L.length, g: L[0], id: S.meta.id, mine: (ringFor(S.meta.id) || {}).id, toast: $('toast').textContent, my: myDB().length }; });
+    const g = r.g || {};
+    ok(r.n === 1 && g.cid === r.id && /^my-/.test(r.id) && r.mine === g.id && g.id !== 'evil' && !g.cids, 'kolbiště z kódu patří novému parkuru: ' + JSON.stringify(r));
+    ok(g.az === 40.4 && g.W === 60 && g.H === 10 && g.lat === 51.2 && g.lng === 0.52 && g.acc === null && g.at > 1e12, 'čísla zkontrolovaná a v rozsahu: ' + JSON.stringify(g));
+    ok(g.name === ('Ring 1 ' + 'x'.repeat(80)).slice(0, 60) && g.venue === 'Kent Showground' && g.cname === 'Kent A2', 'texty bez řídicích znaků a nejvýš 60 znaků: ' + JSON.stringify([g.name, g.venue, g.cname]));
+    ok(r.toast === 'Parkur Kent A2 uložen do Moje i s kolbištěm', 'hláška po načtení: ' + r.toast);
+    /* Stavba v terénu a AR mají natočení z kolbiště */
+    const f = await ev(() => { fldOpen(); const o = { az: FLD.az, tru: FLD.ring.az, dc: ringDecl(FLD.ring), chk: !!($('fdAz') && $('fdAz').checked) }; fldClose(); return o; });
+    ok(f.tru === 40.4 && Math.abs(f.az - (40.4 - f.dc)) < 1e-6 && f.dc > 0 && f.dc < 3 && f.chk, 'Stavba v terénu má natočení z kolbiště z kódu: ' + JSON.stringify(f));
+    /* druhý parkur na stejném kolbišti: kolbiště se nezdvojí, dostane další parkur */
+    await imp('JMP222');
+    r = await ev(() => { const L = ringsGet(); return { n: L.length, cids: L[0].cids, id: S.meta.id, mine: (ringFor(S.meta.id) || {}).id, first: L[0].cid }; });
+    ok(r.n === 1 && Array.isArray(r.cids) && r.cids.length === 1 && r.cids[0] === r.id && r.mine === g.id && r.first === g.cid, 'stejné kolbiště podruhé: ' + JSON.stringify(r));
+    await T.tool('ring'); await page.waitForSelector('#ovRing');
+    ok(await page.locator('.rg-row.cur').count() === 1 && !/± \d+ m/.test(await page.textContent('.rg-row')), 'seznam: kolbiště u druhého parkuru, bez přesnosti měření');
+    await page.click('#rgClose');
+    /* vadné kolbiště: parkur se načte, kolbiště ne */
+    await imp('BAD333');
+    r = await ev(() => ({ n: ringsGet().length, mine: !!ringFor(S.meta.id), nm: S.meta.name, toast: $('toast').textContent }));
+    ok(r.n === 1 && !r.mine && r.nm === 'Kent A2' && r.toast === 'Parkur Kent A2 uložen do Moje', 'vadné kolbiště se vynechá: ' + JSON.stringify(r));
+    shared = null;
+  });
+
   await step('angličtina', async () => {
     const miss = await ev(() => ['Kolbiště (GPS)', 'Uložit polohu kolbiště', 'Načíst plán závodiště', 'Natočení kolbiště', 'Projdu dva rohy (GPS)', 'Jsi na kolbišti', 'severovýchod',
-      'Ulož si, kde stojí kolbiště, a aplikace tě k němu dovede. Zaměřené natočení použije Stavba v terénu a AR na place. Polohy zůstávají v tomhle zařízení a v záloze, kterou si sám uložíš.',
-      'Parkur stojí natočený podle kolbiště (kompas může o pár stupňů ujet, dorovnej šipkami).', 'přesnost ± 3 m', '12 měření', 'Kolbiště 3', 'Vzdálenost rohů podle GPS: 38,5 m (kolbiště má 40 m).', '120 m od tebe']
+      'Přidat polohu kolbiště (pro AR a stavbu v terénu)', 'Polohu kolbiště uvidí jen ten, kdo dostane kód. Do galerie ani skupině se neposílá.', 'Parkur Kent A2 uložen do Moje i s kolbištěm', 'Parkur Kent A2 z odkazu uložen do Moje i s kolbištěm',
+      'Ulož si, kde stojí kolbiště, a aplikace tě k němu dovede. Zaměřené natočení použije Stavba v terénu a AR na place. Polohy zůstávají v tomhle zařízení a v tvé záloze; s parkurem odejdou, jen když ho sdílíš kódem i s polohou kolbiště.',
+      'Parkur stojí natočený podle kolbiště. Kompas může o pár stupňů ujet: dorovnej ho v „Doladit“, nebo polož parkur přesně „Podle rohů“.', 'přesnost ± 3 m', '12 měření', 'Kolbiště 3', 'Vzdálenost rohů podle GPS: 38,5 m (kolbiště má 40 m).', '120 m od tebe']
       .filter(t => trLookup(t) == null));
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
   });
