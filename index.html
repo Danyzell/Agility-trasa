@@ -1815,7 +1815,7 @@ var RULES={
      (https://images.akc.org/pdf/rulebooks/REAGIL.pdf): třídy Novice, Open, Excellent, Master (kap. 2 § 1), tituly (kap. 2 § 2), výšky skoku
      podle výšky v kohoutku (kap. 2 § 4), kruh o výšku níž a skok daleký (broad jump) 2× výška skoku (kap. 3 § 3 body 11 a 12),
      bodování ze 100 (kap. 5 § 1–5), čas viz USV. Vnitřní kódy U1–U4; výšky na klíčích velikostí (XS 8", S 12", M 16", I 20" a 24" Choice, L 24"). */
-  US:{l:'USA (AKC)',cls:['U1','U2','U3','U4'],clsL:{U1:'Novice',U2:'Open',U3:'Excellent',U4:'Master'},us:1,
+  US:{l:'USA (AKC)',cls:['U1','U2','U3','U4'],clsL:{U1:'Novice',U2:'Open',U3:'Excellent',U4:'Master'},us:1,akc:1,
     body:'pravidel AKC Regulations for Agility Trials (kapitoly 2 až 7)',src:'https://www.akc.org/sports/agility/',
     heights:{XS:{l:'8" – do 11" v kohoutku',jump:'8"',wall:'8"',tire:'4"',lj:'16" (2 díly)'},S:{l:'12" – do 14" v kohoutku',jump:'12"',wall:'12"',tire:'8"',lj:'24" (3 díly)'},
       M:{l:'16" – do 18" v kohoutku',jump:'16"',wall:'16"',tire:'12"',lj:'32" (3 díly)'},I:{l:'20" – do 22" v kohoutku (i 24" Choice)',jump:'20"',wall:'20"',tire:'16"',lj:'40" (4 díly)'},
@@ -1823,10 +1823,26 @@ var RULES={
     promo:[{from:'U1',to:'U2',need:3,ok:okQ,judges:0,l:'3 kvalifikace (Q): titul NA ve Standard, NAJ v JWW'},{from:'U2',to:'U3',need:3,ok:okQ,judges:0,l:'3 kvalifikace (Q): titul OA ve Standard, OAJ v JWW'},
       {from:'U3',to:'U4',need:3,ok:okQ,judges:0,l:'3 kvalifikace (Q): titul AX ve Standard, AXJ v JWW'}],
     note:'24" Choice: pes do 22" smí skákat 24", časy má jako 20". Slalom: Novice 6 tyčí, od Open 12. Bodování ze 100: odmítnutí, špatná překážka a chyba na stole −5 bodů, shozená tyčka a minutá zóna vyřazují (NQ). Časové chyby za každou celou sekundu nad SČP: Novice 1, Open 2, Excellent a Master 3 body; maximální čas je SČP + 20 s. Kvalifikace (Q): aspoň 85 bodů, v Master 100; v Excellent a Master žádná chyba na trati. Titul MACH: 750 bodů (sekunda pod SČP = bod) a 20 dvojitých Q v Master.'},
+  /* USA (USDAA, 3.5): USDAA Official Rules & Regulations, souhrnné vydání „as of March 5, 2026“ (https://www.usdaa.com/regulations/usdaa-rules-and-regulations.cfm,
+     změny v Rules & Regulations Change Log, Rev. Mar-26). Úrovně Starters, Advanced, Masters (kap. 1 § 1.2.2); program Championship a Performance
+     se skoky o 4" níž a delším časem (kap. 2 § 2.1; úrovně Performance I–III a zkratky titulů SPS, SPJ, APS, APJ podle příl. F); pět výškových kategorií
+     podle výšky v kohoutku (kap. 1 § 1.3 a kap. 3 § 3.1.4, tabulka Eligible Jump Heights; měří rozhodčí, příl. D); titul Starters a Advanced za 3 kvalifikace,
+     Masters za 5, vždy od 2 rozhodčích (kap. 2 § 2.1.1, zkratky SSA, SJ, ASA, AJ v § 2.1.2); bodování kap. 4 § 4.1, kap. 5 § 5.3.1 a kap. 7 § 7.3.1; čas viz DAV.
+     Vnitřní kódy D1–D3 (Championship) a D4–D6 (Performance); kategorie na klíčích velikostí: XS Extra Small, S Small, M Medium, I Large, L Extra Large.
+     Hry Gamblers, Snooker a Pairs Relay aplikace neumí (body za překážky); turnaje Grand Prix a Steeplechase také ne, kvalifikaci v nich určují roční pravidla turnajů (kap. 10). */
+  USDAA:{l:'USA (USDAA)',cls:['D1','D2','D3','D4','D5','D6'],clsL:{D1:'Starters',D2:'Advanced',D3:'Masters',D4:'Performance I',D5:'Performance II',D6:'Performance III'},us:1,usdaa:1,
+    body:'pravidel USDAA Official Rules & Regulations (kapitoly 1 až 5 a 7)',src:'https://www.usdaa.com/regulations/usdaa-rules-and-regulations.cfm',
+    heights:{XS:{l:'Extra Small – do 12" v kohoutku',jump:'8"'},S:{l:'Small – nad 12" do 15" v kohoutku',jump:'12"'},M:{l:'Medium – nad 15" do 18" v kohoutku',jump:'16"'},
+      I:{l:'Large – nad 18" do 22" v kohoutku',jump:'20"'},L:{l:'Extra Large – nad 22" v kohoutku',jump:'24"'}}, /* skok v Championship; Performance o 4" níž (daJump) */
+    promo:[{from:'D1',to:'D2',need:3,ok:okQ,judges:2,l:'3 kvalifikace (Q) u 2 rozhodčích: titul SSA ve Standard, SJ v Jumpers'},
+      {from:'D2',to:'D3',need:3,ok:okQ,judges:2,l:'3 kvalifikace (Q) u 2 rozhodčích: titul ASA ve Standard, AJ v Jumpers'},
+      {from:'D4',to:'D5',need:3,ok:okQ,judges:2,l:'3 kvalifikace (Q) u 2 rozhodčích: titul SPS ve Standard, SPJ v Jumpers'},
+      {from:'D5',to:'D6',need:3,ok:okQ,judges:2,l:'3 kvalifikace (Q) u 2 rozhodčích: titul APS ve Standard, APJ v Jumpers'}],
+    note:'Performance: skoky o 4" níž, SČP o 3 s delší (v Masters Standard o 5 s, v Masters Jumpers o 4 s). Dvojitý skok jen v Championship od 16". Rychlost pro SČP volí rozhodčí v rozsahu z tabulek, nikdy pod minimem; aplikace počítá s minimem, tedy s nejdelším SČP. Maximální čas není. Chyba 5 bodů, časová chyba 1 bod za každou i započatou sekundu nad SČP. Odmítnutí: ve Starters a Advanced Jumpers bez trestu, v Advanced Standard 5 bodů jen na zónové překážce, v Masters 5 bodů a třetí vyřazuje. Špatná trasa: Starters 5, Advanced 20 bodů, Masters vyřazení. Kvalifikace (Q) jen bez trestných bodů. Titul v Masters: 5 Q od 2 rozhodčích, Champion 10 Q.'},
   FCI:{l:'Jen FCI (bez národních pravidel)',cls:['A1','A2','A3'],promo:[]} /* MČP podle Řádu FCI (od 1. 7. 2025): délka / 2,5 m/s v agility, / 3,0 m/s v jumpingu */
 };
 function okWin(x){ return okV0(x)&&+x.place===1; }
-function okQ(x){ return x.g==='V'; } /* AKC: kvalifikace (Q) se v deníku i stopkách ukládá jako V */
+function okQ(x){ return x.g==='V'; } /* AKC a USDAA: kvalifikace (Q) se v deníku i stopkách ukládá jako V */
 /* standardní čas v USA (AKC Regulations for Agility Trials, viz RULES.US): yardy za sekundu podle třídy a výšky skoku 8, 12, 16, 20, 24" (24" Choice = 20").
    Standard: kap. 6 § 2 (Novice), § 3 (Open), § 4 (Excellent), § 5 (Master); Jumpers With Weaves: kap. 7 § 2–5. Novice a Open Standard + 5 s za stůl (Pause Table).
    Excellent a Master: nejvyšší SČP (Course Time Limits) Standard 74/69/67/63/67 s, JWW 57/54/51/49/52 s. MČP = SČP + 20 s (kap. 5 § 3).
@@ -1841,6 +1857,27 @@ function usSpd(lv,size,disc){ return USV[disc==='J'?'J':'A'][usLvl(lv)][USZ.inde
 /* SČP z délky (m): yardy / rychlost, + 5 s za stůl v Novice a Open Standard, v Excellent a Master nejvýš limit; vlastní rychlost (m/s) bez limitu */
 function usSct(len,lv,size,disc,spd){ if(!len) return 0; lv=usLvl(lv); var J=disc==='J', s=Math.round(len/YD/(spd?spd/YD:usSpd(lv,size,disc)))+(!J&&(lv==='U1'||lv==='U2')?5:0);
   if(!spd&&(lv==='U3'||lv==='U4')) s=Math.min(s,USMAX[J?'J':'A'][USZ.indexOf(usSz(size))]); return s; }
+/* standardní čas v USDAA (Official Rules & Regulations, viz RULES.USDAA): rozsah rychlostí v yardech za sekundu [nejméně, nejvíc] podle úrovně
+   (Starters, Advanced, Masters) a výškové kategorie v pořadí USZ (Extra Small, Small, Medium, Large, Extra Large). Standard: kap. 5 § 5.3.2,
+   Jumpers: kap. 7 § 7.3.2; stejná čísla má list „Time Standards for New Jump Heights“ (Rule Resources, platí od 1. 12. 2022).
+   Rozhodčí volí rychlost v rozsahu, smí i výš, nikdy pod minimem (kap. 4 § 4.1.1): aplikace počítá s minimem, tedy s nejdelším povoleným SČP.
+   Performance (DAP): Standard + 3 s ve Starters a Advanced, + 5 s v Masters (kap. 5 § 5.3.2 pozn. 1 a list výše); Jumpers + 3, + 3 a + 4 s (kap. 7 § 7.3.2).
+   Maximální čas USDAA nemá: časová chyba za každou sekundu i započatou nad SČP (kap. 4 § 4.1.2), limit chyb smí určit jen pořadatel (kap. 3 § 3.4).
+   Délku měří rozhodčí po očekávané dráze psa v yardech (kap. 4 § 4.1.1), aplikace ji zaokrouhlí na celé yardy jako na obrazovce.
+   Zaokrouhlení SČP pravidla neuvádějí: dolů na celé sekundy, aby skutečná rychlost nebyla pod minimem. */
+var DAV={A:[[[2,2.25],[2,2.25],[2.15,2.35],[2.15,2.35],[2.15,2.35]],[[2.5,2.75],[2.6,3],[2.75,3.15],[2.95,3.35],[2.75,3.15]],[[2.75,3.15],[3.1,3.5],[3.15,3.65],[3.25,3.75],[3.15,3.65]]],
+  J:[[[3,3.3],[3.15,3.65],[3.25,3.75],[3.25,3.75],[3.25,3.75]],[[3,3.5],[3.25,3.75],[3.35,3.85],[3.5,4],[3.35,3.85]],[[3.4,3.9],[3.75,4.25],[3.8,4.3],[4,4.5],[3.8,4.3]]]},
+  DAP={A:[3,3,5],J:[3,3,4]};
+function daLvl(c){ return /^D[1-6]$/.test(c||'')?c:c==='A2'?'D2':c==='A3'?'D3':'D1'; } /* třída parkuru (A1–A3) → úroveň USDAA (Championship), když pes nemá vlastní */
+function daIx(c){ return (+daLvl(c).charAt(1)-1)%3; } /* 0 Starters, 1 Advanced, 2 Masters (i Performance I–III) */
+function daPerf(c){ return /^D[4-6]$/.test(c||''); } /* Performance I–III */
+function daRng(lv,size,disc){ return DAV[disc==='J'?'J':'A'][daIx(lv)][USZ.indexOf(usSz(size))]; } /* yardy za sekundu */
+function daAdd(lv,disc){ return daPerf(lv)?DAP[disc==='J'?'J':'A'][daIx(lv)]:0; }
+/* SČP z délky (m): celé yardy / rychlost (nejnižší z rozsahu, nebo vlastní v m/s), dolů na celé sekundy, v Performance + přídavek */
+function daSct(len,lv,size,disc,spd){ if(!len) return 0; var v=spd?spd/YD:daRng(lv,size,disc)[0]; return Math.floor(Math.round(len/YD)/v+1e-9)+daAdd(lv,disc); }
+/* výška skoku USDAA v palcích: Championship 8–24" podle kategorie (kap. 3 § 3.1.4), Performance o 4" níž; skok daleký má díly podle kap. 3 § 3.1.4 */
+var DAJ=[8,12,16,20,24], DALJ={4:1,8:2,12:2,16:3,20:4,24:5};
+function daJump(size,cls){ return DAJ[USZ.indexOf(usSz(size))]-(daPerf(cls)?4:0); }
 /* standardní čas v Británii: rychlost podle Course Time Matrix (v2.0, 2025) pro velikost a grade, plus 10 s; mezi Grade 1 a 7 lineárně */
 var UKV={L:{A:[3.7,4.5],J:[4.17,4.7]},I:{A:[3.6,4.45],J:[4.2,4.8]},M:{A:[3.57,4.35],J:[4.0,4.5]},S:{A:[3.25,4.1],J:[3.6,4.2]}};
 function ukSpd(cls,size,disc){ var v=UKV[size]||UKV.L, r=v[disc==='J'?'J':'A'], g=Math.max(1,Math.min(7,+String(cls).replace(/\D/g,'')||1)); return r[0]+(r[1]-r[0])*(g-1)/6; }
@@ -1858,9 +1895,11 @@ var KACR_OK=!!RU.kacr; /* kacr.info má smysl pro Česko a Slovensko */
 /* česká specifika (čeští trenéři, téma První závody) se neukazují jen cizincům: v jiném jazyce než česky a bez českých nebo slovenských pravidel */
 var CZONLY=LANG!=='cs'&&!KACR_OK;
 function clsL(c){ return (RU.clsL&&RU.clsL[c])||c; }
-/* třída parkuru v knihovně pro třídu psa (britské gradey: 1–2 → A1, 3–5 → A2, 6–7 → A3; AKC Novice → A1, Open → A2, Excellent a Master → A3) */
-function courseClsOf(c){ var m=/^G(\d)$/.exec(c||''); if(m) return +m[1]<=2?'A1':+m[1]<=5?'A2':'A3'; m=/^U(\d)$/.exec(c||''); if(m) return +m[1]<=1?'A1':+m[1]<=2?'A2':'A3'; return c; }
-var CLS_RE=/^(A[0-3]|G[1-7]|U[1-4])$/; /* všechny kódy tříd psa ze všech pravidel */
+/* třída parkuru v knihovně pro třídu psa (britské gradey: 1–2 → A1, 3–5 → A2, 6–7 → A3; AKC Novice → A1, Open → A2, Excellent a Master → A3;
+   USDAA Starters → A1, Advanced → A2, Masters → A3, Performance I–III stejně) */
+function courseClsOf(c){ var m=/^G(\d)$/.exec(c||''); if(m) return +m[1]<=2?'A1':+m[1]<=5?'A2':'A3'; m=/^U(\d)$/.exec(c||''); if(m) return +m[1]<=1?'A1':+m[1]<=2?'A2':'A3';
+  m=/^D([1-6])$/.exec(c||''); if(m) return 'A'+((+m[1]-1)%3+1); return c; }
+var CLS_RE=/^(A[0-3]|G[1-7]|U[1-4]|D[1-6])$/; /* všechny kódy tříd psa ze všech pravidel */
 function clsOpts(cur){ var L=RU.cls.slice(); if(cur&&L.indexOf(cur)<0&&CLS_RE.test(cur)) L.push(cur); return L.map(function(k){ return '<option value="'+k+'"'+(k===cur?' selected':'')+'>'+clsL(k)+'</option>'; }).join(''); }
 var I18N={exact:{},num:{},re:[]}, I18NP=null, PLURAL=null; /* I18NP: slovník polštiny nebo němčiny (i18n/pl.js, de.js); I18N: angličtina, u polštiny a němčiny záloha */
 function i18nNorm(s){ return String(s).replace(/ /g,' ').replace(/\s+/g,' ').trim(); }
@@ -1875,12 +1914,14 @@ function i18nAdd(d,D){
 }
 function i18nNumOut(n){ return LANG==='en'?String(n).replace(',','.'):n; }
 /* americká angličtina (3.4, anglicky s pravidly USA): jen náhrady slov ve výstupu anglického slovníku, slovník se nezdvojuje.
-   Termíny AKC: teeter (pravidla AKC píšou Seesaw, závodníci teeter), tire, broad jump, double bar jump; americký pravopis (meter, center, color…). */
-var US_EN=LANG==='en'&&RU.us?[[/\bseesaw/g,'teeter'],[/\bSeesaw/g,'Teeter'],[/\btyre/g,'tire'],[/\bTyre/g,'Tire'],
-  [/\blong jump/g,'broad jump'],[/\bLong jump/g,'Broad jump'],[/\bspread jump/g,'double bar jump'],[/\bSpread jump/g,'Double bar jump'],
+   Termíny AKC: teeter (pravidla AKC píšou Seesaw, závodníci teeter), tire, broad jump, double bar jump; americký pravopis (meter, center, color…).
+   Termíny USDAA (3.5, kap. 3 § 3.1): See-Saw, Long Jump a Tire Jump jako v britské angličtině až na tire, místo spread jump Spread Hurdle. */
+var US_EN=LANG==='en'&&RU.us?(RU.akc?[[/\bseesaw/g,'teeter'],[/\bSeesaw/g,'Teeter'],[/\btyre/g,'tire'],[/\bTyre/g,'Tire'],
+  [/\blong jump/g,'broad jump'],[/\bLong jump/g,'Broad jump'],[/\bspread jump/g,'double bar jump'],[/\bSpread jump/g,'Double bar jump']]
+  :[[/\btyre/g,'tire'],[/\bTyre/g,'Tire'],[/\bspread jump/g,'spread hurdle'],[/\bSpread jump/g,'Spread hurdle']]).concat([
   [/\bcentred\b/g,'centered'],[/\bmetre/g,'meter'],[/\bMetre/g,'Meter'],[/\bcentre/g,'center'],[/\bCentre/g,'Center'],[/\bcolour/g,'color'],[/\bColour/g,'Color'],
   [/\bfavourite/g,'favorite'],[/\bFavourite/g,'Favorite'],[/\b([Pp])ractis(e|es|ed|ing)\b/g,'$1ractic$2'],[/\bprogramme/g,'program'],[/\b([Cc])atalogue/g,'$1atalog'],
-  [/\b([Rr]ecogni|[Oo]rgani|[Ss]ummari|[Cc]ustomi|[Mm]inimi|[Mm]aximi|[Pp]ersonali|[Aa]naly)s(e|es|ed|ing|er|ers|ation)\b/g,'$1z$2']]:null;
+  [/\b([Rr]ecogni|[Oo]rgani|[Ss]ummari|[Cc]ustomi|[Mm]inimi|[Mm]aximi|[Pp]ersonali|[Aa]naly)s(e|es|ed|ing|er|ers|ation)\b/g,'$1z$2']]):null;
 function usEn(s){ for(var i=0;i<US_EN.length;i++) s=s.replace(US_EN[i][0],US_EN[i][1]); return s; }
 function trLookup(s,depth){
   var r=trDict(s,depth);
@@ -1935,6 +1976,20 @@ i18nAdd({exact:{
 "Pro zvolenou výšku skoku a disciplínu podle tabulek AKC.": "For the chosen jump height and discipline, from the AKC tables.",
 "Výška skoku": "Jump height", "Délka trati (yd)": "Course length (yd)", "Rychlost (yd/s)": "Speed (yd/s)", "Podle AKC": "Per AKC", "Kruh (spodní okraj otvoru)": "Tyre (bottom of the opening)",
 "Yardy (AKC)": "Yards (AKC)",
+/* pravidla USA (USDAA, 3.5): úrovně, Performance, výšky, čas z rozsahů, bodování, jednotky */
+"USA (USDAA)": "USA (USDAA)", "Starters": "Starters", "Advanced": "Advanced", "Masters": "Masters", "Performance I": "Performance I", "Performance II": "Performance II", "Performance III": "Performance III", "Jumpers": "Jumpers",
+"pravidel USDAA Official Rules & Regulations (kapitoly 1 až 5 a 7)": "the USDAA Official Rules & Regulations (chapters 1 to 5 and 7)",
+"Podle pravidel USDAA Official Rules & Regulations (kapitoly 1 až 5 a 7) (znění může být novější, ověř na": "According to the USDAA Official Rules & Regulations (chapters 1 to 5 and 7) (the wording may be newer, check at",
+"Performance: skoky o 4\" níž, SČP o 3 s delší (v Masters Standard o 5 s, v Masters Jumpers o 4 s). Dvojitý skok jen v Championship od 16\". Rychlost pro SČP volí rozhodčí v rozsahu z tabulek, nikdy pod minimem; aplikace počítá s minimem, tedy s nejdelším SČP. Maximální čas není. Chyba 5 bodů, časová chyba 1 bod za každou i započatou sekundu nad SČP. Odmítnutí: ve Starters a Advanced Jumpers bez trestu, v Advanced Standard 5 bodů jen na zónové překážce, v Masters 5 bodů a třetí vyřazuje. Špatná trasa: Starters 5, Advanced 20 bodů, Masters vyřazení. Kvalifikace (Q) jen bez trestných bodů. Titul v Masters: 5 Q od 2 rozhodčích, Champion 10 Q.":
+  "Performance: jumps 4\" lower, SCT 3 s longer (5 s in Masters Standard, 4 s in Masters Jumpers). Spread hurdles only in Championship from 16\". The judge picks the SCT speed within the range from the tables, never below the minimum; the app uses the minimum, which gives the longest SCT. There is no maximum course time. Faults count 5 each, plus 1 time fault for every second or part of a second over SCT. Refusals: no penalty in Starters and Advanced Jumpers, 5 faults in Advanced Standard only at a contact obstacle, 5 faults in Masters and the third one eliminates. Wrong course: 5 faults in Starters, 20 in Advanced, elimination in Masters. Qualifying (Q) only with zero faults. Masters title: 5 Qs under 2 judges, Champion 10 Qs.",
+"Rozsah USDAA": "USDAA range", "SČP pro nejnižší rychlost": "SCT at the lowest speed", "Rychlost pro SČP podle USDAA": "SCT speed per USDAA", "počítá se s nejnižší": "the lowest is used",
+"Třídu a velikost nastavíš u psa ve Více → Psi.": "Set the class and size for the dog in More → Dogs.",
+"Odmítnutí se v této třídě netrestají.": "Refusals carry no penalty in this class.", "V Advanced Standard se trestá jen odmítnutí na zónové překážce.": "In Advanced Standard only refusals at a contact obstacle are faulted.",
+"Rychlost je pod minimem USDAA. Rozhodčí smí jít nad rozsah, pod něj nikdy.": "The speed is below the USDAA minimum. A judge may go above the range, never below it.",
+"Pro zvolenou velikost a disciplínu podle tabulek USDAA. V tabulce je SČP pro nejvyšší až nejnižší rychlost rozsahu.": "For the chosen size and discipline, from the USDAA tables. The table shows the SCT from the highest to the lowest speed of the range.",
+"Podle USDAA": "Per USDAA", "Stůl (jen Starters a Advanced)": "Table (Starters and Advanced only)", "Yardy (USDAA)": "Yards (USDAA)",
+"Délka trati a vzdálenosti na plánku v metrech, ve stopách, nebo jako u USDAA: délka trati v yardech a vzdálenosti ve stopách. Rychlost je u stop a yardů v yardech za sekundu. Parkury se dál ukládají v metrech.": "Course length and distances on the plan in metres, in feet, or as in USDAA: course length in yards and distances in feet. With feet and yards the speed is in yards per second. Courses are still saved in metres.",
+"Pravidla USA (USDAA) vedle AKC: Starters až Masters i Performance, Standard a Jumpers, SČP podle rozsahů USDAA": "US rules (USDAA) alongside AKC: Starters to Masters and Performance, Standard and Jumpers, SCT from the USDAA ranges",
 /* Novinky ve verzi 3.5 (O aplikaci) a uvítání */
 "Novinky ve verzi 3.5": "What's new in 3.5",
 "Nový začátek: hned 3D průlet parkuru týdne, na psa se aplikace zeptá až při prvním běhu": "A new start: a 3D fly-through of the course of the week right away; the app asks about your dog at your first run",
@@ -1969,8 +2024,19 @@ i18nAdd({exact:{
 "# kvalifikace (Q): titul AX ve Standard, AXJ v JWW": "# qualifying scores (Q): AX title in Standard, AXJ in JWW",
 "pod # bodů": "under # points", "skóre #": "score #", "ze # (Q od #)": "of # (Q from #)", "SČP + # s (AKC)": "SCT + # s (AKC)", "Výšky překážek (#\")": "Obstacle heights (#\")",
 "#' #\" / #' / #' u osy": "#' #\" / #' / #' at the pivot",
-"Standardní čas podle AKC: délka trati v yardech děleno rychlostí pro třídu a výšku skoku, v Novice a Open Standard + # s za stůl, v Excellent a Master nejvýš limit pro výšku. Maximální čas je SČP + # s.": "AKC standard course time: course length in yards divided by the speed for the class and jump height, plus # s for the table in Novice and Open Standard, at most the limit for the height in Excellent and Master. The maximum course time is SCT + # s."
-}});
+"Standardní čas podle AKC: délka trati v yardech děleno rychlostí pro třídu a výšku skoku, v Novice a Open Standard + # s za stůl, v Excellent a Master nejvýš limit pro výšku. Maximální čas je SČP + # s.": "AKC standard course time: course length in yards divided by the speed for the class and jump height, plus # s for the table in Novice and Open Standard, at most the limit for the height in Excellent and Master. The maximum course time is SCT + # s.",
+/* USDAA (3.5): výškové kategorie, skok daleký o 1 a 5 dílech, houpačka a slalom, kalkulačka */
+"Extra Small – do #\" v kohoutku": "Extra Small – #\" and under at the withers", "Small – nad #\" do #\" v kohoutku": "Small – over #\" to #\" at the withers",
+"Medium – nad #\" do #\" v kohoutku": "Medium – over #\" to #\" at the withers", "Large – nad #\" do #\" v kohoutku": "Large – over #\" to #\" at the withers",
+"Extra Large – nad #\" v kohoutku": "Extra Large – over #\" at the withers",
+"#\" (# díl)": "#\" (# board)", "#\" (# dílů)": "#\" (# boards)", "#–#\" u osy": "#–#\" at the pivot", "# tyčí, jen Standard": "# poles, Standard only",
+"Standardní čas podle USDAA: délka trati v yardech děleno rychlostí. Tabulky dávají rozsah rychlosti podle úrovně, velikosti a disciplíny; rozhodčí volí v rozsahu, nikdy pod minimem, kalkulačka začíná minimem. Performance má SČP o # s delší, v Masters Standard o # s a v Masters Jumpers o # s. Maximální čas USDAA neurčuje.":
+  "USDAA standard course time: course length in yards divided by the speed. The tables give a speed range by level, size and discipline; the judge picks within the range, never below the minimum, and the calculator starts at the minimum. Performance gets a # s longer SCT, # s in Masters Standard and # s in Masters Jumpers. USDAA sets no maximum course time."
+},re:[
+/* USDAA: postup (3 Q u 2 rozhodčích, titul ve Standard a Jumpers) a hlavička obrázku a PDF bez MČP */
+["^(\\d+) kvalifikace \\(Q\\) u (\\d+) rozhodčích: titul (\\w+) ve Standard, (\\w+) v Jumpers$","$1 qualifying scores (Q) under $2 judges: $3 title in Standard, $4 in Jumpers"],
+["^Délka (.+?) m · (\\d+ překáž[a-z]{2}) · (.+?) · SČP (.+?) s \\((.+?) m/s\\)$","Length @1 m · @2 · @3 · SCT @4 s (@5 m/s)"]
+]});
 var TR_ATTRS=['aria-label','placeholder','title','alt'], TR_SKIP={SCRIPT:1,STYLE:1,TEXTAREA:1,CODE:1,NOSCRIPT:1};
 function trSkipEl(el){ return !el||TR_SKIP[el.nodeName]||el.isContentEditable||(el.closest&&el.closest('[translate="no"],[data-nt]')); }
 function trText(n){
@@ -6107,6 +6173,7 @@ function lenU(m){ return UYD()?Math.round(m/YD)+' yd':UFT()?fmt(m*3.28084)+' ft'
 function lenN(m){ return UNIT()!=='m'?fmt(m*3.28084)+' ft':fmt(m); } /* délka úseku na plánu: metry jen číslem (3.3, jako Smarter Agility), stopy s „ft“, ať se nepletou s metry */
 function gridU(m){ return UNIT()!=='m'?Math.round(m*3.28084)+' ft':m+' m'; }
 function spdU(v){ return UYD()?fmt2(v/YD)+' yd/s':UFT()?fmt(v*1.09361)+' yd/s':fmt(v)+' m/s'; } /* AKC píše rychlost na setiny (2,85 yd/s) */
+function spdRngU(r){ return spdU(r[0]*YD).replace(/ .*$/,'')+'–'+spdU(r[1]*YD); } /* rozsah rychlostí USDAA v yd/s (3,25–3,75 yd/s) */
 function lenUnit(){ return UNIT(); } /* jednotka pole Délka trati: m, ft, yd */
 function lenFromU(v){ return UYD()?v*YD:UFT()?v/3.28084:v; } /* zadaná délka v jednotce → metry */
 /* rychlost pro SČP: Agility podle SET.spd, Jumping podle SET.spdJ, jinak o 0,5 m/s vyšší než Agility (jumping je bez zón, rozhodčí volí rychlejší čas;
@@ -6120,20 +6187,25 @@ function metrics(obs,route,cls,turns,geo){
   var zones=route.some(function(id){return by[id]&&ZN.indexOf(by[id].type)>=0;}), disc=zones?'A':'J';
   /* v Británii čas podle velikosti a grade vybraného psa, v USA podle úrovně a výšky psa (bez psa podle třídy parkuru a 20"), jinde podle třídy parkuru */
   var dg=(RU.uk||RU.us)&&typeof curDog==='function'?curDog():null, ct=RU.uk?courseTimes(len,dg?dg.cls:'G3',disc,dg?dg.size:'L')
+    :RU.usdaa?courseTimes(len,dg&&RU.cls.indexOf(dg.cls)>=0?dg.cls:daLvl(cls),disc,dg?dg.size:'I')
     :RU.us?courseTimes(len,dg&&/^U[1-4]$/.test(dg.cls)?dg.cls:usLvl(cls),disc,dg?dg.size:'I'):courseTimes(len,cls,disc);
   var m={len:len,n:route.length,disc:zones?'Agility':'Jumping',mcs:ct.mcs,spd:ct.spd,cls:cls,sct:ct.sct,mct:ct.mct}; if(ct.uk) m.uk=true; if(ct.mctFix) m.mctFix=true;
   if(ct.us){ m.us=true; m.lvl=ct.lvl; m.hgt=ct.hgt; }
+  if(ct.usdaa){ m.usdaa=true; m.rng=ct.rng; m.add=ct.add; }
   return m;
 }
-/* disciplína na obrazovce: v USA Standard (se zónami) a Jumpers With Weaves (JWW), jinde Agility a Jumping */
-function discL(d,full){ return RU.us?(d==='Jumping'||d==='J'?(full?'Jumpers With Weaves':'JWW'):'Standard'):d==='J'?'Jumping':d==='A'?'Agility':d; }
-function usLvlTxt(m){ return clsL(m.lvl)+' · '+RU.heights[m.hgt].jump; } /* třída a výška skoku psa (Open · 20") */
+/* disciplína na obrazovce: v USA Standard (se zónami) a Jumpers With Weaves (JWW), u USDAA Standard a Jumpers (kap. 5 a 7), jinde Agility a Jumping */
+function discL(d,full){ return RU.usdaa?(d==='Jumping'||d==='J'?'Jumpers':'Standard'):RU.us?(d==='Jumping'||d==='J'?(full?'Jumpers With Weaves':'JWW'):'Standard'):d==='J'?'Jumping':d==='A'?'Agility':d; }
+function usJump(size,cls){ return RU.usdaa?daJump(size,cls)+'"':RU.heights[usSz(size)].jump; } /* výška skoku psa v USA (USDAA Performance o 4" níž) */
+function usLvlTxt(m){ return clsL(m.lvl)+' · '+usJump(m.hgt,m.lvl); } /* třída a výška skoku psa (Open · 20") */
 /* SČP a MČP z délky trati (m) podle pravidel vybrané země: rychlost pro třídu (SET.spd), MČP 1,5× SČP (RU.mctK), nebo 2,5 / 3,0 m/s pro agility / jumping podle FCI;
    Británie podle Course Time Matrix (velikost psa a grade) + 10 s, bez MČP. Časy z délky zaokrouhlené na desetiny, jak ji aplikace ukazuje (130,0 m / 2,5 m/s = 52 s, ne 53 s).
    Stejný výpočet používá Plán (metrics) i Kalkulačka SČP ve Více. */
 function courseTimes(len,cls,disc,size,spd){
   var L=len>0?Math.round(len*10)/10:0;
   if(RU.uk){ var us=spd?Math.ceil(L/spd-1e-9)+10:ukSct(L,cls,size||'L',disc); return {sct:L?us:0,mct:0,spd:L?Math.round((spd||ukSpd(cls,size||'L',disc))*100)/100:0,mcs:0,uk:true}; }
+  /* USDAA: rozsah rychlostí (daRng), SČP pro nejnižší z rozsahu nebo pro vlastní rychlost, v Performance s přídavkem (daSct); MČP není */
+  if(RU.usdaa){ var dl=daLvl(cls), dz=usSz(size), dr=daRng(dl,dz,disc); return {sct:daSct(L,dl,dz,disc,spd),mct:0,spd:L?(spd||dr[0]*YD):0,mcs:0,us:true,usdaa:true,lvl:dl,hgt:dz,rng:dr,add:daAdd(dl,disc)}; }
   /* USA: tabulky AKC (usSct), MČP = SČP + 20 s; rychlost v m/s jako jinde (na obrazovce yd/s) */
   if(RU.us){ var lv=usLvl(cls), hz=usSz(size), ss=usSct(L,lv,hz,disc,spd); return {sct:ss,mct:L?ss+20:0,spd:L?(spd||usSpd(lv,hz,disc)*YD):0,mcs:0,us:true,lvl:lv,hgt:hz}; }
   var v=spd||spdOf(cls,disc), mcs=disc==='A'?2.5:3.0, sct=L?Math.ceil(L/v-1e-9):0, mct=L?(RU.mctK?Math.ceil(sct*RU.mctK-1e-9):Math.ceil(L/mcs-1e-9)):0, fix=false;
@@ -6152,7 +6224,7 @@ function planSpecs(m){
   if(m.hoop&&!PLANUI.specs) return '<button class="smini" data-sp="1" aria-expanded="false"><b>'+(m.len?lenU(m.len):'–')+'</b><span>'+nObsTxt(m)+'</span><span><span>Max. čas</span> <b>3 min</b></span>'+(m.far!=null?'<span><span>Psovod</span> <b>'+lenU(m.far)+'</b></span>':'')+'</button>';
   if(PLANUI.specs) return specsHTML(m)+'<button class="spec sfold" data-sp="0" aria-expanded="true">Méně ▴</button>';
   var dash='–';
-  return '<button class="smini" data-sp="1" aria-expanded="false"><b>'+(m.len?lenU(m.len):dash)+'</b><span>'+nObsTxt(m)+'</span><span><span>SČP</span> <b>'+(m.sct?m.sct+' s':dash)+'</b></span>'+(m.uk?'':'<span><span>MČP</span> <b>'+(m.mct?m.mct+' s':dash)+'</b></span>')+'<i aria-hidden="true">▾</i></button>'+kacrEstHTML(m);
+  return '<button class="smini" data-sp="1" aria-expanded="false"><b>'+(m.len?lenU(m.len):dash)+'</b><span>'+nObsTxt(m)+'</span><span><span>SČP</span> <b>'+(m.sct?m.sct+' s':dash)+'</b></span>'+(m.uk||m.usdaa?'':'<span><span>MČP</span> <b>'+(m.mct?m.mct+' s':dash)+'</b></span>')+'<i aria-hidden="true">▾</i></button>'+kacrEstHTML(m);
 }
 function specsHTML(m){
   var dash='–';
@@ -6163,12 +6235,13 @@ function specsHTML(m){
       '<div class="spec"><small>Od psovoda nejdál</small><b>'+(m.far!=null?lenU(m.far):dash)+'</b><i>FCI nejvýš '+fl+' m</i></div>'; }
   return '<div class="spec"><small>Délka trati</small><b>'+(m.len?lenU(m.len):dash)+'</b><i>'+nObsTxt(m)+'</i></div>'+
     '<div class="spec"><small>Disciplína</small><b>'+discL(m.disc)+'</b><i>'+(m.us?'<span translate="no">'+esc(usLvlTxt(m))+'</span>':'třída '+m.cls)+'</i></div>'+
-    '<div class="spec"><small>SČP</small><b>'+(m.sct?m.sct+' s':dash)+'</b><i>'+spdU(m.spd)+'</i></div>'+
-    (m.us?'<div class="spec mct"><small>MČP (max.)</small><b>'+(m.mct?m.mct+' s':dash)+'</b><i>SČP + 20 s (AKC)</i></div>':m.uk?'<div class="spec mct"><small>Čas</small><b>Matrix</b><i>průměr podle Course Time Matrix + 10 s</i></div>':'<div class="spec mct"><small>MČP (max.)</small><b>'+(m.mct?m.mct+' s':dash)+'</b><i>'+(m.mctFix?'1,5× SČP (podle FCI by byl kratší)':RU.mctK?fmt(RU.mctK)+'× SČP':spdU(m.mcs)+' dle FCI')+'</i></div>')+kacrEstHTML(m);
+    '<div class="spec"><small>SČP</small><b>'+(m.sct?m.sct+' s':dash)+'</b><i>'+spdU(m.spd)+(m.add?'<span translate="no"> + '+m.add+' s</span>':'')+'</i></div>'+
+    /* USDAA: místo MČP (pravidla ho nemají) rozsah rychlostí, ze kterého rozhodčí volí; SČP je pro nejnižší, v Performance s přídavkem */
+    (m.usdaa?'<div class="spec"><small>Rozsah USDAA</small><b translate="no">'+spdRngU(m.rng)+'</b><i>SČP pro nejnižší rychlost</i></div>':m.us?'<div class="spec mct"><small>MČP (max.)</small><b>'+(m.mct?m.mct+' s':dash)+'</b><i>SČP + 20 s (AKC)</i></div>':m.uk?'<div class="spec mct"><small>Čas</small><b>Matrix</b><i>průměr podle Course Time Matrix + 10 s</i></div>':'<div class="spec mct"><small>MČP (max.)</small><b>'+(m.mct?m.mct+' s':dash)+'</b><i>'+(m.mctFix?'1,5× SČP (podle FCI by byl kratší)':RU.mctK?fmt(RU.mctK)+'× SČP':spdU(m.mcs)+' dle FCI')+'</i></div>')+kacrEstHTML(m);
 }
 
 /* ---------- Kalkulačka SČP a MČP (Více): čas z délky trati bez kreslení parkuru, pro rozhodčí a pořadatele.
-   Počítá courseTimes jako Plán; tabulka všech tříd pro zvolenou velikost (Británie) a disciplínu. Poslední zadání se pamatuje. ---------- */
+   Počítá courseTimes jako Plán; tabulka všech tříd pro zvolenou velikost (Británie, USA) a disciplínu. Poslední zadání se pamatuje. ---------- */
 var SCTK='agility-sctcalc-v1';
 function sctCalcSheet(){
   if(!plusGate('Kalkulačka SČP a MČP')) return;
@@ -6177,24 +6250,30 @@ function sctCalcSheet(){
     size:sizes[sv.size]?sv.size:d&&sizes[d.size]?d.size:RU.us?'I':'L', spd:+sv.spd>0?+sv.spd:0};
   /* USA (3.4): délka v jednotce z Nastavení (výchozí yardy) a rychlost v yd/s; uvnitř dál metry a m/s */
   var lu=RU.us?lenUnit():'m', lk=RU.us?lenFromU(1):1, sk=RU.us?YD:1, su=RU.us?'yd/s':'m/s';
-  function defSpd(){ return RU.uk?Math.round(ukSpd(st.cls,st.size,st.disc)*100)/100:RU.us?usSpd(st.cls,st.size,st.disc)*YD:spdOf(st.cls,st.disc); }
+  function defSpd(){ return RU.uk?Math.round(ukSpd(st.cls,st.size,st.disc)*100)/100:RU.usdaa?daRng(st.cls,st.size,st.disc)[0]*YD:RU.us?usSpd(st.cls,st.size,st.disc)*YD:spdOf(st.cls,st.disc); }
   function spdTxt(v,uk){ return RU.us?fmt2(v/YD)+' yd/s':(uk?fmt2(v):fmt(v))+' m/s'; }
   function out(){
     var L=+st.len; if(!(L>0)) return '<p class="hint">Zadej délku trati.</p>';
-    var ct=courseTimes(L,st.cls,st.disc,st.size,st.spd||0);
-    var h='<div class="sc-out"><div><small>SČP</small><b>'+ct.sct+' s</b></div>'+(ct.uk?'':'<div><small>MČP</small><b>'+ct.mct+' s</b></div>')+'<div class="sp"><small>Rychlost</small><b>'+spdTxt(ct.spd,ct.uk)+'</b></div></div>'+(ct.mctFix?'<p class="hint warn">'+mctFixTxt(st.disc)+'</p>':'');
-    h+='<h4>Všechny třídy</h4><table class="table sc-tab"><tr><th>Třída</th><th class="num">Rychlost</th><th class="num">SČP</th>'+(RU.uk?'':'<th class="num">MČP</th>')+'</tr>'+RU.cls.map(function(c){
-      var t=courseTimes(L,c,st.disc,st.size); return '<tr'+(c===st.cls?' class="cur"':'')+'><td>'+clsL(c)+'</td><td class="num">'+spdTxt(t.spd,t.uk)+'</td><td class="num">'+t.sct+' s</td>'+(RU.uk?'':'<td class="num">'+t.mct+' s</td>')+'</tr>'; }).join('')+'</table>';
+    var ct=courseTimes(L,st.cls,st.disc,st.size,st.spd||0), nm=RU.uk||RU.usdaa; /* Británie a USDAA nemají MČP */
+    var h='<div class="sc-out"><div><small>SČP</small><b>'+ct.sct+' s</b></div>'+(nm?'':'<div><small>MČP</small><b>'+ct.mct+' s</b></div>')+'<div class="sp"><small>Rychlost</small><b>'+spdTxt(ct.spd,ct.uk)+'</b></div></div>'+(ct.mctFix?'<p class="hint warn">'+mctFixTxt(st.disc)+'</p>':'')+
+      (ct.usdaa&&st.spd&&st.spd/YD<ct.rng[0]-1e-9?'<p class="hint warn">Rychlost je pod minimem USDAA. Rozhodčí smí jít nad rozsah, pod něj nikdy.</p>':''); /* kap. 4 § 4.1.1 */
+    /* USDAA: v tabulce rozsah rychlostí a SČP od nejvyšší po nejnižší rychlost rozsahu */
+    h+='<h4>Všechny třídy</h4><table class="table sc-tab"><tr><th>Třída</th><th class="num">Rychlost</th><th class="num">SČP</th>'+(nm?'':'<th class="num">MČP</th>')+'</tr>'+RU.cls.map(function(c){
+      var t=courseTimes(L,c,st.disc,st.size), tr='<tr'+(c===st.cls?' class="cur"':'')+'><td>'+clsL(c)+'</td>';
+      if(t.usdaa) return tr+'<td class="num">'+fmt2(t.rng[0])+'–'+spdTxt(t.rng[1]*YD)+'</td><td class="num">'+courseTimes(L,c,st.disc,st.size,t.rng[1]*YD).sct+'–'+t.sct+' s</td></tr>';
+      return tr+'<td class="num">'+spdTxt(t.spd,t.uk)+'</td><td class="num">'+t.sct+' s</td>'+(RU.uk?'':'<td class="num">'+t.mct+' s</td>')+'</tr>'; }).join('')+'</table>';
+    if(RU.usdaa) return h+'<p class="hint">Pro zvolenou velikost a disciplínu podle tabulek USDAA. V tabulce je SČP pro nejvyšší až nejnižší rychlost rozsahu.</p>';
     if(RU.us) return h+'<p class="hint">Pro zvolenou výšku skoku a disciplínu podle tabulek AKC.</p>';
     return h+'<p class="hint">'+(RU.uk?'Pro zvolenou velikost a disciplínu, rychlost podle matice.':'Rychlosti podle nastavení v Běhu.')+'</p>'+(RU.uk?'':'<p class="hint">'+(RU.mctK?'MČP '+fmt(RU.mctK)+'× SČP':'MČP 2,5 m/s (Agility) a 3,0 m/s (Jumping) podle FCI')+'</p><p class="hint">Jumping: rychlost pro SČP o 0,5 m/s vyšší než Agility, v Běhu jde nastavit zvlášť.</p>');
   }
   var sel=function(id,label,opts){ return '<label for="'+id+'">'+label+'<select id="'+id+'">'+opts+'</select></label>'; };
   openSheet('<h3>Kalkulačka SČP a MČP</h3><p class="hint">'+(RU.uk?'Standardní čas podle Course Time Matrix: průměrná rychlost pro velikost psa a grade + 10 s. Maximální čas se v Británii neurčuje.'
+      :RU.usdaa?'Standardní čas podle USDAA: délka trati v yardech děleno rychlostí. Tabulky dávají rozsah rychlosti podle úrovně, velikosti a disciplíny; rozhodčí volí v rozsahu, nikdy pod minimem, kalkulačka začíná minimem. Performance má SČP o 3 s delší, v Masters Standard o 5 s a v Masters Jumpers o 4 s. Maximální čas USDAA neurčuje.'
       :RU.us?'Standardní čas podle AKC: délka trati v yardech děleno rychlostí pro třídu a výšku skoku, v Novice a Open Standard + 5 s za stůl, v Excellent a Master nejvýš limit pro výšku. Maximální čas je SČP + 20 s.'
       :'Standardní a maximální čas parkuru z délky trati, bez kreslení parkuru. Rychlost je z nastavení v Běhu (Rychlost pro SČP), můžeš ji přepsat.')+'</p>'+
     '<div class="grid2"><label for="scLen">Délka trati ('+lu+')<input id="scLen" type="text" inputmode="decimal" autocomplete="off" value="'+(st.len?numFld(Math.round(st.len/lk*10)/10):'')+'" placeholder="'+(lu==='yd'?'165':lu==='ft'?'490':'150')+'"></label>'+
     '<label for="scSpd">Rychlost ('+su+')<input id="scSpd" type="text" inputmode="decimal" autocomplete="off" value="'+numFld((st.spd||defSpd())/sk,2)+'"></label></div>'+
-    '<div class="grid2">'+sel('scCls','Třída',clsOpts(st.cls))+(RU.uk||RU.us?sel('scSize',RU.us?'Výška skoku':'Velikost',Object.keys(sizes).map(function(k){ return '<option value="'+k+'"'+(k===st.size?' selected':'')+'>'+sizes[k].l+'</option>'; }).join('')):'')+
+    '<div class="grid2">'+sel('scCls','Třída',clsOpts(st.cls))+(RU.uk||RU.us?sel('scSize',RU.akc?'Výška skoku':'Velikost',Object.keys(sizes).map(function(k){ return '<option value="'+k+'"'+(k===st.size?' selected':'')+'>'+sizes[k].l+'</option>'; }).join('')):'')+
     (dsc?sel('scDisc','Disciplína','<option value="A"'+(st.disc==='A'?' selected':'')+'>'+discL('A')+'</option><option value="J"'+(st.disc==='J'?' selected':'')+'>'+discL('J',1)+'</option>'):'')+'</div>'+
     '<div id="scOut">'+out()+'</div><div class="acts"><button class="btn" data-a="x">Zavřít</button></div>',
     function(e){ if(e.target.closest('[data-a]')){ $('sheet').oninput=null; closeSheet(); } });
@@ -6790,7 +6869,7 @@ function routeStepSheet(i){
 }
 /* velikosti plochy: agility a zahrada; v Hoopers navíc plochy podle třídy (H1 30 × 30, H2 36 × 30, H3 40 × 32 m) */
 var SIZEL=[[40,20,'Plocha'],[40,24,'Plocha'],[30,20,'Plocha'],[25,15,'Zahrada'],[20,15,'Zahrada'],[15,10,'Zahrada']];
-/* USA (3.5): kruhy AKC ve stopách (pravidla chtějí aspoň 5 000 sq ft, obvyklé jsou 100 × 100 ft); uloženo v metrech */
+/* USA (3.5): kruhy AKC ve stopách (pravidla chtějí aspoň 5 000 sq ft, obvyklé jsou 100 × 100 ft), stejné i u USDAA; uloženo v metrech */
 var SIZEL_US=[[30.48,30.48,'Plocha'],[36.58,30.48,'Plocha'],[30.48,24.38,'Plocha'],[24.38,15.24,'Zahrada'],[15.24,12.19,'Zahrada']];
 /* rozměr plochy v jednotkách aplikace: metry, jinak celé stopy */
 function fieldU(W,H){ return UNIT()!=='m'?Math.round(W*3.28084)+' × '+Math.round(H*3.28084)+' ft':W+' × '+H+' m'; }
@@ -7042,7 +7121,7 @@ function hoopClass(c){
 }
 function fciBar(geo){
   var el=$('fciBar'); if(!el) return;
-  /* AKC má vlastní pravidla stavby parkuru (počet překážek, délky, rozestupy); kontrola FCI by v USA hlásila chyby u správných parkurů */
+  /* AKC i USDAA mají vlastní pravidla stavby parkuru (počet překážek, délky, rozestupy); kontrola FCI by v USA hlásila chyby u správných parkurů */
   if(RU.us){ el.hidden=true; fciMark([]); return; }
   var items=fciCheck(S.obs,S.route,S.turns,S.sides,S.meta.cls,geo), bad=items.filter(function(x){return x.ok===false;}).length;
   fciMark(items);
@@ -7598,6 +7677,7 @@ function runTime(){var m=/^(?:(\d+):)?(\d+(?:\.\d*)?)$/.exec(String($('manT').va
 function evalRun(t,f,r,dis,m){
   /* Hoopers: každá chyba i odmítnutí 5 bodů, čas se nepočítá; diskvalifikace i za překročení 3 minut */
   if(m&&m.hoop){ var hc=5*f+5*r, hw=dis?'diskvalifikace':(t>180?'překročen maximální čas 3 min':''); return {tp:0,cf:hc,tot:hc,why:hw,g:hw?'DIS':(hc===0?'V':'BO'),hoop:true}; }
+  if(m&&m.usdaa) return evalDAA(t,f,r,dis,m);
   if(m&&m.us) return evalUS(t,f,r,dis,m);
   var tp=Math.max(0,Math.round((t-m.sct)*100)/100), cf=5*f+5*r, tot=Math.round((cf+tp)*100)/100;
   if(m&&m.uk){ tp=Math.max(0,Math.ceil(t-m.sct-1e-9)); tot=cf+tp; } /* Británie: 1 bod za každou započatou sekundu */
@@ -7614,6 +7694,16 @@ function evalUS(t,f,r,dis,m){
   var why=dis?'diskvalifikace':f>0?'chyba = vyřazení (F)':m.mct&&t>m.mct?'překročen MČP':'';
   var nq=!why&&(r>(lv==='U1'?2:lv==='U2'?1:0)?'víc odmítnutí, než třída dovolí':lv==='U4'&&tp?'Master: i časová chyba je NQ':score<85?'pod 85 bodů':'');
   return {tp:tp,cf:cf,tot:cf+tp,why:why||nq,g:why?'DIS':nq?'BO':'V',us:true,score:why?0:score};
+}
+/* USDAA (Standard Scoring Method, kap. 4 § 4.1; tabulky chyb kap. 5 § 5.3.1 a kap. 7 § 7.3.1): trestné body (faults) se sčítají,
+   kvalifikace (Q, uloží se jako V) je jen s nulou (kap. 5 a 7 úvod). Chyba ve stopkách 5 bodů (kap. 4 § 4.3); časová chyba 1 bod za každou
+   sekundu i započatou nad SČP (kap. 4 § 4.1.2). Odmítnutí: Masters 5 bodů a třetí vyřazuje (E); Advanced Standard 5 bodů (pravidla: jen na zónové
+   překážce, třetí na téže vyřazuje, to aplikace nerozliší); Advanced Jumpers a Starters bez trestu. Diskvalifikace ve stopkách = vyřazení (E, NQ).
+   Špatnou trasu (Starters 5, Advanced 20 bodů, Masters E) stopky zvlášť nepočítají. NQ s body = BO, vyřazení = DIS. */
+function evalDAA(t,f,r,dis,m){
+  var lx=daIx(m.lvl), rk=lx===2||(lx===1&&m.disc!=='Jumping')?5:0, tp=m.sct?Math.max(0,Math.ceil(t-m.sct-1e-9)):0, cf=5*f+rk*r;
+  var why=dis?'diskvalifikace':lx===2&&r>=3?'3 odmítnutí':'';
+  return {tp:tp,cf:cf,tot:cf+tp,why:why,g:why?'DIS':cf+tp?'BO':'V',us:true,usdaa:true,rk:rk};
 }
 var GNAME={V:'Výborně',VD:'Velmi dobře',D:'Dobře',BO:'Bez ohodnocení',DIS:'Diskvalifikace'};
 var GNAME_US={V:'Kvalifikace (Q)',VD:'Bez kvalifikace (NQ)',D:'Bez kvalifikace (NQ)',BO:'Bez kvalifikace (NQ)',DIS:'Vyřazení (NQ)'};
@@ -7634,6 +7724,7 @@ function runBarUI(e,t,dis){
   $('rbT').textContent=fmt2(t)+' s';
   /* hodnocení a dodatek ve dvou prvcích, ať se každý přeloží zvlášť */
   $('rbG').innerHTML=e.hoop?'<span>'+(e.g==='DIS'?'Diskvalifikace':e.cf?czN(e.cf/5,'chyba','chyby','chyb'):'Čistý běh')+'</span>'
+    :e.usdaa?'<span>'+gName(e.g)+'</span> · <span>'+(e.why||(e.tot===0?'čistý běh':'trestné body '+e.tot))+'</span>'
     :e.us?'<span>'+gName(e.g)+'</span> · <span>'+(e.why||'skóre '+e.score)+'</span>'
     :'<span>'+GNAME[e.g]+'</span> · <span>'+(e.why?e.why:(e.tot===0?'čistý běh':'trestné body '+fmt2(e.tot)))+'</span>';
 }
@@ -7644,6 +7735,10 @@ function resultRender(){
   if(S.route.length<2){$('result').innerHTML='<p>Parkur zatím nemá trasu. Vyznač ji v Plánu v režimu Trasa, pak se běh ohodnotí.</p>'; return;}
   if(!t&&!dis){$('result').innerHTML='<p>Změř čas stopkami nebo ho zadej ručně. Výsledek se spočítá podle Řádu agility.</p>'; return;}
   if(e.hoop){ $('result').innerHTML='<div class="grade '+e.g+'" translate="no">'+(e.g==='DIS'?'DIS':e.cf/5)+'</div><p><b>'+(e.g==='DIS'?'Diskvalifikace':e.cf?czN(e.cf/5,'chyba','chyby','chyb'):'Čistý běh')+'</b>'+(e.why?' ('+e.why+')':'')+'<br>Čas <b>'+fmt2(t)+' s</b> · trestné body <b>'+e.tot+'</b><br>Hoopers: rozhoduje čistý běh, čas jen pro tebe.</p>'; return; }
+  /* USDAA: trestné body jako u FCI (celé), Q jen s nulou; u odmítnutí, které se v třídě netrestá, vysvětlení */
+  if(e.usdaa){ $('result').innerHTML='<div class="grade '+e.g+'" translate="no">'+gTxt(e.g)+'</div><p><b>'+gName(e.g)+'</b>'+(e.why?' ('+e.why+')':(e.tot===0?' · čistý běh':''))+'<br>'+
+    'Čas <b>'+fmt2(t)+' s</b> · chyby a odmítnutí <b>'+e.cf+'</b> · za čas <b>'+e.tp+'</b><br>Trestné body celkem <b>'+e.tot+'</b>'+
+    (RUN.r&&!e.rk?'<br>Odmítnutí se v této třídě netrestají.':RUN.r&&daIx(m.lvl)===1?'<br>V Advanced Standard se trestá jen odmítnutí na zónové překážce.':'')+'</p>'; return; }
   if(e.us){ $('result').innerHTML='<div class="grade '+e.g+'" translate="no">'+gTxt(e.g)+'</div><p><b>'+gName(e.g)+'</b>'+(e.why?' ('+e.why+')':'')+'<br>'+
     'Čas <b>'+fmt2(t)+' s</b> · odmítnutí <b>'+RUN.r+'</b> · za čas <b>'+e.tp+'</b><br>Skóre <b>'+e.score+'</b> ze 100 (Q od '+(m.lvl==='U4'?100:85)+')</p>'; return; }
   $('result').innerHTML='<div class="grade '+e.g+'" translate="no">'+gTxt(e.g)+'</div><p><b>'+GNAME[e.g]+'</b>'+(e.why?' ('+e.why+')':(e.tot===0?' · čistý běh':''))+'<br>'+
@@ -7660,11 +7755,12 @@ function runRender(){
     :'<button class="smini" data-rs="1" aria-expanded="'+(PLANUI.speed?'true':'false')+'" aria-controls="speedRow"><b>'+(m.len?lenU(m.len):'–')+'</b><span>'+nPrek(m.n)+'</span><span>'+m.disc+' '+m.cls+'</span><span><b>'+fmt(m.spd)+'</b> m/s</span><i aria-hidden="true">'+(PLANUI.speed?'▴':'▾')+'</i></button>'+kacrEstHTML(m);
   $('speedRow').hidden=!PLANUI.speed;
   $('runCare').innerHTML=careHTML();
-  /* USA: rychlost je z tabulek AKC podle třídy a výšky psa (Více → Psi), ručně se nemění */
-  $('speedRow').innerHTML=m.us?'<span class="grow"><span>Rychlost pro SČP podle AKC</span> <span translate="no">('+esc(discL(m.disc)+', '+usLvlTxt(m))+')</span><small>Třídu a výšku skoku nastavíš u psa ve Více → Psi.</small></span><b class="num">'+(m.len?spdU(m.spd):'–')+'</b>'
+  /* USA: rychlost je z tabulek AKC podle třídy a výšky psa (Více → Psi), ručně se nemění; u USDAA nejnižší z rozsahu, ze kterého volí rozhodčí */
+  $('speedRow').innerHTML=m.usdaa?'<span class="grow"><span>Rychlost pro SČP podle USDAA</span> <span translate="no">('+esc(discL(m.disc)+', '+usLvlTxt(m))+')</span><small><span>Rozsah USDAA</span> <span translate="no">'+spdRngU(m.rng)+'</span> · <span>počítá se s nejnižší</span>. <span>Třídu a velikost nastavíš u psa ve Více → Psi.</span></small></span><b class="num">'+(m.len?spdU(m.spd):'–')+'</b>'
+    :m.us?'<span class="grow"><span>Rychlost pro SČP podle AKC</span> <span translate="no">('+esc(discL(m.disc)+', '+usLvlTxt(m))+')</span><small>Třídu a výšku skoku nastavíš u psa ve Více → Psi.</small></span><b class="num">'+(m.len?spdU(m.spd):'–')+'</b>'
     :'<span class="grow">Rychlost pro SČP ('+m.disc+' '+m.cls+')<small>'+(m.mctFix?mctFixTxt(m.disc==='Jumping'?'J':'A'):'volí ji rozhodčí podle obtížnosti')+'</small></span><button data-sp="-1" aria-label="Snížit rychlost">−</button><b class="num">'+fmt(m.spd)+' m/s</b><button data-sp="1" aria-label="Zvýšit rychlost">+</button>';
   /* obě dvojice stejně: popisek a hodnota v jednom prvku, mezi dvojicemi stejná mezera (dřív SČP a 45 s oddělila mezera mezi dvojicemi) */
-  $('clockSub').innerHTML=m.hoop?'<span>Hoopers <b class="num">'+esc(m.cls)+'</b></span><span>Max. čas <b class="num">3 min</b></span>':'<span>SČP <b class="num">'+(m.sct||'–')+' s</b></span><span>MČP <b class="num">'+(m.mct||'–')+' s</b></span>';
+  $('clockSub').innerHTML=m.hoop?'<span>Hoopers <b class="num">'+esc(m.cls)+'</b></span><span>Max. čas <b class="num">3 min</b></span>':'<span>SČP <b class="num">'+(m.sct||'–')+' s</b></span>'+(m.usdaa?'':'<span>MČP <b class="num">'+(m.mct||'–')+' s</b></span>'); /* USDAA nemá MČP */
   if(m.hoop) $('speedRow').hidden=true;
   $('startBtn').textContent=RUN.on?'STOP':'START'; $('startBtn').className='startbtn'+(RUN.on?' stop':'');
   tick(); resultRender(); histRender();
@@ -7740,6 +7836,7 @@ $('saveRun').onclick=function(){
   var e=evalRun(t,RUN.f,RUN.r,dis,m), mk=getMark(S.meta.id), runs=(mk.runs||[]).slice();
   var dg=curDog();
   var rec={d:Date.now(),t:Math.round(t*100)/100,f:RUN.f,r:RUN.r,tot:e.tot,g:e.g,sct:m.sct,mct:m.mct,len:Math.round(m.len*10)/10,dog:dg?dg.id:null,cls:S.meta.cls};
+  if(e.usdaa) rec.tp=e.tp; /* USDAA: odmítnutí se ne vždy trestá, listina tak nevezme časové chyby jako zbytek z trestných bodů */
   if(RUN.sp&&RUN.sp.length===S.route.length) rec.sp=RUN.sp.slice();
   var firstToday=!activeDays()[localDate()]; /* první trénink dneška: po uložení může vzniknout série (menší oslava) */
   runs.push(rec);
@@ -7792,7 +7889,7 @@ function listinaRows(all){
   pick.forEach(function(x){
     var d=dogOf(x.dog), sz=d?d.size:'', key=sz||'_';
     if(!cats[key]){ cats[key]={size:sz,rows:[]}; order.push(key); }
-    var tp=Math.max(0,Math.round(((+x.tot||0)-5*(+x.f||0)-5*(+x.r||0))*100)/100);
+    var tp=x.tp!=null?+x.tp:Math.max(0,Math.round(((+x.tot||0)-5*(+x.f||0)-5*(+x.r||0))*100)/100); /* USDAA ukládá časové chyby zvlášť */
     cats[key].rows.push({dog:d?d.name:(x.dog?'Pes':'Bez psa'),handler:d&&d.handler?String(d.handler):'',size:sz,t:+x.t||0,f:+x.f||0,r:+x.r||0,tp:tp,tot:+x.tot||0,g:x.g||'BO',d:+x.d||0,dis:x.g==='DIS'});
   });
   order.sort(function(a,b){ return szOrd.indexOf(cats[a].size)-szOrd.indexOf(cats[b].size); });
@@ -7804,7 +7901,7 @@ function listinaRows(all){
 function listinaHTML(){
   var m=curM(), cats=listinaRows(LST.all), n=cats.reduce(function(s,c){return s+c.rows.length;},0);
   var h='<div class="listina"><div class="lhead"><b translate="no">'+esc(S.meta.name)+'</b><span><span translate="no">'+esc(S.meta.cls)+'</span>'+(S.meta.author?' · <span>Stavba:</span> <span translate="no">'+esc(S.meta.author)+'</span>':'')+' · <span translate="no">'+new Date().toLocaleDateString(LOC)+'</span></span>'+
-    (S.route.length>1?'<span>'+(m.hoop?'<span>Hoopers · max. čas</span> <b>3 min</b>':'<span>Délka</span> <b>'+lenU(m.len)+'</b> · <span>SČP</span> <b>'+(m.sct||'–')+' s</b> · <span>MČP</span> <b>'+(m.mct||'–')+' s</b>')+'</span>':'')+'</div>';
+    (S.route.length>1?'<span>'+(m.hoop?'<span>Hoopers · max. čas</span> <b>3 min</b>':'<span>Délka</span> <b>'+lenU(m.len)+'</b> · <span>SČP</span> <b>'+(m.sct||'–')+' s</b>'+(m.usdaa?'':' · <span>MČP</span> <b>'+(m.mct||'–')+' s</b>'))+'</span>':'')+'</div>';
   if(!S.meta.id) return h+'<p class="hint">Listina se dělá z běhů uložených k parkuru. Nejdřív parkur ulož nebo načti z Parkurů.</p></div>';
   if(!n) return h+'<p class="hint">K tomuhle parkuru zatím nejsou uložené běhy. Změř je v Běhu a ulož ke psům.</p></div>';
   cats.forEach(function(c){
@@ -7820,7 +7917,7 @@ function listinaHTML(){
 function listinaText(){
   var m=curM(), cats=listinaRows(LST.all), L=[];
   L.push(T('Výsledková listina')+': '+S.meta.name+' ('+S.meta.cls+') · '+new Date().toLocaleDateString(LOC));
-  if(S.route.length>1&&!m.hoop) L.push(T('Délka')+' '+lenU(m.len)+' · '+T('SČP')+' '+(m.sct||'–')+' s · '+T('MČP')+' '+(m.mct||'–')+' s');
+  if(S.route.length>1&&!m.hoop) L.push(T('Délka')+' '+lenU(m.len)+' · '+T('SČP')+' '+(m.sct||'–')+' s'+(m.usdaa?'':' · '+T('MČP')+' '+(m.mct||'–')+' s'));
   cats.forEach(function(c){
     L.push(''); L.push(S.meta.cls+' · '+(c.size?T('Velikost')+' '+c.size:T('Bez psa')));
     L.push([T('Místo'),T('Pes'),T('Psovod'),T('Velikost'),T('Čas'),T('Chyby'),T('Odmítnutí'),T('Za čas'),T('Celkem'),T('Hodnocení')].join('\t'));
@@ -8670,12 +8767,12 @@ function wrapText(ctx,t,x,y,maxW,lh){
   words.forEach(function(w){ var tt=line?line+' '+w:w; if(ctx.measureText(tt).width>maxW&&line){ctx.fillText(line,x,y); y+=lh; line=w;} else line=tt; });
   if(line){ctx.fillText(line,x,y); y+=lh;} return y;
 }
-/* hlavička obrázku a PDF: Hoopers s maximálním časem 3 min, Británie bez MČP, počet překážek česky (1 překážka, 3 překážky) */
+/* hlavička obrázku a PDF: Hoopers s maximálním časem 3 min, Británie a USDAA bez MČP, počet překážek česky (1 překážka, 3 překážky) */
 function headerLines(){
   var m=curM(), a=S.meta, base='Délka '+lenU(m.len)+' · '+nPrek(m.n)+' · '+discL(m.disc);
   /* název jako nahoře (crsName): vygenerovaný se přeloží, vlastní zůstane; titulek PDF ho už nepřekládá (z „Trénink“ bylo „Training“) */
   return {title:crsName(a), sub:(m.hoop?'Hoopers ':'')+a.cls+' · '+authorLine(a),
-    spec:m.hoop?base+' · Max. čas 3 min':m.uk?base+' · SČP '+(m.sct||'–')+' s':m.us?base+' · '+usLvlTxt(m)+' · SČP '+(m.sct||'–')+' s ('+spdU(m.spd)+') · MČP '+(m.mct||'–')+' s'
+    spec:m.hoop?base+' · Max. čas 3 min':m.uk?base+' · SČP '+(m.sct||'–')+' s':m.usdaa?base+' · '+usLvlTxt(m)+' · SČP '+(m.sct||'–')+' s ('+spdU(m.spd)+')':m.us?base+' · '+usLvlTxt(m)+' · SČP '+(m.sct||'–')+' s ('+spdU(m.spd)+') · MČP '+(m.mct||'–')+' s'
       :base+' · SČP '+(m.sct||'–')+' s ('+fmt(m.spd)+' m/s) · MČP '+(m.mct||'–')+' s'};
 }
 /* dlouhé názvy: menší písmo, a když ani to nestačí, zkrátit s trojtečkou */
@@ -10101,8 +10198,10 @@ function dogSheet(d){
     '<label for="dName">Jméno<input id="dName" type="text" maxlength="40" value="'+esc(d.name)+'"></label>'+
     '<div class="dpick"><span class="dprev" id="dPrev"></span><div class="dpk"><div class="dlooks" id="dLooks" role="group" aria-label="Obrázek psa"></div>'+
     '<p class="hint">Vyber kreslený obrázek, nebo vlastní fotku. Fotka zůstane jen v tomhle telefonu.</p></div></div><input id="dPic" type="file" accept="image/*" hidden>'+
-    '<div class="grid2"><label for="dSize">'+(RU.us?'Výška skoku':'Velikost')+'<select id="dSize">'+Object.keys(RU.heights||SIZES).map(function(k){return '<option value="'+k+'">'+(RU.heights||SIZES)[k].l+'</option>';}).join('')+'</select></label>'+
-    '<label for="dCls">Výkonnostní třída<select id="dCls">'+clsOpts(d.cls)+'</select></label></div>'+
+    /* USDAA: velikost je výšková kategorie podle kohoutku, výšku skoku dá až program (Performance o 4" níž); „Výkonnostní třída“ by anglicky
+       splývala s programem Performance */
+    '<div class="grid2"><label for="dSize">'+(RU.akc?'Výška skoku':'Velikost')+'<select id="dSize">'+Object.keys(RU.heights||SIZES).map(function(k){return '<option value="'+k+'">'+(RU.heights||SIZES)[k].l+'</option>';}).join('')+'</select></label>'+
+    '<label for="dCls">'+(RU.usdaa?'Třída':'Výkonnostní třída')+'<select id="dCls">'+clsOpts(d.cls)+'</select></label></div>'+
     '<label for="dBorn">Datum narození (měsíc a rok, nepovinné)<input id="dBorn" type="month" value="'+esc(d.born||'')+'" max="'+localDate().slice(0,7)+'"></label>'+
     (!KACR_OK&&!d.kacr?'<input id="dKacr" type="hidden" value="">':'<label for="dKacr">Pes na kacr.info (nepovinné)</label><div class="kc-find"><input id="dKacr" type="text" autocomplete="off" placeholder="jméno psa, psovoda nebo odkaz" value="'+(d.kacr?'https://kacr.info/dogs/'+esc(d.kacr):'')+'"><button class="btn" data-a="ks">Hledat</button></div>'+
     '<div id="dKres" class="kc-res" aria-live="polite"></div>'+
@@ -10718,7 +10817,9 @@ function promoHTML(){
   var ps=promoState(curDog()), bar=function(n,need){ return '<div class="bar"><i style="width:'+Math.round(Math.min(n,need)/need*100)+'%"></i></div>'; };
   /* cesta k postupu (3.0): řada kroužků, jeden za zkoušku, splněné zaškrtnuté, na konci cíl s třídou; u víc než 12 zkoušek zůstává pruh */
   var path=function(n,need,to){ if(need>12) return bar(n,need); var h='<div class="ppath" aria-hidden="true">'; for(var i=0;i<need;i++) h+='<i class="'+(i<n?'on':'')+'">'+(i<n?'✓':'')+'</i>'; return h+'<b translate="no">'+esc(to)+'</b></div>'; };
-  var h=ps.steps.map(function(s){
+  /* USDAA: dva souběžné programy (Championship D1–D3, Performance D4–D6), ukáže se jen postup v programu psa */
+  var d=ps.dog, stp=RU.usdaa&&d&&RU.cls.indexOf(d.cls)>=0?ps.steps.filter(function(s){ return daPerf(s.st.from)===daPerf(d.cls); }):ps.steps;
+  var h=stp.map(function(s){
     var st=s.st, h='<div class="prog"><b>'+'Postup '+clsL(st.from)+' → '+clsL(st.to)+': '+st.l+'</b>'+path(s.n,st.need,clsL(st.to))+
       '<span class="hint">'+s.n+' z '+st.need+' zkoušek'+(st.judges?' · rozhodčích: '+s.jn+' (potřeba aspoň '+st.judges+')':'')+'</span>';
     if(s.jump) h+=path(s.jump.n,s.jump.need,'J')+'<span class="hint">Jumping: '+s.jump.n+' z '+s.jump.need+'</span>';
@@ -11439,6 +11540,18 @@ function askSend(k){
 var MORE_HUBS={learn:1,tools:1}, VID_HUB='';
 /* kam vede Zpět: ze sekce ve skupině do skupiny, z Plus do Účtu, jinak do nabídky */
 function moreParent(t){ var b=document.querySelector('#moreTabs [data-m="'+t+'"]'), hb=b&&b.parentNode&&b.parentNode.getAttribute&&b.parentNode.getAttribute('data-hub'); return hb||(b&&b.getAttribute('data-parent'))||''; }
+/* Více → Psi, výšky překážek podle USDAA pro kategorii a program psa (bez psa Large Championship 20"): skok, zeď a kruh ve výšce skoku
+   (kruh ke spodnímu okraji otvoru; příl. A a list Equipment Standards z 1. 12. 2022), skok daleký 2× výška skoku s díly podle kap. 3 § 3.1.4,
+   stůl ve výšce skoku, u 4" 8" a u 24" 20", jen ve Starters a Advanced (kap. 3 § 3.1.3, kap. 5 § 5.1), áčko 104°, u skoku 4" 112,5°
+   (kap. 5 § 5.1; asi 5' 6" a 5' podle příl. A a listu z roku 2022, ten dává 112,5° i skoku 8"), kladina 48–54", houpačka 24–27" u osy,
+   slalom 12 tyčí jen ve Standard (kap. 5 § 5.1, Jumpers bez slalomu podle kap. 7 § 7.1) */
+function daHeightsHTML(d){
+  var j=daJump(d?d.size:'I',d?d.cls:''), row=function(a,b){ return '<tr><td>'+a+'</td><td>'+b+'</td></tr>'; };
+  return '<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (20")')+'</h2><table class="table"><tr><th>Překážka</th><th>Podle USDAA</th></tr>'+
+    row('Skok',j+'"')+row('Zeď',j+'"')+row('Kruh (spodní okraj otvoru)',j+'"')+row('Skok daleký',2*j+'" ('+czN(DALJ[j],'díl','díly','dílů')+')')+
+    row('Stůl (jen Starters a Advanced)',(j<=4?8:j>=24?20:j)+'"')+row('A-rampa',j<=4?'5\' ('+fmt(112.5)+'°)':'5\' 6" (104°)')+row('Kladina','48–54"')+
+    row('Houpačka','24–27" u osy')+row('Slalom','12 tyčí, jen Standard')+'</table>'+(RU.note?'<p class="hint">'+RU.note+'</p>':'');
+}
 function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); if(moreTab==='about') statsLoad(); },0);
   /* bez otevřené sekce jen nabídka; v sekci nabídka zmizí a nahoře je Zpět s názvem sekce */
   var mb=document.querySelector('#moreTabs [data-m="'+moreTab+'"]'), sc0=moreTab.indexOf('mod:')===0&&HM.screens[moreTab.slice(4)], hub=MORE_HUBS[moreTab]?moreTab:'';
@@ -11454,14 +11567,14 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
   if(moreTab==='dogs'){
     /* vybraný pes jako profil (tvář s kroužkem postupu, běhy, čisté běhy, kolik zbývá do vyšší třídy), ostatní psi v řádcích */
     h=DOGS.length?'<div class="list">'+DOGS.map(function(x){
-      var meta=(RU.us?RU.heights[x.size].jump+' · '+clsL(x.cls):SIZES[x.size].l+' · '+x.cls)+(dogAgeM(x)!=null?' · '+ageTxt(dogAgeM(x)):''); /* USA: výška skoku a třída AKC */
+      var meta=(RU.us?usJump(x.size,x.cls)+' · '+clsL(x.cls):SIZES[x.size].l+' · '+x.cls)+(dogAgeM(x)!=null?' · '+ageTxt(dogAgeM(x)):''); /* USA: výška skoku a třída AKC nebo USDAA */
       if(!(d&&d.id===x.id)) return '<div class="item dog">'+dogAva(x)+'<div><b>'+esc(x.name)+'</b><span>'+meta+'</span></div><div class="acts"><button class="btn" data-dsel="'+esc(x.id)+'">Vybrat</button>'+(x.kacr?'<button class="btn" data-dkacr="'+esc(x.id)+'">Závody</button>':'')+'<button class="btn" data-dedit="'+esc(x.id)+'">Upravit</button><button class="btn danger" data-ddel="'+esc(x.id)+'" aria-label="Smazat psa">×</button></div></div>';
       return dogProfHTML(x,meta);
     }).join('')+'</div><div class="row"><button class="btn dadd" data-dadd="1"><i aria-hidden="true">+</i>Přidat dalšího psa</button></div>'
       :'<div class="empty-state es-ill">'+dogIll(null)+'<b>Kdo s tebou běhá?</b><p>Přidej psa. Aplikace pak ukáže výšky překážek pro jeho kategorii a běhy i statistiky povede zvlášť pro každého psa.</p><div class="es-acts"><button class="btn primary" data-dadd="1">＋ Přidat psa</button></div></div>';
     var z=(RU.heights&&RU.heights[d?d.size:RU.us?'I':'L'])||SIZES[d?d.size:'L'];
     /* USA: výšky podle AKC (kap. 3 § 3): kruh se měří ke spodnímu okraji otvoru, áčko 5'6" (u výšky 8" 5'0"), kladina 4', houpačka 2' u osy, stůl 36" */
-    h+=RU.us?'<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (20")')+'</h2><table class="table"><tr><th>Překážka</th><th>Podle AKC</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (spodní okraj otvoru)</td><td>'+z.tire+'</td></tr><tr><td>Skok daleký</td><td>'+z.lj+'</td></tr><tr><td>Stůl</td><td>'+(d&&d.size==='L'?'20"':z.jump)+'</td></tr><tr><td>Áčko, kladina, houpačka</td><td>'+(d&&d.size==='XS'?'5\' 0"':'5\' 6"')+' / 4\' / 2\' u osy</td></tr></table>'+(RU.note?'<p class="hint">'+RU.note+'</p>':'')
+    h+=RU.usdaa?daHeightsHTML(d):RU.us?'<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (20")')+'</h2><table class="table"><tr><th>Překážka</th><th>Podle AKC</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (spodní okraj otvoru)</td><td>'+z.tire+'</td></tr><tr><td>Skok daleký</td><td>'+z.lj+'</td></tr><tr><td>Stůl</td><td>'+(d&&d.size==='L'?'20"':z.jump)+'</td></tr><tr><td>Áčko, kladina, houpačka</td><td>'+(d&&d.size==='XS'?'5\' 0"':'5\' 6"')+' / 4\' / 2\' u osy</td></tr></table>'+(RU.note?'<p class="hint">'+RU.note+'</p>':'')
     :'<h2>Výšky překážek'+(d?' pro '+esc(d.name):' (kategorie L)')+'</h2><table class="table"><tr><th>Překážka</th><th>Podle FCI</th></tr><tr><td>Skok</td><td>'+z.jump+'</td></tr><tr><td>Zeď</td><td>'+z.wall+'</td></tr><tr><td>Kruh (střed od země)</td><td>'+z.tire+'</td></tr><tr><td>Skok daleký</td><td>'+z.lj+'</td></tr><tr><td>Áčko, kladina, houpačka</td><td>stejné pro všechny: 170 / 120–130 / 60 cm</td></tr></table>'+(RU.note?'<p class="hint">'+RU.note+'</p>':'');
   } else if(moreTab==='stats'){ h='<div class="filters" id="statDogs"></div>'+statsHTML()+weakHTML(); }
   else if(moreTab==='diary'){ h='<div class="filters" id="diaryDogs"></div>'+diaryHTML()+'<h2>Statistiky</h2>'+statsHTML()+weakHTML(); }
@@ -11478,7 +11591,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
     h='<div class="morego"><button class="btn" data-mgo="fb">'+IC.mail+'<span>Napsat autorovi</span></button>'+(donateOn()?'<button class="btn primary" data-mgo="donate">'+IC.heartF+'<span>Podpořit aplikaci</span></button>':'')+'</div>'+
       '<div id="statsBox"></div><div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>Pawkur '+APPV+'</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
       '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
-      '<h4>Novinky ve verzi 3.5</h4><ul class="news"><li>Nový začátek: hned 3D průlet parkuru týdne, na psa se aplikace zeptá až při prvním běhu</li><li>USA: plocha ve stopách a bez kontroly podle FCI u pravidel AKC</li><li>Upozornění i polsky a německy</li></ul>'+
+      '<h4>Novinky ve verzi 3.5</h4><ul class="news"><li>Nový začátek: hned 3D průlet parkuru týdne, na psa se aplikace zeptá až při prvním běhu</li><li>USA: plocha ve stopách a bez kontroly podle FCI u pravidel AKC</li><li>Pravidla USA (USDAA) vedle AKC: Starters až Masters i Performance, Standard a Jumpers, SČP podle rozsahů USDAA</li><li>Upozornění i polsky a německy</li></ul>'+
       '<h4>Novinky ve verzi 3.4</h4><ul class="news"><li>Polština a němčina (Více → Nastavení → Jazyk)</li><li>Pravidla USA (AKC): třídy Novice až Master, Standard a JWW, čas podle tabulek AKC, délky v yardech</li><li>Sdílení kódem i s polohou kolbiště pro AR na place a stavbu v terénu</li><li>3D: pohled Za psem šikmo ze strany, pes v tunelu se schová</li><li>AR na place: položení přesně podle dvou rohů kolbiště, doladění o 1° a 25 cm, opravené Položit znovu</li><li>Kompas v AR, Stavbě v terénu a navigaci ke kolbišti počítá s rozdílem mezi magnetickým a zeměpisným severem</li></ul>'+
       '<h4>Novinky ve verzi 3.0</h4><ul class="news"><li>Dnes na Domů: parkur od trenéra, den závodů a plán na týden se zaškrtáváním</li><li>Galerie parkurů: zveřejni parkur přes Sdílet, otevírej a hodnoť parkury ostatních</li><li>Skupiny a trenér: skupina na kód, parkur poslaný skupině se ukáže členům na Domů a jejich běhy se sejdou v žebříčku</li><li>Upozornění na telefonu: parkur od skupiny, zítra závodíš a nový parkur týdne (Více → Nastavení)</li><li>Oslava čistého běhu s obrázkem na sdílení, cesta k postupu v Deníku, Tento týden s čísly a grafem, tlačítka se spodní hranou</li><li>Stavba: přesná poloha a zámek překážky, přichycení po 0,5 m se vzdálenostmi, zrcadlit, otočit a posunout celý parkur, výběr víc překážek, porovnání s jiným parkurem, plánek jako od rozhodčího, export pro závodníka, rozhodčího a stavitele, obrázek do příběhu, sdílení odkazem</li></ul>'+
       '<h4>Novinky ve verzi 2.3</h4><ul class="news"><li>Účet: přihlášení přes Google a automatická synchronizace dat mezi telefonem a počítačem</li><li>AR na place: parkur kamerou na skutečném trávníku (Chrome na Androidu)</li><li>Náhled odkazu pro Facebook</li></ul>'+
@@ -13978,7 +14091,7 @@ function galPubSheet(code){
   if(code&&SH_RING[String(code).toUpperCase()]) code=''; /* kód s polohou kolbiště se nezveřejní nikdy: nový kód ze shareData (bez kolbiště) */
   if(!AUTH){ toast('Zveřejnit může jen přihlášený (Více → Účet).',4000); return; }
   if(S.route.length<2){ toast('Nejdřív vyznač trasu v režimu Trasa.'); return; }
-  var m=curM(), cc=RCC==='UK'?'GB':RCC==='FCI'?'':RCC;
+  var m=curM(), cc=RCC==='UK'?'GB':RCC==='USDAA'?'US':RCC==='FCI'?'':RCC; /* země v galerii: USDAA je také USA */
   openSheet('<h3>Zveřejnit v galerii</h3><p>Parkur uvidí všichni v Parkurech → Galerie, můžou ho otevřít a ohodnotit. Kdykoli ho stáhneš zpět.</p>'+
     '<p class="hint" translate="no">'+esc(S.meta.name)+' · '+esc(S.meta.cls)+' · '+lenU(m.len)+' · '+nPrek(m.n)+'</p>'+
     '<div class="grid2"><label for="gpJudge">Rozhodčí nebo stavitel<input id="gpJudge" type="text" maxlength="80" value="'+esc(S.meta.author||'')+'"></label>'+
@@ -14593,7 +14706,9 @@ function settingsHTML(){
     '<div class="panel set"><b>Pravidla</b><select class="btn" id="rulesSel" aria-label="Pravidla">'+Object.keys(RULES).map(function(k){ return '<option value="'+k+'"'+(k===RCC?' selected':'')+'>'+RULES[k].l+'</option>'; }).join('')+'</select>'+
       '<p class="hint">Třídy, postup do vyšší třídy, maximální čas a závody se řídí pravidly vybrané země. Parkury a kontrola FCI jsou společné.</p></div>'+
     '<div class="panel set"><b>Vzhled</b>'+seg('theme',THEME,[['system','Podle systému'],['light','Světlý'],['dark','Tmavý']],'Vzhled')+'<p class="hint">Tmavý vzhled je šetrnější k očím večer a k baterii telefonu.</p></div>'+
-    '<div class="panel set"><b>Jednotky</b>'+seg('unit',UNIT(),[['m','Metry'],['ft','Stopy (ft, yd/s)'],['yd','Yardy (AKC)']],'Jednotky')+'<p class="hint">Délka trati a vzdálenosti na plánku v metrech, ve stopách, nebo jako u AKC: délka trati v yardech a vzdálenosti ve stopách. Rychlost je u stop a yardů v yardech za sekundu. Parkury se dál ukládají v metrech.</p></div>'+
+    /* yardy jako u americké organizace z pravidel (USDAA také délka v yardech a rychlost v yd/s), jinak jako u AKC */
+    '<div class="panel set"><b>Jednotky</b>'+seg('unit',UNIT(),[['m','Metry'],['ft','Stopy (ft, yd/s)'],['yd',RU.usdaa?'Yardy (USDAA)':'Yardy (AKC)']],'Jednotky')+'<p class="hint">'+(RU.usdaa?'Délka trati a vzdálenosti na plánku v metrech, ve stopách, nebo jako u USDAA: délka trati v yardech a vzdálenosti ve stopách. Rychlost je u stop a yardů v yardech za sekundu. Parkury se dál ukládají v metrech.'
+      :'Délka trati a vzdálenosti na plánku v metrech, ve stopách, nebo jako u AKC: délka trati v yardech a vzdálenosti ve stopách. Rychlost je u stop a yardů v yardech za sekundu. Parkury se dál ukládají v metrech.')+'</p></div>'+
     pushSetHTML()+
     '<div class="panel set"><b>Průvodce</b><p class="hint">Krátké představení aplikace a nastavení psa.</p><div class="row"><button class="btn" data-onb="1">Spustit průvodce</button></div></div>';
 }
@@ -14769,7 +14884,7 @@ function onbRender(){
     var nm=(ONB.name!=null?ONB.name:d.name).trim();
     h+='<div class="onb-hero" id="oPrev"></div><h1'+(nm?' translate="no">'+esc(nm):'>Tvůj pes')+'</h1><p class="lead">Podle velikosti a třídy aplikace nastaví výšky překážek, čas SČP a povede statistiky zvlášť pro každého psa.</p>'+
       '<div><div class="dlooks" id="oLooks" role="group" aria-label="Obrázek psa"></div><p class="hint">Fotka zůstane jen v tomhle telefonu.</p></div><input id="oPic" type="file" accept="image/*" hidden>'+
-      '<div class="grid2"><label for="oSize">'+(RU.us?'Výška skoku':'Velikost')+'<select id="oSize">'+Object.keys(RU.us?RU.heights:SIZES).map(function(k){return '<option value="'+k+'"'+(k===d.size?' selected':'')+'>'+(RU.us?RU.heights:SIZES)[k].l+'</option>';}).join('')+'</select></label>'+
+      '<div class="grid2"><label for="oSize">'+(RU.akc?'Výška skoku':'Velikost')+'<select id="oSize">'+Object.keys(RU.us?RU.heights:SIZES).map(function(k){return '<option value="'+k+'"'+(k===d.size?' selected':'')+'>'+(RU.us?RU.heights:SIZES)[k].l+'</option>';}).join('')+'</select></label>'+
       '<label for="oCls">Třída<select id="oCls">'+clsOpts(d.cls)+'</select></label></div>';
     h+='</div><div class="onb-foot"><button class="btn" data-o="back">Zpět</button><button class="btn primary" data-o="dog">'+(dm?'Hotovo':'Pokračovat')+'</button></div>';
   } else {
