@@ -6520,7 +6520,8 @@ function startFinish(c,judge){
     return '<g class="sf"><line x1="'+r(x-nx*k)+'" y1="'+r(y-ny*k)+'" x2="'+r(x+nx*k)+'" y2="'+r(y+ny*k)+'" stroke="'+c2+'" stroke-width="'+(judge?'.16':'.12')+'" stroke-dasharray=".25 .15"/>'+
       '<text x="'+r(x)+'" y="'+r(y-.55)+'" font-size=".62" font-weight="700" text-anchor="middle" fill="'+c2+'" stroke="var(--field)" stroke-width=".22" paint-order="stroke">'+(judge?t.toUpperCase():t)+'</text></g>'; }
   var da=a.dir||{x:1,y:0}, db=b.dx||b.dir||da, la=Math.hypot(da.x,da.y)||1, lb=Math.hypot(db.x,db.y)||1;
-  return mark(a.en,{x:-da.x/la*2,y:-da.y/la*2},'Start',judge?'#1a9d4b':null)+mark(b.ex,{x:db.x/lb*2,y:db.y/lb*2},'Cíl',judge?'#d12f2f':null);
+  /* T(): text v SVG plánku (ani v exportu) překlad stránky nepřeloží, anglicky zůstával „Cíl“ */
+  return mark(a.en,{x:-da.x/la*2,y:-da.y/la*2},T('Start'),judge?'#1a9d4b':null)+mark(b.ex,{x:db.x/lb*2,y:db.y/lb*2},T('Cíl'),judge?'#d12f2f':null);
 }
 function sideChanges(){
   var out=[], sd=S.sides||[];
