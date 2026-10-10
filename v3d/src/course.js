@@ -2,10 +2,12 @@
    mountCourse(canvas, spec, opts) → {length, render(d, view), resize(), dispose(), tier, at(d), pose(d) (bez kreslení), scene, hand (psovod nebo null)}
    spec = { W, H, size: {jump, tire, lj, ljn} (m),
             obs: [{type, x, y, rot (°), nums: [1, 5], tunnel: [[x, y], ...]}],   // souřadnice plánu: y dolů = z v 3D
+            signs: [{t: '3·9', x, y, dx, dy}],   // čísla agility na stejném místě jako v Plánu (dx, dy = směr nájezdu); bez nich vlevo před vstupem
             path: [[x, y, h, idx], ...],   // dráha psa (h = výška nad zemí na zónových překážkách, idx = pořadí překážky)
             seesaw: [{x, y, rot, idx, sign}], jumps: [[x, y, h]] }
    view: 'orbit' (volná kamera, táhnutí otáčí, dva prsty/kolečko přibližují) | 'chase' (za psem) | 'dog' (očima psa) | 'top' (shora)
-   Hoopers: typy hoop, barrel, gate, chute a ha (prostor psovoda); s prostorem psovoda v něm stojí psovod a otáčí se za psem. */
+   Hoopers: typy hoop, barrel, gate, chute a ha (prostor psovoda); s prostorem psovoda v něm stojí psovod a otáčí se za psem.
+   buildCourse(…, {ar: true}) přidá sloupky v rozích kolbiště a na startu (podle nich se parkur v AR srovná se skutečným kolbištěm). */
 import * as THREE from 'three';
 import { makeDog, poseDog } from './dog.js';
 import { makeHandler, poseHandler } from './handler.js';
@@ -15,8 +17,49 @@ import * as ob from './obstacles.js';
 const DOG_STRIDE = 1.35, DOG_MS = 4.5;   // DOG_MS: rychlost průletu v aplikaci (m/s při 1×)
 const HOOPT = { hoop: 1, barrel: 1, gate: 1, chute: 1, ha: 1 };
 
+/* plochý pruh na zemi podél lomené čáry pts [[x, z], ...] (obrysy překážek v půdorysu): kvádříky 4 mm vysoké, přesahují se v rozích */
+function strip(pts, w, closed, m, y = .012) {
+  const g = new THREE.Group(), n = pts.length;
+  for (let i = 0; i < (closed ? n : n - 1); i++) {
+    const a = pts[i], b = pts[(i + 1) % n], dx = b[0] - a[0], dz = b[1] - a[1], l = Math.hypot(dx, dz);
+    if (l < 1e-4) continue;
+    const s = new THREE.Mesh(new THREE.BoxGeometry(l + w, .004, w), m);
+    s.position.set((a[0] + b[0]) / 2, y, (a[1] + b[1]) / 2); s.rotation.y = -Math.atan2(dz, dx); g.add(s);
+  }
+  return g;
+}
+/* obdélník sítí skupiny g v jejích vlastních souřadnicích (pes bere překážku ve směru osy x) */
+function localBox(g) {
+  g.updateMatrixWorld(true);
+  const inv = g.matrixWorld.clone().invert(), b = new THREE.Box3(), t = new THREE.Box3(), m = new THREE.Matrix4();
+  g.traverse(o => { if (!o.isMesh || !o.geometry) return; if (!o.geometry.boundingBox) o.geometry.computeBoundingBox(); t.copy(o.geometry.boundingBox).applyMatrix4(m.multiplyMatrices(inv, o.matrixWorld)); b.union(t); });
+  return b;
+}
+/* půdorys překážky: bílý obrys na zemi, laťka napříč, tyčky slalomu, žluté hranice zón; tunel dvěma čarami podél oblouku */
+function footprint(g, o, wm, zm) {
+  const f = new THREE.Group(), w = .05;
+  if (o.type === 'tunnel') {
+    const { curve, r, length } = g.userData, n = Math.max(4, Math.ceil(length / .25)), L = [], R = [];
+    for (let k = 0; k <= n; k++) { const p = curve.getPointAt(k / n), t = curve.getTangentAt(k / n), l = Math.hypot(t.x, t.z) || 1, nx = -t.z / l, nz = t.x / l; L.push([p.x + nx * r, p.z + nz * r]); R.push([p.x - nx * r, p.z - nz * r]); }
+    f.add(strip(L, w, false, wm), strip(R, w, false, wm), strip([L[0], R[0]], w, false, wm), strip([L[n], R[n]], w, false, wm));
+    return f;
+  }
+  const b = localBox(g), x0 = b.min.x, x1 = b.max.x, z0 = b.min.z, z1 = b.max.z;
+  if (!isFinite(x0)) return f;
+  f.add(strip([[x0, z0], [x1, z0], [x1, z1], [x0, z1]], w, true, wm));
+  const across = x => f.add(strip([[x, z0], [x, z1]], w, false, wm)), zone = x => f.add(strip([[x, z0], [x, z1]], w, false, zm));
+  const u = g.userData || {};
+  if (o.type === 'jump' || o.type === 'tire') { across(0); if (o.type === 'jump' && o.v === 'oxer') across(.35); }
+  else if (o.type === 'weave') for (let k = 0; k < 12; k++) f.add(strip([[-3.3 + k * .6, -.15], [-3.3 + k * .6, .15]], .04, false, wm));
+  else if (o.type === 'aframe' && u.half) [-1, 1].forEach(s => zone(s * (u.half - u.zone)));
+  else if (o.type === 'dogwalk' && u.total) [-1, 1].forEach(s => zone(s * (u.total - u.zone)));
+  else if (o.type === 'seesaw' && u.L) [-1, 1].forEach(s => zone(s * (u.L / 2 - .9)));
+  f.position.copy(g.position); f.rotation.copy(g.rotation);
+  return f;
+}
+
 /* plocha, překážky, trasa a pes do skupiny parent (sdílí 3D v aplikaci i AR na place) */
-export function buildCourse(scene, spec, Q) {
+export function buildCourse(scene, spec, Q, opts = {}) {
   const W = spec.W, H = spec.H, size = spec.size || {};
 
   /* kolbiště: světlejší tráva, bílé lajny po obvodu, značky po 5 m */
@@ -32,7 +75,7 @@ export function buildCourse(scene, spec, Q) {
   scene.add(ring);
 
   /* překážky */
-  const saws = [], tubes = [];
+  const saws = [], tubes = [], obsG = [], useSigns = Array.isArray(spec.signs);
   (spec.obs || []).forEach(o => {
     const a = o.rot * Math.PI / 180, fx = Math.cos(a), fz = Math.sin(a);
     let g = null;
@@ -58,8 +101,9 @@ export function buildCourse(scene, spec, Q) {
       g.position.set(o.x, 0, o.y); g.rotation.y = -a; scene.add(g);
     }
     g.name = o.type;   /* testy hledají překážky podle druhu */
-    /* číslo: cedulka vlevo před vstupem do překážky (Hoopers níž, až je známá dráha psa) */
-    if (o.nums && o.nums.length && !HOOPT[o.type]) {
+    obsG.push({ g, o });
+    /* číslo: cedulka vlevo před vstupem do překážky (Hoopers níž, až je známá dráha psa; s spec.signs jako v Plánu) */
+    if (o.nums && o.nums.length && !HOOPT[o.type] && !useSigns) {
       const hl = o.type === 'tunnel' ? 0 : ({ weave: 3.3, aframe: 2.1, dogwalk: 5.4, seesaw: 1.85 })[o.type] || 0;
       const sx = -fz, sz = fx, back = hl + .6, side = o.type === 'jump' ? 1.15 : o.type === 'tire' || o.type === 'longjump' ? 1.05 : .75;
       let px = o.x - fx * back + sx * side, pz = o.y - fz * back + sz * side;
@@ -67,6 +111,13 @@ export function buildCourse(scene, spec, Q) {
       const s = ob.numSign(o.nums.join('·')); s.scale.setScalar(o.nums.length > 1 ? 1.6 : 1.4);
       s.position.set(px, 0, pz); s.rotation.y = -a + Math.PI / 2; scene.add(s);
     }
+  });
+
+  /* čísla agility na straně nájezdu jako v Plánu (3.5.3: dřív vždy vlevo před vstupem podle natočení překážky, i když ji pes bral
+     z druhé strany; „Číslo na druhou stranu“ se do 3D a AR nepromítlo); cedulka čelem proti nájezdu psa */
+  if (useSigns) spec.signs.forEach(q => {
+    const s = ob.numSign(q.t); s.scale.setScalar(String(q.t).length > 2 ? 1.6 : 1.4);
+    s.position.set(q.x, 0, q.y); s.rotation.y = Math.atan2(q.dx == null ? 1 : q.dx, q.dy == null ? 0 : q.dy); s.name = 'sign'; scene.add(s);
   });
 
   /* dráha psa */
@@ -164,7 +215,29 @@ export function buildCourse(scene, spec, Q) {
     }
     return p;
   }
-  return { length, at, pose, dog, hand, start: P.length ? { x: P[0].x, z: P[0].z } : { x: W / 2, z: H / 2 } };
+  const start = P.length ? { x: P[0].x, z: P[0].z } : { x: W / 2, z: H / 2 };
+
+  /* AR: sloupky 1,2 m v rozích kolbiště (bílé s oranžovou hlavičkou) a na startu (zelená hlavička), vidět jsou i zdálky a přes překážky */
+  let posts = null;
+  if (opts.ar) {
+    posts = new THREE.Group(); const pm = M('#ffffff', .5), om = M('#ff8a3d', .5), gm = M('#5fb487', .5), pg = new THREE.CylinderGeometry(.02, .02, 1.2, 8), kg = new THREE.SphereGeometry(.06, 12, 8);
+    [[0, 0, om], [W, 0, om], [0, H, om], [W, H, om], [start.x, start.z, gm]].forEach(([x, z, m]) => {
+      const p = new THREE.Mesh(pg, pm); p.position.set(x, .6, z); posts.add(p);
+      const k = new THREE.Mesh(kg, m); k.position.set(x, 1.22, z); posts.add(k);
+    });
+    posts.name = 'posts'; scene.add(posts);
+  }
+  /* půdorys: místo překážek obrysy na zemi (čísla, trasa a pes zůstávají); obrysy se vyrobí až při prvním zapnutí */
+  let feet = null;
+  function foot(on) {
+    if (on && !feet) {
+      feet = new THREE.Group(); feet.name = 'feet'; const wm = new THREE.MeshBasicMaterial({ color: '#ffffff' }), zm = new THREE.MeshBasicMaterial({ color: '#f2c230' });
+      obsG.forEach(({ g, o }) => feet.add(footprint(g, o, wm, zm))); scene.add(feet);
+    }
+    obsG.forEach(({ g }) => { g.visible = !on; }); if (feet) feet.visible = !!on;
+    return feet;
+  }
+  return { length, at, pose, dog, hand, start, turf, posts, foot, obstacles: obsG.map(e => e.g) };
 }
 
 /* dráha psovoda v prostoru psovoda: krok ke psovi (střed těla nejvýš 0,4 m od středu čtverce 2 × 2 m, chodidla zůstanou uvnitř),

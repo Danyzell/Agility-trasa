@@ -115,7 +115,16 @@ module.exports = async function ({ browser, base }) {
       const my = A.modelYaw({ x: 0, z: -1 }), mx = A.rot(1, 0, my), mz = A.rot(0, 1, my);
       const ay = A.azYaw({ x: 0, z: -1 }, 90, 0), ax = A.rot(1, 0, ay);
       const n1 = A.nudge({ x: 0, z: -1 }, 1, 0, .25), n2 = A.nudge({ x: 0, z: -1 }, 0, 1, .25);
-      return { yaw, c0, c1, c2, mx, mz, ax, n1, n2 };
+      /* 3.5.3 podle dvou překážek: plán posunutý a otočený o 0,7 rad; po položení musí překážka B ležet na zaměřeném bodě B */
+      const y0 = .7, wp = p => { const r = A.rot(p.x, p.z, y0); return { x: 3 + r.x, z: -2 + r.z }; }, va = { x: 5, z: 4 }, vb = { x: 25, z: 14 }, PA = wp(va), PB = wp(vb);
+      const py = A.pairYaw(PA, PB, va, vb), s0 = { x: 2, z: 10 }, pr = A.rootAt({ x: PA.x, y: 0, z: PA.z }, { x: va.x - s0.x, z: va.z - s0.z }, py, 1);
+      const B2 = (() => { const r = A.rot(vb.x - s0.x, vb.z - s0.z, py); return { x: pr.x + r.x, z: pr.z + r.z }; })();
+      const J = (type, x, y, nums) => ({ type, x, y, rot: 0, nums });
+      const pk = A.pickPair([J('tunnel', 2, 2, [1]), J('jump', 5, 5, [2]), J('jump', 8, 5, [3]), J('weave', 20, 15, [4]), J('jump', 35, 5, [5, 9]), J('jump', 30, 6, [6]), J('aframe', 38, 18, [7])]);
+      const pk2 = A.pickPair([J('aframe', 5, 5, [1]), J('dogwalk', 20, 10, [2]), J('tunnel', 30, 5, [3])]), pk3 = A.pickPair([J('jump', 5, 5, [1]), J('tunnel', 30, 5, [2])]);
+      /* od startu: překážka 1 od startu míří od telefonu (směr pohledu po zemi) */
+      const aw = A.awayYaw({ x: .6, z: -.8 }, { x: 0, z: 5 }), awv = A.rot(0, 1, aw);
+      return { yaw, c0, c1, c2, mx, mz, ax, n1, n2, py: py - y0, B2, PB, pk: pk && [pk.na, pk.nb, Math.round(pk.d)], pk2: pk2 && [pk2.na, pk2.nb], pk3, awv };
     }));
     const near = (p, x, z) => Math.abs(p.x - x) < 1e-9 && Math.abs(p.z - z) < 1e-9;
     ok(Math.abs(m.yaw - .5) < 1e-9 && near(m.c0, 1, 2) && near(m.c1, 1 + 40 * Math.cos(.5), 2 - 40 * Math.sin(.5)), 'rohy plánu neleží na zaměřených rozích: ' + JSON.stringify(m));
@@ -123,19 +132,51 @@ module.exports = async function ({ browser, base }) {
     ok(near(m.mx, 1, 0) && near(m.mz, 0, 1), 'model na stole není jako mapa (x doprava, y k telefonu): ' + JSON.stringify(m));
     ok(near(m.ax, 1, 0), 'kolbiště na východ při pohledu na sever nemíří doprava: ' + JSON.stringify(m));
     ok(near(m.n1, .25, 0) && near(m.n2, 0, -.25), 'posun vůči telefonu: ' + JSON.stringify(m));
+    ok(Math.abs(m.py) < 1e-9 && near(m.B2, m.PB.x, m.PB.z), 'podle dvou překážek neleží druhá překážka na zaměřeném bodě: ' + JSON.stringify(m));
+    ok(JSON.stringify(m.pk) === '[2,5,30]' && JSON.stringify(m.pk2) === '[1,2]' && m.pk3 === null, 'výběr dvou překážek (bez tunelu, co nejdál a co nejdřív na trase): ' + JSON.stringify([m.pk, m.pk2, m.pk3]));
+    ok(near(m.awv, .6, -.8), 'od startu: překážka 1 nemíří od telefonu: ' + JSON.stringify(m.awv));
     /* ovládání v aplikaci s podstrčeným AR: tlačítka volají api, nápovědy a doladění */
     await ev(() => {
       window.__ar = { calls: [], placed: false };
       const api = { replace() { __ar.calls.push('replace'); }, corners() { __ar.calls.push('corners'); return true; }, rotate(d) { __ar.calls.push('rot' + d); },
+        pair() { __ar.calls.push('pair'); return true; }, gps(u) { __ar.calls.push('gps'); __ar.u = u; return true; }, foot(on) { __ar.calls.push('foot' + on); return on; },
         nudge(x, z) { __ar.calls.push('mv' + x + ',' + z); }, setScale(md) { __ar.calls.push('scale' + md); }, play() { return true; },
         end() { __ar.calls.push('end'); __ar.cb.onEnd(); }, get placed() { return __ar.placed; }, get length() { return 10; } };
       ringsPut([{ id: 'ra', name: 'K', lat: 50.08, lng: 14.42, acc: 3, az: 100, azErr: 2, azT: 1, W: 40, H: 20, cid: S.meta.id, at: 1 }]);
       return v3dLoad().then(M => { V3D.m = Object.assign({}, M, { startAR(ui, sp, cb) { __ar.sp = sp; __ar.cb = cb; return Promise.resolve(api); } }); AR.ql = false; });
     });
     await ev(() => arStart()); await page.waitForTimeout(100);
-    const s0 = await ev(() => ({ ui: !$('arUi').hidden, hint: $('arHint').textContent, az: __ar.sp.az, mag: ringAzMag(ringFor(S.meta.id)), fine: $('arFine').hidden, cor: !$('arUi').querySelector('[data-ar="corners"]').hidden }));
-    ok(s0.ui && /zelený kroužek/.test(s0.hint) && Math.abs(s0.az - s0.mag) < 1e-9 && s0.az < 96 && s0.az > 94 && s0.fine && s0.cor, 'start AR: ' + JSON.stringify(s0));
-    for (const sel of ['[data-ar="place"]', '[data-ar="corners"]']) await page.click('#arUi ' + sel);
+    const vis = a => '!' + a + ':' + !$('arUi').querySelector('[data-ar="' + a + '"]').hidden;
+    const s0 = await ev(() => ({ ui: !$('arUi').hidden, hint: $('arHint').textContent, az: __ar.sp.az, mag: ringAzMag(ringFor(S.meta.id)), fine: $('arFine').hidden, cor: !$('arUi').querySelector('[data-ar="corners"]').hidden,
+      pair: !$('arUi').querySelector('[data-ar="pair"]').hidden, gps: !$('arUi').querySelector('[data-ar="gps"]').hidden, foot: $('arUi').querySelector('[data-ar="foot"]').getAttribute('aria-pressed'), signs: (__ar.sp.signs || []).length }));
+    ok(s0.ui && /zelený kroužek/.test(s0.hint) && Math.abs(s0.az - s0.mag) < 1e-9 && s0.az < 96 && s0.az > 94 && s0.fine && s0.cor && s0.pair && s0.gps && s0.foot === 'false' && s0.signs > 3, 'start AR: ' + JSON.stringify(s0));
+    for (const sel of ['[data-ar="place"]', '[data-ar="corners"]', '[data-ar="pair"]']) await page.click('#arUi ' + sel);
+    /* Podle GPS: bez polohy hláška z AR (gps(null)), s polohou souřadnice telefonu v plánu (střed kolbiště = střed plochy,
+       osa x plánu na kurzu kolbiště 100°): 10 m na kurzu 100° od středu = 10 m doprava, 5 m na kurzu 190° = 5 m dolů */
+    await page.click('#arUi [data-ar="gps"]');
+    const g0 = await ev(() => ({ c: __ar.calls[__ar.calls.length - 1], u: __ar.u }));
+    await ev(() => { const g = ringFor(S.meta.id), p = geoMove(geoMove(g, 100, 10), 190, 5); AR.geo = AR.geo || { id: null, sm: [] }; AR.geo.sm = [{ lat: p.lat, lng: p.lng, acc: 4, t: Date.now() }]; });
+    await page.click('#arUi [data-ar="gps"]');
+    const g1 = await ev(() => ({ u: __ar.u, W: S.W, H: S.H }));
+    ok(g0.c === 'gps' && g0.u === null && g1.u && Math.abs(g1.u.x - (g1.W / 2 + 10)) < .05 && Math.abs(g1.u.y - (g1.H / 2 + 5)) < .05 && g1.u.acc === 4, 'Podle GPS (Android): ' + JSON.stringify([g0, g1]));
+    /* daleko od kolbiště se nepokládá, jen hláška */
+    await ev(() => { const g = ringFor(S.meta.id), p = geoMove(g, 0, 2000); AR.geo.sm = [{ lat: p.lat, lng: p.lng, acc: 4, t: Date.now() }]; __ar.calls.length = 0; $('toast').hidden = true; });
+    await page.click('#arUi [data-ar="gps"]');
+    const g2 = await ev(() => ({ calls: __ar.calls.join(' '), t: $('toast').textContent }));
+    ok(g2.calls === '' && /^Kolbiště je 2(,0)? km od tebe/.test(g2.t), 'GPS daleko od kolbiště: ' + JSON.stringify(g2));
+    await ev(() => { __ar.calls.length = 0; __ar.calls.push('replace', 'corners', 'pair'); });
+    /* půdorys: přepínač s aria-pressed */
+    await page.click('#arUi [data-ar="foot"]');
+    const f1 = await ev(() => ({ p: $('arUi').querySelector('[data-ar="foot"]').getAttribute('aria-pressed'), c: __ar.calls.slice(-1)[0] }));
+    await page.click('#arUi [data-ar="foot"]');
+    ok(f1.p === 'true' && f1.c === 'foottrue' && await ev(() => $('arUi').querySelector('[data-ar="foot"]').getAttribute('aria-pressed') === 'false' && __ar.calls.slice(-1)[0] === 'footfalse'), 'přepínač Půdorys: ' + JSON.stringify(f1));
+    await ev(() => { __ar.calls.length = 0; __ar.calls.push('replace', 'corners'); });
+    /* nápovědy podle dvou překážek a GPS */
+    const ph = await ev(() => { const o = []; __ar.cb.onState('pairA', { a: 1, b: 7 }); o.push($('arHint').textContent); __ar.cb.onState('pairB', { a: 1, b: 7 }); o.push($('arHint').textContent);
+      __ar.cb.onState('placedPair', { a: 1, b: 7, d: 21.4, w: 22 }); o.push($('arHint').textContent); __ar.cb.onState('placedPairOff', { a: 1, b: 7, d: 15, w: 22 }); o.push($('arHint').textContent);
+      __ar.cb.onState('placedGps', { acc: 4 }); o.push($('arHint').textContent); __ar.cb.onState('lost'); o.push($('arHint').textContent); __ar.cb.onState('scan'); return o; });
+    ok(ph[0] === 'Dojdi k překážce 1 a zamiř zelený kroužek na zem pod její střed. Pak klepni.' && /^Teď dojdi k překážce 7,/.test(ph[1]) && ph[2] === 'Parkur stojí podle překážek 1 a 7. Na place jsou od sebe 21,4 m, na plánu 22 m.' &&
+      /^Překážky 1 a 7 jsou od sebe 15 m, ale na plánu 22 m\./.test(ph[3]) && /^Parkur stojí podle GPS \(± 4 m\)/.test(ph[4]) && /ztratil přehled/.test(ph[5]), 'nápovědy AR 3.5.3: ' + JSON.stringify(ph));
     await page.click('#arUi [data-ar="fine"]');
     const s1 = await ev(() => ({ fine: $('arFine').hidden, on: $('arUi').querySelector('[data-ar="fine"]').classList.contains('on'), ex: $('arUi').querySelector('[data-ar="fine"]').getAttribute('aria-expanded') }));
     ok(s1.fine && s1.on && s1.ex === 'true', 'doladění před položením nemá být vidět: ' + JSON.stringify(s1));
@@ -144,9 +185,10 @@ module.exports = async function ({ browser, base }) {
     ok(!s2.fine && s2.hint === 'Parkur stojí podle rohů kolbiště. Rohy jsou od sebe 38,6 m, na plánu 40 m.', 'po položení podle rohů: ' + JSON.stringify(s2));
     const btns = await page.$$('#arFine button'); for (const b of btns) await b.click();
     await page.click('#arUi [data-ar="model"]');
-    const s3 = await ev(() => ({ cor: $('arUi').querySelector('[data-ar="corners"]').hidden, calls: __ar.calls.slice() }));
-    ok(s3.cor && s3.calls.join(' ') === 'replace corners rot15 rot1 rot-1 rot-15 mv-1,0 mv0,1 mv0,-1 mv1,0 scaletrue', 'tlačítka AR: ' + JSON.stringify(s3));
+    const s3 = await ev(() => ({ cor: $('arUi').querySelector('[data-ar="corners"]').hidden, pair: $('arUi').querySelector('[data-ar="pair"]').hidden, gps: $('arUi').querySelector('[data-ar="gps"]').hidden, calls: __ar.calls.slice() }));
+    ok(s3.cor && s3.pair && s3.gps && s3.calls.join(' ') === 'replace corners rot15 rot1 rot-1 rot-15 mv-1,0 mv0,1 mv0,-1 mv1,0 scaletrue', 'tlačítka AR: ' + JSON.stringify(s3));
     await page.click('#arUi [data-ar="real"]');
+    ok(await ev(() => !$('arUi').querySelector('[data-ar="pair"]').hidden && !$('arUi').querySelector('[data-ar="gps"]').hidden), 'po návratu na 1 : 1 chybí Podle překážek nebo Podle GPS');
     await ev(() => { __ar.cb.onState('placedCornersOff', { d: 30.25, w: 40 }); });
     const s4 = await ev(() => ({ cor: $('arUi').querySelector('[data-ar="corners"]').hidden, hint: $('arHint').textContent }));
     ok(!s4.cor && /^Rohy jsou od sebe 30,3 m, ale plán má 40 m\./.test(s4.hint), 'nesedící rohy: ' + JSON.stringify(s4));
@@ -159,9 +201,11 @@ module.exports = async function ({ browser, base }) {
     ok(s6.real && !s6.model && s6.cor && !s6.fine, 'druhé AR zdědilo model nebo doladění: ' + JSON.stringify(s6));
     await ev(() => AR.api.end());
     /* angličtina nových textů */
-    const miss = await ev(() => ['Podle rohů', 'Doladit', 'Doladit polohu', 'Otočit doleva o 15°', 'Otočit doprava o 1°', 'Posunout dál o 25 cm', 'Posunout blíž o 25 cm', 'Posunout doleva o 25 cm', 'Posunout doprava o 25 cm',
-      'Parkur stojí podle rohů kolbiště. Rohy jsou od sebe 38,6 m, na plánu 40 m.', 'Rohy jsou od sebe 30,3 m, ale plán má 40 m. Zkontroluj rohy a zkus to znovu „Podle rohů“, nebo dorovnej v „Doladit“.']
-      .concat(Object.keys(AR_TXT).map(k => AR_TXT[k])).filter(t => trLookup(t) == null));
+    const miss = await ev(ph => ['Podle rohů', 'Doladit', 'Doladit polohu', 'Otočit doleva o 15°', 'Otočit doprava o 1°', 'Posunout dál o 25 cm', 'Posunout blíž o 25 cm', 'Posunout doleva o 25 cm', 'Posunout doprava o 25 cm',
+      'Parkur stojí podle rohů kolbiště. Rohy jsou od sebe 38,6 m, na plánu 40 m.', 'Rohy jsou od sebe 30,3 m, ale plán má 40 m. Zkontroluj rohy a zkus to znovu „Podle rohů“, nebo dorovnej v „Doladit“.',
+      'Půdorys', 'Místo překážek jen jejich obrysy na zemi', 'Položit parkur', 'Podle překážek', 'Podle GPS', 'Aktualizovat', 'Kolbiště je 2 km od tebe. Podle GPS jde parkur položit jen na kolbišti nebo u něj.',
+      'Kolbiště je 350 m od tebe. Podle GPS jde parkur položit jen na kolbišti nebo u něj.', 'Překážky jsou moc blízko u sebe. Dojdi k překážce 7 a klepni pod její střed.']
+      .concat(ph).concat(Object.keys(AR_TXT).map(k => AR_TXT[k])).filter(t => trLookup(t) == null), ph);
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
   });
 
@@ -175,10 +219,28 @@ module.exports = async function ({ browser, base }) {
     const o = await ev(() => v3dLoad().then(m => { V3D.m = m; build3d(); const sp = course3dSpec(), f = m.quickLookScene(sp), t = m.quickLookScene(sp, { model: true }), p0 = sp.path[0];
       return m.quickLookBlob(sp, { model: true }).then(b => ({ fx: f.g.position.x, fz: f.g.position.z, fk: f.root.scale.x, sx: p0[0], sz: p0[1], tx: t.g.position.x, tz: t.g.position.z, tk: t.root.scale.x, W: sp.W, H: sp.H, tb: b.size > 20000 && b.type === 'model/vnd.usdz+zip' })); }));
     ok(Math.abs(o.fx + o.sx) < 1e-6 && Math.abs(o.fz + o.sz) < 1e-6 && o.fk === 1 && Math.abs(o.tx + o.W / 2) < 1e-6 && Math.abs(o.tz + o.H / 2) < 1e-6 && Math.abs(o.tk - 1 / 20) < 1e-9 && o.tb, 'počátek a velikost modelu pro iPhone: ' + JSON.stringify(o));
+    /* 3.5.3 (týž uživatel: „start vpravo a špatně natočené“, zelená plocha zakrývala zem): Quick Look staví model čelem k telefonu
+       (osa −z od telefonu). Od startu: překážka 1 od startu přímo od telefonu. Na place bez trávy, se sloupky; na stůl s trávou.
+       Podle GPS: telefon 2 m za počátkem, osa x plánu na kurzu kolbiště. Půdorys: obrysy místo překážek. Tečky trasy jako jedna síť. */
+    const q3 = await ev(() => v3dLoad().then(m => {
+      build3d(); const sp = course3dSpec(), A = m.arMath, o1 = sp.obs.find(q => q.nums.indexOf(1) >= 0);
+      const turf = sc => { let n = 0; sc.traverse(q => { if (q.isMesh && q.material && q.material.color && q.material.color.getHexString() === '7fb35a') n++; }); return n; };
+      const f = m.quickLookScene(sp), t = m.quickLookScene(sp, { model: true }), w1 = A.rot(o1.x - f.origin.x, o1.y - f.origin.z, f.yaw);
+      const G = { x: 12, y: 6, h: 30, az: 100, ahead: 2 }, g = m.quickLookScene(sp, { gps: G }), me = A.rot(G.x - g.origin.x, G.y - g.origin.z, g.yaw), ax = A.rot(1, 0, g.yaw);
+      const ft = m.quickLookScene(sp, { foot: true }), fe = ft.scene.getObjectByName('feet');
+      let inst = 0, dots = 0; f.scene.traverse(q => { if (q.isInstancedMesh) inst++; if (q.isMesh && q.material && q.material.color && q.material.color.getHexString() === 'f2c230' && q.material.transparent && q.geometry.attributes.position.count > 100) dots++; });
+      return { w1, turfF: turf(f.scene), turfT: turf(t.scene), postsF: !!f.scene.getObjectByName('posts'), postsT: !!t.scene.getObjectByName('posts'), tYaw: t.yaw, me, ax,
+        jumpF: !!ft.scene.getObjectByName('jump'), jump: !!f.scene.getObjectByName('jump'), feet: fe ? fe.children.length : 0, nObs: sp.obs.length, inst, dots };
+    }));
+    ok(Math.abs(q3.w1.x) < 1e-6 && q3.w1.z < -1, 'od startu: překážka 1 není od startu směrem od telefonu: ' + JSON.stringify(q3.w1));
+    ok(q3.turfF === 0 && q3.turfT === 1 && q3.postsF && !q3.postsT && q3.tYaw === 0, 'na place bez trávy a se sloupky, na stůl s trávou: ' + JSON.stringify(q3));
+    ok(Math.abs(q3.me.x) < 1e-6 && Math.abs(q3.me.z - 2) < 1e-6 && Math.abs(q3.ax.x - Math.sin(70 * Math.PI / 180)) < 1e-6 && Math.abs(q3.ax.z + Math.cos(70 * Math.PI / 180)) < 1e-6, 'podle GPS: telefon 2 m za počátkem a osa x plánu na kurzu kolbiště: ' + JSON.stringify(q3));
+    ok(!q3.jumpF && q3.jump && q3.feet === q3.nObs, 'půdorys: obrysy místo překážek: ' + JSON.stringify(q3));
+    ok(q3.inst === 0 && q3.dots === 1, 'tečky trasy v modelu pro iPhone (jedna síť bez instancí): ' + JSON.stringify(q3));
     /* před spuštěním volba, odkaz pro Quick Look: na place bez zmenšování prsty, model na stůl se zmenšováním */
     await ev(() => { window.__qlh = []; window.__qlc = HTMLAnchorElement.prototype.click;
       HTMLAnchorElement.prototype.click = function () { if (this.rel === 'ar') { window.__qlh.push(this.getAttribute('href').replace(/^blob:[^#]*/, 'blob')); return; } return window.__qlc.call(this); };
-      AR.ql = true; arStart(); });
+      ringsPut([]); AR.ql = true; arStart(); });
     await page.waitForTimeout(150);
     const q = await ev(() => ({ h: ($('sheet').querySelector('h3') || {}).textContent, o: [...document.querySelectorAll('#sheet [data-ql]')].map(b => b.getAttribute('data-ql')).join() }));
     ok(q.h === 'AR na iPhonu' && q.o === 'field,model', 'volba před AR na iPhonu: ' + JSON.stringify(q));
@@ -186,13 +248,78 @@ module.exports = async function ({ browser, base }) {
     await page.waitForFunction(() => window.__qlh.length >= 1 && !AR.busy, null, { timeout: 20000 });
     await ev(() => { arStart(); document.querySelector('#sheet [data-ql="model"]').click(); });
     await page.waitForFunction(() => window.__qlh.length >= 2, null, { timeout: 20000 });
-    const hs = await ev(() => { HTMLAnchorElement.prototype.click = window.__qlc; AR.ql = false; return window.__qlh; });
+    const hs = await ev(() => window.__qlh.slice());
     ok(JSON.stringify(hs) === JSON.stringify(['blob#allowsContentScaling=0', 'blob#allowsContentScaling=1']), 'odkazy pro Quick Look (na place bez zmenšování): ' + JSON.stringify(hs));
-    const miss = await ev(l => l.filter(t => { const v = trLookup(t); return v == null || /[ěščřžýáíéůúňťď]/.test(v); }), ['AR na iPhonu', 'Na place – skutečná velikost',
-      'Postav se na start parkuru a miř telefonem na zem: start bude tam, kam míříš. Jedním prstem parkur posuneš, dvěma natočíš. Velikost zůstane 1 : 1.',
-      'Zmenšený parkur 1 : 20, prsty ho zvětšíš, zmenšíš i natočíš.', 'Přesné položení podle rohů kolbiště umí jen Android s Chromem. iPhone používá AR od Applu.',
-      'AR na iPhonu: na place ve skutečné velikosti se startem tam, kam míříš, nebo model na stůl']);
+    /* s kolbištěm se zaměřeným natočením je první volba Podle GPS: poloha za 4 s, kompas, pak Quick Look s parkurem kolem místa 2 m
+       před telefonem (podstrčené GPS 10 m na kurzu 100° od středu kolbiště a kompas 100°) */
+    await ev(() => {
+      ringsPut([{ id: 'rq', name: 'K', lat: 50.08, lng: 14.42, acc: 3, az: 100, azErr: 2, azT: 1, W: 40, H: 20, cid: S.meta.id, at: 1 }]);
+      const g = ringFor(S.meta.id), p = geoMove(g, 100, 10);
+      Object.defineProperty(navigator, 'geolocation', { configurable: true, value: { watchPosition(ok) { const t = setInterval(() => ok({ coords: { latitude: p.lat, longitude: p.lng, accuracy: 4 } }), 300); return t; }, clearWatch(id) { clearInterval(id); }, getCurrentPosition() { } } });
+      window.__qlo = []; const qb = V3D.m.quickLookBlob; V3D.m = Object.assign({}, V3D.m, { quickLookBlob(sp, o) { window.__qlo.push(o); return qb(sp, o); } });
+      window.__qlh = []; HTMLAnchorElement.prototype.click = function () { if (this.rel === 'ar') { window.__qlh.push(this.getAttribute('href').replace(/^blob:[^#]*/, 'blob')); return; } return window.__qlc.call(this); };
+      AR.ql = true; arStart();
+    });
+    await page.waitForTimeout(150);
+    const q4 = await ev(() => [...document.querySelectorAll('#sheet [data-ql]')].map(b => b.getAttribute('data-ql')).join() + '|' + !!$('qlFoot'));
+    ok(q4 === 'gps,field,model|true', 'volba AR na iPhonu s kolbištěm: ' + q4);
+    await ev(() => { $('qlFoot').checked = true; document.querySelector('#sheet [data-ql="gps"]').click(); });
+    /* kompas (Chromium: deviceorientationabsolute, telefon nastojato, kurz 100°) */
+    const comp = setInterval(() => ev(() => ['deviceorientationabsolute', 'deviceorientation'].forEach(t => window.dispatchEvent(Object.assign(new Event(t), { alpha: 260, beta: 90, gamma: 0, absolute: true })))).catch(() => { }), 200);
+    const gotQl = await page.waitForFunction(() => window.__qlh.length >= 1 && !AR.busy, null, { timeout: 20000 }).then(() => true, () => false);
+    clearInterval(comp);
+    const q5 = await ev(() => { HTMLAnchorElement.prototype.click = window.__qlc; AR.ql = false; const o = window.__qlo[0] || {}, sp = course3dSpec(), az = ringAzMag(ringFor(S.meta.id));
+      return { got: window.__qlh.slice(), foot: o.foot, g: o.gps, W: sp.W, H: sp.H, az, sheet: $('scrim').hidden }; });
+    ok(gotQl && q5.got[0] === 'blob#allowsContentScaling=0' && q5.foot === true && q5.g && Math.abs(q5.g.x - (q5.W / 2 + 10)) < .1 && Math.abs(q5.g.y - q5.H / 2) < .1 &&
+      Math.abs(q5.g.h - 100) < 1 && Math.abs(q5.g.az - q5.az) < 1e-6 && q5.g.ahead === 2 && q5.sheet, 'AR na iPhonu podle GPS: ' + JSON.stringify(q5));
+    /* v kryté hale (video od uživatele z UK) je GPS nepřesná: nejdřív varování, pak Otevřít i tak */
+    await ev(() => {
+      const g = ringFor(S.meta.id), p = geoMove(g, 100, 10);
+      Object.defineProperty(navigator, 'geolocation', { configurable: true, value: { watchPosition(ok) { const t = setInterval(() => ok({ coords: { latitude: p.lat, longitude: p.lng, accuracy: 30 } }), 300); return t; }, clearWatch(id) { clearInterval(id); }, getCurrentPosition() { } } });
+      window.__qlo = []; window.__qlh = []; HTMLAnchorElement.prototype.click = function () { if (this.rel === 'ar') { window.__qlh.push(this.getAttribute('href').replace(/^blob:[^#]*/, 'blob')); return; } return window.__qlc.call(this); };
+      AR.ql = true; arStart(); document.querySelector('#sheet [data-ql="gps"]').click();
+    });
+    const comp2 = setInterval(() => ev(() => ['deviceorientationabsolute', 'deviceorientation'].forEach(t => window.dispatchEvent(Object.assign(new Event(t), { alpha: 260, beta: 90, gamma: 0, absolute: true })))).catch(() => { }), 200);
+    const warned = await page.waitForFunction(() => !!document.querySelector('#sheet [data-a="go"]'), null, { timeout: 15000 }).then(() => true, () => false);
+    clearInterval(comp2);
+    const w1 = await ev(() => ({ t: $('sheet').textContent, n: window.__qlh.length }));
+    ok(warned && /GPS teď ukazuje polohu jen na ± 15 m\./.test(w1.t) && w1.n === 0, 'nepřesná GPS bez varování: ' + JSON.stringify(w1));
+    if (warned) {
+      await ev(() => document.querySelector('#sheet [data-a="go"]').click());
+      const op = await page.waitForFunction(() => window.__qlh.length >= 1 && !AR.busy, null, { timeout: 20000 }).then(() => true, () => false);
+      ok(op && await ev(() => !!(window.__qlo[0] && window.__qlo[0].gps)), 'Otevřít i tak neotevřelo AR podle GPS');
+    }
+    await ev(() => { HTMLAnchorElement.prototype.click = window.__qlc; AR.ql = false; });
+    const miss = await ev(l => l.filter(t => { const v = trLookup(t); return v == null || /[ěščřžýáíéůúňťď]/.test(v); }), ['AR na iPhonu', 'Na place od startu', 'Na place podle GPS', 'AR podle GPS', 'Zjišťuji polohu…', 'Poloha ± 4 m', 'směr 100°',
+      'Když iPhone píše, ať s ním pohneš, pomalu s ním přejeď nad zemí. V hale to trvá déle.', 'GPS teď ukazuje polohu jen na ± 15 m.', 'Kompas teď ukazuje směr jen na ± 40°.',
+      'Kompas potřebuje zkalibrovat: opiš telefonem ve vzduchu osmičku.', 'Pod střechou a u kovových konstrukcí bývají obojí horší. Parkur pak může stát o kus vedle nebo pootočený.', 'Otevřít i tak',
+      'Stoupni si pár kroků za start čelem k překážce 1 a miř telefonem na místo startu. Jedním prstem parkur posuneš, dvěma natočíš, velikost zůstane 1 : 1.',
+      'Parkur se položí tam, kde na kolbišti opravdu je, podle uložené polohy kolbiště, GPS a kompasu (přesnost pár metrů). Stačí stát na kolbišti nebo u něj.',
+      'Zmenšený parkur 1 : 20, prsty ho zvětšíš, zmenšíš i natočíš.', 'Jen půdorys: místo překážek jejich obrysy na zemi',
+      'Bílé čáry jsou okraj kolbiště, oranžové sloupky jeho rohy a zelený sloupek start: podle nich parkur prsty dorovnáš. Položení podle dvou překážek umí jen Android s Chromem, iPhone používá AR od Applu.',
+      'Namiř telefon na zem asi dva kroky před sebe, směrem ke kolbišti, a drž ho. Za pár vteřin se otevře AR, telefonem nehýbej, dokud se parkur neobjeví.',
+      'Kompas v telefonu nejde použít. Zkus „Na place od startu“.',
+      'AR na place podle GPS kolbiště (i na iPhonu), na Androidu také podle dvou překážek', 'AR bez zelené plochy, se sloupky v rozích kolbiště a na startu, volitelně jen půdorys překážek']);
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
+  });
+
+  await step('3D a AR: čísla na straně nájezdu jako v Plánu', async () => {
+    await fresh(); await tunCourse();
+    /* 3.5.3: dřív cedulka ve 3D vždy vlevo před vstupem podle natočení překážky, i když ji pes bral z druhé strany,
+       a „Číslo na druhou stranu“ se do 3D nepromítlo */
+    const r = await ev(() => {
+      const sp = course3dSpec(), c = calc(), g2 = {};
+      c.P.forEach((p, i) => { const o = getO(S.route[i]); if (HOOPT[o.type]) return; const k = numKey(p, o); (g2[k] = g2[k] || { p, o, n: [] }).n.push(i + 1); });
+      const want = Object.keys(g2).map(k => { const q = numPos(g2[k].p, g2[k].o, S.W, S.H); return g2[k].n.join('·') + '@' + q.x.toFixed(2) + ',' + q.y.toFixed(2); }).sort();
+      const got = sp.signs.map(q => q.t + '@' + q.x.toFixed(2) + ',' + q.y.toFixed(2)).sort();
+      const has2 = q => q.t.split('·').indexOf('2') >= 0, o = getO(S.route[1]), before = sp.signs.find(has2);
+      o.nf = true; const after = course3dSpec().signs.find(has2); delete o.nf;
+      return { same: JSON.stringify(want) === JSON.stringify(got), n: got.length, moved: Math.hypot(before.x - after.x, before.y - after.y) };
+    });
+    ok(r.same && r.n > 3 && r.moved > 1, '3D čísla neodpovídají Plánu: ' + JSON.stringify(r));
+    await ev(() => open3d(false));
+    const gl = await page.waitForFunction(() => C3.api, null, { timeout: 15000 }).then(() => true, () => false);
+    if (gl) { ok(await ev(() => { let k = 0; C3.api.scene.traverse(q => { if (q.name === 'sign') k++; }); return k === course3dSpec().signs.length && k > 3; }), 've 3D chybí cedulky s čísly'); await ev(() => close3d()); }
   });
 
   await step('3D: pes kličkuje slalomem', async () => {
