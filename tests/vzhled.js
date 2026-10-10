@@ -57,7 +57,7 @@ module.exports = async function ({ browser, base }) {
   await step('O aplikaci: verze z APPV', async () => {
     await ev(() => { moreTab = 'about'; show('more'); }); await page.waitForTimeout(100);
     const r = await ev(() => ({ v: APPV, t: document.querySelector('#moreBody .about-h b').textContent, n: $('moreBody').textContent.indexOf('Pawkur ' + APPV) >= 0 }));
-    ok(/^\d+\.\d+$/.test(r.v) && r.t === 'Pawkur ' + r.v && r.n, 'O aplikaci neukazuje verzi z APPV: ' + JSON.stringify(r));
+    ok(/^\d+\.\d+(\.\d+)?$/.test(r.v) && r.t === 'Pawkur ' + r.v && r.n, 'O aplikaci neukazuje verzi z APPV: ' + JSON.stringify(r));
   });
 
   await step('angličtina: Novinky 2.7 a čísla na Domů', async () => {

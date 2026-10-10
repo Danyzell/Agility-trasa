@@ -2,7 +2,7 @@
 <title>Pawkur</title>
 <script>try{var t0=JSON.parse(localStorage.getItem('agility-theme-v1'));if(t0==='light'||t0==='dark')document.documentElement.setAttribute('data-theme',t0);}catch(e){}
 /* polština a němčina (3.4): slovník je v samostatném souboru (i18n/pl.js, i18n/de.js) a načte se jen pro zvolený jazyk, dřív než hlavní skript (stejné pravidlo jako LANG níž) */
-try{(function(){var q=location.search.match(/[?&]lang=(cs|en|pl|de)\b/),l=q?q[1]:JSON.parse(localStorage.getItem('agility-lang-v1')||'null');if(!l&&!navigator.webdriver){var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();if(/^(pl|de)/.test(n))l=n.slice(0,2);}if(l==='pl'||l==='de')document.write('<script src="i18n/'+l+'.js?v=3.5"><\/script>');})();}catch(e){}</script>
+try{(function(){var q=location.search.match(/[?&]lang=(cs|en|pl|de)\b/),l=q?q[1]:JSON.parse(localStorage.getItem('agility-lang-v1')||'null');if(!l&&!navigator.webdriver){var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();if(/^(pl|de)/.test(n))l=n.slice(0,2);}if(l==='pl'||l==='de')document.write('<script src="i18n/'+l+'.js?v=3.5.1"><\/script>');})();}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2000,6 +2000,11 @@ i18nAdd({exact:{
 "Tohle je parkur týdne. Klepni na Zaběhnout a změř si čas, nebo si v Parkurech vyber jiný.": "This is the course of the week. Tap Run it and time yourself, or pick another one in Courses.",
 "Kdo poběží?": "Who's running?",
 "Podle psa aplikace nastaví výšky překážek a čas SČP a povede mu deník. Jak se jmenuje?": "From your dog, the app sets obstacle heights and the SCT and keeps the dog's diary. What's the dog's name?",
+/* 3.5.1: čísla překážek na straně nájezdu, Číslo na druhou stranu v nabídce kroku */
+"Čísla překážek na straně nájezdu jako na plánku rozhodčího, v nabídce kroku Číslo na druhou stranu": "Obstacle numbers on the approach side like on a judge's plan; Number to the other side in the step menu",
+"Číslo na druhou stranu": "Number to the other side", "Číslo zpátky na výchozí stranu": "Number back to its usual side",
+"Číslo bude zase vpravo od dráhy psa, na straně nájezdu.": "The number goes back to the right of the dog's path, on the approach side.",
+"Číslo překážky přejde k druhému boku, pořád na straně nájezdu. Hodí se, když překrývá trasu nebo jinou překážku.": "The obstacle number moves to its other side, still on the approach side. Handy when it covers the route or another obstacle.",
 /* Novinky ve verzi 3.4 (O aplikaci) */
 "Novinky ve verzi 3.4": "What's new in 3.4", "Polština a němčina (Více → Nastavení → Jazyk)": "Polish and German (More → Settings → Language)",
 "Pravidla USA (AKC): třídy Novice až Master, Standard a JWW, čas podle tabulek AKC, délky v yardech": "US rules (AKC): Novice to Master, Standard and JWW, course times from the AKC tables, lengths in yards",
@@ -2928,6 +2933,7 @@ var I18N_EXTRA={exact:{
 "Rozběh před první překážkou jen # m (FCI: aspoň # m)": "Run-up before the first obstacle only # m (FCI: at least # m)",
 "Doběh za poslední překážkou jen # m (FCI: aspoň # m)": "Run-out after the last obstacle only # m (FCI: at least # m)",
 "Krok č. #: upravit": "Step no. #: edit",
+"Krok č. #: číslo na druhé straně": "Step no. #: number on the other side", "Krok č. #: číslo na výchozí straně": "Step no. #: number back on its usual side",
 "Krok č. # odebrán z trasy": "Step no. # removed from the route",
 "Vkládáš za krok č. #: klepej na překážky, přidají se za něj. Vkládání ukončíš tlačítkem Ukončit vkládání.": "You're inserting after step no. #: tap the obstacles, they are added after it. Stop with the Stop inserting button.",
 "Klepni na překážku, která nahradí krok č. #. Nahrazení zrušíš tlačítkem Zrušit nahrazení.": "Tap the obstacle that replaces step no. #. Cancel with the Cancel replacing button.",
@@ -5806,7 +5812,10 @@ function calc(ob,rt,tu,pf){
     } else {
       /* směr skoku: podle toho, odkud pes přibíhá; bod se bere kousek za předchozí překážkou ve směru, kterým pes odbíhá
          (u skoků v řadě a u obratů do U by samotná poloha předchozí překážky nerozhodla) */
-      var rj=prevD?{x:ref.x+prevD.x*1.5,y:ref.y+prevD.y*1.5}:ref, s=((o.x-rj.x)*u.x+(o.y-rj.y)*u.y)>=0?1:-1;
+      var rj=prevD?{x:ref.x+prevD.x*1.5,y:ref.y+prevD.y*1.5}:ref, pj=(o.x-rj.x)*u.x+(o.y-rj.y)*u.y, s=pj>=0?1:-1;
+      /* nájezd skoro kolmo na skok (do 0,3 m): směr dřív rozhodl zaokrouhlovací šum (sin 180° ≠ 0) a trasa udělala kličku
+         přes skok tam a zpátky; rozhodne, kam pes po skoku běží (3.5.1, číslo je na straně nájezdu) */
+      if(Math.abs(pj)<.3&&i+1<n){ var pn=(st[i+1].x-o.x)*u.x+(st[i+1].y-o.y)*u.y; if(Math.abs(pn)>=.3) s=pn>0?1:-1; }
       if(t==='f') s=-s; /* skok z druhé strany */
       en=ex={x:o.x,y:o.y}; dir={x:u.x*s,y:u.y*s}; len=0;
     }
@@ -6031,6 +6040,7 @@ function courseClean(d){
     if(!(id>0&&id%1===0)||by[id]||!isFinite(x)||!isFinite(y)) return;
     var n={id:id,type:o.type,x:cl(Math.round(x*100)/100,0,W),y:cl(Math.round(y*100)/100,0,H),rot:isFinite(ro)?(ro%360+360)%360:0}; /* na setiny: bez šumu 13.700000000000001 ze starších verzí */
     if(o.lock) n.lock=1; /* zamknutá poloha (stavba 4): prst s ní nepohne */
+    if(o.nf) n.nf=1; /* číslo na druhé straně (3.5.1, numPos) */
     if(o.type==='tunnel'&&b&&Math.abs(b)<=180) n.bend=b;
     if(o.type==='tunnel'){ var ln=Math.round(+o.len*2)/2; if(ln>=2&&ln<=6) n.len=ln; }
     if(o.type==='jump'&&JV[o.v]) n.v=o.v;
@@ -6469,6 +6479,16 @@ function sideChanges(){
 }
 /* při tažení prstem chodí pohybů víc, než kolik obrazovka stihne snímků: překresluje se nejvýš jednou za snímek */
 var renderRaf=0;
+/* číslo překážky na straně nájezdu (3.5.1, uživatel z UK: „některá čísla jsou na špatné straně“): 0,6 m před vstupem do překážky
+   a 0,95 m vedle dráhy psa, vpravo od směru běhu, jako na plánku rozhodčího. Dřív bylo v běžném plánu vždy vpravo nahoře od středu
+   skoku, ať pes skákal odkudkoli. „Číslo na druhou stranu“ v nabídce kroku (o.nf) ho dá vlevo, pořád na straně nájezdu. */
+function numPos(p,o,W,H){
+  var d=p.dir||{x:1,y:0}, l=Math.hypot(d.x,d.y)||1, ux=d.x/l, uy=d.y/l, s=o&&o.nf?-1:1;
+  return {x:cl(p.en.x-ux*.6-uy*.95*s,.6,W-.6), y:cl(p.en.y-uy*.6+ux*.95*s,.6,H-.6)};
+}
+/* čísla se stejným vstupem v jednom štítku (3·9); skok má vstup uprostřed, proto se dělí i podle směru: skok projetý
+   z opačných stran má dvě čísla, každé na své straně */
+function numKey(p,o){ var a=o?o.rot*Math.PI/180:0, d=p.dir||{x:1,y:0}; return Math.round(p.en.x*4)+','+Math.round(p.en.y*4)+(p.len||!o?'':d.x*Math.cos(a)+d.y*Math.sin(a)<0?'-':'+'); }
 function renderSoon(){ if(!renderRaf) renderRaf=requestAnimationFrame(function(){ renderRaf=0; render(); }); }
 function render(){
   if(renderRaf){ cancelAnimationFrame(renderRaf); renderRaf=0; }
@@ -6495,14 +6515,14 @@ function render(){
   });
   $('pth').innerHTML=h;
   var gr={}, b='';
-  c.P.forEach(function(p,i){ if(i>=showN) return; var k=Math.round(p.en.x*4)+','+Math.round(p.en.y*4); (gr[k]=gr[k]||{p:p.en,n:[],d:p.dir}).n.push(i); });
+  c.P.forEach(function(p,i){ if(i>=showN) return; var o=getO(S.route[i]), k=numKey(p,o); (gr[k]=gr[k]||{p:p,o:o,n:[]}).n.push(i); });
   Object.keys(gr).forEach(function(k){
-    var g=gr[k], t=g.n.map(function(i){return i+1;}).join('·'), w=Math.max(.45,t.length*.19+.15);
+    var g=gr[k], t=g.n.map(function(i){return i+1;}).join('·'), w=Math.max(.45,t.length*.19+.15), q=numPos(g.p,g.o,S.W,S.H);
     var sd=panel==='side'?g.n.map(function(i){return S.sides[i]||'';}).join(''):'';
-    if(J){ var dj=g.d||{x:1,y:0}, lj=Math.hypot(dj.x,dj.y)||1, ux=dj.x/lj, uy=dj.y/lj, cx=cl(g.p.x-ux*.6-uy*.95,.6,S.W-.6), cy=cl(g.p.y-uy*.6+ux*.95,.6,S.H-.6), wj=Math.max(.5,t.length*.2+.12);
-      b+='<g class="jn" transform="translate('+r(cx)+','+r(cy)+')"><rect x="'+(-wj)+'" y="-.5" width="'+(2*wj)+'" height="1" rx=".5" fill="var(--surface)" stroke="var(--text)" stroke-width=".08"/><text y=".22" font-size=".62" text-anchor="middle" font-weight="700" fill="var(--text)">'+t+'</text>'+
+    if(J){ var wj=Math.max(.5,t.length*.2+.12);
+      b+='<g class="jn" transform="translate('+r(q.x)+','+r(q.y)+')"><rect x="'+(-wj)+'" y="-.5" width="'+(2*wj)+'" height="1" rx=".5" fill="var(--surface)" stroke="var(--text)" stroke-width=".08"/><text y=".22" font-size=".62" text-anchor="middle" font-weight="700" fill="var(--text)">'+t+'</text>'+
         (sd?'<text y="1.3" font-size=".7" text-anchor="middle" font-weight="700" fill="var(--accent)" stroke="var(--field)" stroke-width=".2" paint-order="stroke">'+sd+'</text>':'')+'</g>'; return; }
-    b+='<g transform="translate('+r(g.p.x+.8)+','+r(g.p.y-.8)+')"><rect x="'+(-w)+'" y="-.45" width="'+(2*w)+'" height=".9" rx=".45" fill="var(--zone)"/><text y=".22" font-size=".62" text-anchor="middle" font-weight="600" fill="var(--on-zone)">'+t+'</text>'+
+    b+='<g class="nb" transform="translate('+r(q.x)+','+r(q.y)+')"><rect x="'+(-w)+'" y="-.45" width="'+(2*w)+'" height=".9" rx=".45" fill="var(--zone)"/><text y=".22" font-size=".62" text-anchor="middle" font-weight="600" fill="var(--on-zone)">'+t+'</text>'+
       (sd?'<text y="1.25" font-size=".7" text-anchor="middle" font-weight="700" fill="var(--accent)" stroke="var(--field)" stroke-width=".2" paint-order="stroke">'+sd+'</text>':'')+'</g>';
   });
   /* značka otočky uprostřed smyčky: ↶ doleva, ↷ doprava, Z zadní strana */
@@ -6856,12 +6876,15 @@ function routeStepSheet(i){
     '<button class="opt" data-ra="del"><b>Odebrat z trasy</b><span>Překážka zůstane na ploše, z pořadí zmizí. Další kroky se přečíslují.</span></button>'+
     '<button class="opt" data-ra="ins"><b>Vložit za</b><span>Další klepnutí na překážky na ploše je vloží za tento krok.</span></button>'+
     '<button class="opt" data-ra="rep"><b>Nahradit</b><span>Další klepnutí na překážku nahradí tento krok.</span></button>'+
+    /* číslo překážky k druhému boku (3.5.1): když překrývá trasu nebo jinou překážku; zůstává na straně nájezdu (numPos) */
+    '<button class="opt" data-ra="nf"><b>'+(o.nf?'Číslo zpátky na výchozí stranu':'Číslo na druhou stranu')+'</b><span>'+(o.nf?'Číslo bude zase vpravo od dráhy psa, na straně nájezdu.':'Číslo překážky přejde k druhému boku, pořád na straně nájezdu. Hodí se, když překrývá trasu nebo jinou překážku.')+'</span></button>'+
     (RTE?'<button class="opt" data-ra="end"><b>'+(RTE.k==='ins'?'Ukončit vkládání':'Zrušit nahrazení')+'</b><span>Klepnutí na plochu zase přidávají na konec trasy.</span></button>':'')+
     '</div><div class="acts"><button class="btn" data-a="x">Zavřít</button></div>',
     function(e){
       var b=e.target.closest('[data-ra]'); if(!b){ if(e.target.closest('[data-a]')) closeSheet(); return; }
       var a=b.getAttribute('data-ra'); closeSheet();
       if(a==='del'){ routeDel(i); return; }
+      if(a==='nf'){ if(o.nf) delete o.nf; else o.nf=1; touch(); render(); toast('Krok č. '+(i+1)+(o.nf?': číslo na druhé straně':': číslo na výchozí straně')); return; }
       if(a==='end'){ RTE=null; ui(); render(); return; }
       RTE={k:a,i:i}; RTAP=null; mode='route'; sel=null; ui(); render();
       toast(a==='ins'?'Klepej na překážky, vloží se za krok č. '+(i+1):'Klepni na překážku, která nahradí krok č. '+(i+1));
@@ -7532,7 +7555,7 @@ function loadCourse(c,quiet){
     var pm=mode; planReset(); bgClear(); zoomFor('view',pm); /* otevřený parkur se prohlíží na 150 % (telefon) */
     var bgc=bgsGet(c.id); if(bgc){ BG=bgc; lsSet('agility-bg-v1',BG); } /* uložený parkur s podkladem z fotky (3.2.1) */
     S.W=c.W||40; S.H=c.H||20; setSizeSel();
-    S.obs=c.obs.map(function(o){var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.type==='tunnel'&&o.bend) n.bend=o.bend; if(o.type==='tunnel'&&o.len) n.len=o.len; if(o.type==='jump'&&JV[o.v]) n.v=o.v; if(o.lock) n.lock=1; return n;}); S.route=c.route.slice(); sel=null;
+    S.obs=c.obs.map(function(o){var n={id:o.id,type:o.type,x:o.x,y:o.y,rot:o.rot}; if(o.type==='tunnel'&&o.bend) n.bend=o.bend; if(o.type==='tunnel'&&o.len) n.len=o.len; if(o.type==='jump'&&JV[o.v]) n.v=o.v; if(o.lock) n.lock=1; if(o.nf) n.nf=1; return n;}); S.route=c.route.slice(); sel=null;
     S.sides=(c.sides||[]).slice(); S.turns=(c.turns||[]).slice(); S.hp=(c.hp||[]).map(function(p){return p.slice();}); S.marks=(c.marks||[]).map(function(m){return {t:m.t,x:m.x,y:m.y};}); if(panel==='quiz'){quizStop(); panel=null;}
     S.meta={id:c.id,name:c.name,cls:c.cls,author:c.author||'',gen:!!c.gen,dirty:false}; if(c.code) S.meta.code=c.code; S.chk=null;
     if(c.gcid){ S.meta.gcid=+c.gcid; S.meta.gname=String(c.gname||''); } /* parkur skupiny: uložený běh jde do žebříčku skupiny */
@@ -8366,9 +8389,9 @@ function shareCanvas(o){
     c.obs.forEach(function(ob){ var P=opoly(ob); x.strokeStyle=DEF[ob.type].c; x.lineWidth=ob.type==='tunnel'?.7:ob.type==='weave'?.3:.28; x.lineCap='round';
       x.beginPath(); P.forEach(function(q,j){ j?x.lineTo(q.x,q.y):x.moveTo(q.x,q.y); }); x.stroke(); });
     var seen={};
-    g.P.forEach(function(pt,i){ var kk=Math.round(pt.en.x*2)+','+Math.round(pt.en.y*2); if(seen[kk]) return; seen[kk]=1;
-      x.fillStyle='#e5a23a'; x.beginPath(); x.arc(pt.en.x+.75,pt.en.y-.75,.62,0,Math.PI*2); x.fill();
-      x.fillStyle='#1d1d1d'; x.font='700 .72px '+body; x.textAlign='center'; x.textBaseline='middle'; x.fillText(String(i+1),pt.en.x+.75,pt.en.y-.72); });
+    g.P.forEach(function(pt,i){ var ob=by[c.route[i]], kk=numKey(pt,ob), q=numPos(pt,ob,c.W,c.H); if(seen[kk]) return; seen[kk]=1; /* na straně nájezdu jako v Plánu */
+      x.fillStyle='#e5a23a'; x.beginPath(); x.arc(q.x,q.y,.62,0,Math.PI*2); x.fill();
+      x.fillStyle='#1d1d1d'; x.font='700 .72px '+body; x.textAlign='center'; x.textBaseline='middle'; x.fillText(String(i+1),q.x,q.y+.03); });
     x.textAlign='left'; x.textBaseline='alphabetic';
     var st=by[c.route[0]], fi=by[c.route[c.route.length-1]];
     x.strokeStyle='#14553a'; x.lineWidth=.35;
@@ -11457,7 +11480,7 @@ function appShare(){
   dnCopy(APP_URL);
 }
 /* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
-var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.5';
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.5.1';
 var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
 function fbSave(){ lsSet(FBK,FB); }
 var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];
@@ -11591,7 +11614,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
     h='<div class="morego"><button class="btn" data-mgo="fb">'+IC.mail+'<span>Napsat autorovi</span></button>'+(donateOn()?'<button class="btn primary" data-mgo="donate">'+IC.heartF+'<span>Podpořit aplikaci</span></button>':'')+'</div>'+
       '<div id="statsBox"></div><div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>Pawkur '+APPV+'</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
       '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
-      '<h4>Novinky ve verzi 3.5</h4><ul class="news"><li>Nový začátek: hned 3D průlet parkuru týdne, na psa se aplikace zeptá až při prvním běhu</li><li>USA: plocha ve stopách a bez kontroly podle FCI u pravidel AKC</li><li>Pravidla USA (USDAA) vedle AKC: Starters až Masters i Performance, Standard a Jumpers, SČP podle rozsahů USDAA</li><li>Upozornění i polsky a německy</li></ul>'+
+      '<h4>Novinky ve verzi 3.5</h4><ul class="news"><li>Nový začátek: hned 3D průlet parkuru týdne, na psa se aplikace zeptá až při prvním běhu</li><li>USA: plocha ve stopách a bez kontroly podle FCI u pravidel AKC</li><li>Pravidla USA (USDAA) vedle AKC: Starters až Masters i Performance, Standard a Jumpers, SČP podle rozsahů USDAA</li><li>Upozornění i polsky a německy</li><li>Čísla překážek na straně nájezdu jako na plánku rozhodčího, v nabídce kroku Číslo na druhou stranu</li></ul>'+
       '<h4>Novinky ve verzi 3.4</h4><ul class="news"><li>Polština a němčina (Více → Nastavení → Jazyk)</li><li>Pravidla USA (AKC): třídy Novice až Master, Standard a JWW, čas podle tabulek AKC, délky v yardech</li><li>Sdílení kódem i s polohou kolbiště pro AR na place a stavbu v terénu</li><li>3D: pohled Za psem šikmo ze strany, pes v tunelu se schová</li><li>AR na place: položení přesně podle dvou rohů kolbiště, doladění o 1° a 25 cm, opravené Položit znovu</li><li>Kompas v AR, Stavbě v terénu a navigaci ke kolbišti počítá s rozdílem mezi magnetickým a zeměpisným severem</li></ul>'+
       '<h4>Novinky ve verzi 3.0</h4><ul class="news"><li>Dnes na Domů: parkur od trenéra, den závodů a plán na týden se zaškrtáváním</li><li>Galerie parkurů: zveřejni parkur přes Sdílet, otevírej a hodnoť parkury ostatních</li><li>Skupiny a trenér: skupina na kód, parkur poslaný skupině se ukáže členům na Domů a jejich běhy se sejdou v žebříčku</li><li>Upozornění na telefonu: parkur od skupiny, zítra závodíš a nový parkur týdne (Více → Nastavení)</li><li>Oslava čistého běhu s obrázkem na sdílení, cesta k postupu v Deníku, Tento týden s čísly a grafem, tlačítka se spodní hranou</li><li>Stavba: přesná poloha a zámek překážky, přichycení po 0,5 m se vzdálenostmi, zrcadlit, otočit a posunout celý parkur, výběr víc překážek, porovnání s jiným parkurem, plánek jako od rozhodčího, export pro závodníka, rozhodčího a stavitele, obrázek do příběhu, sdílení odkazem</li></ul>'+
       '<h4>Novinky ve verzi 2.3</h4><ul class="news"><li>Účet: přihlášení přes Google a automatická synchronizace dat mezi telefonem a počítačem</li><li>AR na place: parkur kamerou na skutečném trávníku (Chrome na Androidu)</li><li>Náhled odkazu pro Facebook</li></ul>'+
