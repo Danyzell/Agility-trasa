@@ -2,7 +2,7 @@
 <title>Pawkur</title>
 <script>try{var t0=JSON.parse(localStorage.getItem('agility-theme-v1'));if(t0==='light'||t0==='dark')document.documentElement.setAttribute('data-theme',t0);}catch(e){}
 /* polština a němčina (3.4): slovník je v samostatném souboru (i18n/pl.js, i18n/de.js) a načte se jen pro zvolený jazyk, dřív než hlavní skript (stejné pravidlo jako LANG níž) */
-try{(function(){var q=location.search.match(/[?&]lang=(cs|en|pl|de)\b/),l=q?q[1]:JSON.parse(localStorage.getItem('agility-lang-v1')||'null');if(!l&&!navigator.webdriver){var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();if(/^(pl|de)/.test(n))l=n.slice(0,2);}if(l==='pl'||l==='de')document.write('<script src="i18n/'+l+'.js?v=3.5.1"><\/script>');})();}catch(e){}</script>
+try{(function(){var q=location.search.match(/[?&]lang=(cs|en|pl|de)\b/),l=q?q[1]:JSON.parse(localStorage.getItem('agility-lang-v1')||'null');if(!l&&!navigator.webdriver){var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();if(/^(pl|de)/.test(n))l=n.slice(0,2);}if(l==='pl'||l==='de')document.write('<script src="i18n/'+l+'.js?v=3.5.2"><\/script>');})();}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2000,6 +2000,12 @@ i18nAdd({exact:{
 "Tohle je parkur týdne. Klepni na Zaběhnout a změř si čas, nebo si v Parkurech vyber jiný.": "This is the course of the week. Tap Run it and time yourself, or pick another one in Courses.",
 "Kdo poběží?": "Who's running?",
 "Podle psa aplikace nastaví výšky překážek a čas SČP a povede mu deník. Jak se jmenuje?": "From your dog, the app sets obstacle heights and the SCT and keeps the dog's diary. What's the dog's name?",
+/* 3.5.2: AR na iPhonu (Quick Look) na place ve skutečné velikosti, nebo model na stůl */
+"AR na iPhonu": "AR on iPhone", "Na place – skutečná velikost": "On the field – real size",
+"Postav se na start parkuru a miř telefonem na zem: start bude tam, kam míříš. Jedním prstem parkur posuneš, dvěma natočíš. Velikost zůstane 1 : 1.": "Stand at the start of the course and point the phone at the ground: the start goes where you point. Move the course with one finger, turn it with two. The size stays 1 : 1.",
+"Zmenšený parkur 1 : 20, prsty ho zvětšíš, zmenšíš i natočíš.": "The course at 1 : 20; pinch to make it bigger or smaller and turn it.",
+"Přesné položení podle rohů kolbiště umí jen Android s Chromem. iPhone používá AR od Applu.": "Exact placement by the ring corners only works on Android with Chrome. iPhone uses Apple's AR.",
+"AR na iPhonu: na place ve skutečné velikosti se startem tam, kam míříš, nebo model na stůl": "AR on iPhone: on the field at real size with the start where you point, or a table model",
 /* 3.5.1: čísla překážek na straně nájezdu, Číslo na druhou stranu v nabídce kroku */
 "Čísla překážek na straně nájezdu jako na plánku rozhodčího, v nabídce kroku Číslo na druhou stranu": "Obstacle numbers on the approach side like on a judge's plan; Number to the other side in the step menu",
 "Číslo na druhou stranu": "Number to the other side", "Číslo zpátky na výchozí stranu": "Number back to its usual side",
@@ -9667,7 +9673,7 @@ function arStart(){
   if(!V3D.m||!V3D.m.startAR){ toast(T('AR se ještě načítá, klepni za chvilku znovu.')); v3dLoad().then(function(m){ V3D.m=m; },function(){}); return; }
   if(S.route.length<2){ toast(T('Pro AR potřebuješ trasu aspoň se 2 překážkami.')); return; }
   if(!C3.api) build3d();
-  if(AR.ql){ arQuickLook(); return; }
+  if(AR.ql){ arQlSheet(); return; }
   V3.on=false; $('p3play').textContent=T('Přehrát');
   /* každé AR začíná ve skutečné velikosti se zavřeným doladěním */
   var ov=$('arUi'); AR.fine=false; ov.hidden=false; arHint('scan'); ov.querySelector('[data-ar="play"]').textContent=T('Pustit psa');
@@ -9693,11 +9699,23 @@ function arHeadAdd(h){
   var a=h*G2R, v=AR.hs; if(!v) v=AR.hs={x:Math.sin(a),y:Math.cos(a)}; else { v.x+=(Math.sin(a)-v.x)*.12; v.y+=(Math.cos(a)-v.y)*.12; }
   AR.h=(Math.atan2(v.x,v.y)/G2R+360)%360;
 }
-function arQuickLook(){
+/* AR na iPhonu (3.5.2, video od uživatele z UK: parkur stažený prsty na 39–77 % a položený jinde než skutečný): nejdřív volba.
+   Na place skutečná velikost se zamknutým zmenšováním a startem tam, kam míří telefon; na stůl model 1 : 20, který jde zvětšit.
+   Přesné položení podle rohů kolbiště umí jen Android (WebXR), Quick Look od Applu nic takového nenabízí. */
+function arQlSheet(){
+  openSheet('<h3>AR na iPhonu</h3><div class="opts">'+
+    '<button class="opt" data-ql="field"><b>Na place – skutečná velikost</b><span>Postav se na start parkuru a miř telefonem na zem: start bude tam, kam míříš. Jedním prstem parkur posuneš, dvěma natočíš. Velikost zůstane 1 : 1.</span></button>'+
+    '<button class="opt" data-ql="model"><b>Model na stůl</b><span>Zmenšený parkur 1 : 20, prsty ho zvětšíš, zmenšíš i natočíš.</span></button></div>'+
+    '<p class="hint">Přesné položení podle rohů kolbiště umí jen Android s Chromem. iPhone používá AR od Applu.</p>'+
+    '<div class="acts"><button class="btn" data-a="x">Zavřít</button></div>',
+    function(e){ var b=e.target.closest('[data-ql]'); if(b){ var m=b.getAttribute('data-ql')==='model'; closeSheet(); arQuickLook(m); return; } if(e.target.closest('[data-a]')) closeSheet(); });
+}
+function arQuickLook(model){
   if(!V3D.m.quickLookBlob||AR.busy) return; AR.busy=true; toast(T('Připravuji AR, chvilku…'));
-  V3D.m.quickLookBlob(course3dSpec()).then(function(b){
+  V3D.m.quickLookBlob(course3dSpec(),{model:!!model}).then(function(b){
     AR.busy=false; if(AR.url) URL.revokeObjectURL(AR.url); AR.url=URL.createObjectURL(b);
-    var a=document.createElement('a'); a.rel='ar'; a.href=AR.url+'#allowsContentScaling=1'; a.appendChild(document.createElement('img'));
+    /* na place bez zmenšování prsty (dvěma prsty se jen otáčí), model na stůl jde zvětšit i zmenšit */
+    var a=document.createElement('a'); a.rel='ar'; a.href=AR.url+'#allowsContentScaling='+(model?1:0); a.appendChild(document.createElement('img'));
     document.body.appendChild(a); a.click(); setTimeout(function(){ if(a.parentNode) a.parentNode.removeChild(a); },1000);
   },function(){ AR.busy=false; toast(T('AR se nepodařilo spustit.')); });
 }
@@ -11480,7 +11498,7 @@ function appShare(){
   dnCopy(APP_URL);
 }
 /* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
-var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.5.1';
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.5.2';
 var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
 function fbSave(){ lsSet(FBK,FB); }
 var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];
@@ -11614,7 +11632,7 @@ function moreRender(){ setTimeout(function(){ if(window.pwaInstUI) pwaInstUI(); 
     h='<div class="morego"><button class="btn" data-mgo="fb">'+IC.mail+'<span>Napsat autorovi</span></button>'+(donateOn()?'<button class="btn primary" data-mgo="donate">'+IC.heartF+'<span>Podpořit aplikaci</span></button>':'')+'</div>'+
       '<div id="statsBox"></div><div id="pwaInst"></div><div class="panel about"><div class="about-h"><span class="about-ic" aria-hidden="true">'+(IC.brand||'')+'</span><div><b>Pawkur '+APPV+'</b><span>Plánovač agility parkurů pro psovody</span></div></div>'+
       '<p class="hint">Parkury podle pravidel FCI a stylu rozhodčích, čtení plánků z fotky, kontrola pravidel, výpočet SČP a MČP, stopky s hodnocením a mezičasy, rozbor parkuru, 3D průlet, trénink paměti, technika v animacích a videích, deník a statistiky psa.</p>'+
-      '<h4>Novinky ve verzi 3.5</h4><ul class="news"><li>Nový začátek: hned 3D průlet parkuru týdne, na psa se aplikace zeptá až při prvním běhu</li><li>USA: plocha ve stopách a bez kontroly podle FCI u pravidel AKC</li><li>Pravidla USA (USDAA) vedle AKC: Starters až Masters i Performance, Standard a Jumpers, SČP podle rozsahů USDAA</li><li>Upozornění i polsky a německy</li><li>Čísla překážek na straně nájezdu jako na plánku rozhodčího, v nabídce kroku Číslo na druhou stranu</li></ul>'+
+      '<h4>Novinky ve verzi 3.5</h4><ul class="news"><li>Nový začátek: hned 3D průlet parkuru týdne, na psa se aplikace zeptá až při prvním běhu</li><li>USA: plocha ve stopách a bez kontroly podle FCI u pravidel AKC</li><li>Pravidla USA (USDAA) vedle AKC: Starters až Masters i Performance, Standard a Jumpers, SČP podle rozsahů USDAA</li><li>Upozornění i polsky a německy</li><li>Čísla překážek na straně nájezdu jako na plánku rozhodčího, v nabídce kroku Číslo na druhou stranu</li><li>AR na iPhonu: na place ve skutečné velikosti se startem tam, kam míříš, nebo model na stůl</li></ul>'+
       '<h4>Novinky ve verzi 3.4</h4><ul class="news"><li>Polština a němčina (Více → Nastavení → Jazyk)</li><li>Pravidla USA (AKC): třídy Novice až Master, Standard a JWW, čas podle tabulek AKC, délky v yardech</li><li>Sdílení kódem i s polohou kolbiště pro AR na place a stavbu v terénu</li><li>3D: pohled Za psem šikmo ze strany, pes v tunelu se schová</li><li>AR na place: položení přesně podle dvou rohů kolbiště, doladění o 1° a 25 cm, opravené Položit znovu</li><li>Kompas v AR, Stavbě v terénu a navigaci ke kolbišti počítá s rozdílem mezi magnetickým a zeměpisným severem</li></ul>'+
       '<h4>Novinky ve verzi 3.0</h4><ul class="news"><li>Dnes na Domů: parkur od trenéra, den závodů a plán na týden se zaškrtáváním</li><li>Galerie parkurů: zveřejni parkur přes Sdílet, otevírej a hodnoť parkury ostatních</li><li>Skupiny a trenér: skupina na kód, parkur poslaný skupině se ukáže členům na Domů a jejich běhy se sejdou v žebříčku</li><li>Upozornění na telefonu: parkur od skupiny, zítra závodíš a nový parkur týdne (Více → Nastavení)</li><li>Oslava čistého běhu s obrázkem na sdílení, cesta k postupu v Deníku, Tento týden s čísly a grafem, tlačítka se spodní hranou</li><li>Stavba: přesná poloha a zámek překážky, přichycení po 0,5 m se vzdálenostmi, zrcadlit, otočit a posunout celý parkur, výběr víc překážek, porovnání s jiným parkurem, plánek jako od rozhodčího, export pro závodníka, rozhodčího a stavitele, obrázek do příběhu, sdílení odkazem</li></ul>'+
       '<h4>Novinky ve verzi 2.3</h4><ul class="news"><li>Účet: přihlášení přes Google a automatická synchronizace dat mezi telefonem a počítačem</li><li>AR na place: parkur kamerou na skutečném trávníku (Chrome na Androidu)</li><li>Náhled odkazu pro Facebook</li></ul>'+

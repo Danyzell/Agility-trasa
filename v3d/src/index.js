@@ -9,4 +9,4 @@ register(HANDLING || {});
 export { mount, hasScene };
 export { mountCourse } from './course.js';
 export { arSupported, startAR, arMath } from './ar.js';
-export { quickLookOK, quickLookBlob } from './quicklook.js';
+export { quickLookOK, quickLookBlob, quickLookScene } from './quicklook.js';
