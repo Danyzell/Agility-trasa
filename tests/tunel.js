@@ -170,6 +170,29 @@ module.exports = async function ({ browser, base }) {
     /* parkur jako model USDZ (zip), který iPhone položí na zem */
     const r = await ev(() => v3dLoad().then(m => { build3d(); return m.quickLookBlob(course3dSpec()); }).then(b => b.arrayBuffer().then(a => { const u = new Uint8Array(a); return { n: u.length, pk: u[0] === 0x50 && u[1] === 0x4b, type: b.type }; })), null).catch(e => ({ err: String(e) }));
     ok(r && r.pk && r.n > 20000 && r.type === 'model/vnd.usdz+zip', 'model USDZ pro iPhone se nevytvořil: ' + JSON.stringify(r));
+    /* 3.5.2 (video od uživatele z UK: parkur stažený prsty a jinde než skutečný): na place start parkuru v počátku a skutečná
+       velikost, na stůl střed plochy a 1 : 20; oba modely jdou vyrobit */
+    const o = await ev(() => v3dLoad().then(m => { V3D.m = m; build3d(); const sp = course3dSpec(), f = m.quickLookScene(sp), t = m.quickLookScene(sp, { model: true }), p0 = sp.path[0];
+      return m.quickLookBlob(sp, { model: true }).then(b => ({ fx: f.g.position.x, fz: f.g.position.z, fk: f.root.scale.x, sx: p0[0], sz: p0[1], tx: t.g.position.x, tz: t.g.position.z, tk: t.root.scale.x, W: sp.W, H: sp.H, tb: b.size > 20000 && b.type === 'model/vnd.usdz+zip' })); }));
+    ok(Math.abs(o.fx + o.sx) < 1e-6 && Math.abs(o.fz + o.sz) < 1e-6 && o.fk === 1 && Math.abs(o.tx + o.W / 2) < 1e-6 && Math.abs(o.tz + o.H / 2) < 1e-6 && Math.abs(o.tk - 1 / 20) < 1e-9 && o.tb, 'počátek a velikost modelu pro iPhone: ' + JSON.stringify(o));
+    /* před spuštěním volba, odkaz pro Quick Look: na place bez zmenšování prsty, model na stůl se zmenšováním */
+    await ev(() => { window.__qlh = []; window.__qlc = HTMLAnchorElement.prototype.click;
+      HTMLAnchorElement.prototype.click = function () { if (this.rel === 'ar') { window.__qlh.push(this.getAttribute('href').replace(/^blob:[^#]*/, 'blob')); return; } return window.__qlc.call(this); };
+      AR.ql = true; arStart(); });
+    await page.waitForTimeout(150);
+    const q = await ev(() => ({ h: ($('sheet').querySelector('h3') || {}).textContent, o: [...document.querySelectorAll('#sheet [data-ql]')].map(b => b.getAttribute('data-ql')).join() }));
+    ok(q.h === 'AR na iPhonu' && q.o === 'field,model', 'volba před AR na iPhonu: ' + JSON.stringify(q));
+    await ev(() => document.querySelector('#sheet [data-ql="field"]').click());
+    await page.waitForFunction(() => window.__qlh.length >= 1 && !AR.busy, null, { timeout: 20000 });
+    await ev(() => { arStart(); document.querySelector('#sheet [data-ql="model"]').click(); });
+    await page.waitForFunction(() => window.__qlh.length >= 2, null, { timeout: 20000 });
+    const hs = await ev(() => { HTMLAnchorElement.prototype.click = window.__qlc; AR.ql = false; return window.__qlh; });
+    ok(JSON.stringify(hs) === JSON.stringify(['blob#allowsContentScaling=0', 'blob#allowsContentScaling=1']), 'odkazy pro Quick Look (na place bez zmenšování): ' + JSON.stringify(hs));
+    const miss = await ev(l => l.filter(t => { const v = trLookup(t); return v == null || /[ěščřžýáíéůúňťď]/.test(v); }), ['AR na iPhonu', 'Na place – skutečná velikost',
+      'Postav se na start parkuru a miř telefonem na zem: start bude tam, kam míříš. Jedním prstem parkur posuneš, dvěma natočíš. Velikost zůstane 1 : 1.',
+      'Zmenšený parkur 1 : 20, prsty ho zvětšíš, zmenšíš i natočíš.', 'Přesné položení podle rohů kolbiště umí jen Android s Chromem. iPhone používá AR od Applu.',
+      'AR na iPhonu: na place ve skutečné velikosti se startem tam, kam míříš, nebo model na stůl']);
+    ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
   });
 
   await step('3D: pes kličkuje slalomem', async () => {
