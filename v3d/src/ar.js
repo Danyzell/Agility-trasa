@@ -6,8 +6,8 @@
    arSupported() → Promise<bool>
    startAR(overlay, spec, ui) → Promise<api>; overlay = prvek s ovládáním (dom-overlay), ui = {onState(s, info), onEnd(), heading()}
    spec.az (nepovinné): magnetický kurz dlouhé strany kolbiště (plán doprava); ui.heading() = magnetický kurz, kam míří kamera
-   api: {place(), replace(), corners(), pair(), gps(u), rotate(deg), nudge(right, away), setScale(model), foot(on), play(on), end(),
-         placed, mode, length, pairNums}; u = {x, y, acc}: poloha telefonu v souřadnicích plánu (m) a přesnost GPS (m) */
+   api: {place(), replace(), corners(), pair(), gps(u), rotate(deg), nudge(right, away), setScale(model), foot(on), play(on), hint(s, info, ms),
+         end(), placed, mode, length, pairNums}; u = {x, y, acc}: poloha telefonu v souřadnicích plánu (m) a přesnost GPS (m) */
 import * as THREE from 'three';
 import { buildCourse } from './course.js';
 import { TIERS } from './world.js';
@@ -34,16 +34,21 @@ export const arMath = {
   nudge(fw, right, away, step) { return { x: step * (right * -fw.z + away * fw.x), z: step * (right * fw.x + away * fw.z) }; },
   /* které dvě překážky zaměřit: s nejnižším číslem (obvykle 1) a druhou co nejdál, ale co nejdřív na trase (z těch aspoň
      v 70 % největší vzdálenosti), ať se při obchůzce nechodí zbytečně. Skoky, kruh, skok daleký a slalom mají jasný střed na zemi,
-     zóny jen když jiné chybí, tunel nikdy (střed oblouku na zemi nejde zaměřit). → {a, b, na, nb, d} nebo null */
+     zóny jen když jiné chybí nebo jsou blíž než 10 m, tunel nikdy (střed oblouku na zemi nejde zaměřit). Pod 3 m se natočení
+     zaměřit nedá (klepnutí blíž než 2 m se odmítá). → {a, b, na, nb, d} nebo null */
   pickPair(obs) {
     const rank = { jump: 2, tire: 2, longjump: 2, weave: 2, seesaw: 1, dogwalk: 1, aframe: 1 }, n0 = o => Math.min.apply(null, o.nums);
-    let L = (obs || []).filter(o => o.nums && o.nums.length && rank[o.type] === 2);
-    if (L.length < 2) L = (obs || []).filter(o => o.nums && o.nums.length && rank[o.type]);
-    if (L.length < 2) return null;
-    const a = L.reduce((m, o) => n0(o) < n0(m) ? o : m), dist = o => Math.hypot(o.x - a.x, o.y - a.y);
-    const far = Math.max.apply(null, L.filter(o => o !== a).map(dist));
-    const b = L.filter(o => o !== a && dist(o) >= Math.min(far, Math.max(10, far * .7))).reduce((m, o) => !m || n0(o) < n0(m) ? o : m, null);
-    return { a, b, na: n0(a), nb: n0(b), d: dist(b) };
+    const pick = L => {
+      if (L.length < 2) return null;
+      const a = L.reduce((m, o) => n0(o) < n0(m) ? o : m), dist = o => Math.hypot(o.x - a.x, o.y - a.y);
+      const far = Math.max.apply(null, L.filter(o => o !== a).map(dist));
+      const b = L.filter(o => o !== a && dist(o) >= Math.min(far, Math.max(10, far * .7))).reduce((m, o) => !m || n0(o) < n0(m) ? o : m, null);
+      return { a, b, na: n0(a), nb: n0(b), d: dist(b) };
+    };
+    const all = (obs || []).filter(o => o.nums && o.nums.length && rank[o.type]);
+    let p = pick(all.filter(o => rank[o.type] === 2));
+    if (!p || p.d < 10) { const q = pick(all); if (q && (!p || q.d > p.d)) p = q; }
+    return p && p.d >= 3 ? p : null;
   }
 };
 
@@ -56,7 +61,8 @@ export function startAR(overlay, spec, ui = {}) {
   /* hlášku po chybě (třeba „zem se nenašla“) nechá chvíli viset, jinak by ji hned přepsala nápověda ze smyčky;
      poslední trvalou hlášku si pamatuje, po návratu ztracené polohy se vrátí */
   let hold = 0, last = { s: 'scan', info: null };
-  const say = (s, info, ms) => { hold = ms ? performance.now() + ms : 0; if (!ms && s !== 'lost') last = { s, info }; try { ui.onState && ui.onState(s, info); } catch (e) { } };
+  /* re = vrácená hláška (po ztrátě polohy nebo po dočasné hlášce), aplikace ji nepočítá jako nové položení */
+  const say = (s, info, ms, re) => { hold = ms ? performance.now() + ms : 0; if (!ms && s !== 'lost') last = { s, info }; try { ui.onState && ui.onState(s, info, !!re); } catch (e) { } };
   return navigator.xr.requestSession('immersive-ar', {
     requiredFeatures: ['hit-test'], optionalFeatures: ['dom-overlay', 'anchors'], domOverlay: { root: overlay }
   }).then(session => {
@@ -118,7 +124,7 @@ export function startAR(overlay, spec, ui = {}) {
     /* nové položení: stará kotva pryč, nová v pivotu (vytvoří se v nejbližším snímku) */
     function dropAnchors() { st.gen++; [st.anc, st.ancA].forEach(a => { try { a && a.delete(); } catch (e) { } }); st.anc = st.ancA = null; st.want = st.wantA = null; D.identity(); }
     function placed() { dropAnchors(); apply(); st.placed = true; st.want = st.pivot.clone(); }
-    const idle = () => st.mode === 'corners' ? (st.A ? 'cornerB' : 'cornerA') : st.mode === 'pair' ? (st.A ? 'pairB' : 'pairA') : !st.hit ? 'scan' : st.scale !== 1 ? 'readyModel' : spec.az != null ? 'readyAz' : 'ready';
+    const idle = () => st.mode === 'corners' ? (st.A ? 'cornerB' : 'cornerA') : st.mode === 'pair' ? (st.A ? 'pairB' : 'pairA') : !st.hit ? 'scan' : st.scale !== 1 ? 'readyModel' : spec.az != null && ui.heading && ui.heading() != null ? 'readyAz' : 'ready';
     const idleInfo = () => st.mode === 'pair' && pair ? { a: pair.na, b: pair.nb } : null;
     function place() {
       if (!st.hit) { say('noground', null, 2500); return false; }
@@ -196,11 +202,12 @@ export function startAR(overlay, spec, ui = {}) {
     function anchors(frame) {
       if (!frame.createAnchor || !refSpace) return;
       /* nová kotva v bodě p (bez natočení); po odpovědi platí, jen když mezitím nebylo nové položení */
-      const make = (p, set) => { const g = st.gen; try {
-        frame.createAnchor(new XRRigidTransform({ x: p.x, y: p.y, z: p.z }), refSpace).then(a => { if (g !== st.gen || st.ended) { try { a.delete(); } catch (e) { } return; } set(a); }, () => { });
-      } catch (e) { } };
-      if (st.want) { const p = st.want; st.want = null; make(p, a => { st.anc = a; anc0.makeTranslation(-p.x, -p.y, -p.z); }); }
-      if (st.wantA) { const p = st.wantA; st.wantA = null; make(p, a => { st.ancA = a; }); }
+      /* Chrome kotvu odmítne, když v tu chvíli nezná polohu telefonu (odpověď do 3 s): zkusí se znovu, nejvýš pětkrát */
+      const make = (p, set, again) => { const g = st.gen, retry = () => { if (g === st.gen && !st.ended && (p.n = (p.n || 0) + 1) < 5) again(p); }; try {
+        frame.createAnchor(new XRRigidTransform({ x: p.x, y: p.y, z: p.z }), refSpace).then(a => { if (st.ended) return; if (g !== st.gen) { try { a.delete(); } catch (e) { } return; } set(a); }, retry);
+      } catch (e) { retry(); } };
+      if (st.want) { const p = st.want; st.want = null; make(p, a => { st.anc = a; anc0.makeTranslation(-p.x, -p.y, -p.z); }, q => { st.want = q; }); }
+      if (st.wantA) { const p = st.wantA; st.wantA = null; make(p, a => { st.ancA = a; }, q => { st.wantA = q; }); }
       const tr = frame.trackedAnchors;
       if (!tr) return;
       /* posun kotvy od chvíle položení (pozice v době položení → teď); bez sledování zůstává poslední */
@@ -215,7 +222,7 @@ export function startAR(overlay, spec, ui = {}) {
       const vp = refSpace ? frame.getViewerPose(refSpace) : null, bad = !vp || vp.emulatedPosition;
       if (vp && !vp.emulatedPosition) st.seen = true;
       if (bad && st.seen) { if (!st.lostT) st.lostT = t; if (!st.lost && t - st.lostT > 1000) { st.lost = true; say('lost'); } }
-      else if (!bad) { st.lostT = 0; if (st.lost) { st.lost = false; say(last.s, last.info); } }
+      else if (!bad) { st.lostT = 0; if (st.lost) { st.lost = false; say(last.s, last.info, 0, true); } }
       if (hitSrc && refSpace) {
         const hits = st.lost ? [] : frame.getHitTestResults(hitSrc), p = hits.length ? hits[0].getPose(refSpace) : null;
         if (p) reticle.matrix.fromArray(p.transform.matrix);
@@ -223,7 +230,8 @@ export function startAR(overlay, spec, ui = {}) {
       }
       anchors(frame);
       reticle.visible = st.hit && !st.placed;
-      if (!st.placed && !st.lost && performance.now() > hold) say(idle(), idleInfo());
+      /* po položení se po dočasné hlášce (třeba „čekám na GPS“) vrátí poslední trvalá */
+      if (!st.lost && performance.now() > hold) { if (!st.placed) say(idle(), idleInfo()); else if (hold) say(last.s, last.info, 0, true); }
       if (st.on) { if (st.last) st.d += Math.min(.1, (t - st.last) / 1000) * 4.5; st.last = t; if (st.d >= C.length) { st.d = C.length; st.on = false; if (st.placed) say('done'); } }
       C.pose(st.d);
       R.render(scene, camera);
@@ -233,7 +241,8 @@ export function startAR(overlay, spec, ui = {}) {
       if (st.ended) return; st.ended = true;
       R.setAnimationLoop(null);
       try { hitSrc && hitSrc.cancel(); } catch (e) { }
-      [st.anc, st.ancA].forEach(a => { try { a && a.delete(); } catch (e) { } });
+      /* kotvy skončí se sezením; anchor.delete() po konci sezení Chrome na Androidu shodí (spojení s ARCore už není) */
+      st.anc = st.ancA = null;
       const done = new Set();
       scene.traverse(o => {
         if (o.geometry && !done.has(o.geometry)) { done.add(o.geometry); o.geometry.dispose(); }
@@ -247,6 +256,8 @@ export function startAR(overlay, spec, ui = {}) {
     const api = {
       place() { return st.placed || st.lost ? false : st.mode === 'corners' ? corner() : st.mode === 'pair' ? pairTap() : place(); },
       replace, corners, pair: pairs, gps, rotate, nudge, setScale, play,
+      /* hláška od aplikace na pár vteřin (běžná hláška aplikace v AR vidět není), pak se vrátí ta předchozí */
+      hint(s, info, ms) { say(s, info, ms || 4000); },
       foot(on) { C.foot(!!on); return !!on; },
       end() { session.end().catch(cleanup); }, get placed() { return st.placed; }, get mode() { return st.mode; }, get length() { return C.length; },
       get pairNums() { return pair ? { a: pair.na, b: pair.nb } : null; }
