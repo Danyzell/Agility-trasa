@@ -2,7 +2,7 @@
 <title>Pawkur</title>
 <script>try{var t0=JSON.parse(localStorage.getItem('agility-theme-v1'));if(t0==='light'||t0==='dark')document.documentElement.setAttribute('data-theme',t0);}catch(e){}
 /* polština a němčina (3.4): slovník je v samostatném souboru (i18n/pl.js, i18n/de.js) a načte se jen pro zvolený jazyk, dřív než hlavní skript (stejné pravidlo jako LANG níž) */
-try{(function(){var q=location.search.match(/[?&]lang=(cs|en|pl|de)\b/),l=q?q[1]:JSON.parse(localStorage.getItem('agility-lang-v1')||'null');if(!l&&!navigator.webdriver){var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();if(/^(pl|de)/.test(n))l=n.slice(0,2);}if(l==='pl'||l==='de')document.write('<script src="i18n/'+l+'.js?v=3.5.3"><\/script>');})();}catch(e){}</script>
+try{(function(){var q=location.search.match(/[?&]lang=(cs|en|pl|de)\b/),l=q?q[1]:JSON.parse(localStorage.getItem('agility-lang-v1')||'null');if(!l&&!navigator.webdriver){var n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();if(/^(pl|de)/.test(n))l=n.slice(0,2);}if(l==='pl'||l==='de')document.write('<script src="i18n/'+l+'.js?v=3.5.4"><\/script>');})();}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -309,9 +309,12 @@ select.btn{padding-right:8px;}
 .arui[hidden]{display:none;}
 .ar-hint{margin:calc(14px + env(safe-area-inset-top,0px)) 16px 0; align-self:center; max-width:520px; background:rgba(10,20,14,.72); padding:10px 16px; border-radius:16px; font-size:15px; text-align:center;}
 .ar-hint:empty{display:none;}
-.ar-bar{pointer-events:auto; display:flex; flex-direction:column; gap:8px; padding:12px 12px calc(14px + env(safe-area-inset-bottom,0px)); background:rgba(10,20,14,.72);}
-.ar-row{display:flex; gap:8px;} .ar-row .btn{flex:1; justify-content:center; padding-left:6px; padding-right:6px;}
+.ar-bar{pointer-events:auto; display:flex; flex-direction:column; gap:8px; padding:12px max(12px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px)); background:rgba(10,20,14,.72);}
+/* čtyři způsoby položení se polsky a německy na 360–390 px nevejdou do řádku (Według GPS byl za okrajem): co se nevejde, jde o řádek níž */
+.ar-row{display:flex; flex-wrap:wrap; gap:8px;} .ar-row .btn{flex:1; justify-content:center; padding-left:6px; padding-right:6px;}
 .ar-fine{display:flex; flex-direction:column; gap:8px;} .ar-fine[hidden]{display:none;}
+/* na šířku nízkého telefonu (360 px) dvě řady doladění vedle sebe, jinak spodní řádek se Zavřít AR zajel pod okraj */
+@media (orientation:landscape) and (max-height:430px){ .ar-fine{flex-direction:row;} .ar-fine .ar-row{flex:1;} }
 .arui .btn[data-ar="fine"].on,.arui .btn[aria-pressed="true"]{background:#35443a; border-color:#5fb487;}
 .ar-row .seg{flex:2;} .ar-row .btn[hidden]{display:none;}
 .arui .btn{background:#233026; color:#e5ebe2; border-color:#35443a;} .arui .btn.primary{background:#5fb487; color:#0b1a11; border-color:#5fb487;}
@@ -2002,16 +2005,13 @@ i18nAdd({exact:{
 "Kdo poběží?": "Who's running?",
 "Podle psa aplikace nastaví výšky překážek a čas SČP a povede mu deník. Jak se jmenuje?": "From your dog, the app sets obstacle heights and the SCT and keeps the dog's diary. What's the dog's name?",
 /* 3.5.2: AR na iPhonu (Quick Look) na place ve skutečné velikosti, nebo model na stůl */
-"AR na iPhonu": "AR on iPhone", "Na place – skutečná velikost": "On the field – real size",
-"Postav se na start parkuru a miř telefonem na zem: start bude tam, kam míříš. Jedním prstem parkur posuneš, dvěma natočíš. Velikost zůstane 1 : 1.": "Stand at the start of the course and point the phone at the ground: the start goes where you point. Move the course with one finger, turn it with two. The size stays 1 : 1.",
+"AR na iPhonu": "AR on iPhone",
 "Zmenšený parkur 1 : 20, prsty ho zvětšíš, zmenšíš i natočíš.": "The course at 1 : 20; pinch to make it bigger or smaller and turn it.",
-"Přesné položení podle rohů kolbiště umí jen Android s Chromem. iPhone používá AR od Applu.": "Exact placement by the ring corners only works on Android with Chrome. iPhone uses Apple's AR.",
-"AR na iPhonu: na place ve skutečné velikosti se startem tam, kam míříš, nebo model na stůl": "AR on iPhone: on the field at real size with the start where you point, or a table model",
 /* 3.5.3: AR podle GPS kolbiště a podle dvou překážek, bez trávy, sloupky, půdorys, ztráta polohy */
 "Půdorys": "Outlines", "Místo překážek jen jejich obrysy na zemi": "Only the obstacles' outlines on the ground instead of the obstacles",
 "Položit parkur": "Place the course", "Podle překážek": "By obstacles", "Podle GPS": "By GPS", "Aktualizovat": "Update",
-"Postav se na start čelem k překážce 1, zamiř kroužek na místo startu a klepni.": "Stand at the start facing obstacle 1, aim the ring at the start spot and tap.",
-"Zamiř kroužek na místo startu a klepni, parkur se natočí podle kompasu. Bez chození ho položíš „Podle GPS“.": "Aim the ring at the start spot and tap; the course turns by the compass. To place it without walking, use “By GPS”.",
+"Stoupni si pár kroků za start čelem k překážce 1, zamiř kroužek na místo startu a klepni.": "Stand a few steps behind the start facing obstacle 1, aim the circle at the start spot and tap.",
+"Zamiř kroužek na místo startu a klepni, parkur se natočí podle kompasu. Bez chození ho položíš „Podle GPS“.": "Aim the circle at the start spot and tap; the course turns by the compass. To place it without walking, use “By GPS”.",
 "Parkur stojí natočený podle kolbiště. Kompas může o pár stupňů ujet: dorovnej ho v „Doladit“, nebo polož parkur přesně „Podle překážek“.": "The course is turned to match the ring. The compass can be a few degrees off: adjust it in “Fine-tune”, or place the course exactly “By obstacles”.",
 "Kompas zatím neví, kam telefon míří. Opiš telefonem ve vzduchu osmičku a zkus to znovu.": "The compass doesn't know yet where the phone is pointing. Draw a figure of eight in the air with the phone and try again.",
 "Čekám na polohu z GPS. Postůj chvíli pod volným nebem a zkus to znovu.": "Waiting for the GPS location. Stand under the open sky for a moment and try again.",
@@ -2027,7 +2027,7 @@ i18nAdd({exact:{
 "Kompas potřebuje zkalibrovat: opiš telefonem ve vzduchu osmičku.": "The compass needs calibrating: draw a figure of eight in the air with the phone.",
 "Pod střechou a u kovových konstrukcí bývají obojí horší. Parkur pak může stát o kus vedle nebo pootočený.": "Both are worse under a roof and near metal structures. The course may then be a bit off or turned.",
 "Otevřít i tak": "Open anyway",
-"Namiř telefon na zem asi dva kroky před sebe, směrem ke kolbišti, a drž ho. Za pár vteřin se otevře AR, telefonem nehýbej, dokud se parkur neobjeví.": "Point the phone at the ground about two steps ahead of you, towards the ring, and hold it there. AR opens in a few seconds; keep the phone still until the course appears.",
+"Namiř telefon nastojato na zem asi dva kroky před sebe, směrem ke kolbišti, a drž ho. Za pár vteřin iPhone nabídne AR: potvrď a miř dál stejným směrem. Když chce, ať s ním pohneš, posouvej ho do stran, neotáčej se.": "Hold the phone upright and point it at the ground about two steps ahead of you, towards the ring. In a few seconds the iPhone offers View in AR: confirm and keep pointing the same way. If it asks you to move the phone, slide it sideways, don't turn.",
 "Zjišťuji polohu…": "Finding your location…",
 "Kompas v telefonu nejde použít. Zkus „Na place od startu“.": "The phone's compass can't be used. Try “On the field from the start”.",
 "AR na place podle GPS kolbiště (i na iPhonu), na Androidu také podle dvou překážek": "AR on the field by the ring's GPS location (iPhone too); on Android also by two obstacles",
@@ -2055,12 +2055,13 @@ i18nAdd({exact:{
 "Délka trati a vzdálenosti na plánku v metrech, ve stopách, nebo jako u AKC: délka trati v yardech a vzdálenosti ve stopách. Rychlost je u stop a yardů v yardech za sekundu. Parkury se dál ukládají v metrech.": "Course length and distances on the plan in metres, in feet, or as in AKC: course length in yards and distances in feet. With feet and yards the speed is in yards per second. Courses are still saved in metres."
 },num:{
 /* 3.5.3: AR podle dvou překážek a podle GPS */
-"Dojdi k překážce # a zamiř zelený kroužek na zem pod její střed. Pak klepni.": "Walk to obstacle # and aim the green ring at the ground under its middle. Then tap.",
-"Teď dojdi k překážce #, zamiř kroužek na zem pod její střed a klepni.": "Now walk to obstacle #, aim the ring at the ground under its middle and tap.",
+"Dojdi k překážce # a zamiř zelený kroužek na zem pod její střed. Pak klepni.": "Walk to obstacle # and aim the green circle at the ground under its middle. Then tap.",
+"Teď dojdi k překážce #, zamiř kroužek na zem pod její střed a klepni.": "Now walk to obstacle #, aim the circle at the ground under its middle and tap.",
 "Překážky jsou moc blízko u sebe. Dojdi k překážce # a klepni pod její střed.": "The obstacles are too close together. Walk to obstacle # and tap under its middle.",
 "Parkur stojí podle překážek # a #. Na place jsou od sebe # m, na plánu # m.": "The course is placed by obstacles # and #. They are # m apart on the field, # m on the plan.",
 "Překážky # a # jsou od sebe # m, ale na plánu # m. Zkontroluj je a zkus to znovu „Podle překážek“, nebo dorovnej v „Doladit“.": "Obstacles # and # are # m apart, but # m on the plan. Check them and try “By obstacles” again, or adjust in “Fine-tune”.",
 "Parkur stojí podle GPS (± # m) a kompasu. Dorovnej ho v „Doladit“, nebo ho polož přesně „Podle překážek“.": "The course is placed by GPS (± # m) and the compass. Adjust it in “Fine-tune”, or place it exactly “By obstacles”.",
+"Parkur stojí podle GPS (± # m) a kompasu. Dorovnej ho v „Doladit“, nebo ho polož přesně „Podle rohů“.": "The course is placed by GPS (± # m) and the compass. Adjust it in “Fine-tune”, or place it exactly “By corners”.",
 "Kolbiště je # m od tebe. Podle GPS jde parkur položit jen na kolbišti nebo u něj.": "The ring is # m away from you. By GPS the course can only be placed on or next to the ring.",
 "Kolbiště je # km od tebe. Podle GPS jde parkur položit jen na kolbišti nebo u něj.": "The ring is # km away from you. By GPS the course can only be placed on or next to the ring.",
 "Poloha ± # m": "Location ± # m", "směr #°": "direction #°",
@@ -2513,10 +2514,9 @@ var I18N_EXTRA={exact:{
 "Doladit": "Fine-tune",
 "Doladit polohu": "Fine-tune position",
 "Velikost": "Size",
-"Pomalu pohybuj telefonem a miř na zem, až se objeví zelený kroužek.": "Move the phone slowly and point at the ground until a green ring appears.",
-"Zamiř kroužek na místo startu a klepni na obrazovku.": "Aim the ring at the start spot and tap the screen.",
+"Pomalu pohybuj telefonem a miř na zem, až se objeví zelený kroužek.": "Move the phone slowly and point at the ground until a green circle appears.",
 "Zem se zatím nenašla. Miř telefonem na zem a pomalu s ním pohybuj.": "No ground found yet. Point the phone at the ground and move it slowly.",
-"Zamiř kroužek na stůl nebo na zem a klepni. Model se položí středem.": "Aim the ring at a table or the floor and tap. The model is placed by its centre.",
+"Zamiř kroužek na stůl nebo na zem a klepni. Model se položí středem.": "Aim the circle at a table or the floor and tap. The model is placed by its centre.",
 "Model stojí. Pusť psa, nebo ho natoč v „Doladit“.": "The model is set up. Run the dog, or turn it in “Fine-tune”.",
 "Dojdi do rohu kolbiště, který je na plánu vlevo nahoře, zamiř na něj zelený kroužek a klepni.": "Walk to the corner of the ring that is top left on the plan, aim the green circle at it and tap.",
 "Teď dojdi podél dlouhé strany do rohu vpravo nahoře, zamiř na něj zelený kroužek a klepni.": "Now walk along the long side to the top right corner, aim the green circle at it and tap.",
@@ -9696,7 +9696,7 @@ try{ if(!AR.ql&&navigator.xr&&navigator.xr.isSessionSupported) navigator.xr.isSe
 /* 3.5.3 (uživatel z UK: „nepůjdu do rohů“, na iPhonu „start vpravo a špatně natočené“, zelená plocha zakrývala zem): parkur ve skutečné
    velikosti bez trávy, se sloupky v rozích a na startu; od startu čelem k překážce 1, podle dvou překážek, podle GPS kolbiště;
    položený parkur drží kotva, po ztrátě polohy hláška */
-var AR_TXT={scan:'Pomalu pohybuj telefonem a miř na zem, až se objeví zelený kroužek.',ready:'Postav se na start čelem k překážce 1, zamiř kroužek na místo startu a klepni.',
+var AR_TXT={scan:'Pomalu pohybuj telefonem a miř na zem, až se objeví zelený kroužek.',ready:'Stoupni si pár kroků za start čelem k překážce 1, zamiř kroužek na místo startu a klepni.',
   readyAz:'Zamiř kroužek na místo startu a klepni, parkur se natočí podle kompasu. Bez chození ho položíš „Podle GPS“.',
   readyModel:'Zamiř kroužek na stůl nebo na zem a klepni. Model se položí středem.',
   noground:'Zem se zatím nenašla. Miř telefonem na zem a pomalu s ním pohybuj.',placed:'Parkur stojí. Projdi se po něm, nebo pusť psa.',
@@ -9708,13 +9708,17 @@ var AR_TXT={scan:'Pomalu pohybuj telefonem a miř na zem, až se objeví zelený
   gpsCompass:'Kompas zatím neví, kam telefon míří. Opiš telefonem ve vzduchu osmičku a zkus to znovu.',
   gpsWait:'Čekám na polohu z GPS. Postůj chvíli pod volným nebem a zkus to znovu.',
   lost:'Telefon ztratil přehled o okolí. Miř chvíli na zem a pomalu s ním pohybuj, parkur se pak vrátí na místo.',
+  gpsDenied:'Aplikace nemá povolenou polohu. Povol ji v nastavení prohlížeče.',
   done:'Hotovo. Pusť psa znovu, nebo parkur polož jinam.'};
 /* anonymní počty (Návštěvnost): jak se parkur položil */
 var AR_ACT={placed:'ar_pl',placedAz:'ar_az',placedModel:'ar_model',placedCorners:'ar_cor',placedCornersOff:'ar_cor',placedPair:'ar_pair',placedPairOff:'ar_pair',placedGps:'ar_gps'};
-function arHint(s,info){
+function arHint(s,info,re){
   AR.st=s; info=info||{}; var n=function(v){ v=+v||0; return Math.abs(v-Math.round(v))<.05?String(Math.round(v)):fmt(v); }, t=AR_TXT[s]||'';
-  if(AR_ACT[s]){ if(!AR.pl) act(AR_ACT[s]); AR.pl=1; } else if(s!=='lost') AR.pl=0;
+  /* každé položení jednou; hláška vrácená po ztrátě polohy nebo po dočasné hlášce (re) není nové položení */
+  if(AR_ACT[s]&&!re) act(AR_ACT[s]);
   if(s==='lost'&&!AR.lostN){ AR.lostN=1; act('ar_lost'); }
+  /* bez dvou vhodných překážek tlačítko Podle překážek není, nápověda radí rohy */
+  if(s==='placedAz'&&!AR.pair) t='Parkur stojí natočený podle kolbiště. Kompas může o pár stupňů ujet: dorovnej ho v „Doladit“, nebo polož parkur přesně „Podle rohů“.';
   if(s==='placedCorners') t='Parkur stojí podle rohů kolbiště. Rohy jsou od sebe '+n(info.d)+' m, na plánu '+n(info.w)+' m.';
   if(s==='placedCornersOff') t='Rohy jsou od sebe '+n(info.d)+' m, ale plán má '+n(info.w)+' m. Zkontroluj rohy a zkus to znovu „Podle rohů“, nebo dorovnej v „Doladit“.';
   if(s==='pairA') t='Dojdi k překážce '+info.a+' a zamiř zelený kroužek na zem pod její střed. Pak klepni.';
@@ -9722,7 +9726,8 @@ function arHint(s,info){
   if(s==='pairNear') t='Překážky jsou moc blízko u sebe. Dojdi k překážce '+info.b+' a klepni pod její střed.';
   if(s==='placedPair') t='Parkur stojí podle překážek '+info.a+' a '+info.b+'. Na place jsou od sebe '+n(info.d)+' m, na plánu '+n(info.w)+' m.';
   if(s==='placedPairOff') t='Překážky '+info.a+' a '+info.b+' jsou od sebe '+n(info.d)+' m, ale na plánu '+n(info.w)+' m. Zkontroluj je a zkus to znovu „Podle překážek“, nebo dorovnej v „Doladit“.';
-  if(s==='placedGps') t='Parkur stojí podle GPS (± '+n(info.acc)+' m) a kompasu. Dorovnej ho v „Doladit“, nebo ho polož přesně „Podle překážek“.';
+  if(s==='placedGps') t='Parkur stojí podle GPS (± '+n(info.acc)+' m) a kompasu. Dorovnej ho v „Doladit“, nebo ho polož přesně „'+(AR.pair?'Podle překážek':'Podle rohů')+'“.';
+  if(s==='gpsFar') t=arFarTxt(info.d);
   var h=$('arHint'), k=s+(info.d!=null?':'+info.d+':'+info.w:'')+(info.a!=null?':'+info.a+':'+info.b:'')+(info.acc!=null?':'+info.acc:''); if(h.getAttribute('data-s')===k) return;
   h.setAttribute('data-s',k); h.textContent=T(t);
   /* doladění jen u položeného parkuru */
@@ -9736,13 +9741,13 @@ function arStart(){
   if(AR.ql){ arQlSheet(); return; }
   V3.on=false; $('p3play').textContent=T('Přehrát');
   /* každé AR začíná ve skutečné velikosti se zavřeným doladěním a celými překážkami */
-  var ov=$('arUi'); AR.fine=false; AR.foot=false; AR.pl=0; AR.lostN=0; ov.hidden=false; arHint('scan'); ov.querySelector('[data-ar="play"]').textContent=T('Pustit psa');
+  var ov=$('arUi'); AR.fine=false; AR.foot=false; AR.lostN=0; ov.hidden=false; arHint('scan'); ov.querySelector('[data-ar="play"]').textContent=T('Pustit psa');
   Array.prototype.forEach.call($('arScale').children,function(c){ c.classList.toggle('on',c.getAttribute('data-ar')==='real'); });
   var cur=null, sp=course3dSpec(), rg=ringFor(S.meta.id);
   /* kolbiště se zaměřeným natočením: parkur se při položení natočí podle kompasu (směr, kam míří kamera), „Podle GPS“ ho položí
      i bez chození. Kompas ukazuje magnetický sever, natočení kolbiště je zeměpisné: převod přes deklinaci v místě kolbiště */
   AR.rg=rg&&rg.az!=null?rg:null; AR.sp=sp; AR.pair=V3D.m.arMath&&V3D.m.arMath.pickPair?V3D.m.arMath.pickPair(sp.obs):null;
-  if(AR.rg){ sp.az=ringAzMag(rg); arCompass(true); arGeo(true); }
+  if(AR.rg){ sp.az=ringAzMag(rg); arCompass(true); arGeoAllowed(); }
   arPutBtns(false); arFineBtn(); arFootBtn();
   var stop=function(){ arCompass(false); arGeo(false); AR.api=null; ov.hidden=true; };
   try{ cur=V3D.m.startAR(ov,sp,{onState:arHint,heading:function(){ return AR.h; },onEnd:function(){ stop(); if(C3.api) render3d(); }}); }
@@ -9769,11 +9774,16 @@ function arHeadAdd(h){
 function arGeo(on){
   if(AR.geo){ try{ navigator.geolocation.clearWatch(AR.geo.id); }catch(e){} AR.geo=null; }
   if(!on||!navigator.geolocation) return;
-  var G=AR.geo={id:null,sm:[]};
+  var G=AR.geo={id:null,sm:[],no:false};
   try{ G.id=navigator.geolocation.watchPosition(function(p){ var c=p.coords, t=Date.now(); if(!(c.accuracy<=40)) return;
-    G.sm=G.sm.filter(function(x){ return x.t>=t-15000; }).concat([{lat:c.latitude,lng:c.longitude,acc:c.accuracy,t:t}]).slice(-12); },function(){},{enableHighAccuracy:true,maximumAge:0,timeout:30000}); }catch(e){}
+    G.sm=G.sm.filter(function(x){ return x.t>=t-15000; }).concat([{lat:c.latitude,lng:c.longitude,acc:c.accuracy,t:t}]).slice(-12); },function(e){ if(e&&e.code===1) G.no=true; },{enableHighAccuracy:true,maximumAge:0,timeout:30000}); }catch(e){}
 }
-function arGeoNow(){ var G=AR.geo, p=G&&G.sm.length?geoAvg(G.sm):null; return p&&AR.rg?arPlanXY(AR.rg,p,AR.sp.W,AR.sp.H):null; }
+/* při startu AR poloha jen s už povolenou polohou: žádost o svolení by vyskočila zároveň se startem AR; jinak až klepnutím na Podle GPS */
+function arGeoAllowed(){ try{ navigator.permissions.query({name:'geolocation'}).then(function(p){ if(p.state==='granted'&&AR.rg&&!AR.geo) arGeo(true); },function(){}); }catch(e){} }
+/* měření z posledních 5 s (telefon je teď tady, ne kde byl, když se chodilo), bez nich z 15 s; starší ne: když GPS přestane
+   posílat (střecha, hala), staré polohy by parkur položily jinam */
+function arGeoNow(){ var G=AR.geo, t=Date.now(), w=function(ms){ return G?G.sm.filter(function(x){ return x.t>=t-ms; }):[]; }, sm=w(5000);
+  if(!sm.length) sm=w(15000); var p=sm.length?geoAvg(sm):null; return p&&AR.rg?arPlanXY(AR.rg,p,AR.sp.W,AR.sp.H):null; }
 /* poloha z GPS → souřadnice plánu (m): střed kolbiště = střed plochy, osa x plánu na zeměpisném kurzu rg.az, osa y o 90° doprava */
 function arPlanXY(rg,p,W,H){ var d=geoDist(rg,p), b=(geoBrg(rg,p)-rg.az)*G2R; return {x:W/2+d*Math.cos(b),y:H/2+d*Math.sin(b),acc:p.acc,d:d}; }
 function arFar(u){ return u&&u.d>Math.max(AR.sp?AR.sp.W:40,AR.sp?AR.sp.H:20)+150; }
@@ -9799,45 +9809,58 @@ function arQlSheet(){
 function arQuickLook(o){
   o=o||{}; if(!V3D.m.quickLookBlob||AR.busy) return; AR.busy=true; toast(T('Připravuji AR, chvilku…'));
   act(o.gps?'ar_qlgps':o.model?'ar_qlm':'ar_ql'); if(o.foot) act('ar_foot');
-  V3D.m.quickLookBlob(o.spec||course3dSpec(),{model:!!o.model,foot:!!o.foot,gps:o.gps||null}).then(function(b){
+  /* chyba už při stavbě scény (synchronně) nesmí nechat AR.busy navždy zapnuté */
+  Promise.resolve().then(function(){ return V3D.m.quickLookBlob(o.spec||course3dSpec(),{model:!!o.model,foot:!!o.foot,gps:o.gps||null}); }).then(function(b){
     AR.busy=false; if(AR.url) URL.revokeObjectURL(AR.url); AR.url=URL.createObjectURL(b);
     /* na place bez zmenšování prsty (dvěma prsty se jen otáčí), model na stůl jde zvětšit i zmenšit */
     var a=document.createElement('a'); a.rel='ar'; a.href=AR.url+'#allowsContentScaling='+(o.model?1:0); a.appendChild(document.createElement('img'));
     document.body.appendChild(a); a.click(); setTimeout(function(){ if(a.parentNode) a.parentNode.removeChild(a); },1000);
   },function(){ AR.busy=false; toast(T('AR se nepodařilo spustit.')); });
 }
-/* iPhone podle GPS: kompas (svolení musí přijít přímo z klepnutí) a průměr polohy za 4 s, mezitím telefon míří na zem před sebe */
+/* iPhone podle GPS: kompas (svolení musí přijít přímo z klepnutí) a průměr polohy za 4 s, mezitím telefon míří na zem před sebe.
+   Safari posílá kurz 0 s přesností −1, dokud Core Location směr nezná; záporná přesnost = neplatný kurz (CLHeading.headingAccuracy),
+   takové čtení se nepočítá. Kurz je směr horní hrany telefonu: na šířku (gamma přes 50°) by byl o 90° vedle, taky se nepočítá.
+   Okno zavřené jakkoli (Zrušit, klepnutí vedle, Escape) měření i kompas ukončí; dvě měření najednou nejdou (AR.qlg). */
 function arQlGps(foot){
-  var rg=ringFor(S.meta.id); if(!rg||rg.az==null||AR.busy) return;
+  var rg=ringFor(S.meta.id); if(!rg||rg.az==null||AR.busy||AR.qlg) return;
   if(!navigator.geolocation){ toast(T(geoErrTxt('none'))); return; }
-  var H={x:0,y:0,n:0}, ev='ondeviceorientationabsolute' in window?'deviceorientationabsolute':'deviceorientation', live=true;
-  var fn=function(e){ var h=camHeading(e); if(h==null) return; var a=h*G2R; if(!H.n){ H.x=Math.sin(a); H.y=Math.cos(a); } else { H.x+=(Math.sin(a)-H.x)*.15; H.y+=(Math.cos(a)-H.y)*.15; } H.n++;
-    if(typeof e.webkitCompassAccuracy==='number') H.acc=e.webkitCompassAccuracy; };
-  var off=function(){ live=false; window.removeEventListener(ev,fn); if(AR.meas){ AR.meas.cancel(); AR.meas=null; } };
+  var H={x:0,y:0,n:0,acc:null,bad:false}, ev='ondeviceorientationabsolute' in window?'deviceorientationabsolute':'deviceorientation', live=true, M=null;
+  var fn=function(e){ var h=camHeading(e), c=e.webkitCompassAccuracy; if(h==null) return;
+    if(typeof c==='number'){ H.bad=c<0; if(c<0) return; H.acc=c; }
+    if(e.gamma!=null&&Math.abs(e.gamma)>50) return;
+    var a=h*G2R; if(!H.n){ H.x=Math.sin(a); H.y=Math.cos(a); } else { H.x+=(Math.sin(a)-H.x)*.15; H.y+=(Math.cos(a)-H.y)*.15; } H.n++; };
+  var off=function(){ live=false; AR.qlg=false; window.removeEventListener(ev,fn); if(M){ M.cancel(); M=null; } };
+  AR.qlg=true;
   try{ if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function') DeviceOrientationEvent.requestPermission().then(function(r){ if(r==='granted'&&live) window.addEventListener(ev,fn); },function(){}); else window.addEventListener(ev,fn); }catch(e){}
   var hd=function(){ return (Math.atan2(H.x,H.y)/G2R+360)%360; };
-  openSheet('<h3>AR podle GPS</h3><p>Namiř telefon na zem asi dva kroky před sebe, směrem ke kolbišti, a drž ho. Za pár vteřin se otevře AR, telefonem nehýbej, dokud se parkur neobjeví.</p><p class="hint" id="qlGpsSt" role="status">Zjišťuji polohu…</p><div class="acts"><button class="btn" data-a="x">Zrušit</button></div>',
+  /* Safari se od iOS 17.5 před AR zeptá „Zobrazit v AR?“ a Quick Look pak chce pohnout telefonem: natočení se bere z kurzu teď,
+     každé otočení potom by otočilo celý parkur (asi 35 cm na stupeň ve 20 m), proto posouvat do stran, neotáčet se */
+  openSheet('<h3>AR podle GPS</h3><p>Namiř telefon nastojato na zem asi dva kroky před sebe, směrem ke kolbišti, a drž ho. Za pár vteřin iPhone nabídne AR: potvrď a miř dál stejným směrem. Když chce, ať s ním pohneš, posouvej ho do stran, neotáčej se.</p><p class="hint" id="qlGpsSt" role="status">Zjišťuji polohu…</p><div class="acts"><button class="btn" data-a="x">Zrušit</button></div>',
     function(e){ if(e.target.closest('[data-a]')){ off(); closeSheet(); } });
-  /* kompas se s povolením může rozběhnout později než GPS: na první čtení se počká ještě nejvýš 3 s */
-  var go=function(p,k){
-    if(!live) return;
-    if(!H.n&&k<6){ setTimeout(function(){ go(p,k+1); },500); return; }
-    var sp=course3dSpec(), u=arPlanXY(rg,p,sp.W,sp.H), h=hd(), n=H.n, ca=H.acc; off();
-    if(!n){ closeSheet(); toast(T('Kompas v telefonu nejde použít. Zkus „Na place od startu“.'),5000); return; }
+  /* okno zavřené jinak než Zrušit (klepnutí vedle, Escape, jiné okno): měření i kompas skončí a AR se samo neotevře */
+  var st=$('qlGpsSt'), gone=function(){ if(live&&!$('sheet').contains(st)) off(); return !live; };
+  /* kompas se s povolením může rozběhnout později než GPS: na první platné čtení se počká ještě nejvýš 3 s */
+  var go=function(p,k,sm){
+    if(gone()) return;
+    if(!H.n&&k<6){ setTimeout(function(){ go(p,k+1,sm); },500); return; }
+    var sp=course3dSpec(), u=arPlanXY(rg,p,sp.W,sp.H), h=hd(), n=H.n, ca=H.acc, cb=H.bad; off();
+    if(!n){ closeSheet(); toast(T(cb?'Kompas potřebuje zkalibrovat: opiš telefonem ve vzduchu osmičku.':'Kompas v telefonu nejde použít. Zkus „Na place od startu“.'),5000); return; }
     if(u.d>Math.max(sp.W,sp.H)+150){ closeSheet(); toast(T(arFarTxt(u.d)),5000); return; }
     var open=function(){ closeSheet(); arQuickLook({spec:sp,foot:foot,gps:{x:u.x,y:u.y,h:h,az:ringAzMag(rg),ahead:2}}); };
-    /* pod střechou a u kovu (krytá hala, video od uživatele z UK) bývá GPS i kompas nepřesný: rozhodne člověk */
-    var badG=p.acc>8, badC=ca!=null&&(ca<0||ca>25);
+    /* pod střechou a u kovu (krytá hala, video od uživatele z UK) bývá GPS i kompas nepřesný: rozhodne člověk. Přesnost podle
+       prostředního měření (průměr geoAvg je nejvýš poloviční proti nejlepšímu měření, ± 15 m by prošlo) */
+    var ga=(sm&&sm.length?sm.map(function(x){ return x.acc; }).sort(function(a,b){ return a-b; })[sm.length>>1]:p.acc), badG=ga>10, badC=cb||ca!=null&&ca>25;
     if(!badG&&!badC){ open(); return; }
-    openSheet('<h3>AR podle GPS</h3>'+(badG?'<p>GPS teď ukazuje polohu jen na ± '+Math.round(p.acc)+' m.</p>':'')+
-      (badC?'<p>'+(ca<0?'Kompas potřebuje zkalibrovat: opiš telefonem ve vzduchu osmičku.':'Kompas teď ukazuje směr jen na ± '+Math.round(ca)+'°.')+'</p>':'')+
+    openSheet('<h3>AR podle GPS</h3>'+(badG?'<p>GPS teď ukazuje polohu jen na ± '+Math.round(ga)+' m.</p>':'')+
+      (badC?'<p>'+(cb?'Kompas potřebuje zkalibrovat: opiš telefonem ve vzduchu osmičku.':'Kompas teď ukazuje směr jen na ± '+Math.round(ca)+'°.')+'</p>':'')+
       '<p class="hint">Pod střechou a u kovových konstrukcí bývají obojí horší. Parkur pak může stát o kus vedle nebo pootočený.</p>'+
       '<div class="acts"><button class="btn" data-a="x">Zrušit</button><button class="btn" data-a="start">Na place od startu</button><button class="btn primary" data-a="go">Otevřít i tak</button></div>',
       function(e){ var b=e.target.closest('[data-a]'); if(!b) return; var a=b.getAttribute('data-a'); if(a==='go') open(); else if(a==='start'){ closeSheet(); arQuickLook({foot:foot}); } else closeSheet(); });
   };
-  AR.meas=geoMeasure(4,function(t){ var el=$('qlGpsSt'); if(el) el.textContent=t.acc!=null?T('Poloha ± '+Math.max(1,Math.round(t.acc))+' m')+(H.n?' · '+T('směr '+Math.round(hd())+'°'):''):T('Zjišťuji polohu…'); },
-    function(p){ AR.meas=null; go(p,0); },
-    function(k){ AR.meas=null; if(!live) return; off(); closeSheet(); toast(T(geoErrTxt(k)),5000); });
+  try{ M=geoMeasure(4,function(t){ if(gone()) return; st.textContent=t.last!=null?T('Poloha ± '+Math.max(1,Math.round(t.last))+' m')+(H.n?' · '+T('směr '+Math.round(hd())+'°'):''):T('Zjišťuji polohu…'); },
+    function(p,sm){ M=null; go(p,0,sm); },
+    function(k){ M=null; if(gone()) return; off(); closeSheet(); toast(T(geoErrTxt(k)),5000); }); }
+  catch(e){ off(); closeSheet(); toast(T(geoErrTxt('')),5000); }
 }
 $('p3ar').onclick=arStart; $('arBtn').onclick=arStart;
 /* klepnutí na ovládání nesmí položit parkur */
@@ -9845,7 +9868,8 @@ $('arUi').addEventListener('beforexrselect',function(e){ if(e.target.closest('.a
 $('arUi').addEventListener('click',function(e){
   var b=e.target.closest('[data-ar]'); if(!b||!AR.api) return; var a=b.getAttribute('data-ar');
   if(a==='place') AR.api.replace(); else if(a==='corners') AR.api.corners(); else if(a==='pair') AR.api.pair();
-  else if(a==='gps'){ var u=arGeoNow(); if(arFar(u)) toast(T(arFarTxt(u.d)),5000); else AR.api.gps(u); }
+  else if(a==='gps'){ if(!AR.geo) arGeo(true); var u=arGeoNow();
+    if(AR.geo&&AR.geo.no) AR.api.hint('gpsDenied'); else if(arFar(u)) AR.api.hint('gpsFar',{d:Math.round(u.d)}); else AR.api.gps(u); }
   else if(a==='foot'){ AR.foot=!AR.foot; AR.api.foot(AR.foot); arFootBtn(); if(AR.foot) act('ar_foot'); }
   else if(a==='fine'){ AR.fine=!AR.fine; arFineBtn(); }
   else if(a==='rot') AR.api.rotate(+b.getAttribute('data-v'));
@@ -11622,7 +11646,7 @@ function appShare(){
   dnCopy(APP_URL);
 }
 /* ---------- Napsat autorovi: hodnocení a zpráva, server ji uloží a pošle autorovi e-mailem ---------- */
-var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.5.3';
+var FBK='agility-fb-v1', RATEK='agility-rate-v1', APPV='3.5.4';
 var FB=Object.assign({stars:0,kind:'idea',msg:'',mail:''},lsGet(FBK,{})), FB_SENT=false, FB_BUSY=false;
 function fbSave(){ lsSet(FBK,FB); }
 var FB_KINDS=[['idea','Nápad'],['bug','Chyba'],['praise','Pochvala'],['other','Jiné']];

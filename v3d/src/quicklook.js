@@ -35,12 +35,27 @@ export function quickLookScene(spec, o) {
     if (q.isInstancedMesh) { inst.push(q); return; }
     if (q.isMesh) q.material = Array.isArray(q.material) ? q.material.map(conv) : conv(q.material);
   });
+  /* USDZ nezná oboustranné materiály (látka tunelu, síť plůtku): rub jako druhá síť s obrácenými trojúhelníky a normálami,
+     jinak je tunel zevnitř a z konců průhledný */
+  const two = [];
+  g.traverse(q => { if (q.isMesh && !q.isInstancedMesh && q.material && !Array.isArray(q.material) && q.material.side === THREE.DoubleSide) two.push(q); });
+  two.forEach(q => {
+    const b = q.geometry.index ? q.geometry.toNonIndexed() : q.geometry.clone(), pa = b.attributes.position, na = b.attributes.normal, ua = b.attributes.uv;
+    for (let i = 0; i < pa.count; i += 3) [pa, na, ua].forEach(a => { if (!a) return; for (let c = 0; c < a.itemSize; c++) { const t = a.getComponent(i + 1, c); a.setComponent(i + 1, c, a.getComponent(i + 2, c)); a.setComponent(i + 2, c, t); } });
+    if (na) for (let i = 0; i < na.count; i++) na.setXYZ(i, -na.getX(i), -na.getY(i), -na.getZ(i));
+    q.material = q.material.clone(); q.material.side = THREE.FrontSide;
+    const r = new THREE.Mesh(b, q.material); r.name = 'rub'; r.position.copy(q.position); r.quaternion.copy(q.quaternion); r.scale.copy(q.scale); q.parent.add(r);
+  });
   inst.forEach(q => {
     const gs = [], m = new THREE.Matrix4();
     for (let i = 0; i < q.count; i++) { q.getMatrixAt(i, m); gs.push(q.geometry.clone().applyMatrix4(m)); }
     if (gs.length) { const d = new THREE.Mesh(mergeGeometries(gs), conv(q.material)); d.position.copy(q.position); d.quaternion.copy(q.quaternion); d.scale.copy(q.scale); q.parent.add(d); gs.forEach(x => x.dispose()); }
     q.parent.remove(q);
   });
+  /* Quick Look staví na nalezenou zem nejnižší bod modelu, ne rovinu y = 0: konec desky houpačky (−5 cm) a nožky cedulek pod zemí
+     by nad skutečnou zem zvedly celý parkur i s čarami; zvedne se jen to, co pod zem leze */
+  g.updateMatrixWorld(true);
+  g.children.forEach(q => { const b = new THREE.Box3().setFromObject(q, true); if (b.min.y < 0) q.position.y -= b.min.y; });
   let origin, yaw = 0, k = 1;
   if (o.model) { origin = { x: spec.W / 2, z: spec.H / 2 }; k = 1 / 20; }
   else if (o.gps) {

@@ -114,10 +114,11 @@ export function buildCourse(scene, spec, Q, opts = {}) {
   });
 
   /* čísla agility na straně nájezdu jako v Plánu (3.5.3: dřív vždy vlevo před vstupem podle natočení překážky, i když ji pes bral
-     z druhé strany; „Číslo na druhou stranu“ se do 3D a AR nepromítlo); cedulka čelem proti nájezdu psa */
+     z druhé strany; „Číslo na druhou stranu“ se do 3D a AR nepromítlo); cedulka čelem proti nájezdu psa: líc cedulky je +z
+     (stojánek vzadu, jako u Hoopers), proto osa +z míří proti směru nájezdu */
   if (useSigns) spec.signs.forEach(q => {
     const s = ob.numSign(q.t); s.scale.setScalar(String(q.t).length > 2 ? 1.6 : 1.4);
-    s.position.set(q.x, 0, q.y); s.rotation.y = Math.atan2(q.dx == null ? 1 : q.dx, q.dy == null ? 0 : q.dy); s.name = 'sign'; scene.add(s);
+    s.position.set(q.x, 0, q.y); s.rotation.y = Math.atan2(-(q.dx == null ? 1 : q.dx), -(q.dy == null ? 0 : q.dy)); s.name = 'sign'; scene.add(s);
   });
 
   /* dráha psa */

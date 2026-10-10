@@ -316,7 +316,8 @@ export function handlerArea(o = {}) {
 
 /* ---------- číslo překážky (cedulka na stojánku) ---------- */
 export function numSign(n) {
-  const tx = canvasTex(128, 128, x => { x.fillStyle = '#fff'; x.fillRect(0, 0, 128, 128); x.fillStyle = '#1f6b45'; x.font = '800 92px sans-serif'; x.textAlign = 'center'; x.fillText(String(n), 64, 98); });
+  /* víc čísel (14·18) se zúží na šířku cedulky, dřív z nich byl vidět jen kus uprostřed */
+  const tx = canvasTex(128, 128, x => { x.fillStyle = '#fff'; x.fillRect(0, 0, 128, 128); x.fillStyle = '#1f6b45'; x.font = '800 92px sans-serif'; x.textAlign = 'center'; x.fillText(String(n), 64, 98, 120); });
   const w = mat('#fff'), f = new THREE.MeshStandardMaterial({ map: tx });
   const g = new THREE.Group(), s = new THREE.Mesh(new THREE.BoxGeometry(.3, .3, .02), [w, w, w, w, f, f]); s.position.y = .3; s.rotation.x = -.35; g.add(s);
   const leg = new THREE.Mesh(new THREE.BoxGeometry(.02, .3, .02), mat('#999')); leg.position.set(0, .14, -.06); g.add(leg);
