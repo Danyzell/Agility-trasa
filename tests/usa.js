@@ -88,6 +88,16 @@ module.exports = async function ({ browser, base }) {
       ok(m.us && m.lvl === 'U2' && m.sct === Math.round(Math.round(m.len * 10) / 10 / 0.9144 / 2.65) + 5 && m.mct === m.sct + 20, 'parkur v Plánu: čas podle psa (Open, 20"): ' + JSON.stringify(m));
       ok(/Course length \d+ yd/.test(m.specs) && /Standard Open · 20"/.test(m.specs) && /2\.65 yd\/s/.test(m.specs) && /SCT \+ 20 s \(AKC\)/.test(m.specs), 'Plán v yardech a podle AKC: ' + m.specs);
       ok(m.seg.length && m.seg.every(x => / ft$/.test(x)), 'vzdálenosti na plánu ve stopách: ' + JSON.stringify(m.seg));
+      /* 3.5: kontrola FCI se s pravidly AKC neukazuje; plocha ve stopách (kruhy AKC), parkur z knihovny má vlastní položku */
+      const f = await ev(() => ({ fci: $('fciBar').hidden, marks: document.querySelectorAll('#obs .ob.bad').length,
+        opts: [...$('sizeSelect').options].map(o => o.value + '=' + o.textContent), val: $('sizeSelect').value }));
+      ok(f.fci && f.marks === 0, 'kontrola FCI nemá být s pravidly AKC vidět: ' + JSON.stringify(f));
+      ok(f.opts.some(o => o === '30.48x30.48=Field 100 × 100 ft') && f.opts.some(o => o === '30.48x24.38=Field 100 × 80 ft') && f.opts.some(o => /^40x24=Field 131 × 79 ft$/.test(o)) && !f.opts.some(o => / m$/.test(o)), 'velikosti plochy ve stopách: ' + JSON.stringify(f.opts));
+      await ev(() => { $('sizeSelect').value = '30.48x30.48'; $('sizeSelect').dispatchEvent(new Event('change')); }); await page.waitForTimeout(200);
+      const sz = await ev(() => ({ open: !$('scrim').hidden, txt: $('sheet').innerText.replace(/\s+/g, ' ') }));
+      ok(sz.open && /On a 100 × 100 ft field/.test(sz.txt), 'okno při změně plochy ve stopách: ' + sz.txt.slice(0, 160));
+      await page.click('#sheet [data-a="scale"]'); await page.waitForTimeout(200);
+      ok(await ev(() => S.W === 30.48 && S.H === 30.48 && $('sizeSelect').value === '30.48x30.48'), 'plocha 100 × 100 ft se nepoužila: ' + await ev(() => S.W + 'x' + S.H));
     });
     await run(T, 'USA: americké termíny a bodování AKC ve stopkách', async () => {
       const w = await ev(() => ['Houpačka', 'Kruh', 'Skok daleký', 'Dvojitý skok', 'Kladina', 'A-rampa', 'Slalom', 'Metry'].map(T));
@@ -133,6 +143,9 @@ module.exports = async function ({ browser, base }) {
     await run(T, 'Británie zůstává: seesaw, tyre, metry', async () => {
       const r = await ev(() => ({ cc: RCC, unit: UNIT(), w: ['Houpačka', 'Kruh', 'Skok daleký', 'Metry'].map(T).join(), len: lenU(150) }));
       ok(r.cc === 'UK' && r.unit === 'm' && r.w === 'Seesaw,Tyre,Long jump,Metres' && r.len === '150.0 m', 'britská pravidla a angličtina beze změny: ' + JSON.stringify(r));
+      await ev(() => { loadCourse(listFor('A2')[0], true); show('plan'); render(); ui(); }); await T.page.waitForTimeout(200);
+      const u = await ev(() => ({ fci: !$('fciBar').hidden, opt: [...$('sizeSelect').options].map(o => o.textContent) }));
+      ok(u.fci && u.opt.includes('Field 40 × 20 m'), 'v Británii zůstává kontrola a plocha v metrech: ' + JSON.stringify(u));
     });
     await done(T);
   }

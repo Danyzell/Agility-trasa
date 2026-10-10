@@ -112,8 +112,8 @@ async function test(device: string, lang: string) {
   const since = new Date(Date.now() - 3600e3).toISOString();
   const n = await fetch(`${SBU}/rest/v1/push_queue?sub_id=in.(${subs.map((s) => s.id).join(',')})&created_at=gte.${since}&tag=eq.test&select=id`, { headers: H });
   if (n.ok && (await n.json()).length >= 5) return json({ error: 'Zkoušek bylo dost, zkus to za hodinu.' }, 429);
-  const en = lang === 'en';
-  const q = await fetch(`${SBU}/rest/v1/push_queue`, { method: 'POST', headers: H, body: JSON.stringify(subs.map((s) => ({ sub_id: s.id, title: 'Pawkur', body: en ? 'Notifications work. 🐾' : 'Upozornění fungují. 🐾', url: './#home', tag: 'test' }))) });
+  const msg: Record<string, string> = { cs: 'Upozornění fungují. 🐾', en: 'Notifications work. 🐾', pl: 'Powiadomienia działają. 🐾', de: 'Benachrichtigungen funktionieren. 🐾' };
+  const q = await fetch(`${SBU}/rest/v1/push_queue`, { method: 'POST', headers: H, body: JSON.stringify(subs.map((s) => ({ sub_id: s.id, title: 'Pawkur', body: Object.prototype.hasOwnProperty.call(msg, lang) ? msg[lang] : msg.cs, url: './#home', tag: 'test' }))) });
   if (!q.ok) return json({ error: 'Zprávu se nepodařilo zařadit.' }, 500);
   return json({ ok: true, ...(await flush(50)) });
 }
