@@ -8,6 +8,10 @@ module.exports = async function ({ browser, base }) {
   /* sdílení kódem (3.4): server je podstrčený, volání se zapisují do calls; kódy jdou po sobě */
   const calls = [], codes = ['RNG111', 'FRE222', 'GRD333', 'NOR444', 'XYZ555']; let shared = null;
   const last = (n) => { for (let i = calls.length - 1; i >= 0; i--) if (calls[i][0] === n) return calls[i][1]; return null; };
+  /* odpověď podstrčeného serveru dorazí do stránky až po zápisu do calls: čekat na výsledek, ne pevnou dobu (na CI 300 ms nestačilo) */
+  const until = async (f, ms = 5000) => { for (const t0 = Date.now(); !(await f()) && Date.now() - t0 < ms;) await new Promise(r => setTimeout(r, 50)); };
+  /* zveřejnění je hotové, až stránka zavře okno a ukáže hlášku s kódem (dřív by pozdní odpověď zavřela další otevřené okno) */
+  const pubDone = (cd) => until(() => ev(c => ($('toast').textContent || '').indexOf('Kód ' + c) >= 0, cd));
   await offline(T.ctx, { get_catalog: { version: 0 },
     share_course: (a) => { calls.push(['share_course', a]); return codes[calls.filter(c => c[0] === 'share_course').length - 1] || 'ZZZ999'; },
     gallery_publish: (a) => { calls.push(['gallery_publish', a]); return true; },
@@ -187,25 +191,25 @@ module.exports = async function ({ browser, base }) {
       AUTH = { at: 'tok', rt: 'ref', exp: Math.floor(Date.now() / 1000) + 7200, uid: 'u2', email: 'a@example.com', name: 'A' }; shareSheet(); });
     await page.waitForTimeout(150);
     ok(await page.isVisible('#shRing') && await page.isChecked('#shRing'), 'u parkuru s kolbištěm má být zaškrtnutá poloha kolbiště');
-    await page.click('#sheet [data-a="mk"]'); await page.waitForTimeout(300);
+    await page.click('#sheet [data-a="mk"]'); await until(() => ev(() => !!$('shOut').getAttribute('data-code')));
     let s = last('share_course');
     ok(s && JSON.stringify(s.p_data.ring) === JSON.stringify({ lat: 51.2, lng: 0.52, W: 40, H: 20, name: 'Ring 1', az: 123.4, venue: 'Kent' }) && s.p_data.route.length >= 2, 'kolbiště v kódu jen se středem, rozměrem, natočením a názvy: ' + JSON.stringify(s && s.p_data.ring));
     ok(await page.isDisabled('#shRing') && await ev(() => $('shOut').getAttribute('data-code') === 'RNG111'), 'zaškrtávátko patří k vytvořenému kódu');
     /* Zveřejnit v galerii: kód s kolbištěm se nepoužije, vznikne nový bez kolbiště */
     await page.click('#sheet [data-a="pub"]'); await page.waitForTimeout(150);
-    await page.click('#sheet [data-a="pub"]'); await page.waitForTimeout(400);
+    await page.click('#sheet [data-a="pub"]'); await pubDone('FRE222');
     const sc = calls.filter(c => c[0] === 'share_course'), gp = calls.filter(c => c[0] === 'gallery_publish');
     ok(sc.length === 2 && !('ring' in sc[1][1].p_data) && gp.length === 1 && gp[0][1].p_code === 'FRE222', 'galerie dostala kód bez kolbiště: ' + JSON.stringify({ n: sc.length, ring: sc[1] && 'ring' in sc[1][1].p_data, pub: gp.map(c => c[1].p_code) }));
     ok(await ev(() => !('ring' in shareData())), 'data pro galerii a skupinu (shareData) nesmí mít kolbiště');
     /* pojistka: i kdyby se galerii předal kód s kolbištěm, zveřejní se nový kód bez kolbiště */
-    await ev(() => { closeSheet(); galPubSheet('RNG111'); }); await page.waitForTimeout(150); await page.click('#sheet [data-a="pub"]'); await page.waitForTimeout(400);
+    await ev(() => { closeSheet(); galPubSheet('RNG111'); }); await page.waitForTimeout(150); await page.click('#sheet [data-a="pub"]'); await pubDone('GRD333');
     ok(calls.filter(c => c[0] === 'share_course').length === 3 && !('ring' in last('share_course').p_data) && last('gallery_publish').p_code === 'GRD333', 'kód s kolbištěm se nesmí zveřejnit: ' + JSON.stringify(last('gallery_publish')));
     /* bez zaškrtnutí kód bez kolbiště; ten se pak v galerii použije */
     await ev(() => { closeSheet(); shareSheet(); }); await page.waitForTimeout(150);
-    await page.uncheck('#shRing'); await page.click('#sheet [data-a="mk"]'); await page.waitForTimeout(300);
+    await page.uncheck('#shRing'); await page.click('#sheet [data-a="mk"]'); await until(() => ev(() => !!$('shOut').getAttribute('data-code')));
     s = last('share_course');
     ok(s && !('ring' in s.p_data) && await ev(() => $('shOut').getAttribute('data-ring') === ''), 'bez zaškrtnutí je kód bez kolbiště: ' + JSON.stringify(s && Object.keys(s.p_data)));
-    await page.click('#sheet [data-a="pub"]'); await page.waitForTimeout(150); await page.click('#sheet [data-a="pub"]'); await page.waitForTimeout(400);
+    await page.click('#sheet [data-a="pub"]'); await page.waitForTimeout(150); await page.click('#sheet [data-a="pub"]'); await pubDone('NOR444');
     ok(calls.filter(c => c[0] === 'share_course').length === 4 && last('gallery_publish').p_code === 'NOR444', 'kód bez kolbiště se do galerie použije bez nového kódu');
     /* parkur bez kolbiště: zaškrtávátko vůbec není */
     await ev(() => { closeSheet(); loadCourse(listFor('A2')[1], true); shareSheet(); }); await page.waitForTimeout(150);

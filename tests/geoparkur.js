@@ -117,6 +117,75 @@ module.exports = async function ({ browser, base }) {
     ok(!bad.length && Math.abs(g.az - 325) < .2, 'otočený plán sedí na originál: ' + bad.join(' | ') + ' az ' + g.az);
   });
 
+  /* 3.5.5 (uživatel z UK: „dostat parkur do své aplikace“): Export → Uložit GeoJSON se skutečnými souřadnicemi a načtení zpátky beze změny,
+     i s překážkou dvakrát v trase („2, 11“), tunelem do oblouku a kolbištěm natočeným na 250° (bez az by se načetlo otočené o 180°) */
+  await step('Uložit jako GeoJSON a načíst zpátky', async () => {
+    await fresh();
+    const r = await ev(() => {
+      const c = { W: 40, H: 25, obs: [
+        { id: 1, type: 'jump', x: 5, y: 5, rot: 30 }, { id: 2, type: 'jump', x: 12, y: 8, rot: 100, v: 'wall' }, { id: 3, type: 'jump', x: 20, y: 6, rot: 340, v: 'oxer' },
+        { id: 4, type: 'tunnel', x: 25, y: 15, rot: 45, bend: 90 }, { id: 5, type: 'weave', x: 15, y: 18, rot: 180 }, { id: 6, type: 'aframe', x: 30, y: 8, rot: 270 },
+        { id: 7, type: 'dogwalk', x: 20, y: 22, rot: 0 }, { id: 8, type: 'seesaw', x: 8, y: 15, rot: 135 }, { id: 9, type: 'tire', x: 35, y: 18, rot: 60 },
+        { id: 10, type: 'longjump', x: 34, y: 4, rot: 200 }, { id: 11, type: 'tunnel', x: 10, y: 21, rot: 90, len: 3 }],
+        route: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 2, 11] };
+      const d = courseClean(Object.assign({ sides: [], turns: [] }, c)), rec = { id: 'my-gj1', name: 'Kent Sunday A2', cls: 'A2', author: '', W: d.W, H: d.H, obs: d.obs, route: d.route, sides: d.sides, turns: d.turns, hp: [], marks: [] };
+      const L = myDB(); L.push(rec); mySave(L); loadCourse(rec, true);
+      ringsPut([{ id: 'rgj', name: 'Ring 3', lat: 51.2, lng: 0.5, acc: 1, az: 250, azErr: 2, azT: 1, W: 40, H: 25, cid: rec.id, at: 1 }]);
+      const gj = courseGeo(), b = gcBuild(gcFeats(JSON.stringify(gj), 'x.geojson').feats, false);
+      return { gj, b, obs: S.obs, route: S.route };
+    });
+    const f0 = r.gj.features[0], f2 = r.gj.features.find(f => f.properties.type === 'Wall');
+    ok(r.gj.type === 'FeatureCollection' && r.gj.name === 'Kent Sunday A2' && r.gj.features.length === 12 && f0.geometry.type === 'Polygon' && f0.properties.kind === 'ring' && f0.properties.az === 250 &&
+      f2 && f2.properties.number === '2, 11' && f2.properties.name === '2, 11 Wall' && Math.abs(f0.geometry.coordinates[0][0][1] - 51.2) < .001 && Math.abs(f0.geometry.coordinates[0][0][0] - .5) < .001,
+      'GeoJSON: kolbiště, překážky, čísla: ' + JSON.stringify(r.gj).slice(0, 400));
+    const g = r.b.course, bad = [], by = id => g.obs.find(o => o.id === id), orig = id => r.obs.find(o => o.id === id);
+    r.route.forEach((id, i) => {
+      const o = orig(id), q = by(g.route[i]); if (!q) { bad.push(i + ': chybí'); return; }
+      let da = Math.abs(((q.rot - o.rot) % 360 + 540) % 360 - 180); const turned = da > 90; if (turned && !/^(jump|tire|longjump)$/.test(o.type)) da = 180 - da;
+      const bendOk = Math.abs((q.bend || 0) - (turned ? -(o.bend || 0) : (o.bend || 0))) < 1, lenOk = (q.len || null) === (o.len || null);
+      if (q.type !== o.type || (q.v || null) !== (o.v || null) || Math.hypot(q.x - o.x, q.y - o.y) > .03 || da > .5 || !bendOk || !lenOk) bad.push(i + ' ' + o.type + ': ' + JSON.stringify([o, q]));
+    });
+    ok(!bad.length && g.W === 40 && g.H === 25 && g.route.length === 12 && g.route[1] === g.route[10] && !r.b.warn.length, 'parkur po uložení a načtení stejný: ' + bad.join(' | ') + ' ' + JSON.stringify({ W: g.W, H: g.H, route: g.route, warn: r.b.warn }));
+    ok(r.b.ring && Math.abs(r.b.ring.az - 250) < .2 && r.b.ring.W === 40 && r.b.ring.H === 25 && Math.abs(r.b.ring.lat - 51.2) < 1e-6 && Math.abs(r.b.ring.lng - .5) < 1e-6 && r.b.ring.name === 'Ring 3', 'kolbiště po načtení: ' + JSON.stringify(r.b.ring));
+    /* Export a Sdílet: tlačítka jen s kolbištěm s natočením, soubor .geojson */
+    await ev(() => { window.__gjf = null; window.__dfOld = deliverFile; deliverFile = function (d, m, n) { window.__gjf = { d, m, n }; return Promise.resolve(); }; exportSheet(); });
+    await page.waitForTimeout(200);
+    const ex = await ev(() => ({ gj: !!document.querySelector('#sheet [data-a="gj"]') }));
+    await ev(() => document.querySelector('#sheet [data-a="gj"]').click()); await page.waitForTimeout(150);
+    const sv = await ev(() => { const x = window.__gjf; let ok2 = false; try { ok2 = JSON.parse(x.d).features.length === 12; } catch (e) { } return { n: x && x.n, m: x && x.m, ok2 }; });
+    ok(ex.gj && sv.n === 'kent-sunday-a2.geojson' && sv.m === 'application/geo+json' && sv.ok2, 'Uložit GeoJSON v Exportu: ' + JSON.stringify([ex, sv]));
+    const sh = await ev(() => { closeSheet(); shareSheet(); const a = !!document.querySelector('#sheet [data-a="gj"]'); closeSheet(); ringsPut([]); exportSheet(); const b = !!document.querySelector('#sheet [data-a="gj"]'); closeSheet(); deliverFile = window.__dfOld; return { a, b }; });
+    ok(sh.a && !sh.b, 'GeoJSON ve Sdílet a bez kolbiště není: ' + JSON.stringify(sh));
+    const miss = await ev(() => ['Uložit GeoJSON', 'Sdílet GeoJSON', 'Uložit jako GeoJSON', 'GeoJSON: obrys kolbiště a překážky se skutečnými souřadnicemi (WGS84) pro QGIS, QField nebo Google Earth. Načíst ho jde i zpátky do Pawkuru.',
+      'Obrys kolbiště a překážky se skutečnými souřadnicemi (WGS84) pro QGIS, QField nebo Google Earth.', 'GeoJSON se souřadnicemi jde uložit u parkuru s polohou kolbiště (Nástroje → Kolbiště (GPS)).',
+      'Parkur s polohou kolbiště jde uložit jako GeoJSON se skutečnými souřadnicemi (Export a Sdílet) pro QGIS, QField nebo Google Earth'].filter(t => trLookup(t) == null));
+    ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
+  });
+
+  /* Hoopers tam a zpátky: sud jako bod s natočením a krátký tunel (1 m) bez varování, prostor psovoda jako čtverec, oblouk dvakrát v trase */
+  await step('Hoopers jako GeoJSON a zpátky', async () => {
+    await fresh();
+    const r = await ev(() => {
+      const c = { W: 30, H: 20, obs: [
+        { id: 1, type: 'ha', x: 15, y: 10, rot: 0 }, { id: 2, type: 'hoop', x: 5, y: 5, rot: 30 }, { id: 3, type: 'barrel', x: 10, y: 15, rot: 37 },
+        { id: 4, type: 'gate', x: 22, y: 5, rot: 100 }, { id: 5, type: 'chute', x: 25, y: 15, rot: 45 }, { id: 6, type: 'hoop', x: 8, y: 10, rot: 200 }],
+        route: [2, 3, 4, 5, 6, 2] };
+      const d = courseClean(Object.assign({ sides: [], turns: [] }, c)), rec = { id: 'my-gjh', name: 'Hoopers Kent', cls: 'H1', author: '', W: d.W, H: d.H, obs: d.obs, route: d.route, sides: d.sides, turns: d.turns, hp: [], marks: [] };
+      const L = myDB(); L.push(rec); mySave(L); loadCourse(rec, true);
+      ringsPut([{ id: 'rgh', name: 'Ring H', lat: 51.2, lng: 0.5, acc: 1, az: 110, azErr: 2, azT: 1, W: 30, H: 20, cid: rec.id, at: 1 }]);
+      const gj = courseGeo(), b = gcBuild(gcFeats(JSON.stringify(gj), 'x.geojson').feats, false);
+      return { types: gj.features.map(f => f.geometry.type + ' ' + f.properties.type).join(), orig: S.obs, route: S.route, got: b.course, warn: b.warn, hoop: b.hoop };
+    });
+    const g = r.got, bad = [], by = id => g.obs.find(o => o.id === id), orig = id => r.orig.find(o => o.id === id);
+    /* id po načtení podle pořadí v souboru: překážky podle prvního čísla v trase, prostor psovoda (bez čísla) na konci */
+    [[2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [1, 6]].forEach(([a, b]) => {
+      const o = orig(a), q = by(b), da = Math.abs(((q.rot - o.rot) % 360 + 540) % 360 - 180), rq = o.type === 'ha' ? Math.min(da % 90, 90 - da % 90) : da;
+      if (q.type !== o.type || Math.hypot(q.x - o.x, q.y - o.y) > .02 || rq > .2) bad.push(o.type + ': ' + JSON.stringify([o, q]));
+    });
+    ok(r.types === 'Polygon undefined,LineString Hoop,Point Barrel,LineString Gate,LineString Chute,LineString Hoop,Polygon Handler area', 'Hoopers v GeoJSON: ' + r.types);
+    ok(!bad.length && r.hoop && g.route.join() === '1,2,3,4,5,1' && !r.warn.length, 'Hoopers po načtení stejný a bez varování: ' + bad.join(' | ') + ' ' + JSON.stringify({ route: g.route, warn: r.warn, hoop: r.hoop }));
+  });
+
   await step('KML z Google Earth', async () => {
     await fresh(); await pick([kmlFile(80)]);
     const pv = await ev(() => ({ sum: $('sheet').querySelector('.gc-sum').textContent, name: $('gcName').value, warn: [...$('sheet').querySelectorAll('.gc-warn li')].map(l => l.textContent) }));

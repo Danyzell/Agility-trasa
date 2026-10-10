@@ -106,6 +106,21 @@ module.exports = async function ({ browser, base }) {
     ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
   });
 
+  /* 3.5.5: Start a Cíl na plánku i v exportu anglicky (text v SVG plánku překlad stránky nechytí, zůstával „Cíl“) */
+  await step('Start a Finish na plánku a v exportu', async () => {
+    await ev(() => localStorage.setItem('agility-lang-v1', JSON.stringify('en'))); await page.goto('about:blank'); await page.goto(base + '/#plan'); await w(500); await ev(() => closeSheet());
+    const r = await ev(() => {
+      show('plan'); loadCourse(listFor('A2')[3], true); PLANUI.judge = false; render();
+      const live = [...document.querySelectorAll('#marks .sf text')].map(t => t.textContent).join();
+      PLANUI.judge = true; render();
+      const judge = [...document.querySelectorAll('#marks .sf text')].map(t => t.textContent).join();
+      PLANUI.judge = false; render();
+      const exp = ['comp', 'judge', 'build'].map(v => (fieldSvgString({ ver: v }).match(/<g class="sf">[\s\S]*?<\/g>/g) || []).map(g => g.replace(/<[^>]+>/g, '')).join()).join('|');
+      return { lang: LANG, live, judge, exp };
+    });
+    ok(r.lang === 'en' && r.live === 'Start,Finish' && r.judge === 'START,FINISH' && !/Cíl|CÍL/.test(r.exp) && /Finish|FINISH/.test(r.exp), 'Start a cíl anglicky: ' + JSON.stringify(r));
+  });
+
   await T.ctx.close();
   return T.errs;
 };
