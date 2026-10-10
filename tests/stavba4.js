@@ -271,6 +271,50 @@ module.exports = async function ({ browser, base }) {
     await T.tool('judge'); ok(await ev(() => !PLANUI.judge && document.querySelectorAll('#bdg .jn').length === 0 && document.querySelectorAll('#pth .leg').length > 10 && /Zpátky/.test($('toast').textContent)), 'vypnutí plánku rozhodčího');
   });
 
+  /* 3.5.1 (uživatel z UK: „některá čísla jsou na špatné straně“): číslo i v běžném plánu na straně nájezdu jako u rozhodčího,
+     skok projetý z obou stran má dvě čísla, v nabídce kroku Číslo na druhou stranu (o.nf), uloží se, sdílí a jde vrátit */
+  await step('čísla na straně nájezdu a Číslo na druhou stranu', async () => {
+    await fresh();
+    await setCourse([J(1, 5, 10), J(2, 15, 10), J(3, 25, 10)], [1, 2, 3, 2, 1]);
+    await ev(() => { PLANUI.judge = false; lsSet('agility-planui-v1', PLANUI); render(); });
+    const nb = (cls) => ev((c) => [...document.querySelectorAll('#bdg .' + c)].map(g => { const m = /translate\(([-\d.]+),([-\d.]+)\)/.exec(g.getAttribute('transform')); return g.textContent + '@' + (+m[1]).toFixed(2) + ',' + (+m[2]).toFixed(2); }).sort(), cls || 'nb');
+    /* tam doprava (1, 2, 3): 0,6 m před skokem a 0,95 m vpravo od směru běhu (dolů); zpátky doleva (4, 5) před skokem z druhé strany a nahoře */
+    const def = ['1@4.40,10.95', '2@14.40,10.95', '3@24.40,10.95', '4@15.60,9.05', '5@5.60,9.05'];
+    let r = await nb();
+    ok(JSON.stringify(r) === JSON.stringify(def), 'čísla na straně nájezdu, skok z obou stran má dvě čísla (dřív „2·4“ vpravo nahoře): ' + JSON.stringify(r));
+    await ev(() => { PLANUI.judge = true; render(); });
+    ok(JSON.stringify(await nb('jn')) === JSON.stringify(def), 'plánek rozhodčího má čísla na stejných místech: ' + JSON.stringify(await nb('jn')));
+    await ev(() => { PLANUI.judge = false; lsSet('agility-planui-v1', PLANUI); mode = 'route'; ui(); render(); });
+    const menu = async (i) => { await ev((i) => document.querySelector('#routeList [data-rm="' + i + '"]').click(), i); await w(120);
+      return ev(() => [...document.querySelectorAll('#sheet [data-ra]')].map(b => b.getAttribute('data-ra') + ':' + b.querySelector('b').textContent).join('|')); };
+    let m = await menu(0);
+    ok(/\|nf:Číslo na druhou stranu\|/.test(m + '|'), 'volba v nabídce kroku: ' + m);
+    await ev(() => document.querySelector('#sheet [data-ra="nf"]').click()); await w(100);
+    const flip = ['1@4.40,9.05', '2@14.40,10.95', '3@24.40,10.95', '4@15.60,9.05', '5@5.60,10.95'];
+    r = await nb();
+    let x = await ev(() => ({ nf: getO(1).nf, dirty: S.meta.dirty, toast: $('toast').textContent }));
+    ok(JSON.stringify(r) === JSON.stringify(flip) && x.nf === 1 && x.dirty && x.toast === 'Krok č. 1: číslo na druhé straně', 'obě čísla skoku 1 k druhému boku, pořád před skokem: ' + JSON.stringify(r) + ' ' + JSON.stringify(x));
+    /* uloží se, projde kontrolou sdíleného parkuru i načtením z Moje */
+    x = await ev(() => { const d = JSON.parse(JSON.stringify(shareData())), c = courseClean(d); return { share: d.obs.find(o => o.id === 1).nf, clean: c.obs.find(o => o.id === 1).nf, other: c.obs.find(o => o.id === 2).nf }; });
+    ok(x.share === 1 && x.clean === 1 && x.other === undefined, 'sdílení a kontrola dat: ' + JSON.stringify(x));
+    await ev(() => { const d = JSON.parse(JSON.stringify(shareData())); S.meta.dirty = false; loadCourse(Object.assign(d, { id: 'nf-test', name: 'Čísla', cls: 'A2', author: '' }), true); render(); });
+    ok(await ev(() => getO(1).nf === 1 && !getO(2).nf) && JSON.stringify(await nb()) === JSON.stringify(flip), 'po načtení parkuru zůstane číslo na druhé straně');
+    /* znovu v nabídce: Číslo zpátky na výchozí stranu */
+    await ev(() => { mode = 'route'; ui(); render(); });
+    m = await menu(4);
+    ok(/\|nf:Číslo zpátky na výchozí stranu\|/.test(m + '|'), 'v nabídce kroku 5 (stejný skok) je návrat: ' + m);
+    await ev(() => document.querySelector('#sheet [data-ra="nf"]').click()); await w(100);
+    ok(JSON.stringify(await nb()) === JSON.stringify(def) && await ev(() => getO(1).nf === undefined && $('toast').textContent === 'Krok č. 5: číslo na výchozí straně'), 'zpátky na výchozí stranu: ' + JSON.stringify(await nb()));
+    /* Zpět vrátí přepnutí */
+    await page.click('#undoAll'); await w(100);
+    ok(await ev(() => getO(1).nf === 1) && JSON.stringify(await nb()) === JSON.stringify(flip), 'Zpět vrátí číslo na druhou stranu');
+    const miss = await missEn(['Číslo na druhou stranu', 'Číslo zpátky na výchozí stranu', 'Číslo bude zase vpravo od dráhy psa, na straně nájezdu.',
+      'Číslo překážky přejde k druhému boku, pořád na straně nájezdu. Hodí se, když překrývá trasu nebo jinou překážku.', 'Krok č. 3: číslo na druhé straně', 'Krok č. 12: číslo na výchozí straně',
+      'Čísla překážek na straně nájezdu jako na plánku rozhodčího, v nabídce kroku Číslo na druhou stranu']);
+    ok(!miss.length, 'chybí anglický překlad: ' + miss.join(' | '));
+    ok(await ev(() => trLookup('Krok č. 3: číslo na druhé straně') === 'Step no. 3: number on the other side'), 'anglicky s číslem kroku: ' + await ev(() => trLookup('Krok č. 3: číslo na druhé straně')));
+  });
+
   await step('export ve třech verzích a obrázek do příběhu', async () => {
     await fresh();
     await setCourse([J(1, 5, 10), J(2, 15, 10), J(3, 25, 10)], [1, 2, 3]);
