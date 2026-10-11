@@ -118,6 +118,14 @@ module.exports = async function ({ browser, base }) {
       const exp = ['comp', 'judge', 'build'].map(v => (fieldSvgString({ ver: v }).match(/<g class="sf">[\s\S]*?<\/g>/g) || []).map(g => g.replace(/<[^>]+>/g, '')).join()).join('|');
       return { lang: LANG, live, judge, exp };
     });
+    /* 3.5.6: obrázek do příběhu nahoře „COURSE A2“, dřív česky „PARKUR A2“ (celé „Parkur A2“ slovník nezná) */
+    const st = await ev(() => {
+      const P = CanvasRenderingContext2D.prototype, f = P.fillText, txt = [];
+      P.fillText = function (t) { txt.push(String(t)); return f.apply(this, arguments); };
+      try { shareCanvas(storyData()); } finally { P.fillText = f; }
+      return { cls: S.meta.cls, txt };
+    });
+    ok(st.txt.indexOf('COURSE ' + st.cls) >= 0 && !st.txt.some(t => /PARKUR|Parkur/.test(t)), 'obrázek do příběhu anglicky: ' + JSON.stringify(st.txt.slice(0, 4)));
     ok(r.lang === 'en' && r.live === 'Start,Finish' && r.judge === 'START,FINISH' && !/Cíl|CÍL/.test(r.exp) && /Finish|FINISH/.test(r.exp), 'Start a cíl anglicky: ' + JSON.stringify(r));
   });
 

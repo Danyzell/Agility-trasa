@@ -122,12 +122,19 @@ module.exports = async function ({ browser, base }) {
     /* navigace: 500 m jižně od kolbiště → šipka na sever */
     const P = await ev(g => geoMove(g, 180, 500), g);
     await T.ctx.setGeolocation({ latitude: P.lat, longitude: P.lng, accuracy: 5 });
-    await page.click('[data-rg="nav"]'); await page.waitForTimeout(600);
+    await page.click('[data-rg="nav"]'); await until(() => ev(() => /\(\d+°\)/.test($('rgDir').textContent)));
     const d = await page.textContent('#rgDist'), dir = await page.textContent('#rgDir');
     ok(/^(49\d|50\d) m$/.test(d.trim()) && /sever \((359|0|1)°\)/.test(dir), 'navigace: ' + d + ' / ' + dir);
+    /* kurz 359,6° se zaokrouhlí na 0°, ne na 360° (pod zátěží test občas ukázal „sever (360°)“) */
+    const P2 = await ev(g => geoMove(g, 179.6, 600), g), b2 = await ev(([p, g]) => geoBrg(p, g), [P2, g]);
+    await T.ctx.setGeolocation({ latitude: P2.lat, longitude: P2.lng, accuracy: 5 });
+    await until(() => ev(() => /^(59\d|60\d) m$/.test($('rgDist').textContent.trim())));
+    const dir2 = await page.textContent('#rgDir');
+    ok(b2 > 359.5 && /sever \(0°\)/.test(dir2), 'kurz ' + b2.toFixed(2) + '° má být 0°: ' + dir2);
+    ok(await ev(() => [degR(359.6), degR(-0.4), degR(359.4), degR(180.5), degR(720.2)].join()) === '0,0,359,181,0', 'degR: celé stupně 0–359');
     ok(/google\.com\/maps\/dir\/\?api=1&destination=/.test(await page.getAttribute('#rgBody a[href*="google"]', 'href')), 'odkaz do Google Map');
     await T.ctx.setGeolocation({ latitude: g.lat, longitude: g.lng, accuracy: 4 });
-    await page.waitForTimeout(400);
+    await until(() => ev(() => /Jsi na kolbišti/.test($('rgDist').textContent)));
     ok(/Jsi na kolbišti/.test(await page.textContent('#rgDist')), 'na místě: Jsi na kolbišti');
     await page.click('#rgBody [data-rg="list"]'); await page.click('#rgClose');
     ok(!(await page.isVisible('#ovRing')), 'Kolbiště nejde zavřít');
@@ -176,7 +183,7 @@ module.exports = async function ({ browser, base }) {
     ok(Math.abs(g3.az - (100 + ori.d)) < .06 && g3.azErr === 15 && g3.azT === 1, 'uložené natočení z kompasu: ' + JSON.stringify(g3));
     /* navigace: směr z GPS je zeměpisný, kompas magnetický; šipka = směr − kompas − deklinace */
     await T.ctx.setGeolocation({ latitude: 50.07, longitude: 14.42, accuracy: 5 });
-    await ev(() => ringNav(ringById('r3'))); await page.waitForTimeout(500);
+    await ev(() => ringNav(ringById('r3'))); await until(() => ev(() => /\(\d+°\)/.test(($('rgDir') || {}).textContent || '')));
     const nav = await ev(() => { RG.h = 10; const n = 'ondeviceorientationabsolute' in window ? 'deviceorientationabsolute' : 'deviceorientation'; window.dispatchEvent(new DeviceOrientationEvent(n, { alpha: 350, beta: 0, gamma: 0, absolute: true })); return { tr: $('rgRot').getAttribute('transform'), d: ringDecl(ringById('r3')) }; });
     const rot = parseFloat(String(nav.tr).replace(/^rotate\(/, ''));
     ok(Math.abs(rot - (0 - 10 - nav.d)) < .05 || Math.abs(rot - (360 - 10 - nav.d)) < .05, 'šipka navigace s deklinací: ' + JSON.stringify(nav));
@@ -222,7 +229,7 @@ module.exports = async function ({ browser, base }) {
     const course = () => ({ W: 40, H: 20, obs: [{ id: 1, type: 'jump', x: 5, y: 10, rot: 0 }, { id: 2, type: 'tunnel', x: 15, y: 10, rot: 0 }, { id: 3, type: 'jump', x: 25, y: 10, rot: 0 }], route: [1, 2, 3], sides: [], turns: [], hp: [], marks: [] });
     const evil = { lat: 51.2, lng: 0.52, az: 400.4, W: 99, H: 3, name: '  Ring\u0007 1\n' + 'x'.repeat(80), venue: 'Kent\u0000 Show\u202eground', acc: 0.5, at: 5, id: 'evil', cid: 'my-evil', cname: '<b>', cids: ['A2-x'] };
     shared = (a) => [{ code: a.p_code, name: a.p_code === 'JMP222' ? 'Kent Jumping' : 'Kent A2', cls: 'A2', author: 'J', data: Object.assign(course(), a.p_code === 'BAD333' ? { ring: { lat: 95, lng: 'x' } } : { ring: evil }) }];
-    const imp = async (code) => { await ev(() => { closeSheet(); shareSheet(); }); await page.fill('#shIn', code); await page.click('#sheet [data-a="get"]'); await page.waitForTimeout(400); };
+    const imp = async (code) => { await ev(() => { closeSheet(); shareSheet(); }); await page.fill('#shIn', code); await page.click('#sheet [data-a="get"]'); await until(() => ev(() => $('scrim').hidden)); };
     await imp('RNG111');
     let r = await ev(() => { const L = ringsGet(); return { n: L.length, g: L[0], id: S.meta.id, mine: (ringFor(S.meta.id) || {}).id, toast: $('toast').textContent, my: myDB().length }; });
     const g = r.g || {};
